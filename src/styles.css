@@ -1,0 +1,160 @@
+/* You can add global styles to this file, and also import other style files */
+
+.btn-primary{
+    background: linear-gradient(to right, #249D57, #187741);
+    color: #ffffff;
+    border: #249D57;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .btn-primary:hover {
+    background-color: #187741;
+    border-color: #249D57;
+  }
+  .btn-primary:active {
+    background-color: #187741;
+    border-color: #249D57;
+  }
+  .btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active, .show > .btn-primary.dropdown-toggle {
+    color: #fff;
+    background-color: #249D57;
+    border-color: #1E89B8;
+  }
+  .btn-outline-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active, .show > .btn-primary.dropdown-toggle {
+    color: #fff;
+    background-color: #249D57 !important;
+    border-color: #249D57 !important;
+  }
+  .btn-primary:focus, .btn-primary.focus {
+    color: #fff;
+    background-color: #249D57;
+    border-color: #249D57;
+    box-shadow: 0 0 0 0.2rem rgba(115, 204, 255, 0.5);
+  }
+  .btn-outline-primary {
+    border: 1px solid;
+    border-color: #249D57;
+    background-color: transparent;
+    color: #249D57;
+}
+.btn-outline-primary:hover {
+  background-color: #249D57 !important;
+  color: #fff !important;
+}
+.btn-outline-primary:focus {
+  background-color: transparent !important;
+  color: #249D57 !important;
+}
+.btn-outline-primary:active {
+  color: #fff;
+  background-color: #249D57;
+  border-color: #249D57;
+}
+  a {
+    color: #187741;
+    text-decoration: none;
+    background-color: transparent;
+}
+a:hover {
+    color: #187741;
+    text-decoration: none;
+}
+  .vl {
+    border-left: 1.4px solid #cccccc;
+    height: 36px;
+    position: absolute;
+    margin-left: -3px;
+    top: 3px;
+    bottom: 3px;
+  }
+  .heading{
+    color: #187741;
+    margin-top: 1rem;
+    margin-bottom: -0.5rem;
+    font-weight: 700;
+  }
+  body{
+    font-family: "Onest", sans-serif !important;
+  }
+  html{
+    font-family: "Onest", sans-serif !important;
+  }
+  /* .h1 .h2 .h3 .h4 .h5 .h6{
+    color: #187741;
+  } */
+  .modal-header{
+    background: linear-gradient(to right, #187741, #299c5b);
+  
+    color: #fff;
+    font-size: 18px;
+     font-weight: 600;
+  }
+  
+  .form-control:focus {
+    color: #75787d;
+    background-color: transparent;
+    border-color: #1E89B8;
+    outline: 0;
+    box-shadow: none;
+  }
+  
+  form label, .form-group label {
+    text-transform: capitalize !important;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+  .example-action-buttons {
+    display: flex;
+    justify-content: flex-end; /* Move buttons to the right */
+  }
+  
+  form label, .form-group label {
+    text-transform:none !important;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+  .eye-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+  }
+
+  .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+    font-family: "Onest", sans-serif !important;
+    color: #249D57 !important;
+  }
+
+  .accordion-button {
+    font-weight: 600 !important;
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 1rem 1rem !important;
+    font-size: 1.5rem !important;
+    color: #249D57 !important;
+    text-align: left;
+    background-color: #F7F7F8;
+    border: 0;
+    border-radius: 0;
+    overflow-anchor: none;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, border-radius 0.15s ease;
+}
+
+.accordion-button:not(.collapsed) {
+  color: #187741;
+  background-color: #f5efff;
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.125);
+  background-color: rgba(58, 167, 103, 0.1215686275) !important;
+}
+
+.accordion-button:focus {
+  z-index: 3;
+  border-color:rgba(58, 167, 103, 0.1215686275) !important;
+  outline: 0;
+  /* box-shadow: 0 0 0 0.25rem rgba(58, 167, 103, 0.1215686275); */
+  box-shadow: none !important;
+}

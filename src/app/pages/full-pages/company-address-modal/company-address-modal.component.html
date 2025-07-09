@@ -1,0 +1,40 @@
+<div class="modal-header">
+    <h4 class="modal-title">{{ isEditAddressMode ? 'Edit Address' : 'Add Address' }}</h4>
+    <button class="ft-x btn white" (click)="activeModal.dismiss()">
+      
+    </button>
+  </div>
+  <div class="modal-body">
+    <form #addressForm="ngForm">
+      <div class="form-group">
+        <label>Street</label>
+        <input type="text" class="form-control" [(ngModel)]="address.street" name="street" required />
+      </div>
+      <div class="form-group">
+        <label>City</label>
+        <input type="text" class="form-control" [(ngModel)]="address.city" name="city" required />
+      </div>
+      <div class="form-group">
+        <label>State</label>
+        <input type="text" class="form-control" [(ngModel)]="address.state" name="state" required />
+      </div>
+      <div class="form-group">
+        <label>Zip Code</label>
+        <input type="text" class="form-control" [(ngModel)]="address.zip" name="zip" required />
+      </div>
+      <div class="form-group">
+        <label>Country</label>
+        <input type="text" class="form-control" [(ngModel)]="address.country" name="country" required />
+      </div>
+      <div class="form-group">
+        <label>
+          <input type="checkbox" [(ngModel)]="address.primary" name="primary">
+          Primary
+        </label>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="activeModal.dismiss()">Cancel</button>
+    <button type="button" class="btn btn-primary" (click)="submitAddress()">Save</button>
+  </div>

@@ -1,0 +1,123 @@
+.badge-primary {
+    background-color: #187741 !important;
+}
+
+::ng-deep .ngx-datatable{
+    .sortable .sort-btn:before {
+        // font-family: data-table;
+        // content: "c";
+        display: none !important;
+    }
+    .sortable .sort-btn.datatable-icon-down:before {
+        // content: "f";
+        display: none !important;
+  
+    }
+    .sortable .sort-btn.datatable-icon-up:before {
+        // content: "e";
+        display: none !important;
+    }
+  }
+  .vl {
+      border-left: 1.4px solid #cccccc;
+      height: 36px;
+      position: absolute;
+      margin-left: -3px;
+      top: 3px;
+      bottom: 3px;
+    }
+    .heading{
+      color: #187741;
+      margin-top: 1rem;
+      margin-bottom: -0.5rem;
+      font-weight: 700;
+    }
+  
+    
+  .ngx-datatable ::ng-deep .datatable-header-inner{
+    background-color: #187741 !important;
+    // padding: 0.5rem;
+  // border-radius: 10px;
+  }
+  .ngx-datatable ::ng-deep .datatable-header-inner .datatable-header-cell-label,
+  .ngx-datatable ::ng-deep .datatable-header-inner .sort-btn{
+    color: white !important;
+  
+  }
+  .ngx-datatable.bootstrap .datatable-footer {
+    background: unset !important;
+    color: #187741;
+    margin-top: -1px;
+}
+.ngx-datatable ::ng-deep .datatable-footer .selected-count .page-count {
+    flex: 1 1 40%;
+    background: #eaeaeb !important;
+    color: #187741 !important;
+}
+  .ngx-datatable ::ng-deep .datatable-body .datatable-body-row.datatable-row-even {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  
+  // .ngx-datatable.bootstrap .datatable-body .datatable-body-row {
+  //   padding: 0.75rem;
+  //   vertical-align: middle;
+  //   border-top: 1px solid #1E89B8;
+  // }
+  
+  .ngx-datatable ::ng-deep .datatable-body .datatable-body-row .datatable-body-cell {
+    text-align: left;
+    padding: 0.75rem;
+    vertical-align:baseline;
+    
+  }
+  .biddingArea{
+    border: 1px solid black;
+    border-radius: 5px;
+    background: #f4f4f494;
+  }
+
+  .ngx-datatable ::ng-deep .datatable-footer .selected-count .page-count {
+    flex: 1 1 40%;
+    background: #eaeaeb !important;
+    color: #187741 !important;
+}
+
+.spacer{
+    flex-grow: 1;
+}
+.ngx-datatable.bootstrap ::ng-deep .datatable-footer {
+    background: #eaeaeb !important;
+    color: #187741 !important;
+    margin-top: -1px;
+}
+.ngx-datatable.bootstrap ::ng-deep .datatable-footer .datatable-pager ul li:not(.disabled).active a, .ngx-datatable.bootstrap .datatable-footer .datatable-pager ul li:not(.disabled):hover a {
+    background: #eaeaeb !important;
+    color: #187741 !important;
+    font-weight: bold;
+}
+.ngx-datatable.bootstrap ::ng-deep .datatable-footer .datatable-pager a {
+    height: 22px;
+    min-width: 24px;
+    line-height: 22px;
+    padding: 0;
+    border-radius: 3px;
+    margin: 0 3px;
+    text-align: center;
+    vertical-align: top;
+    text-decoration: none;
+    vertical-align: bottom;
+    color: #6c757d !important;
+}
+.modal-body {
+  position: relative;
+  flex: 1 1 auto;
+  padding: 1.5rem;
+  height: 500px !important;
+  overflow-y: auto !important;
+}
+@media (min-width: 1200px) {
+  .horizontal-layout .chat-application {
+      height: 0 !important;
+      height: 0 !important;
+  }
+}

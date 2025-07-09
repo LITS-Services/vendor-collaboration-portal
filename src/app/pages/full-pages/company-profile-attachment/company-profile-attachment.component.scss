@@ -1,0 +1,27 @@
+// Style the modal body to contain the table
+.modal-body {
+    max-height: 70vh; // Ensure the modal content doesn't exceed the viewport height
+    overflow: hidden; // Prevent modal content from overflowing
+    display: flex;
+    flex-direction: column;
+  }
+  
+  // Style the table container to make it scrollable
+  .table-container {
+    flex-grow: 1; // Allow the table container to expand within the modal
+    overflow: auto; // Enable scrolling for the table
+    max-height: 60vh; // Limit table height to maintain modal's vertical scroll
+  }
+  
+  // Style the table to handle horizontal scrolling
+  .table {
+    min-width: 100%; // Ensure horizontal scroll if columns exceed container width
+    overflow: auto; // Enable horizontal scroll for wide tables
+  }
+  
+  // Optional: Style table rows for better readability
+  .table tbody tr {
+    white-space: nowrap; // Prevent text wrapping in cells
+  }
+  
+  

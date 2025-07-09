@@ -1,0 +1,203 @@
+<!-- Header Starts -->
+<div class="row mt-3">
+    <div class="col-12">
+      <h1>Tendering</h1>
+    </div>
+  </div>
+  <!-- Header End -->
+  
+  <!--Statistics cards Starts-->
+    
+  <div class="row" (resized)="onResized($event)">
+    <div class="col-xl-4 col-lg-6 col-md-6 col-12">
+        <div class="card card-info">
+          <h4>Total Tenders</h4>
+          <!-- <div class="curve-button">
+            <button class="circle-button" (click)="tenderList('Total Tenders', 'total')">
+              <i class="ft-arrow-up-right"></i>
+            </button>
+          </div> -->
+          <div class="card-content">
+            <div class="card-body py-0">
+              <div class="media pb-1">
+                <div class="media-body">
+                  <h1>13,476</h1>
+                  <div class="row align-items-center">
+                    <div class="col-2 d-flex justify-content-center">
+                      <div class="cube">
+                        <span class="text-card"><i class="ft-chevron-up mr-2"></i>17%</span>
+                      </div>
+                    </div>
+                    <div class="col-8 text-center mt-2">
+                      <h6>Last three months</h6>
+                    </div>
+                    <div class="col-2 d-flex justify-content-center">
+                      <img src="/assets/img/icons/Vector1.svg" class="vector1" alt="">
+                    </div>
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <div class="col-xl-4 col-lg-6 col-md-6 col-12">
+      <div class="card card-info">
+        <h4>New Tenders</h4>
+        <div class="curve-button">
+          <button class="circle-button" (click)="tenderList('New Tenders', 'new')">
+            <i class="ft-arrow-up-right"></i>
+          </button>
+        </div>
+        <div class="card-content">
+          <div class="card-body py-0">
+            <div class="media pb-1">
+              <div class="media-body">
+                <h1>9,476</h1>
+                <div class="row align-items-center">
+                  <div class="col-2 d-flex justify-content-center">
+                    <div class="cube">
+                      <span class="text-card"><i class="ft-chevron-up mr-2"></i>17%</span>
+                    </div>
+                  </div>
+                  <div class="col-8 text-center mt-2">
+                    <h6>Last three months</h6>
+                  </div>
+                  <div class="col-2 d-flex justify-content-center">
+                    <img src="/assets/img/icons/Vector1.svg" class="vector1" alt="">
+                  </div>
+                </div>
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-4 col-lg-6 col-md-6 col-12">
+      <div class="card card-info">
+        <h4>In-Process Tenders</h4>
+        <div class="curve-button">
+          <button class="circle-button" (click)="tenderList('In-Process Tenders', 'in-process')">
+            <i class="ft-arrow-up-right"></i>
+          </button>
+        </div>
+        <div class="card-content">
+          <div class="card-body py-0">
+            <div class="media pb-1">
+              <div class="media-body">
+                <h1>4,044</h1>
+                <div class="row align-items-center">
+                  <div class="col-2 d-flex justify-content-center">
+                    <div class="cube">
+                      <span class="text-card"><i class="ft-chevron-up mr-2"></i>17%</span>
+                    </div>
+                  </div>
+                  <div class="col-8 text-center mt-2">
+                    <h6>Last three months</h6>
+                  </div>
+                  <div class="col-2 d-flex justify-content-center">
+                    <img src="/assets/img/icons/vector2.svg" class="vector1" alt="">
+                  </div>
+                </div>
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--Statistics cards Ends-->
+  
+  <!--Line with Area Chart 1 Starts-->
+  <div class="row">
+    <div class="col-xl-4 col-12">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title">Customer Satisfaction</h4>
+          <p>Customer Satisfaction Score</p>    
+        </div>
+        <div class="card-content">
+  
+          <!-- <p class="font-medium-2 text-center mb-0 mt-2">Project Tasks</p> -->
+          <div id="donut-dashboard-chart" class="donut">
+            <x-chartist class="height-250" [data]="DonutChart.data" [type]="DonutChart.type"
+              [options]="DonutChart.options" [responsiveOptions]="DonutChart.responsiveOptions"
+              [events]="DonutChart.events">
+            </x-chartist>
+          </div>
+  
+          <div class="card-body">
+            <div class="row mb-3">
+              <div class="col">
+                <span class="mb-1 text-muted d-block">85% - Satisfied</span>
+                <div class="progress" style="height: 5px;">
+                  <div class="progress-bar bg-success" role="progressbar" style="width: 85%;" aria-valuenow="85"
+                    aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col">
+                <span class="mb-1 text-muted d-block">15% - Unsatisfied</span>
+                <div class="progress" style="height: 5px;">
+                  <div class="progress-bar bg-warning" role="progressbar" style="width: 15%;" aria-valuenow="15"
+                    aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-8 col-12">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title mb-1">
+            <span>Statistics</span>
+            <span class="float-right cursor-pointer">
+              <i class="ft-more-vertical-"></i>
+            </span>
+          </h4>
+        </div>
+        <div class="card-content">
+          <div class="card-body">
+            <div class="chart-info mb-3">
+              <span class="mr-3">
+                <i class="fa fa-circle info font-small-3 mr-1"></i>
+                <span>Net Profit</span>
+              </span>
+              <span class="mr-3">
+                <i class="fa fa-circle info lighten-3 font-small-3 mr-1"></i>
+                <span>Revenue</span>
+              </span>
+            </div>
+            <div id="line-chart1" class="height-350">
+              <apx-chart
+                      [series]="columnChartOptions.series"
+                      [colors]="columnChartOptions.colors"
+                      [chart]="columnChartOptions.chart"
+                      [xaxis]="columnChartOptions.xaxis"
+                      [yaxis]="columnChartOptions.yaxis"
+                      [title]="columnChartOptions.title"
+                      [dataLabels]="columnChartOptions.dataLabels"
+                      [stroke]="columnChartOptions.stroke"
+                      [grid]="columnChartOptions.grid"
+                      [tooltip]="columnChartOptions.tooltip"
+                      [plotOptions]="columnChartOptions.plotOptions"
+                      [fill]="columnChartOptions.fill"
+                      [legend]="columnChartOptions.legend"
+                      [labels]="columnChartOptions.labels"
+                      [markers]="columnChartOptions.markers"
+                      [theme]="columnChartOptions.theme"
+                      [responsive]="columnChartOptions.responsive"
+                    ></apx-chart>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

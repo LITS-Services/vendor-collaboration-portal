@@ -1,0 +1,113 @@
+<section>
+    <div class="row">
+        <div class="col-12">
+            <div class="row justify-content-center mt-4 mb-4">
+                <div class="col-md-12">
+                    <h1 class="heading text-center">Reports</h1>
+                </div>
+            </div>
+            <!-- <div class="row justify-content-center mt-4">
+                <div class="col-lg-6 col-md-6 col-sm-10 col-xs-12">
+                  <div class="form-group mb-2">
+                    <label>Statement of Account</label>
+                    <input type="text" placeholder="Enter Statement of Account" class="form-control" />
+                  </div>
+                  <div class="form-group mb-2">
+                    <label>Aging</label>
+                    <input type="text" placeholder="Enter Aging" class="form-control" />
+                  </div>
+                  <button type="submit" class="btn btn-primary text-center">Generate Report</button>
+                </div>
+              </div> -->
+
+              <div class="row justify-content-center mt-4">
+            <div class="col-lg-5 col-md-5 col-sm-10 col-xs-12 border">
+            
+              <div class="row">
+                <h3 class="text-bold text-center">Statement of Account</h3>
+                 <!-- <i class="ft-file"></i> -->
+                <div class="col-md-6">
+                  <div class="form-group mb-2">
+                    <label>From Date</label>
+                    <input type="date"  class="form-control" />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group mb-2">
+                    <label>To Date</label>
+                    <input type="date" class="form-control" />
+                  </div>
+                </div>
+                <div class="col-md-12 justify-content-center d-flex">
+                  <button class="btn btn-primary w-50 mt-3"><i class="ft-file mr-1"></i>Generate Statement</button>
+                </div>
+                
+              </div>
+            </div>
+            <div class="col-lg-5 col-md-5 col-sm-10 col-xs-12 border">
+
+              <div class="row">
+                <h3 class="text-bold text-center">Aging</h3>
+                <div class="col-md-6">
+                  <div class="form-group mb-2">
+                    <label>Aging as of</label>
+                    <input type="date"  class="form-control" />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group mb-2">
+                    <label>Balance as of</label>
+                    <input type="date"  class="form-control" />
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <div class="form-group mb-2">
+                    <label>Criteria</label>
+                  <select name="" id="" class="form-select">
+                    <!-- <option value="null">Select Criteria</option> -->
+                    <option value="1">Transaction Date</option>
+                    <option value="1">Due Date</option>
+                    <option value="1">Document Date</option>
+                  </select>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group mb-2">
+                    <label>Aging Period Definition</label>
+                  <select name="" id="" class="form-select">
+                    <!-- <option value="null">Select Criteria</option> -->
+                    <option value="1">120 to 240 Days</option>
+                    <option value="1">60 to 120 Days</option>
+                    <option value="1">45 to 60 Days</option>
+                    <option value="1">30 to 45 Days</option>
+                    <option value="1">Audit Aging </option>
+                    <option value="1">Audit Aging Period</option>
+                  </select>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="form-group mb-2">
+                    <label>Currency</label>
+                  <select name="" id="" class="form-select">
+                    <!-- <option value="null">Select Currency</option> -->
+                    <option value="1">Accounting Currency</option>
+                    <option value="1">Reporting Currency</option>
+                  </select>
+                  </div>
+                </div>
+          
+                <div class="col-md-12 justify-content-center d-flex">
+                  <button class="btn btn-primary w-50 mt-3"><i class="ft-file mr-1"></i> Generate Aging Period</button>
+                </div>
+                
+              </div>
+            </div>
+             
+              </div>
+              
+        </div>
+    </div>
+</section>

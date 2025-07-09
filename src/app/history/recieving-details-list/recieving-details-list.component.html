@@ -1,0 +1,72 @@
+<section>
+    <div class="row">
+        <div class="col-12">
+
+            <!-- Header -->
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <h4 class="heading">{{ title }}</h4>
+                </div>
+            </div>
+
+            <ngx-datatable class="bootstrap core-bootstrap" [rows]="rfqData"
+            [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50" [columns]="columns"
+            rowHeight="50" [limit]="15" [scrollbarH]="true" [loadingIndicator]="loading"
+            [selected]="chkBoxSelected" [swapColumns]="false" [selectionType]="SelectionType.checkbox"
+            (sort)="onSort($event)" (select)="customChkboxOnSelect($event)">
+            <ngx-datatable-column [width]="50" [sortable]="false" [canAutoResize]="false"
+                [draggable]="false" [resizeable]="false">
+                <ng-template ngx-datatable-header-template>
+                    <div class="custom-control">
+                        <input type="checkbox" [checked]="isAllSelected"
+                            (change)="toggleSelectAll($event)" />
+                    </div>
+                </ng-template>
+                <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected"
+                    let-onCheckboxChangeFn="onCheckboxChangeFn">
+
+                    <div class="custom-control custom-checkbox ">
+                        <input type="checkbox" [checked]="isSelected"
+                            (change)="onCheckboxChangeFn($event)" />
+                    </div>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Sr. No." [resizeable]="false">
+                <ng-template let-rowIndex="rowIndex" let-value="value" ngx-datatable-cell-template>
+                    <span>{{rowIndex + 1}}</span>
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Requisition No." prop="requisitionNo" >
+
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Status" prop="status" >
+
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Date" prop="date" >
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Owner" prop="owner" >
+
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Department" prop="department" >
+
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Title" prop="title" >
+
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Account" prop="account" >
+
+            </ngx-datatable-column>
+            
+            <ngx-datatable-column name="Total Amount"  prop="totalAmount"
+                [sortable]="false">
+            </ngx-datatable-column>
+
+
+        </ngx-datatable>
+        </div>
+    </div>
+</section>

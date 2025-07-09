@@ -1,0 +1,43 @@
+<section>
+    <div class="row">
+        <div class="col-12">
+
+            <!-- Header -->
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <h4 class="heading">{{ title }}</h4>
+                </div>
+            </div>
+
+            <ngx-datatable class="bootstrap core-bootstrap" [rows]="rfqData"
+            [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50" [columns]="columns"
+            rowHeight="50" [limit]="15" [scrollbarH]="true" [loadingIndicator]="loading"
+            [selected]="chkBoxSelected" [swapColumns]="false" [selectionType]="SelectionType.checkbox"
+            (sort)="onSort($event)" (select)="customChkboxOnSelect($event)">
+            <ngx-datatable-column name="Sr. No." [resizeable]="false" [width]="30">
+                <ng-template let-rowIndex="rowIndex" let-value="value" ngx-datatable-cell-template>
+                    <span>{{rowIndex + 1}}</span>
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Invoice No." prop="invoiceNo" >
+            </ngx-datatable-column>  
+            <ngx-datatable-column name="Date" prop="date" >
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Company" prop="company" >
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Amount Total" prop="amountTotal" >
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="View"  prop="action"
+            [sortable]="false">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+                <button class="btn btn-sm"
+                >
+                <i class="ft-eye"></i>
+              </button>
+              </ng-template>
+        </ngx-datatable-column>
+        </ngx-datatable>
+        </div>
+    </div>
+</section>
