@@ -1,37 +1,39 @@
-import { Component, ViewChild } from '@angular/core';
-import { NgForm, UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
+// login-page.component.ts
+import { Component } from '@angular/core';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from "@angular/router";
 import { AuthService } from 'app/shared/auth/auth.service';
 import { NgxSpinnerService } from "ngx-spinner";
-
 
 @Component({
   selector: 'app-login-page',
   templateUrl: './login-page.component.html',
   styleUrls: ['./login-page.component.scss']
 })
-
 export class LoginPageComponent {
   public hidePassword: boolean = true;
   loginFormSubmitted = false;
   isLoginFailed = false;
-  public shouldHighlightPasswordField(): boolean {
-    return this.loginFormSubmitted && this.lf.passwordHash.invalid;
-  }
+
   loginForm = new UntypedFormGroup({
-    username: new UntypedFormControl('guest@apex.com', [Validators.required]),
-    password: new UntypedFormControl('Password', [Validators.required]),
+    username: new UntypedFormControl( "",[Validators.required]),
+    password: new UntypedFormControl("", [Validators.required]),
     rememberMe: new UntypedFormControl(true)
   });
 
-
-  constructor(private router: Router, private authService: AuthService,
+  constructor(
+    private router: Router,
+    private authService: AuthService,
     private spinner: NgxSpinnerService,
-    private route: ActivatedRoute) {
-  }
+    private route: ActivatedRoute
+  ) { }
 
   get lf() {
     return this.loginForm.controls;
+  }
+
+  public shouldHighlightPasswordField(): boolean {
+    return this.loginFormSubmitted && this.lf.password.invalid;
   }
 
   // On submit button click
@@ -41,7 +43,7 @@ export class LoginPageComponent {
       return;
     }
 
-    this.spinner.show(undefined,
+  this.spinner.show(undefined,
       {
         type: 'ball-triangle-path',
         size: 'medium',
@@ -50,26 +52,32 @@ export class LoginPageComponent {
         fullScreen: true
       });
 
-    this.authService.signinUser(this.loginForm.value.username, this.loginForm.value.password)
-      .then((res) => {
+    // 🔹 Use API login method (sgninUser)
+    this.authService.sgninUser(
+      this.loginForm.value.username!,
+      this.loginForm.value.password!
+    ).subscribe({
+      next: (res) => {
         this.spinner.hide();
+
+        // Example: store JWT token if returned from API
+        if (res && res.token) {
+          localStorage.setItem('authToken', res.token);
+        }
+
         this.router.navigate(['/dashboard/dashboard1']);
-      })
-      .catch((err) => {
+      },
+      error: (err) => {
         this.isLoginFailed = true;
         this.spinner.hide();
-        console.log('error: ' + err)
+        console.error('Login failed:', err);
       }
-      );
-  }
-  rememberMe() {
-
-  }
-  forgotpassword() {
-
-  }
- SSO(event: Event) {
- 
+    });
   }
 
+  rememberMe() { }
+
+  forgotpassword() { }
+
+  SSO(event: Event) { }
 }

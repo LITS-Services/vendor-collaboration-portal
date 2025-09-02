@@ -128,12 +128,13 @@
             </div> -->
             <div class="form-group mb-2">
               <div style="position:relative">
-                <input type="{{ hidePassword ? 'password' : 'text' }}" formControlName="passwordHash"
+                <input type="{{ hidePassword ? 'password' : 'text' }}" formControlName="password"
                   class="form-control password-input" placeholder="Enter password"
-                  [ngClass]="{ 'is-invalid': shouldHighlightPasswordField()}" required>
-                <i class="ft ft-eye eye-icon" *ngIf="!(loginFormSubmitted && (lf.passwordHash.invalid || lf.passwordHash.errors?.required))" (click)="togglePasswordVisibility()"></i>
+                  [ngClass]="{ 'is-invalid': loginFormSubmitted && lf.password.invalid, 'is-valid': loginFormSubmitted && !lf.password.invalid }"
+                  required>
+                <i class="ft ft-eye eye-icon" *ngIf="!(loginFormSubmitted && (lf.password.invalid || lf.password.errors?.required))" (click)="togglePasswordVisibility()"></i>
               </div>
-              <div *ngIf="loginFormSubmitted && (lf.passwordHash.invalid || lf.passwordHash.errors?.required)"
+              <div *ngIf="loginFormSubmitted && (lf.password.invalid || lf.password.errors?.required)"
                 class="invalid-feedback"> Please enter the valid
                 password
               </div>
@@ -174,7 +175,6 @@
           <div class="d-flex flex-sm-row justify-content-center mt-3">
           <a href="" [routerLink]="['/pages/registeration']"><h5 class="heading"><u>Register as a Vendor</u></h5></a>
              
-            
           </div>
         </div>
       </div>
