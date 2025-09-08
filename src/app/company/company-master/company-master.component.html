@@ -1,47 +1,50 @@
 <!-- Header Starts -->
-<div class="row mt-3">
-    <div class="col-12">
-      <h1>Companies</h1>
-    </div>
+<div class="row mt-3 align-items-center">
+  <div class="col-6">
+    <h1>Companies</h1>
   </div>
-  <!-- Header End -->
+  <div class="col-6 text-end">
+    <!-- Register New Company Button -->
+    <button class="btn btn-primary" (click)="newCompany()" style="    float: right;">
+      Register New Company
+    </button>
+  </div>
+</div>
+<!-- Header End -->
+
   
   <!--Statistics cards Starts-->
   
   <div class="row" (resized)="onResized($event)">
     <div class="col-xl-4 col-lg-6 col-md-6 col-12">
-        <div class="card card-info">
-          <h4>Total Companies</h4>
-          <!-- <div class="curve-button">
-            <button class="circle-button" (click)="companyList('Total Companies', 'total')">
-              <i class="ft-arrow-up-right"></i>
-            </button>
-          </div> -->
-          <div class="card-content">
-            <div class="card-body py-0">
-              <div class="media pb-1">
-                <div class="media-body">
-                  <h1>13,476</h1>
-                  <div class="row align-items-center">
-                    <div class="col-2 d-flex justify-content-center">
-                      <div class="cube">
-                        <span class="text-card"><i class="ft-chevron-up mr-2"></i>17%</span>
-                      </div>
-                    </div>
-                    <div class="col-8 text-center mt-2">
-                      <h6>Last three months</h6>
-                    </div>
-                    <div class="col-2 d-flex justify-content-center">
-                      <img src="/assets/img/icons/Vector1.svg" class="vector1" alt="">
-                    </div>
-                  </div>
-                  
+  <div class="card card-info">
+    <h4>Total Companies</h4>
+    <div class="card-content">
+      <div class="card-body py-0">
+        <div class="media pb-1">
+          <div class="media-body">
+            <!-- Dynamic total count -->
+            <h1>{{ totalCompaniesCount }}</h1>
+            <div class="row align-items-center">
+              <div class="col-2 d-flex justify-content-center">
+                <div class="cube">
+                  <span class="text-card"><i class="ft-chevron-up mr-2"></i>17%</span>
                 </div>
+              </div>
+              <div class="col-8 text-center mt-2">
+                <h6>Last three months</h6>
+              </div>
+              <div class="col-2 d-flex justify-content-center">
+                <img src="/assets/img/icons/Vector1.svg" class="vector1" alt="">
               </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
     <div class="col-xl-4 col-lg-6 col-md-6 col-12">
       <div class="card card-info">
         <h4>Newly Onboarded Companies</h4>
@@ -76,38 +79,39 @@
       </div>
     </div>
     <div class="col-xl-4 col-lg-6 col-md-6 col-12">
-      <div class="card card-info">
-        <h4>Pending Companies</h4>
-        <div class="curve-button">
-          <button class="circle-button" (click)="companyList('Pending Companies', 'in-process')">
-            <i class="ft-arrow-up-right"></i>
-          </button>
-        </div>
-        <div class="card-content">
-          <div class="card-body py-0">
-            <div class="media pb-1">
-              <div class="media-body">
-                <h1>4,044</h1>
-                <div class="row align-items-center">
-                  <div class="col-2 d-flex justify-content-center">
-                    <div class="cube">
-                      <span class="text-card"><i class="ft-chevron-up mr-2"></i>17%</span>
-                    </div>
-                  </div>
-                  <div class="col-8 text-center mt-2">
-                    <h6>Last three months</h6>
-                  </div>
-                  <div class="col-2 d-flex justify-content-center">
-                    <img src="/assets/img/icons/vector2.svg" class="vector1" alt="">
-                  </div>
+  <div class="card card-info">
+    <h4>Pending Companies</h4>
+    <div class="curve-button">
+      <button class="circle-button" (click)="companyList('Pending Companies', 'in-process')">
+        <i class="ft-arrow-up-right"></i>
+      </button>
+    </div>
+    <div class="card-content">
+      <div class="card-body py-0">
+        <div class="media pb-1">
+          <div class="media-body">
+            <!-- Dynamic Inprogress count -->
+            <h1>{{ inprogressCount }}</h1>
+            <div class="row align-items-center">
+              <div class="col-2 d-flex justify-content-center">
+                <div class="cube">
+                  <span class="text-card"><i class="ft-chevron-up mr-2"></i>17%</span>
                 </div>
-                
+              </div>
+              <div class="col-8 text-center mt-2">
+                <h6>Last three months</h6>
+              </div>
+              <div class="col-2 d-flex justify-content-center">
+                <img src="/assets/img/icons/vector2.svg" class="vector1" alt="">
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
+</div>
+
   </div>
 
   <!--Statistics cards Ends-->

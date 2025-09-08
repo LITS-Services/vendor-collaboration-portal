@@ -1,0 +1,345 @@
+<!-- Header Starts -->
+ <div style="padding: 15px;">
+<button class="btn btn-outline-secondary rounded-circle" (click)="goBack()" 
+      style="margin-top: 9px; margin-left: 15px; position: sticky; width: 40px; height: 40px; display: flex ; align-items: center; justify-content: center;">
+<i class="fa fa-arrow-left"></i>
+</button>
+<div class="row mt-3">
+  <div class="col-6">
+    <h1>Company Profile</h1>
+  </div>
+  <div class="col-6 d-flex align-items-center justify-content-end">
+    <button class="btn btn-outline-primary me-3">Cancel</button>
+    <button class="btn btn-primary" (click)="submitForm()">Save</button>
+  </div>
+</div>
+<!-- Header End -->
+
+<!-- Profile Start -->
+<section class="page-user-profile">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="user-profile-images">
+          <img src="assets/img/banner/profile-image.jpg" class="img-fluid rounded-top user-timeline-image" alt="User Timeline Image">
+          <img src="assets/img/portrait/small/avatar-s-20.png" class="user-profile-image rounded" alt="User Profile Image" height="140" width="140">
+        </div>
+        <div class="card-content">
+          <div class="card-body">
+            <div class="user-profile-buttons d-flex justify-content-center justify-content-sm-start align-items-end">
+              <h4 class="profile-text-color mb-0 me-2"><a href="https://www.lits.services/">LITS Services Ltd</a></h4>
+              <small> Vendor</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Profile End -->
+
+<!-- Inputs start -->
+<section id="basic-input">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-content">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-12 d-flex align-items-center justify-content-end mb-2">
+                <button class="btn btn-outline-primary me-3">Contact</button>
+                <button class="btn btn-outline-primary me-3">Checklist</button>
+                <button class="btn btn-primary" (click)="openAttachmentModal()">Attachment</button>
+              </div>
+              <div class="col-12">
+                <ngb-accordion [closeOthers]="true" [activeIds]="'static-1'">
+
+                  <!-- About Company -->
+                  <ngb-panel id="static-1" title="About Company">
+                    <ng-template ngbPanelContent>
+                      <textarea name="about" cols="30" rows="10" class="form-control" placeholder="Enter Company Description"
+                        [(ngModel)]="aboutCompany"></textarea>
+                    </ng-template>
+                  </ngb-panel>
+
+                  <!-- General Information -->
+                  <ngb-panel id="static-2" title="General Information">
+                    <ng-template ngbPanelContent>
+                      <div class="row">
+                        <div class="col-12">
+                          <h6>Identification</h6>
+                        </div>
+                        <div class="col-md-3">
+                          <label>Vendor account</label>
+                          <input type="text" class="form-control" [value]="vendorAccountNumber" disabled>
+                        </div>
+                        <div class="col-md-3">
+                          <label>Type</label>
+                          <select class="form-select" [(ngModel)]="companyType">
+                            <option>Organization</option>
+                            <option>Person</option>
+                          </select>
+                        </div>
+                        <div class="col-md-3">
+                          <label>Payment priority</label>
+                          <input type="text" class="form-control" [(ngModel)]="paymentPriority" placeholder="Enter payment priority">
+                        </div>
+                        <div class="col-md-3">
+                          <label>Name</label>
+                          <input type="text" class="form-control" [(ngModel)]="companyName" placeholder="Enter company name">
+                        </div>
+                        <div class="col-md-3">
+                          <label>Search name</label>
+                          <input type="text" class="form-control" [(ngModel)]="searchName" placeholder="Enter search name">
+                        </div>
+                        <div class="col-md-3">
+                          <label>Group</label>
+                          <select class="form-select" [(ngModel)]="group">
+                            <option>Select Group</option>
+                            <option>Group 1</option>
+                            <option>Group 2</option>
+                            <option>Group 3</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <hr>
+
+                      <!-- Organization Details -->
+                      <div class="row">
+                        <div class="col-12">
+                          <h6>Organization Details</h6>
+                        </div>
+                        <div class="col-md-3">
+                          <label>Number of employees</label>
+                          <input type="number" class="form-control" [(ngModel)]="numEmployees" placeholder="Enter number of employees">
+                        </div>
+                        <div class="col-md-3">
+                          <label>Organization number</label>
+                          <input type="number" class="form-control" [(ngModel)]="organizationNumber" placeholder="Enter organization number">
+                        </div>
+                        <div class="col-md-3">
+                          <label>ABC code</label>
+                          <select class="form-select" [(ngModel)]="abcCode"></select>
+                        </div>
+                        <div class="col-md-3">
+                          <label>DUNS number</label>
+                          <select class="form-select" [(ngModel)]="dunsNumber"></select>
+                        </div>
+                        <div class="col-md-3">
+                          <label>Company registration number</label>
+                          <input type="number" class="form-control" [(ngModel)]="registrationNumber" placeholder="Enter company registration number">
+                        </div>
+                        <div class="col-md-3">
+                          <label>Tax registration number</label>
+                          <input type="number" class="form-control" [(ngModel)]="taxNumber" placeholder="Enter tax registration number">
+                        </div>
+                      </div>
+
+                      <hr>
+
+                      <!-- Other Information -->
+                      <div class="row">
+                        <div class="col-12">
+                          <h6>Other Information</h6>
+                        </div>
+                        <div class="col-md-3">
+                          <label>Address books</label>
+                          <select class="form-select" [(ngModel)]="addressBook"></select>
+                        </div>
+                        <div class="col-md-3">
+                          <label>Known as</label>
+                          <input type="text" class="form-control" [(ngModel)]="knownAs" placeholder="Enter known as">
+                        </div>
+                        <div class="col-md-3">
+                          <label>Phonetic name</label>
+                          <input type="text" class="form-control" [(ngModel)]="phoneticName" placeholder="Enter phonetic name">
+                        </div>
+                      </div>
+
+                    </ng-template>
+                  </ngb-panel>
+
+                  <!-- Addresses -->
+                  <ngb-panel id="static-3" title="Addresses">
+                    <ng-template ngbPanelContent>
+                      <div class="address-table-container">
+                        <button class="btn btn-primary mb-3" (click)="openAddressModal()">Add Address</button>
+                        <div class="table-responsive">
+                          <table class="table table-striped table-bordered">
+                            <thead>
+                              <tr>
+                                <th>Street</th>
+                                <th>City</th>
+                                <th>State</th>
+                                <th>Zip Code</th>
+                                <th>Country</th>
+                                <th>Primary</th>
+                                <th>Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let address of addressList; let i = index">
+                                <td>{{ address.street }}</td>
+                                <td>{{ address.city }}</td>
+                                <td>{{ address.state }}</td>
+                                <td>{{ address.zip }}</td>
+                                <td>{{ address.country }}</td>
+                                <td>{{ address.primary ? 'Yes' : 'No' }}</td>
+                                <td>
+                                  <button class="ft-edit btn" type="button" (click)="editAddress(i)"></button>
+                                  <button class="ft-trash btn" (click)="confirmAddressDeletion(i)"></button>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </ng-template>
+                  </ngb-panel>
+
+                  <!-- Company Contact Details -->
+                  <ngb-panel id="static-4" title="Company Contact Details">
+                    <ng-template ngbPanelContent>
+                      <button class="btn btn-primary mb-3" (click)="openContactModal()">Add Contact</button>
+                      <div class="table-responsive">
+                        <table class="table table-striped table-bordered">
+                          <thead>
+                            <tr>
+                              <th>Description</th>
+                              <th>Type</th>
+                              <th>Contact Number</th>
+                              <th>Extension</th>
+                              <th>Primary</th>
+                              <th>Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let contact of contactList; let i = index">
+                              <td>{{ contact.description }}</td>
+                              <td>{{ contact.type }}</td>
+                              <td>{{ contact.contactNumber }}</td>
+                              <td>{{ contact.extension }}</td>
+                              <td>{{ contact.primary ? 'Yes' : 'No' }}</td>
+                              <td>
+                                <button class="ft-edit btn" type="button" (click)="editContact(i)"></button>
+                                <button class="ft-trash btn" type="button" (click)="confirmContactDeletion(i)"></button>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </ng-template>
+                  </ngb-panel>
+
+                  <!-- Purchasing Demographics -->
+                  <ngb-panel id="static-5" title="Purchasing Demographics">
+                    <ng-template ngbPanelContent>
+                      <div class="row">
+                        <div class="col-md-3 mt-1">
+                          <label>Primary currency</label>
+                          <select class="form-select" [(ngModel)]="primaryCurrency">
+                            <option>Select primary currency</option>
+                            <option>USD</option>
+                            <option>GBP</option>
+                            <option>AED</option>
+                          </select>
+                        </div>
+                        <div class="col-md-3 mt-1">
+                          <label>Primary contact</label>
+                          <select class="form-select" [(ngModel)]="employeeResponsible">
+                            <option>Select primary contact</option>
+                            <option *ngFor="let c of contactList">{{ c.description }}</option>
+                          </select>
+                        </div>
+                        <div class="col-md-3 mt-1">
+                          <label>Vendor type</label>
+                          <select class="form-select" [(ngModel)]="vendorCategory">
+                            <option>Select vendor type</option>
+                            <option>Local</option>
+                            <option>Foreign</option>
+                          </select>
+                        </div>
+                        <div class="col-md-3 mt-1">
+                          <label>Line of business</label>
+                          <input type="text" class="form-control" [(ngModel)]="lineOfBusiness" placeholder="Enter line of business">
+                        </div>
+                        <div class="col-md-3 mt-1">
+                          <label>Birth country</label>
+                          <input type="text" class="form-control" [(ngModel)]="birthCountry" placeholder="Enter birth country">
+                        </div>
+                        <div class="col-md-3 mt-1">
+                          <label>Employee responsible</label>
+                          <input type="text" class="form-control" [(ngModel)]="employeeResponsible" placeholder="Enter employee responsible">
+                        </div>
+                        <div class="col-md-3 mt-1">
+                          <label>Segment</label>
+                          <input type="text" class="form-control" [(ngModel)]="segment" placeholder="Enter segment">
+                        </div>
+                        <div class="col-md-3 mt-1">
+                          <label>Speciality</label>
+                          <input type="text" class="form-control" [(ngModel)]="speciality" placeholder="Enter speciality">
+                        </div>
+                        <div class="col-md-3 mt-1">
+                          <label>Chain</label>
+                          <input type="text" class="form-control" [(ngModel)]="chain" placeholder="Enter chain">
+                        </div>
+                        <div class="col-12 mt-1">
+                          <label>Note</label>
+                          <textarea class="form-control" rows="3" [(ngModel)]="note" placeholder="Enter note"></textarea>
+                        </div>
+                      </div>
+                    </ng-template>
+                  </ngb-panel>
+
+                </ngb-accordion>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Delete Modals -->
+<ng-container *ngIf="showAddressDeletePopup">
+  <div class="modal" tabindex="-1" role="dialog" style="display: block; background: rgba(0,0,0,0.5);">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Delete Address</h5>
+          <button type="button" class="fa fa-times btn" (click)="closeAddressPopup()"></button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete this Address?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" (click)="removeAddress(addressIndexToDelete!)">Delete</button>
+          <button type="button" class="btn btn-secondary" (click)="closeAddressPopup()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="showContactDeletePopup">
+  <div class="modal" tabindex="-1" role="dialog" style="display: block; background: rgba(0,0,0,0.5);">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Delete Contact</h5>
+          <button type="button" class="fa fa-times btn" (click)="closeContactPopup()"></button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete this contact?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" (click)="removeContact(contactIndexToDelete!)">Delete</button>
+          <button type="button" class="btn btn-secondary" (click)="closeContactPopup()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+</div>

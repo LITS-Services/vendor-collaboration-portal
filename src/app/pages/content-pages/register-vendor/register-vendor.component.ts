@@ -56,6 +56,7 @@ export class RegisterVendorComponent implements OnInit {
   // On submit button click
   onSubmit() {
     this.registerVendorFormSubmitted = true;
+
     if (this.registerVendorForm.invalid) {
       return;
     }
@@ -79,17 +80,18 @@ export class RegisterVendorComponent implements OnInit {
     };
 
     // Call registerVendor API instead of signinUser
-    this.authService.registerUser(payload).subscribe({
-      next: (res) => {
-        this.spinner.hide();
-        this.router.navigate(['/pages/login']);
-      },
-      error: (err) => {
-        this.isLoginFailed = true;
-        this.spinner.hide();
-        console.error('error: ', err);
-      }
-    });
+this.authService.registerUser(payload).subscribe({
+  next: (res: any) => {   // use "res" here
+    this.spinner.hide();
+    this.router.navigate(['/pages/login'], { state: { vendorId: res.vendorId } });
+  },
+  error: (err) => {
+    this.isLoginFailed = true;
+    this.spinner.hide();
+    console.error('error: ', err);
+  }
+});
+
   }
 
   rememberMe() {

@@ -1,72 +1,88 @@
 <section>
-    <div class="row">
-        <div class="col-12">
-
-            <!-- Header -->
-            <div class="row mb-3">
-                <div class="col-md-12">
-                    <h4 class="heading">{{ title }}</h4>
-                </div>
-            </div>
-
-            <ngx-datatable class="bootstrap core-bootstrap" [rows]="companyData"
-            [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50" [columns]="columns"
-            rowHeight="50" [limit]="15" [scrollbarH]="true" [loadingIndicator]="loading"
-            [selected]="chkBoxSelected" [swapColumns]="false" [selectionType]="SelectionType.checkbox"
-            (sort)="onSort($event)" (select)="customChkboxOnSelect($event)">
-            <ngx-datatable-column [width]="50" [sortable]="false" [canAutoResize]="false"
-                [draggable]="false" [resizeable]="false">
-                <ng-template ngx-datatable-header-template>
-                    <div class="custom-control">
-                        <input type="checkbox" [checked]="isAllSelected"
-                            (change)="toggleSelectAll($event)" />
-                    </div>
-                </ng-template>
-                <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected"
-                    let-onCheckboxChangeFn="onCheckboxChangeFn">
-
-                    <div class="custom-control custom-checkbox ">
-                        <input type="checkbox" [checked]="isSelected"
-                            (change)="onCheckboxChangeFn($event)" />
-                    </div>
-                </ng-template>
-            </ngx-datatable-column>
-            <ngx-datatable-column name="Sr. No." [resizeable]="false">
-                <ng-template let-rowIndex="rowIndex" let-value="value" ngx-datatable-cell-template>
-                    <span>{{rowIndex + 1}}</span>
-                </ng-template>
-            </ngx-datatable-column>
-
-            <ngx-datatable-column name="Company No." prop="requisitionNo" >
-            </ngx-datatable-column>
-
-            <ngx-datatable-column name="Company Name" prop="requisitionNo" >
-            </ngx-datatable-column>
-
-            <ngx-datatable-column name="Date of Onboarding" prop="date" >
-            </ngx-datatable-column>
-
-            <ngx-datatable-column name="Status" prop="status" >
-                <ng-template let-row="row" ngx-datatable-cell-template>
-                    <div class="">
-                      <label class="switch">
-                        <input type="checkbox"
-                  />
-                        <span class="slider round"></span>
-                      </label>
-                    </div>
-                  </ng-template>
-                </ngx-datatable-column>
-                <ngx-datatable-column name="Edit"  prop="action"
-            [sortable]="false">
-            <ng-template let-row="row" ngx-datatable-cell-template>
-                <button class="btn btn-sm"
-                >
-                <i class="ft-edit"></i>
-              </button>
-              </ng-template>
-        </ngx-datatable-column>
-        </ngx-datatable>
+  <div class="row">
+    <div class="col-12">
+      <!-- Header -->
+      <div class="row mb-3">
+        <div class="col-md-12">
+          <h4 class="heading">{{ title }}</h4>
         </div>
+      </div>
+
+      <ngx-datatable
+        class="bootstrap core-bootstrap"
+        [rows]="companyData"
+        [columnMode]="'force'"
+        [headerHeight]="50"
+        [footerHeight]="50"
+        rowHeight="50"
+        [limit]="15"
+        [scrollbarH]="true"
+        [loadingIndicator]="loading"
+        [selected]="chkBoxSelected"
+        [swapColumns]="false"
+        [selectionType]="SelectionType.checkbox"
+        (sort)="onSort($event)"
+        (select)="customChkboxOnSelect($event)">
+
+        <!-- Checkbox -->
+        <ngx-datatable-column [width]="50" [sortable]="false" [canAutoResize]="false"
+          [draggable]="false" [resizeable]="false">
+          <ng-template ngx-datatable-header-template>
+            <div class="custom-control">
+              <input type="checkbox" [checked]="isAllSelected" (change)="toggleSelectAll($event)" />
+            </div>
+          </ng-template>
+          <ng-template ngx-datatable-cell-template let-isSelected="isSelected" let-onCheckboxChangeFn="onCheckboxChangeFn">
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)" />
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <!-- Sr. No -->
+       <!-- <ngx-datatable-column name="Status" prop="status">
+  <ng-template let-row="row" ngx-datatable-cell-template>
+    <label class="switch">
+      <input type="checkbox"
+             [checked]="row.status === 'Active'"
+             (change)="toggleStatus(row)" />
+      <span class="slider round"></span>
+    </label>
+  </ng-template>
+</ngx-datatable-column> -->
+
+
+        <!-- Name -->
+        <ngx-datatable-column name="Name" prop="name"></ngx-datatable-column>
+
+        <!-- Status (Read-only, no toggle) -->
+        <ngx-datatable-column name="Status" prop="status">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <span class="badge"
+              [ngClass]="row.status === 'Active' ? 'badge-success' : 'badge-secondary'">
+              {{ row.status }}
+            </span>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <!-- Street -->
+        <ngx-datatable-column name="Street" prop="street"></ngx-datatable-column>
+
+        <!-- City -->
+        <ngx-datatable-column name="City" prop="city"></ngx-datatable-column>
+
+        <!-- Contact Number -->
+        <ngx-datatable-column name="Contact Number" prop="contactNumber"></ngx-datatable-column>
+
+        <!-- Edit Button -->
+        <ngx-datatable-column name="Edit" [sortable]="false">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <button class="btn btn-sm" (click)="openQuotationBoxModal(row)">
+              <i class="ft-edit"></i>
+            </button>
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
     </div>
+  </div>
 </section>

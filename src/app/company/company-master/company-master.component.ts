@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { CompanyService } from 'app/shared/services/company.service';
 declare var require: any;
+
 import {
   ApexAxisChartSeries,
   ApexChart,
@@ -20,8 +22,10 @@ import {
   ApexNonAxisChartSeries,
   ApexResponsive,
 } from "ng-apexcharts";
+
 import { ChartEvent, ChartType } from 'ng-chartist';
 const data: any = require('../../shared/data/chartist.json');
+
 export type ChartOptions = {
   series: ApexAxisChartSeries | ApexNonAxisChartSeries;
   colors: string[],
@@ -43,16 +47,17 @@ export type ChartOptions = {
 };
 
 var $info = "#249D57",
-$info_light = "#BDE2CD"
+    $info_light = "#BDE2CD";
 var themeColors = [$info, $info_light];
+
 export interface Chart {
   type: ChartType;
   data: Chartist.IChartistData;
   options?: any;
   responsiveOptions?: any;
   events?: ChartEvent;
-  // plugins?: any;
 }
+
 @Component({
   selector: 'app-company-master',
   templateUrl: './company-master.component.html',
@@ -60,6 +65,7 @@ export interface Chart {
 })
 export class CompanyMasterComponent implements OnInit {
   columnChartOptions : Partial<ChartOptions>;
+
   DonutChart: Chart = {
     type: 'Pie',
     data: data['donutDashboard'],
@@ -67,9 +73,7 @@ export class CompanyMasterComponent implements OnInit {
       donut: true,
       startAngle: 0,
       labelInterpolationFnc: function (value) {
-        var total = data['donutDashboard'].series.reduce(function (prev, series) {
-          return prev + series.value;
-        }, 0);
+        const total = data['donutDashboard'].series.reduce((prev: any, series: any) => prev + series.value, 0);
         return total + '%';
       }
     },
@@ -85,94 +89,82 @@ export class CompanyMasterComponent implements OnInit {
             data.element.remove();
           }
         }
-
       }
     }
   };
 
+  totalCompaniesCount: number = 0;   // <-- Total companies
+  inprogressCount: number = 0;       // <-- Pending companies
+
   constructor(private router: Router,
-    private modalService: NgbModal) { 
-        this.columnChartOptions = {
-            chart: {
-              height: 350,
-              type: 'bar',
-              toolbar: {
-                show: false
-              },
-              animations: {
-                enabled: false
-              }
-            },
-            colors: themeColors,
-            plotOptions: {
-              bar: {
-                horizontal: false,
-                endingShape: 'rounded',
-                columnWidth: '25%',
-              },
-            },
-            grid: {
-              borderColor: "#BDBDBD44"
-            },
-            dataLabels: {
-              enabled: false
-            },
-            stroke: {
-              show: true,
-              width: 2,
-              colors: ['transparent']
-            },
-            series: [{
-              name: 'Net Profit',
-              data: [40, 50, 110, 90, 85, 115, 100, 90]
-            }, {
-              name: 'Revenue',
-              data: [30, 40, 100, 80, 75, 105, 90, 80]
-            }],
-            legend: {
-              show: false
-            },
-            xaxis: {
-              categories: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
-              axisBorder: {
-                color: "#BDBDBD44"
-              }
-            },
-            tooltip: {
-              y: {
-                formatter: function (val) {
-                  return "$" + val + " thousands"
-                }
-              }
-            }
-          }
-    }
+              private modalService: NgbModal,
+              private companyService: CompanyService) { 
+    this.columnChartOptions = {
+      chart: {
+        height: 350,
+        type: 'bar',
+        toolbar: { show: false },
+        animations: { enabled: false }
+      },
+      colors: themeColors,
+      plotOptions: {
+        bar: {
+          horizontal: false,
+          endingShape: 'rounded',
+          columnWidth: '25%',
+        },
+      },
+      grid: { borderColor: "#BDBDBD44" },
+      dataLabels: { enabled: false },
+      stroke: { show: true, width: 2, colors: ['transparent'] },
+      series: [
+        { name: 'Net Profit', data: [40, 50, 110, 90, 85, 115, 100, 90] },
+        { name: 'Revenue', data: [30, 40, 100, 80, 75, 105, 90, 80] }
+      ],
+      legend: { show: false },
+      xaxis: { 
+        categories: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+        axisBorder: { color: "#BDBDBD44" }
+      },
+      tooltip: { y: { formatter: (val) => "$" + val + " thousands" } }
+    };
+  }
 
   ngOnInit(): void {
+    this.loadCompanyStats();
   }
-  onResized(event: any) {
-    setTimeout(() => {
-      this.fireRefreshEventOnWindow();
-    }, 300);
-  }
-  newCompany() {
-    this.router.navigate(['/company/new-company'], {
-      queryParams: { title: 'New Request For Quotation' }
-    });
-  }
-  
-  companyList(title: string, status?: string) {
-    this.router.navigate(['/company/company-list'], {
-      queryParams: {
-        title: title,
-        status: status || ''
+
+  // Load companies and calculate counts
+  loadCompanyStats() {
+    this.companyService.getCompanies().subscribe({
+      next: (res: any) => {
+        const companies = res?.$values || res || [];
+        this.totalCompaniesCount = companies.length;
+        this.inprogressCount = companies.filter((c: any) => c.status?.toLowerCase() === 'inprogress').length;
+      },
+      error: (err) => {
+        console.error('Error fetching companies:', err);
       }
     });
-  }  
+  }
+
+  onResized(event: any) {
+    setTimeout(() => { this.fireRefreshEventOnWindow(); }, 300);
+  }
+
+  newCompany() {
+    this.router.navigate(['/pages/company-registeration']);
+  }
+
+  companyList(title: string, status?: string) {
+    this.router.navigate(['/company/company-list'], {
+      queryParams: { title: title, status: status || '' }
+    });
+  }
+
   fireRefreshEventOnWindow = function () {
-    var evt = document.createEvent("HTMLEvents");
+    const evt = document.createEvent("HTMLEvents");
     evt.initEvent("resize", true, false);
     window.dispatchEvent(evt);
   };
-
 }

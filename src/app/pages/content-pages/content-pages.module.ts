@@ -17,6 +17,7 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { RegisterVendorComponent } from './register-vendor/register-vendor.component';
+import { CompanyRegisterationComponent } from './company-registeration/company-registeration.component';
 // import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
 
 export function createTranslateLoader(http: HttpClient) {
@@ -49,6 +50,7 @@ export function createTranslateLoader(http: HttpClient) {
     RegisterVendorComponent,
     MaintenancePageComponent,
     RegisterPageComponent,
+    CompanyRegisterationComponent,
 
   ]
 })

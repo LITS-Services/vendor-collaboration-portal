@@ -62,7 +62,7 @@ export class LoginPageComponent {
 
         // Example: store JWT token if returned from API
         if (res && res.token) {
-          localStorage.setItem('authToken', res.token);
+          localStorage.setItem('token', res.token);
         }
 
         this.router.navigate(['/dashboard/dashboard1']);

@@ -5,6 +5,7 @@ import firebase from 'firebase/app'
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'environments/environment';
+import { tap } from 'rxjs/operators';
 
 @Injectable()
 export class AuthService {
@@ -27,10 +28,23 @@ export class AuthService {
 
   }
 
-   sgninUser(username: string, password: string): Observable<any> {
-    const body = { username, password };
-    return this.http.post(`${this.baseUrl}/Auth/VendorLogin`, body); 
-  }
+  // 🔹 Vendor Login API
+sgninUser(username: string, password: string): Observable<any> {
+  const body = { username, password };
+  return this.http.post(`${this.baseUrl}/Auth/VendorLogin`, body)
+    .pipe(
+      tap((response: any) => {
+        // ✅ Assuming response contains vendorUserId & token
+        if (response.vendorUserId) {
+          localStorage.setItem('vendorUserId', response.vendorUserId);
+        }
+        if (response.token) {
+          localStorage.setItem('token', response.token);
+        }
+      })
+    );
+}
+
 
   signinUser(email: string, password: string) {
     //your code for checking credentials and getting tokens for for signing in user
@@ -41,14 +55,37 @@ export class AuthService {
   registerUser(registerData: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/Auth/VendorUserRegister`, registerData);
   }
-
+  // registerCompany(payload: any): Observable<any> {
+  //   return this.http.post(`${this.baseUrl}/register-company`, payload);
+  // }
+registerCompany(payload: any): Observable<any> {
+  console.log('VenderUserId',payload.vendorUserId);
+  console.log('Sending payload to backend:', payload);
+  return this.http.post(`${this.baseUrl}/register-company`, payload); // <-- use correct API endpoint
+}
 
   logout() {
     this._firebaseAuth.signOut();
     this.router.navigate(['YOUR_LOGOUT_URL']);
   }
+  //   isAuthenticated() {
+  //   return true;
+  // }
 
-  isAuthenticated() {
-    return true;
+  isAuthenticated(): boolean {
+  const token = localStorage.getItem('token');
+  // basic check: token exists
+  if (!token) {
+    return false;
   }
+
+  // optional: check if token is expired (if it’s a JWT)
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const isExpired = Date.now() >= payload.exp * 1000;
+    return !isExpired;
+  } catch (e) {
+    return false;
+  }
+}
 }

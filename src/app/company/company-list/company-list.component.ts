@@ -4,6 +4,7 @@ import { NewCompanyComponent } from '../new-company/new-company.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BehaviorSubject } from 'rxjs';
+import { CompanyService } from 'app/shared/services/company.service';
 
 @Component({
   selector: 'app-company-list',
@@ -12,238 +13,120 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class CompanyListComponent implements OnInit {
   behaviourSubject = new BehaviorSubject<string>('Default');
-public SelectionType = SelectionType;
+  public SelectionType = SelectionType;
   public ColumnMode = ColumnMode;
-  companyData = [
-    {
-      requisitionNo: 'REQ001', // Requisition No.
-      status: 'Pending for Quotation', // Status
-      date: '2024-10-01', // Date (title column)
-      owner: 'Mubashir', // Owner (announcementDate)
-      department: 'IT', // Department (announcementEndDate)
-      title: 'Cleaning Services Contract Renewal', // Title (fileName)
-      vendors: "000035", // File path for download
-      accounts: '03-63418', // Vendors, Accounts, Total Amount badges
-      totalAmount: 2500000
-    },
-    {
-      requisitionNo: 'REQ001', // Requisition No.
-      status: 'Pending for Quotation', // Status
-      date: '2024-10-01', // Date (title column)
-      owner: 'Mubashir', // Owner (announcementDate)
-      department: 'IT', // Department (announcementEndDate)
-      title: 'Cleaning Services Contract Renewal', // Title (fileName)
-      vendors: "000035", // File path for download
-      accounts: '03-63418', // Vendors, Accounts, Total Amount badges
-      totalAmount: 2500000
-    },
-    {
-      requisitionNo: 'REQ001', // Requisition No.
-      status: 'Pending for Approval', // Status
-      date: '2024-10-01', // Date (title column)
-      owner: 'Mubashir', // Owner (announcementDate)
-      department: 'IT', // Department (announcementEndDate)
-      title: 'Cleaning Services Contract Renewal', // Title (fileName)
-      vendors: "000035", // File path for download
-      accounts: '03-63418', // Vendors, Accounts, Total Amount badges
-      totalAmount: 2500000
-    },
-    {
-      requisitionNo: 'REQ001', // Requisition No.
-      status: 'Pending for Quotation', // Status
-      date: '2024-10-01', // Date (title column)
-      owner: 'Mubashir', // Owner (announcementDate)
-      department: 'IT', // Department (announcementEndDate)
-      title: 'Cleaning Services Contract Renewal', // Title (fileName)
-      vendors: "000035", // File path for download
-      accounts: '03-63418', // Vendors, Accounts, Total Amount badges
-      totalAmount: 2500000
-    },
-    {
-      requisitionNo: 'REQ001', // Requisition No.
-      status: 'Pending for Quotation', // Status
-      date: '2024-10-01', // Date (title column)
-      owner: 'Mubashir', // Owner (announcementDate)
-      department: 'IT', // Department (announcementEndDate)
-      title: 'Cleaning Services Contract Renewal', // Title (fileName)
-      vendors: "000035", // File path for download
-      accounts: '03-63418', // Vendors, Accounts, Total Amount badges
-      totalAmount: 2500000
-    },
-    {
-      requisitionNo: 'REQ001', // Requisition No.
-      status: 'Pending for Approval', // Status
-      date: '2024-10-01', // Date (title column)
-      owner: 'Mubashir', // Owner (announcementDate)
-      department: 'IT', // Department (announcementEndDate)
-      title: 'Cleaning Services Contract Renewal', // Title (fileName)
-      vendors: "000035", // File path for download
-      accounts: '03-63418', // Vendors, Accounts, Total Amount badges
-      totalAmount: 2500000
-    },
-    {
-      requisitionNo: 'REQ001', // Requisition No.
-      status: 'Pending for Quotation', // Status
-      date: '2024-10-01', // Date (title column)
-      owner: 'Mubashir', // Owner (announcementDate)
-      department: 'IT', // Department (announcementEndDate)
-      title: 'Cleaning Services Contract Renewal', // Title (fileName)
-      vendors: "000035", // File path for download
-      accounts: '03-63418', // Vendors, Accounts, Total Amount badges
-      totalAmount: 2500000
-    },
-    {
-      requisitionNo: 'REQ001', // Requisition No.
-      status: 'Pending for Quotation', // Status
-      date: '2024-10-01', // Date (title column)
-      owner: 'Mubashir', // Owner (announcementDate)
-      department: 'IT', // Department (announcementEndDate)
-      title: 'Cleaning Services Contract Renewal', // Title (fileName)
-      vendors: "000035", // File path for download
-      accounts: '03-63418', // Vendors, Accounts, Total Amount badges
-      totalAmount: 2500000
-    },
-    {
-      requisitionNo: 'REQ001', // Requisition No.
-      status: 'Pending for Quotation', // Status
-      date: '2024-10-01', // Date (title column)
-      owner: 'Mubashir', // Owner (announcementDate)
-      department: 'IT', // Department (announcementEndDate)
-      title: 'Cleaning Services Contract Renewal', // Title (fileName)
-      vendors: "000035", // File path for download
-      accounts: '03-63418', // Vendors, Accounts, Total Amount badges
-      totalAmount: 2500000
-    },
-    {
-      requisitionNo: 'REQ001', // Requisition No.
-      status: 'Pending for Quotation', // Status
-      date: '2024-10-01', // Date (title column)
-      owner: 'Mubashir', // Owner (announcementDate)
-      department: 'IT', // Department (announcementEndDate)
-      title: 'Cleaning Services Contract Renewal', // Title (fileName)
-      vendors: "000035", // File path for download
-      accounts: '03-63418', // Vendors, Accounts, Total Amount badges
-      totalAmount: 2500000
-    },
-    {
-      requisitionNo: 'REQ001', // Requisition No.
-      status: 'Pending for Quotation', // Status
-      date: '2024-10-01', // Date (title column)
-      owner: 'Mubashir', // Owner (announcementDate)
-      department: 'IT', // Department (announcementEndDate)
-      title: 'Cleaning Services Contract Renewal', // Title (fileName)
-      vendors: "000035", // File path for download
-      accounts: '03-63418', // Vendors, Accounts, Total Amount badges
-      totalAmount: 2500000
-    },
-    {
-      requisitionNo: 'REQ001', // Requisition No.
-      status: 'Pending for Approval' , // Status
-      date: '2024-10-01', // Date (title column)
-      owner: 'Mubashir', // Owner (announcementDate)
-      department: 'IT', // Department (announcementEndDate)
-      title: 'Cleaning Services Contract Renewal', // Title (fileName)
-      vendors: "000035", // File path for download
-      accounts: '03-63418', // Vendors, Accounts, Total Amount badges
-      totalAmount: 2500000
-    },
-   
-  ];
   @ViewChild(DatatableComponent) table: DatatableComponent;
-  @ViewChild('tableRowDetails') tableRowDetails: any;
-  @ViewChild('tableResponsive') tableResponsive: any;
-  public chkBoxSelected = [];
-  loading = false;
-  public rows = [];
-  columns = [];
+
+  companyData: any[] = [];
+  loading: boolean = false;
+  chkBoxSelected = [];
   announcementId: number;
   isEditButtonDisabled: boolean = true;
   isDeleteButtonDisabled: boolean = true;
   isOpenButtonDisabled: boolean = true;
-  isAddNewDisable:boolean= true;
   isAllSelected: boolean = false;
-  title: string = 'Request for Quotation';
+  title: string = 'Companies';
   status: string = '';
-    constructor(private router: Router, private route: ActivatedRoute,
-      private modalService: NgbModal) { }
+
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private modalService: NgbModal,
+    private companyService: CompanyService
+  ) {}
+
   ngOnInit(): void {
     this.handleBehaviourSubject();
+
     this.route.queryParams.subscribe(params => {
-      if (params['title']) {
-        this.title = params['title'];
-      }
-      if (params['status']) {
-        this.status = params['status'];
-        this.loadFilteredRFQs(this.status);
+      if (params['title']) this.title = params['title'];
+      this.status = params['status'] || '';
+      this.loadCompanies(this.status);
+    });
+  }
+
+  private handleBehaviourSubject() {
+    this.behaviourSubject.next("a value");
+    this.behaviourSubject.next("b value");
+    this.behaviourSubject.next("c value");
+    this.behaviourSubject.subscribe(it => console.warn("observable-1:" + it));
+    this.behaviourSubject.subscribe(it => console.warn("observable-2:" + it));
+  }
+
+  /** Fetch companies and show only "Inprogress" */
+  loadCompanies(status?: string) {
+    this.loading = true;
+    this.companyService.getCompanies(status).subscribe({
+      next: (res: any) => {
+        const rawCompanies = res?.$values || res || [];
+
+        // Flatten addresses & contacts and filter only Inprogress
+        this.companyData = rawCompanies
+          .map((c: any) => ({
+            id: c.id,
+            companyGUID: c.companyGUID,
+            name: c.name,
+            logo: c.logo,
+            status: c.status,
+            street: c.addresses?.$values?.[0]?.street || '',
+            city: c.addresses?.$values?.[0]?.city || '',
+            country: c.addresses?.$values?.[0]?.country || '',
+            contactNumber: c.contacts?.$values?.[0]?.contactNumber || '',
+            contactType: c.contacts?.$values?.[0]?.type || ''
+          }))
+          .filter(c => c.status?.toLowerCase() === 'inprogress'); // <-- filter Inprogress only
+
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error fetching companies:', err);
+        this.loading = false;
       }
     });
   }
 
-  private handleBehaviourSubject(){
-    this.behaviourSubject.next("a value");
-    this.behaviourSubject.next("b value");
-    this.behaviourSubject.next("c value");
-    this.behaviourSubject.subscribe((it) => console.warn("observable-1:" + it));
-    this.behaviourSubject.subscribe((it) => console.warn("observable-2:" + it));
-  
-    
-  }
-  // RFQ List filteration on the basis of QueryParams
-  loadFilteredRFQs(status: string) {
-    // TODO: Call API or filter data based on status
-    console.log('Filter RFQs by status:', status);
-  }
   homePage() {
     this.router.navigate(['/dashboard/dashboard1']);
   }
+
   openEmpDetails() {
- this.modalService.open(NewCompanyComponent, { size: 'lg', backdrop: 'static', centered: true });
-    // modalRef.componentInstance.data = row;
-  }
-  onSort(event) {
-    this.loading = true;
-    setTimeout(() => {
-      const rows = [...this.rows];
-      const sort = event.sorts[0];
-      rows.sort((a, b) => {
-        return a[sort.prop].localeCompare(b[sort.prop]) * (sort.dir === 'desc' ? -1 : 1);
-      });
-  
-      this.rows = rows;
-      this.loading = false;
-    }, 1000);
-  }
-  customChkboxOnSelect({ selected }) {
-    this.chkBoxSelected = [];
-    this.chkBoxSelected.splice(0, this.chkBoxSelected.length);
-    this.chkBoxSelected.push(...selected);
-    this.announcementId = selected[0]?.id;
-    this.enableDisableButtons();
-
-  }
-  enableDisableButtons() {
-    const selectedRowCount = this.chkBoxSelected.length;
-    // Disable edit button by default
-   // this.isEditButtonDisabled = true;
-    // Enable delete button only if at least one row is selected
-    this.isDeleteButtonDisabled = selectedRowCount === 0;
-    // Enable edit button only if exactly one row is selected
-    this.isEditButtonDisabled = selectedRowCount !== 1;
-    this.isOpenButtonDisabled = selectedRowCount === 0;
-
-      //this.isDeleteButtonDisabled =true;
-if(this.companyData.length!=this.chkBoxSelected.length){
-  this.isAllSelected=false;
-}
-else{
-  this.isAllSelected=true;
-}
+    this.modalService.open(NewCompanyComponent, { size: 'lg', backdrop: 'static', centered: true });
   }
 
   openQuotationBoxModal(row: any): void {
-    const modalRef = this.modalService.open(NewCompanyComponent, { size: 'xl', backdrop: 'static', centered: true, windowClass: 'custom-height-modal' });
-    modalRef.componentInstance.data = row;  // Pass selected row data if needed
+    const modalRef = this.modalService.open(NewCompanyComponent, {
+      size: 'xl',
+      backdrop: 'static',
+      centered: true,
+      windowClass: 'custom-height-modal'
+    });
+    modalRef.componentInstance.data = row;
   }
 
+  onSort(event) {
+    this.loading = true;
+    setTimeout(() => {
+      const rows = [...this.companyData];
+      const sort = event.sorts[0];
+      rows.sort((a, b) => {
+        return a[sort.prop]?.toString().localeCompare(b[sort.prop]?.toString()) * (sort.dir === 'desc' ? -1 : 1);
+      });
+      this.companyData = rows;
+      this.loading = false;
+    }, 500);
+  }
 
+  customChkboxOnSelect({ selected }) {
+    this.chkBoxSelected = [...selected];
+    this.announcementId = selected[0]?.id;
+    this.enableDisableButtons();
+  }
+
+  enableDisableButtons() {
+    const selectedRowCount = this.chkBoxSelected.length;
+    this.isDeleteButtonDisabled = selectedRowCount === 0;
+    this.isEditButtonDisabled = selectedRowCount !== 1;
+    this.isOpenButtonDisabled = selectedRowCount === 0;
+    this.isAllSelected = this.companyData.length === this.chkBoxSelected.length;
+  }
 }
