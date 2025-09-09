@@ -85,6 +85,7 @@ export class CompanyMasterComponent implements OnInit {
               dx: data.element.root().width() / 2,
               dy: data.element.root().height() / 2
             });
+            
           } else {
             data.element.remove();
           }
@@ -136,17 +137,29 @@ export class CompanyMasterComponent implements OnInit {
 
   // Load companies and calculate counts
   loadCompanyStats() {
-    this.companyService.getCompanies().subscribe({
-      next: (res: any) => {
-        const companies = res?.$values || res || [];
-        this.totalCompaniesCount = companies.length;
-        this.inprogressCount = companies.filter((c: any) => c.status?.toLowerCase() === 'inprogress').length;
-      },
-      error: (err) => {
-        console.error('Error fetching companies:', err);
-      }
-    });
-  }
+  // Get vendorUserId (from localStorage or service)
+  const vendorUserId = localStorage.getItem('vendorUserId'); // 👈 adjust if stored differently
+
+  this.companyService.getCompanies().subscribe({
+    next: (res: any) => {
+      const companies = res?.$values || res || [];
+
+      // ✅ filter by vendorId == vendorUserId
+      const filteredCompanies = companies.filter(
+        (c: any) => c.vendorId == vendorUserId
+      );
+
+      this.totalCompaniesCount = filteredCompanies.length;
+      this.inprogressCount = filteredCompanies.filter(
+        (c: any) => c.status?.toLowerCase() === 'inprogress'
+      ).length;
+    },
+    error: (err) => {
+      console.error('Error fetching companies:', err);
+    }
+  });
+}
+
 
   onResized(event: any) {
     setTimeout(() => { this.fireRefreshEventOnWindow(); }, 300);

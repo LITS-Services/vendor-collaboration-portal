@@ -53,14 +53,16 @@ export class CompanyListComponent implements OnInit {
     this.behaviourSubject.subscribe(it => console.warn("observable-2:" + it));
   }
 
-  /** Fetch companies and show only "Inprogress" */
+  /** Fetch companies and show only "Inprogress" for current vendor */
   loadCompanies(status?: string) {
     this.loading = true;
+
+    const vendorUserId = localStorage.getItem('vendorUserId'); // 👈 current vendor
+
     this.companyService.getCompanies(status).subscribe({
       next: (res: any) => {
         const rawCompanies = res?.$values || res || [];
 
-        // Flatten addresses & contacts and filter only Inprogress
         this.companyData = rawCompanies
           .map((c: any) => ({
             id: c.id,
@@ -68,13 +70,18 @@ export class CompanyListComponent implements OnInit {
             name: c.name,
             logo: c.logo,
             status: c.status,
+            vendorId: c.vendorId, // 👈 keep vendorId
             street: c.addresses?.$values?.[0]?.street || '',
             city: c.addresses?.$values?.[0]?.city || '',
             country: c.addresses?.$values?.[0]?.country || '',
             contactNumber: c.contacts?.$values?.[0]?.contactNumber || '',
             contactType: c.contacts?.$values?.[0]?.type || ''
           }))
-          .filter(c => c.status?.toLowerCase() === 'inprogress'); // <-- filter Inprogress only
+          // ✅ filter both status + vendorId
+          .filter(c =>
+            c.status?.toLowerCase() === 'inprogress' &&
+            String(c.vendorId) === String(vendorUserId)
+          );
 
         this.loading = false;
       },
