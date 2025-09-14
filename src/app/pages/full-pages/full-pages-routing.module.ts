@@ -14,6 +14,7 @@ import { AccountSettingsComponent } from './account-settings/account-settings.co
 import { UsersListComponent } from './users/users-list/users-list.component';
 import { UsersViewComponent } from './users/users-view/users-view.component';
 import { UsersEditComponent } from './users/users-edit/users-edit.component';
+import { CompanyRegistrationComponent } from './company-registration/company-registration.component';
 
 const routes: Routes = [
   {
@@ -74,6 +75,13 @@ const routes: Routes = [
         component: UserProfilePageComponent,
         data: {
           title: 'User Profile Page'
+        }
+      },
+      {
+        path: 'company-registration',
+        component: CompanyRegistrationComponent,
+        data: {
+          title: 'Company Registration'
         }
       },
       {

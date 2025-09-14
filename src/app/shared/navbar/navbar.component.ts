@@ -23,6 +23,8 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   logoUrl = 'assets/img/icons/vp.png';
   menuPosition = 'Side';
   isSmallScreen = false;
+  username: string | null = null;
+
   protected innerWidth: any;
   searchOpenClass = "";
   transparentBGClass = "";
@@ -70,7 +72,8 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     else {
       this.isSmallScreen = false;
-    }
+    }  this.username = localStorage.getItem('username');
+
   }
 
   ngAfterViewInit() {

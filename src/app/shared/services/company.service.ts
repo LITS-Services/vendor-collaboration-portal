@@ -40,15 +40,21 @@ export class CompanyService {
     return this.http.get<Company[]>(`${this.apiUrl}/get-all-vendor-companies`, { params });
   }
 
-  // /** Get single company details */
-  // getCompanyById(id: number): Observable<Company> {
-  //   return this.http.get<Company>(`${this.apiUrl}/${id}`);
-  // }
+  /** Get single company details */
+getCompanyById(id: number): Observable<Company> {
+  return this.http.get<Company>(`${this.apiUrl}/${id}`);
+}
 
-  // /** Update company details */
-  // updateCompany(id: number, payload: any): Observable<any> {
-  //   return this.http.put(`${this.apiUrl}/${id}`, payload);
-  // }
+
+
+  /** Update company details */
+// Angular Service example
+updateCompany(id: number, payload: any) {
+  return this.http.put(`${this.apiUrl}/update-vendor-company/${id}`, payload);
+}
+
+
+
 
   // /** Delete company */
   // deleteCompany(id: number): Observable<any> {

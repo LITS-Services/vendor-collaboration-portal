@@ -24,12 +24,12 @@ import { AccountSettingsComponent } from "./account-settings/account-settings.co
 import { UsersListComponent } from "./users/users-list/users-list.component";
 import { UsersViewComponent } from "./users/users-view/users-view.component";
 import { UsersEditComponent } from "./users/users-edit/users-edit.component";
-
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 import { CompanyAddressModalComponent } from './company-address-modal/company-address-modal.component';
 import { CompanyContactModalComponent } from './company-contact-modal/company-contact-modal.component';
 import { CompanyProfileAttachmentComponent } from './company-profile-attachment/company-profile-attachment.component';
 import { CompanyProfileContactModalComponent } from './company-profile-contact-modal/company-profile-contact-modal.component';
+import { CompanyRegistrationComponent } from './company-registration/company-registration.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -63,6 +63,7 @@ import { CompanyProfileContactModalComponent } from './company-profile-contact-m
     CompanyContactModalComponent,
     CompanyProfileAttachmentComponent,
     CompanyProfileContactModalComponent,
+    CompanyRegistrationComponent,
   ],
 })
 export class FullPagesModule {}

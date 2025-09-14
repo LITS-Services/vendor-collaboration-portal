@@ -34,16 +34,24 @@ sgninUser(username: string, password: string): Observable<any> {
   return this.http.post(`${this.baseUrl}/Auth/VendorLogin`, body)
     .pipe(
       tap((response: any) => {
-        // ✅ Assuming response contains vendorUserId & token
+        // ✅ Save vendorUserId
         if (response.vendorUserId) {
           localStorage.setItem('vendorUserId', response.vendorUserId);
         }
+
+        // ✅ Save token
         if (response.token) {
           localStorage.setItem('token', response.token);
+        }
+
+        // ✅ Save username
+        if (response.username) {
+          localStorage.setItem('username', response.username);
         }
       })
     );
 }
+
 
 
   signinUser(email: string, password: string) {

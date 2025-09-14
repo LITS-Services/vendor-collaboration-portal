@@ -39,27 +39,14 @@
           </ng-template>
         </ngx-datatable-column>
 
-        <!-- Sr. No -->
-       <!-- <ngx-datatable-column name="Status" prop="status">
-  <ng-template let-row="row" ngx-datatable-cell-template>
-    <label class="switch">
-      <input type="checkbox"
-             [checked]="row.status === 'Active'"
-             (change)="toggleStatus(row)" />
-      <span class="slider round"></span>
-    </label>
-  </ng-template>
-</ngx-datatable-column> -->
-
-
         <!-- Name -->
         <ngx-datatable-column name="Name" prop="name"></ngx-datatable-column>
 
-        <!-- Status (Read-only, no toggle) -->
+        <!-- Status -->
         <ngx-datatable-column name="Status" prop="status">
           <ng-template let-row="row" ngx-datatable-cell-template>
             <span class="badge"
-              [ngClass]="row.status === 'Active' ? 'badge-success' : 'badge-secondary'">
+              [ngClass]="row.status === 'inprogress' ? 'badge-warning' : 'badge-success'">
               {{ row.status }}
             </span>
           </ng-template>
@@ -77,7 +64,9 @@
         <!-- Edit Button -->
         <ngx-datatable-column name="Edit" [sortable]="false">
           <ng-template let-row="row" ngx-datatable-cell-template>
-            <button class="btn btn-sm" (click)="openQuotationBoxModal(row)">
+            <button class="btn btn-sm btn-primary"
+              [disabled]="chkBoxSelected.length !== 1"
+              (click)="editSelectedCompany()">
               <i class="ft-edit"></i>
             </button>
           </ng-template>

@@ -9,7 +9,6 @@ import { LoginPageComponent } from "./login/login-page.component";
 import { MaintenancePageComponent } from "./maintenance/maintenance-page.component";
 import { RegisterPageComponent } from "./register/register-page.component";
 import { RegisterVendorComponent } from './register-vendor/register-vendor.component';
-import { CompanyRegisterationComponent } from './company-registeration/company-registeration.component';
 
 
 const routes: Routes = [
@@ -72,15 +71,7 @@ const routes: Routes = [
         data: {
           title: 'Vendor Registeration'
         }
-      }   ,
-
-       {
-        path: 'company-registeration',
-        component: CompanyRegisterationComponent,
-        data: {
-          title: 'Company Registeration'
-        }
-      }   
+      }  
       
     ]
   }
