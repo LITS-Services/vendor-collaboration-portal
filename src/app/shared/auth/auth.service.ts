@@ -13,7 +13,7 @@ export class AuthService {
   private userDetails: firebase.User = null;
   private baseUrl = environment.apiUrl;
 
-  constructor(public _firebaseAuth: AngularFireAuth, public router: Router,private http: HttpClient,) {
+  constructor(public _firebaseAuth: AngularFireAuth, public router: Router, private http: HttpClient,) {
     this.user = _firebaseAuth.authState;
     this.user.subscribe(
       (user) => {
@@ -25,34 +25,49 @@ export class AuthService {
         }
       }
     );
-
+    //Get all Entites 
+  }
+  getProCompanies(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/Company/get-all-procurement-companies`);
   }
 
   // 🔹 Vendor Login API
-sgninUser(username: string, password: string): Observable<any> {
-  const body = { username, password };
-  return this.http.post(`${this.baseUrl}/Auth/VendorLogin`, body)
-    .pipe(
-      tap((response: any) => {
-        // ✅ Save vendorUserId
-        if (response.vendorUserId) {
-          localStorage.setItem('vendorUserId', response.vendorUserId);
-        }
+  sgninUser(username: string, password: string): Observable<any> {
+    const body = { username, password };
+    return this.http.post(`${this.baseUrl}/Auth/VendorLogin`, body)
+      .pipe(
+        tap((response: any) => {
+          // ✅ Save UserId
+          if (response.UserId) {
+            localStorage.setItem('UserId', response.UserId);
+          }
 
-        // ✅ Save token
-        if (response.token) {
-          localStorage.setItem('token', response.token);
-        }
+          // ✅ Save token
+          if (response.token) {
+            localStorage.setItem('token', response.token);
+          }
 
-        // ✅ Save username
-        if (response.username) {
-          localStorage.setItem('username', response.username);
-        }
-      })
+          // ✅ Save username
+          if (response.username) {
+            localStorage.setItem('username', response.username);
+          }
+        })
+      );
+  }
+
+
+  resendOtp(username: string, portalType: string) {
+    return this.http.post(`${this.baseUrl}/Auth/ResendOtp`, {
+      username,
+      portalType
+    });
+  }
+
+  verifyOtp(otp: string) {
+    return this.http.post(`${this.baseUrl}/Auth/VerifyVendorOtp`, { otp },
+    { responseType: 'text' }
     );
-}
-
-
+  }
 
   signinUser(email: string, password: string) {
     //your code for checking credentials and getting tokens for for signing in user
@@ -61,16 +76,18 @@ sgninUser(username: string, password: string): Observable<any> {
   }
 
   registerUser(registerData: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/Auth/VendorUserRegister`, registerData);
+    return this.http.post(`${this.baseUrl}/Auth/VendorUserRegister`, registerData, {
+      responseType: 'text'
+    });
   }
   // registerCompany(payload: any): Observable<any> {
   //   return this.http.post(`${this.baseUrl}/register-company`, payload);
   // }
-registerCompany(payload: any): Observable<any> {
-  console.log('VenderUserId',payload.vendorUserId);
-  console.log('Sending payload to backend:', payload);
-  return this.http.post(`${this.baseUrl}/register-company`, payload); // <-- use correct API endpoint
-}
+  registerCompany(payload: any): Observable<any> {
+    console.log('userId', payload.userId);
+    console.log('Sending payload to backend:', payload);
+    return this.http.post(`${this.baseUrl}/register-company`, payload); // <-- use correct API endpoint
+  }
 
   logout() {
     this._firebaseAuth.signOut();
@@ -81,19 +98,19 @@ registerCompany(payload: any): Observable<any> {
   // }
 
   isAuthenticated(): boolean {
-  const token = localStorage.getItem('token');
-  // basic check: token exists
-  if (!token) {
-    return false;
-  }
+    const token = localStorage.getItem('token');
+    // basic check: token exists
+    if (!token) {
+      return false;
+    }
 
-  // optional: check if token is expired (if it’s a JWT)
-  try {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    const isExpired = Date.now() >= payload.exp * 1000;
-    return !isExpired;
-  } catch (e) {
-    return false;
+    // optional: check if token is expired (if it’s a JWT)
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const isExpired = Date.now() >= payload.exp * 1000;
+      return !isExpired;
+    } catch (e) {
+      return false;
+    }
   }
-}
 }

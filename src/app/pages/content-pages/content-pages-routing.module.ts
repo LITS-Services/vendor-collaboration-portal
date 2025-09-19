@@ -9,6 +9,7 @@ import { LoginPageComponent } from "./login/login-page.component";
 import { MaintenancePageComponent } from "./maintenance/maintenance-page.component";
 import { RegisterPageComponent } from "./register/register-page.component";
 import { RegisterVendorComponent } from './register-vendor/register-vendor.component';
+import { OtpComponent } from './otp/otp.component';
 
 
 const routes: Routes = [
@@ -70,6 +71,13 @@ const routes: Routes = [
         component: RegisterVendorComponent,
         data: {
           title: 'Vendor Registeration'
+        }
+      }  ,
+       {
+        path: 'otp',
+        component: OtpComponent,
+        data: {
+          title: 'OTP Verification'
         }
       }  
       

@@ -67,6 +67,9 @@
       </div>
       <div class="content text-white text-center">
         <h1 class="text-white"><b>Vendor Collaboration Portal</b></h1>
+
+
+        <!-- <button (click)="GotoOTP()">OTP</button> -->
         <!-- <h2>Portal Features</h2> -->
         <div class="row mt-4 features">
           <div class="col-md-6 mt-4 p-3"><i class="ft-airplay icon-features"></i>
@@ -163,6 +166,21 @@
                 <i class="ft-alert-circle align-middle"></i> This is required
               </div>
             </div>
+              <div class="form-group mb-2">
+  <label for="companies">Select Companies</label>
+  <ng-select
+    [items]="companies"
+    bindLabel="name"
+    bindValue="companyGUID"
+    [multiple]="true"
+    placeholder="Select Companies"
+    formControlName="selectedCompanies"
+    [ngClass]="{ 'is-invalid': registerVendorFormSubmitted && lf.selectedCompanies.invalid }">
+  </ng-select>
+  <div *ngIf="registerVendorFormSubmitted && lf.selectedCompanies.invalid" class="help-block mt-1 text-danger">
+    <i class="ft-alert-circle align-middle"></i> Please select at least one company
+  </div>
+</div>
 
             <div class="form-group mb-2">
               <div style="position:relative">
@@ -222,3 +240,10 @@
     </div>
   </div>
 </section>
+
+<ngx-spinner 
+  bdColor="rgba(0,0,0,0.8)" 
+  size="medium" 
+  color="#fff" 
+  type="ball-triangle-path">
+</ngx-spinner>

@@ -31,6 +31,7 @@ import { AuthService } from "./shared/auth/auth.service";
 import { AuthGuard } from "./shared/auth/auth-guard.service";
 import { WINDOW_PROVIDERS } from './shared/services/window.service';
 import { AuthInterceptor } from "./shared/auth/auth.interceptor";
+import { NgSelectModule } from "@ng-select/ng-select";
 
 var firebaseConfig = {
   apiKey: "AIzaSyC9XfnIpwNoSv7cyAsoccFQ5EYPd7lZXrk", //YOUR_API_KEY
@@ -56,6 +57,7 @@ export function createTranslateLoader(http: HttpClient) {
 @NgModule({
   declarations: [AppComponent, FullLayoutComponent, ContentLayoutComponent],
   imports: [
+    NgSelectModule,
     BrowserAnimationsModule,
     StoreModule.forRoot(fromApp.appReducer),
     AppRoutingModule,

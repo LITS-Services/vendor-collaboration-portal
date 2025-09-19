@@ -138,15 +138,15 @@ export class CompanyMasterComponent implements OnInit {
   // Load companies and calculate counts
 // Load companies and calculate counts
 loadCompanyStats() {
-  const vendorUserId = localStorage.getItem('vendorUserId'); // 👈 adjust if stored differently
+  const userId = localStorage.getItem('userId'); // 👈 adjust if stored differently
 
   this.companyService.getCompanies().subscribe({
     next: (res: any) => {
       const companies = res?.$values || res || [];
 
-      // Filter by vendorId === vendorUserId
+      // Filter by vendorId === userId
       const vendorCompanies = companies.filter(
-        (c: any) => c.vendorId && c.vendorId === vendorUserId
+        (c: any) => c.vendorId && c.vendorId === userId
       );
 
       // Total companies for this vendor

@@ -28,7 +28,7 @@ export class CompanyRegistrationComponent implements OnInit {
   vendorAccountNumber: string = '';
   isLoading: boolean = false;
   companyId: number | null = null;
-  remarks: string = '';  
+  remarks: string = '';
   // Delete modal states
   showContactDeletePopup: boolean = false;
   showAddressDeletePopup: boolean = false;
@@ -48,7 +48,7 @@ export class CompanyRegistrationComponent implements OnInit {
   speciality: string = '';
   chain: string = '';
   note: string = '';
-  vendorUserId: string = '';
+  userId: string = '';
 
   public swipeConfig: SwiperConfigInterface = {
     slidesPerView: 'auto',
@@ -62,7 +62,7 @@ export class CompanyRegistrationComponent implements OnInit {
     private configService: ConfigService,
     private modalService: NgbModal,
     private layoutService: LayoutService,
-    @Inject(DOCUMENT) private document: Document, 
+    @Inject(DOCUMENT) private document: Document,
     private renderer: Renderer2,
     private cdr: ChangeDetectorRef,
     private companyService: CompanyService,
@@ -70,17 +70,17 @@ export class CompanyRegistrationComponent implements OnInit {
     private route: ActivatedRoute
 
   ) {
-        this.config = this.configService.templateConf;
+    this.config = this.configService.templateConf;
 
-   }
+  }
 
-   ngOnInit() {
-    // Load vendorUserId from localStorage
-    this.vendorUserId = localStorage.getItem('vendorUserId') || '';
+  ngOnInit() {
+    // Load UserId from localStorage
+    this.userId = localStorage.getItem('userId') || '';
 
-    if (!this.vendorUserId) {
+    if (!this.userId) {
       alert('Vendor not found! Redirecting to login.');
-      this.router.navigate(['/auth/login']);
+      this.router.navigate(['../']);
       return;
     }
 
@@ -115,65 +115,65 @@ export class CompanyRegistrationComponent implements OnInit {
 
   // ===== LOAD COMPANY =====
   loadCompanyById(companyId: number) {
-  this.isLoading = true;
-  this.companyService.getCompanyById(companyId).subscribe({
-    next: (res: any) => {
-      const company = res?.vendorCompany || res;
-      if (company) {
-        this.companyName = company.name || '';
-        this.companyType = company.companyType || 'Organization';
-        this.aboutCompany = company.aboutCompany || '';
-         this.remarks = company.remarks || '';
+    this.isLoading = true;
+    this.companyService.getCompanyById(companyId).subscribe({
+      next: (res: any) => {
+        const company = res?.vendorCompany || res;
+        if (company) {
+          this.companyName = company.name || '';
+          this.companyType = company.companyType || 'Organization';
+          this.aboutCompany = company.aboutCompany || '';
+          this.remarks = company.remarks || '';
 
-        this.vendorCategory = company.purchasingDemographics?.vendorType || '';
-        this.primaryCurrency = company.purchasingDemographics?.primaryCurrency || '';
-        this.lineOfBusiness = company.purchasingDemographics?.lineOfBusiness || '';
-        this.birthCountry = company.purchasingDemographics?.birthCountry || '';
-        this.employeeResponsible = company.purchasingDemographics?.employeeResponsible || '';
-        this.segment = company.purchasingDemographics?.segment || '';
-        this.speciality = company.purchasingDemographics?.speciality || '';
-        this.chain = company.purchasingDemographics?.chain || '';
-        this.note = company.purchasingDemographics?.note || '';
+          this.vendorCategory = company.purchasingDemographics?.vendorType || '';
+          this.primaryCurrency = company.purchasingDemographics?.primaryCurrency || '';
+          this.lineOfBusiness = company.purchasingDemographics?.lineOfBusiness || '';
+          this.birthCountry = company.purchasingDemographics?.birthCountry || '';
+          this.employeeResponsible = company.purchasingDemographics?.employeeResponsible || '';
+          this.segment = company.purchasingDemographics?.segment || '';
+          this.speciality = company.purchasingDemographics?.speciality || '';
+          this.chain = company.purchasingDemographics?.chain || '';
+          this.note = company.purchasingDemographics?.note || '';
 
-        // Correct mapping for collections
-        this.addressList = (company.addresses?.$values || []).map(a => ({
-          street: a.street,
-          city: a.city,
-          state: a.state,
-          zip: a.zip,
-          country: a.country,
-          isPrimary: a.isPrimary
-        }));
+          // Correct mapping for collections
+          this.addressList = (company.addresses?.$values || []).map(a => ({
+            street: a.street,
+            city: a.city,
+            state: a.state,
+            zip: a.zip,
+            country: a.country,
+            isPrimary: a.isPrimary
+          }));
 
-        this.contactList = (company.contacts?.$values || []).map(c => ({
-          description: c.description,
-          type: c.type,
-          contactNumber: c.contactNumber,
-          extension: c.extension,
-          isPrimary: c.isPrimary
-        }));
+          this.contactList = (company.contacts?.$values || []).map(c => ({
+            description: c.description,
+            type: c.type,
+            contactNumber: c.contactNumber,
+            extension: c.extension,
+            isPrimary: c.isPrimary
+          }));
 
-        this.attachedFiles = (company.attachments?.$values || []).map(f => ({
-          fileName: f.fileName,
-          format: f.fileFormat,
-          fileContent: f.fileContent,
-          attachedBy: f.attachedBy,
-          remarks: f.remarks,
-          attachedAt: f.attachedAt
-        }));
+          this.attachedFiles = (company.attachments?.$values || []).map(f => ({
+            fileName: f.fileName,
+            format: f.fileFormat,
+            fileContent: f.fileContent,
+            attachedBy: f.attachedBy,
+            remarks: f.remarks,
+            attachedAt: f.attachedAt
+          }));
 
-        this.vendorUserId = company.vendorId || this.vendorUserId;
-        this.isEditMode = true;
+          this.userId = company.vendorId || this.userId;
+          this.isEditMode = true;
+        }
+        this.isLoading = false;
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('Error loading company:', err);
+        this.isLoading = false;
       }
-      this.isLoading = false;
-      this.cdr.markForCheck();
-    },
-    error: (err) => {
-      console.error('Error loading company:', err);
-      this.isLoading = false;
-    }
-  });
-}
+    });
+  }
 
 
   // ===== GENERATE VENDOR ACCOUNT NUMBER =====
@@ -293,25 +293,25 @@ export class CompanyRegistrationComponent implements OnInit {
   }
 
   convertFileToBase64(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    if (!file) return reject('No file provided');
-    const reader = new FileReader();
+    return new Promise((resolve, reject) => {
+      if (!file) return reject('No file provided');
+      const reader = new FileReader();
 
-    reader.readAsDataURL(file);
+      reader.readAsDataURL(file);
 
-    reader.onload = () => {
-      const result = reader.result;
-      if (typeof result === 'string') {
-        const base64 = result.split(',')[1]; // Remove data:*/*;base64, prefix
-        resolve(base64);
-      } else {
-        reject('FileReader result is not a string');
-      }
-    };
+      reader.onload = () => {
+        const result = reader.result;
+        if (typeof result === 'string') {
+          const base64 = result.split(',')[1]; // Remove data:*/*;base64, prefix
+          resolve(base64);
+        } else {
+          reject('FileReader result is not a string');
+        }
+      };
 
-    reader.onerror = (error) => reject(error);
-  });
-}
+      reader.onerror = (error) => reject(error);
+    });
+  }
   // ===== PAYLOAD =====
   getPurchasingDemographicsPayload() {
     return {
@@ -329,65 +329,65 @@ export class CompanyRegistrationComponent implements OnInit {
 
   // ===== SUBMIT FORM =====
 
-async submitForm() {
-  if (!this.vendorUserId) {
-    alert('Vendor ID missing! Please login again.');
-    this.router.navigate(['/auth/login']);
-    return;
+  async submitForm() {
+    if (!this.userId) {
+      alert('Vendor ID missing! Please login again.');
+      this.router.navigate(['/auth/login']);
+      return;
+    }
+
+    // Ensure attachments are Base64 encoded
+    this.attachedFiles = await Promise.all(this.attachedFiles.map(async f => {
+      if (f.file && !f.fileContent) {
+        f.fileContent = await this.convertFileToBase64(f.file);
+      }
+      return f;
+    }));
+
+    // ✅ Build payload as plain VendorCompany object
+    const vendorCompanyPayload = {
+      name: this.companyName,
+      vendorId: this.userId,
+      logo: '',
+      requestStatusId: 1,
+      addresses: this.getAddressesForPayload(),
+      contacts: this.getContactsForPayload(),
+      purchasingDemographics: this.getPurchasingDemographicsPayload(),
+      attachments: this.attachedFiles.map(f => ({
+        fileName: f.fileName,
+        fileFormat: f.format?.split('/').pop() || f.format || 'unknown', // keep under 100 chars
+        fileContent: f.fileContent || '',
+        attachedBy: f.attachedBy,
+        remarks: f.remarks,
+        attachedAt: f.attachedAt ? new Date(f.attachedAt).toISOString() : new Date().toISOString()
+      }))
+    };
+
+    // Wrap payload as expected by backend
+    const payload = {
+      vendorCompany: vendorCompanyPayload,
+      vendorUserId: this.userId
+    };
+
+    this.isLoading = true;
+
+    const apiCall = this.isEditMode
+      ? this.companyService.updateCompany(this.companyId!, payload)
+      : this.companyService.registerCompany(payload);
+
+    apiCall.subscribe({
+      next: () => {
+        alert(`Company ${this.isEditMode ? 'Updated' : 'Registered'} Successfully!`);
+        this.isLoading = false;
+        this.router.navigate(['/company/company-master']);
+      },
+      error: (err) => {
+        console.error('Error saving company:', err);
+        this.isLoading = false;
+        alert('Error saving company!');
+      }
+    });
   }
-
-  // Ensure attachments are Base64 encoded
-  this.attachedFiles = await Promise.all(this.attachedFiles.map(async f => {
-    if (f.file && !f.fileContent) {
-      f.fileContent = await this.convertFileToBase64(f.file);
-    }
-    return f;
-  }));
-
-  // ✅ Build payload as plain VendorCompany object
-  const vendorCompanyPayload = {
-    name: this.companyName,
-    vendorId: this.vendorUserId,
-    logo: '',
-    requestStatusId: 1,
-    addresses: this.getAddressesForPayload(),
-    contacts: this.getContactsForPayload(),
-    purchasingDemographics: this.getPurchasingDemographicsPayload(),
-    attachments: this.attachedFiles.map(f => ({
-      fileName: f.fileName,
-      fileFormat: f.format?.split('/').pop() || f.format || 'unknown', // keep under 100 chars
-      fileContent: f.fileContent || '',
-      attachedBy: f.attachedBy,
-      remarks: f.remarks,
-      attachedAt: f.attachedAt ? new Date(f.attachedAt).toISOString() : new Date().toISOString()
-    }))
-  };
-
-  // Wrap payload as expected by backend
-  const payload = {
-    vendorCompany: vendorCompanyPayload,
-    vendorUserId: this.vendorUserId
-  };
-
-  this.isLoading = true;
-
-  const apiCall = this.isEditMode
-    ? this.companyService.updateCompany(this.companyId!, payload)
-    : this.companyService.registerCompany(payload);
-
-  apiCall.subscribe({
-    next: () => {
-      alert(`Company ${this.isEditMode ? 'Updated' : 'Registered'} Successfully!`);
-      this.isLoading = false;
-      this.router.navigate(['/company/company-master']);
-    },
-    error: (err) => {
-      console.error('Error saving company:', err);
-      this.isLoading = false;
-      alert('Error saving company!');
-    }
-  });
-}
 
 
 

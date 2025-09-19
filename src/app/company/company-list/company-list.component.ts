@@ -41,7 +41,7 @@ export class CompanyListComponent implements OnInit {
   loadCompanies(status?: string) {
     this.loading = true;
 
-    const vendorUserId = localStorage.getItem('vendorUserId');
+    const userId = localStorage.getItem('userId');
 
     this.companyService.getCompanies(status).subscribe({
       next: (res: any) => {
@@ -62,7 +62,7 @@ export class CompanyListComponent implements OnInit {
             contactType: c.contactsVM?.$values?.[0]?.type || ''
           }))
           // ✅ Filter only in-progress companies matching vendorUserId
-          .filter(c => c.status === 'inprogress' && c.vendorId && c.vendorId === vendorUserId);
+          .filter(c => c.status === 'inprogress' && c.vendorId && c.vendorId === userId);
 
         console.log('Filtered InProgress Companies (vendor match):', this.companyData);
         this.loading = false;

@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthService } from 'app/shared/auth/auth.service';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-register-vendor',
@@ -14,95 +15,134 @@ export class RegisterVendorComponent implements OnInit {
   registerVendorFormSubmitted = false;
   isLoginFailed = false;
 
-  public shouldHighlightPasswordField(): boolean {
-    return this.registerVendorFormSubmitted && this.lf.password.invalid;
-  }
-
-  public togglePasswordVisibility(): void {
-    this.hidePassword = !this.hidePassword;
-  }
-
   countryExtensions = [
     { label: '+1 (USA)', value: '+1' },
     { label: '+44 (UK)', value: '+44' },
     { label: '+91 (India)', value: '+91' },
     { label: '+61 (Australia)', value: '+61' },
-    // Add more countries as needed
   ];
+
+  companies: any[] = []; 
+  selectedCompanies: string[] = [];
 
   registerVendorForm = new UntypedFormGroup({
     username: new UntypedFormControl('', [Validators.required]),
     businessName: new UntypedFormControl('', [Validators.required]),
     phoneNo: new UntypedFormControl('', [Validators.required]),
+    phoneExtension: new UntypedFormControl('', [Validators.required]),
     email: new UntypedFormControl('', [Validators.required, Validators.email]),
     password: new UntypedFormControl('', [Validators.required, Validators.minLength(6)]),
     confirmPassword: new UntypedFormControl('', [Validators.required]),
     termsAndConditions: new UntypedFormControl(true, Validators.requiredTrue),
+    selectedCompanies: new UntypedFormControl([], Validators.required)
   });
 
   constructor(
     private router: Router,
     private authService: AuthService,
     private spinner: NgxSpinnerService,
-    private route: ActivatedRoute
+    private toastr: ToastrService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.fetchCompanies();
+  }
 
   get lf() {
     return this.registerVendorForm.controls;
   }
 
-  // On submit button click
+  togglePasswordVisibility() {
+    this.hidePassword = !this.hidePassword;
+  }
+
+  shouldHighlightPasswordField(): boolean {
+    return this.registerVendorFormSubmitted && this.lf.password.invalid;
+  }
+
+  fetchCompanies() {
+    this.authService.getProCompanies().subscribe({
+      next: (res: any) => {
+        this.companies = res.$values || [];
+      },
+      error: (err: any) => {
+        this.toastr.error('Failed to load companies');
+        console.error('Companies fetch error:', err);
+      }
+    });
+  }
+
   onSubmit() {
     this.registerVendorFormSubmitted = true;
 
     if (this.registerVendorForm.invalid) {
+      this.toastr.warning('Please fill all required fields correctly.');
       return;
     }
 
-    this.spinner.show(undefined, {
-      type: 'ball-triangle-path',
-      size: 'medium',
-      bdColor: 'rgba(0, 0, 0, 0.8)',
-      color: '#fff',
-      fullScreen: true
-    });
+    if (!this.lf.selectedCompanies.value || this.lf.selectedCompanies.value.length === 0) {
+      this.toastr.warning('Please select at least one company.');
+      return;
+    }
 
-    // Build request payload
+    this.spinner.show();
+
     const payload = {
-      username: this.lf['username'].value,
-      fullName: this.lf['businessName'].value,
-      phoneNo: this.lf['phoneNo'].value,
-      email: this.lf['email'].value,
-      password: this.lf['password'].value,
-      role: 'User'
+      Username: this.lf.username.value,
+      FullName: this.lf.businessName.value,
+      PhoneNo: `${this.lf.phoneExtension.value}${this.lf.phoneNo.value}`,
+      Email: this.lf.email.value,
+      Password: this.lf.password.value,
+      Role: 'Vendor',
+      PortalType: 'Vendor',
+      CompanyGUIDs: this.lf.selectedCompanies.value
     };
 
-    // Call registerVendor API instead of signinUser
-this.authService.registerUser(payload).subscribe({
-  next: (res: any) => {   // use "res" here
-    this.spinner.hide();
-    this.router.navigate(['/pages/login'], { state: { vendorId: res.vendorId } });
-  },
-  error: (err) => {
-    this.isLoginFailed = true;
-    this.spinner.hide();
-    console.error('error: ', err);
-  }
-});
+    this.authService.registerUser(payload).subscribe({
+      next: (res: any) => {
+        this.spinner.hide();
+        console.log('Registration response:', res);
 
+        // ✅ Handle string response
+        const message = typeof res === 'string' ? res : res?.message || '';
+        if (message.toLowerCase().includes('otp sent')) {
+          this.toastr.success(message);
+
+          localStorage.setItem('pendingRegistration', JSON.stringify({
+            Username: payload.Username,
+            PortalType: payload.PortalType
+          }));
+
+          this.router.navigate(['pages/otp']);
+        } else {
+          this.isLoginFailed = true;
+          this.toastr.error('Vendor registration failed ❌');
+        }
+      },
+      error: (err: any) => {
+        this.spinner.hide();
+        console.error('Registration failed (HTTP error):', err);
+
+        // If backend returns OTP message in error
+        const message = err?.error || '';
+        if (typeof message === 'string' && message.toLowerCase().includes('otp sent')) {
+          this.toastr.success(message);
+
+          localStorage.setItem('pendingRegistration', JSON.stringify({
+            Username: payload.Username,
+            PortalType: payload.PortalType
+          }));
+
+          this.router.navigate(['pages/otp']);
+        } else {
+          this.isLoginFailed = true;
+          this.toastr.error('Vendor registration failed ❌');
+        }
+      }
+    });
   }
 
-  rememberMe() {
-    // keep your logic
-  }
-
-  forgotpassword() {
-    // keep your logic
-  }
-
-  SSO(event: Event) {
-    // keep your logic
-  }
+  rememberMe() {}
+  forgotpassword() {}
+  SSO(event: Event) {}
 }

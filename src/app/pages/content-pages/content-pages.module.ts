@@ -17,6 +17,9 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { RegisterVendorComponent } from './register-vendor/register-vendor.component';
+import { OtpComponent } from './otp/otp.component';
+import { NgSelectModule } from '@ng-select/ng-select'; // <-- Import this
+
 // import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
 
 export function createTranslateLoader(http: HttpClient) {
@@ -30,6 +33,7 @@ export function createTranslateLoader(http: HttpClient) {
     FormsModule,
     ReactiveFormsModule,
     NgbModule,
+    NgSelectModule ,
     // NgxIntlTelInputModule,
     TranslateModule.forChild({
       loader: {
@@ -49,6 +53,7 @@ export function createTranslateLoader(http: HttpClient) {
     RegisterVendorComponent,
     MaintenancePageComponent,
     RegisterPageComponent,
+    OtpComponent,
 
   ]
 })
