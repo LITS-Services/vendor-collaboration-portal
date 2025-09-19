@@ -85,10 +85,16 @@
                                                         <h6>Identification</h6>
                                                     </div>
                                                     <div class="col-md-3">
-                                                        <label>Vendor account</label>
+                                                        <label>
+                                                            Vendor account
+                                                            <i class="fa fa-info-circle text-muted ms-1"
+                                                                ngbTooltip="This is a system-generated unique vendor account number"
+                                                                placement="right"></i>
+                                                        </label>
                                                         <input type="text" class="form-control"
                                                             [value]="vendorAccountNumber" disabled>
                                                     </div>
+
                                                     <div class="col-md-3">
                                                         <label>Type</label>
                                                         <select class="form-select" [(ngModel)]="companyType">
@@ -270,7 +276,7 @@
                                         </ngb-panel>
 
                                         <!-- Purchasing Demographics -->
-                                        <ngb-panel id="static-5" title="Purchasing Demographics">
+                                        <!-- <ngb-panel id="static-5" title="Purchasing Demographics">
                                             <ng-template ngbPanelContent>
                                                 <div class="row">
                                                     <div class="col-md-3 mt-1">
@@ -338,7 +344,144 @@
                                                     </div>
                                                 </div>
                                             </ng-template>
-                                        </ngb-panel>
+                                        </ngb-panel> -->
+<!-- Purchasing Demographics -->
+<ngb-panel id="static-5" title="Purchasing Demographics">
+  <ng-template ngbPanelContent>
+    <div class="row">
+
+      <div class="col-md-3 mt-1">
+        <label>
+          Primary currency
+          <i class="fa fa-info-circle text-muted ms-1"
+             ngbTooltip="Select the main currency used for transactions with this company"
+             placement="right"></i>
+        </label>
+        <select class="form-select" [(ngModel)]="primaryCurrency">
+          <option>Select primary currency</option>
+          <option>USD</option>
+          <option>GBP</option>
+          <option>AED</option>
+        </select>
+      </div>
+
+      <div class="col-md-3 mt-1">
+        <label>
+          Primary contact
+          <i class="fa fa-info-circle text-muted ms-1"
+             ngbTooltip="Choose the main contact person for this vendor"
+             placement="right"></i>
+        </label>
+        <select class="form-select" [(ngModel)]="employeeResponsible">
+          <option>Select primary contact</option>
+          <option *ngFor="let c of contactList">{{ c.description }}</option>
+        </select>
+      </div>
+
+      <div class="col-md-3 mt-1">
+        <label>
+          Vendor type
+          <i class="fa fa-info-circle text-muted ms-1"
+             ngbTooltip="Specify whether this vendor is Local or Foreign"
+             placement="right"></i>
+        </label>
+        <select class="form-select" [(ngModel)]="vendorCategory">
+          <option>Select vendor type</option>
+          <option>Local</option>
+          <option>Foreign</option>
+        </select>
+      </div>
+
+      <div class="col-md-3 mt-1">
+        <label>
+          Line of business
+          <i class="fa fa-info-circle text-muted ms-1"
+             ngbTooltip="Enter the industry or line of business this company operates in"
+             placement="right"></i>
+        </label>
+        <input type="text" class="form-control"
+               [(ngModel)]="lineOfBusiness"
+               placeholder="Enter line of business">
+      </div>
+
+      <div class="col-md-3 mt-1">
+        <label>
+          Birth country
+          <i class="fa fa-info-circle text-muted ms-1"
+             ngbTooltip="Enter the country where the vendor or company was originally established"
+             placement="right"></i>
+        </label>
+        <input type="text" class="form-control"
+               [(ngModel)]="birthCountry"
+               placeholder="Enter birth country">
+      </div>
+
+      <div class="col-md-3 mt-1">
+        <label>
+          Employee responsible
+          <i class="fa fa-info-circle text-muted ms-1"
+             ngbTooltip="Enter the employee responsible for managing this vendor relationship"
+             placement="right"></i>
+        </label>
+        <input type="text" class="form-control"
+               [(ngModel)]="employeeResponsible"
+               placeholder="Enter employee responsible">
+      </div>
+
+      <div class="col-md-3 mt-1">
+        <label>
+          Segment
+          <i class="fa fa-info-circle text-muted ms-1"
+             ngbTooltip="Enter the business segment this vendor belongs to"
+             placement="right"></i>
+        </label>
+        <input type="text" class="form-control"
+               [(ngModel)]="segment"
+               placeholder="Enter segment">
+      </div>
+
+      <div class="col-md-3 mt-1">
+        <label>
+          Speciality
+          <i class="fa fa-info-circle text-muted ms-1"
+             ngbTooltip="Enter the specific expertise or speciality of this vendor"
+             placement="right"></i>
+        </label>
+        <input type="text" class="form-control"
+               [(ngModel)]="speciality"
+               placeholder="Enter speciality">
+      </div>
+
+      <div class="col-md-3 mt-1">
+        <label>
+          Chain
+          <i class="fa fa-info-circle text-muted ms-1"
+             ngbTooltip="Enter the chain or group the company is associated with"
+             placement="right"></i>
+        </label>
+        <input type="text" class="form-control"
+               [(ngModel)]="chain"
+               placeholder="Enter chain">
+      </div>
+
+      <div class="col-12 mt-1">
+        <label>
+          Note
+          <i class="fa fa-info-circle text-muted ms-1"
+             ngbTooltip="Add any additional notes or remarks about this vendor"
+             placement="right"></i>
+        </label>
+        <textarea class="form-control" rows="3" [(ngModel)]="note"
+                  placeholder="Enter note"></textarea>
+      </div>
+
+    </div>
+  </ng-template>
+</ngb-panel>
+
+
+
+
 
                                     </ngb-accordion>
                                     <div class="card mt-3">
