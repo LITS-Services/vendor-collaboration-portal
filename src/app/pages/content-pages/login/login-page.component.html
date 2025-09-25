@@ -1,63 +1,3 @@
-<!-- <section id="login">
-  <div class="row auth-height full-height-vh m-0">    
-    <div class="col-12 d-flex align-items-center justify-content-center">
-      <div class="card overflow-hidden">
-        <div class="card-content">
-          <div class="card-body auth-img">
-            <div class="row m-0">
-              <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-12 px-4 py-3">
-                <div class="text-center mb-2"><img src="/assets/img/login-logo.webp" width="70" height="70" alt=""></div>
-                <ngb-alert type="light-danger" class="mb-2" *ngIf="isLoginFailed" (close)="isLoginFailed = false">
-                  <p class="mb-0">Login failed!</p>
-                </ngb-alert>
-                <form [formGroup]="loginForm">
-                  <div class="form-group">
-                    <input type="text" formControlName="username" class="form-control" placeholder="Username"
-                      [ngClass]="{ 'is-invalid': loginFormSubmitted && lf.username.invalid, 'is-valid': loginFormSubmitted && !lf.username.invalid }"
-                      required>
-                    <div *ngIf="loginFormSubmitted && (lf.username.invalid || lf.username.errors?.required)"
-                      class="help-block mt-1 text-danger"> <i class="ft-alert-circle align-middle"></i> This is
-                      required</div>
-                  </div>
-                  <div class="form-group">
-                    <input type="password" formControlName="password" class="form-control" placeholder="Old Password"
-                      [ngClass]="{ 'is-invalid': loginFormSubmitted && lf.password.invalid, 'is-valid': loginFormSubmitted && !lf.password.invalid }"
-                      required>
-                    <div *ngIf="loginFormSubmitted && (lf.password.invalid || lf.password.errors?.required)"
-                      class="help-block mt-1 text-danger"> <i class="ft-alert-circle align-middle"></i> This is required
-                    </div>
-                  </div>
-                  <div class="d-flex justify-content-between flex-sm-row">
-                    <a  class="btn btn-primary w-100" (click)="onSubmit()">Login</a>
-                  </div>
-                </form>
-                <div class="checkbox mb-2 mt-2">
-                  <input type="checkbox" formControlName="rememberMe" class="form-control" id="rememberMe"
-                    (change)="rememberMe()">
-                  <label for="rememberMe"><span class="font-small-2 mb-3 font-weight-normal rm"
-                      style="color: #253E88;">Remember me</span></label>
-                      <a (click)="forgotpassword()" class="ml-3 fp" [ngClass]="'link'">Forgot password?</a>
-                </div>
-                <div class="or-wrapper text-center">
-                  <div class="horizontal-line"></div>
-                  <div class="or-text">or</div>
-                  <div class="horizontal-line"></div>
-                </div>
-                <div class="d-flex flex-sm-row">
-                  <a  class="btn btn-primary mt-1 w-100 align-self-center justify-content-center" (click)="SSO($event)"><i class="ms-logo mr-3"></i><span
-                    class="text-white mt-1" for="">Sign in
-                    with microsoft</span></a>
-                </div>
-
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section> -->
-
 <section id="login" class="container-fluid">
   <div class="row full-height-vh m-0">
     <!-- Left half with background image and content -->
@@ -67,7 +7,6 @@
       </div>
       <div class="content text-white text-center">
         <h1 class="text-white"><b>Vendor Collaboration Portal</b></h1>
-        <!-- <h2>Portal Features</h2> -->
         <div class="row mt-4 features">
           <div class="col-md-6 mt-4 p-3"><i class="ft-airplay icon-features"></i>
             <h4 class="text-white mt-1">Seamless UI</h4>
@@ -89,7 +28,6 @@
         </div>
       </div>
       <div class="icon-container1 position-absolute">
-        <!-- <img src="/assets/img/logos/login-logo.png" alt="Icon" class="icon-img"> -->
         <p class="text-white">Version 1.0.0</p>
         <p class="text-white">Powered by <span class="font-weight-600"><b>LITS Services</b></span></p>
       </div>
@@ -97,17 +35,19 @@
 
     <!-- Right half with the card and form -->
     <div class="col-md-6 d-flex align-items-center justify-content-center">
-
       <div class="card">
         <div class="card-body">
           <div class="w-100 mb-3">
             <h2 class="heading mb-2">Welcome Back!</h2>
             <p>Please enter your username and password</p>
           </div>
+
           <ngb-alert type="light-danger" class="my-2" *ngIf="isLoginFailed" (close)="isLoginFailed = false">
             <p class="mb-0">Login failed!</p>
           </ngb-alert>
-          <form [formGroup]="loginForm">
+
+          <!-- ✅ Fixed form with ngSubmit -->
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
             <div class="form-group mb-2">
               <input type="text" formControlName="username" class="form-control" placeholder="Enter Username"
                 [ngClass]="{ 'is-invalid': loginFormSubmitted && lf.username.invalid, 'is-valid': loginFormSubmitted && !lf.username.invalid }"
@@ -117,64 +57,60 @@
                 <i class="ft-alert-circle align-middle"></i> This is required
               </div>
             </div>
-            <!-- <div class="form-group">
-              <input type="password" formControlName="password" class="form-control" placeholder="Enter Password"
-                [ngClass]="{ 'is-invalid': loginFormSubmitted && lf.password.invalid, 'is-valid': loginFormSubmitted && !lf.password.invalid }"
-                required>
-              <div *ngIf="loginFormSubmitted && (lf.password.invalid || lf.password.errors?.required)"
-                class="help-block mt-1 text-danger">
-                <i class="ft-alert-circle align-middle"></i> This is required
-              </div>
-            </div> -->
+
             <div class="form-group mb-2">
               <div style="position:relative">
-                <input type="{{ hidePassword ? 'password' : 'text' }}" formControlName="password"
+                <input [type]="hidePassword ? 'password' : 'text'" formControlName="password"
                   class="form-control password-input" placeholder="Enter password"
                   [ngClass]="{ 'is-invalid': loginFormSubmitted && lf.password.invalid, 'is-valid': loginFormSubmitted && !lf.password.invalid }"
                   required>
-                <i class="ft ft-eye eye-icon" *ngIf="!(loginFormSubmitted && (lf.password.invalid || lf.password.errors?.required))" (click)="togglePasswordVisibility()"></i>
+                <i class="ft ft-eye eye-icon"
+                   *ngIf="!(loginFormSubmitted && (lf.password.invalid || lf.password.errors?.required))"
+                   (click)="togglePasswordVisibility()"></i>
               </div>
               <div *ngIf="loginFormSubmitted && (lf.password.invalid || lf.password.errors?.required)"
-                class="invalid-feedback"> Please enter the valid
-                password
+                class="invalid-feedback"> Please enter the valid password
               </div>
             </div>
+
             <div class="d-flex justify-content-between">
-              <a class="btn btn-primary w-100" (click)="onSubmit()">Login</a>
+              <!-- ✅ Changed to button type=submit -->
+              <button type="submit" class="btn btn-primary w-100">Login</button>
             </div>
           </form>
+
           <div class="row mt-2">
             <div class="col-6">
               <div class="checkbox">    
-                 <input type="checkbox" formControlName="rememberMe" class="form-control" id="rememberMe"
-                (change)="rememberMe()">
-              <label for="rememberMe"><span class="font-small-2 mb-3 font-weight-normal"
-                  style="color: #187741;">Remember
-                  me</span></label></div>
-          
+                <input type="checkbox" formControlName="rememberMe" class="form-control" id="rememberMe"
+                  (change)="rememberMe()">
+                <label for="rememberMe"><span class="font-small-2 mb-3 font-weight-normal"
+                    style="color: #187741;">Remember
+                    me</span></label>
+              </div>
             </div>
-            <div class="col-6 text-end"><a (click)="forgotpassword()" [routerLink]="['/pages/forgotpassword']" [ngClass]="'link'">Forgot password?</a></div>
+            <div class="col-6 text-end">
+              <a (click)="forgotpassword()" [routerLink]="['/pages/forgotpassword']" [ngClass]="'link'">Forgot password?</a>
+            </div>
           </div>
 
-          <!-- <div class="or-wrapper text-center">
+          <div class="or-wrapper text-center">
             <div class="horizontal-line"></div>
             <div class="or-text">or</div>
             <div class="horizontal-line"></div>
-          </div> -->
+          </div> 
 
-          <!-- <div class="d-flex flex-sm-row justify-content-center"> -->
-            <!-- <a [routerLink]="['/pages/register']" class="btn bg-light-primary mb-2 mb-sm-0">Register</a> -->
-            <!-- <a  class="btn btn-primary mt-1 w-50 align-self-center justify-content-center" (click)="SSO($event)"><div class="col-6"><i class="ms-logo mr-3"></i></div><span
-              class="text-white" for="">Sign in
-              with microsoft</span></a> -->
-            <!-- <a  class="btn btn-primary mt-1 ms-btn align-self-center justify-content-center" (click)="SSO($event)"><i class="ms-logo mr-3"></i><span
-              class="text-white" for="">Sign in
-              with microsoft</span></a>
-          </div> -->
+          <div class="d-flex flex-sm-row justify-content-center"> 
+            <a class="btn btn-primary mt-1 ms-btn align-self-center justify-content-center" (click)="loginWithSSO()">
+              <i class="ms-logo mr-3"></i>
+              <span class="text-white" for="">Sign in with microsoft</span>
+            </a>
+          </div> 
 
           <div class="d-flex flex-sm-row justify-content-center mt-3">
-          <a href="" [routerLink]="['/pages/registeration']"><h5 class="heading"><u>Register as a Vendor</u></h5></a>
-             
+            <a href="" [routerLink]="['/pages/registeration']">
+              <h5 class="heading"><u>Register as a Vendor</u></h5>
+            </a>
           </div>
         </div>
       </div>

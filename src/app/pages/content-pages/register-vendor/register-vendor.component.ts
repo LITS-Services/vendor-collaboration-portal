@@ -15,15 +15,13 @@ export class RegisterVendorComponent implements OnInit {
   registerVendorFormSubmitted = false;
   isLoginFailed = false;
 
-  countryExtensions = [
+  // Removed the companies and selectedCompanies fields
+   countryExtensions = [
     { label: '+1 (USA)', value: '+1' },
     { label: '+44 (UK)', value: '+44' },
     { label: '+91 (India)', value: '+91' },
     { label: '+61 (Australia)', value: '+61' },
   ];
-
-  companies: any[] = []; 
-  selectedCompanies: string[] = [];
 
   registerVendorForm = new UntypedFormGroup({
     username: new UntypedFormControl('', [Validators.required]),
@@ -34,7 +32,7 @@ export class RegisterVendorComponent implements OnInit {
     password: new UntypedFormControl('', [Validators.required, Validators.minLength(6)]),
     confirmPassword: new UntypedFormControl('', [Validators.required]),
     termsAndConditions: new UntypedFormControl(true, Validators.requiredTrue),
-    selectedCompanies: new UntypedFormControl([], Validators.required)
+    // Removed selectedCompanies control
   });
 
   constructor(
@@ -45,7 +43,7 @@ export class RegisterVendorComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.fetchCompanies();
+    // Removed the fetchCompanies() call
   }
 
   get lf() {
@@ -60,18 +58,6 @@ export class RegisterVendorComponent implements OnInit {
     return this.registerVendorFormSubmitted && this.lf.password.invalid;
   }
 
-  fetchCompanies() {
-    this.authService.getProCompanies().subscribe({
-      next: (res: any) => {
-        this.companies = res.$values || [];
-      },
-      error: (err: any) => {
-        this.toastr.error('Failed to load companies');
-        console.error('Companies fetch error:', err);
-      }
-    });
-  }
-
   onSubmit() {
     this.registerVendorFormSubmitted = true;
 
@@ -80,10 +66,7 @@ export class RegisterVendorComponent implements OnInit {
       return;
     }
 
-    if (!this.lf.selectedCompanies.value || this.lf.selectedCompanies.value.length === 0) {
-      this.toastr.warning('Please select at least one company.');
-      return;
-    }
+    // Removed validation for selectedCompanies as it is no longer required
 
     this.spinner.show();
 
@@ -93,9 +76,9 @@ export class RegisterVendorComponent implements OnInit {
       PhoneNo: `${this.lf.phoneExtension.value}${this.lf.phoneNo.value}`,
       Email: this.lf.email.value,
       Password: this.lf.password.value,
-      Role: 'Vendor',
+      Role: 'User',
       PortalType: 'Vendor',
-      CompanyGUIDs: this.lf.selectedCompanies.value
+      // Removed CompanyGUIDs from the payload
     };
 
     this.authService.registerUser(payload).subscribe({

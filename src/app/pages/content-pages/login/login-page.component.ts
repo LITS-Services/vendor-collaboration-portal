@@ -1,5 +1,5 @@
-// login-page.component.ts
-import { Component } from '@angular/core';
+// login-page.component.ts 
+import { Component, OnInit } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from "@angular/router";
 import { AuthService } from 'app/shared/auth/auth.service';
@@ -10,13 +10,15 @@ import { NgxSpinnerService } from "ngx-spinner";
   templateUrl: './login-page.component.html',
   styleUrls: ['./login-page.component.scss']
 })
-export class LoginPageComponent {
+export class LoginPageComponent implements OnInit {
   public hidePassword: boolean = true;
   loginFormSubmitted = false;
   isLoginFailed = false;
+  isSSOLoading = false;   // 👈 added
+  errorMessage = '';      // 👈 added
 
   loginForm = new UntypedFormGroup({
-    username: new UntypedFormControl( "",[Validators.required]),
+    username: new UntypedFormControl("", [Validators.required]),
     password: new UntypedFormControl("", [Validators.required]),
     rememberMe: new UntypedFormControl(true)
   });
@@ -36,23 +38,50 @@ export class LoginPageComponent {
     return this.loginFormSubmitted && this.lf.password.invalid;
   }
 
-  // On submit button click
+  ngOnInit() {
+  console.log("Full URL:", window.location.href);
+
+  // 👇 Handle SSO redirect callback
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get('token');
+  const email = params.get('email');
+const userId = params.get('id'); // match what API sends
+  const error = params.get('error');
+
+  if (token) {
+    console.log("Token found in URL:", token);
+    localStorage.setItem('token', token);
+    if (email) localStorage.setItem('userEmail', email);
+    if (userId) localStorage.setItem('userId', userId);   
+
+    this.router.navigate(['/dashboard/dashboard1'], { replaceUrl: true });
+    return;
+  }
+
+  if (error) {
+    this.isLoginFailed = true;
+    this.errorMessage = error;
+    console.log('Error from URL:', error);
+    return;
+  }
+}
+
+
+  // 🔹 Normal login
   onSubmit() {
     this.loginFormSubmitted = true;
     if (this.loginForm.invalid) {
       return;
     }
 
-  this.spinner.show(undefined,
-      {
-        type: 'ball-triangle-path',
-        size: 'medium',
-        bdColor: 'rgba(0, 0, 0, 0.8)',
-        color: '#fff',
-        fullScreen: true
-      });
+    this.spinner.show(undefined, {
+      type: 'ball-triangle-path',
+      size: 'medium',
+      bdColor: 'rgba(0, 0, 0, 0.8)',
+      color: '#fff',
+      fullScreen: true
+    });
 
-    // 🔹 Use API login method (sgninUser)
     this.authService.sgninUser(
       this.loginForm.value.username!,
       this.loginForm.value.password!
@@ -60,7 +89,6 @@ export class LoginPageComponent {
       next: (res) => {
         this.spinner.hide();
 
-        // Example: store JWT token if returned from API
         if (res && res.token) {
           localStorage.setItem('token', res.token);
         }
@@ -70,6 +98,7 @@ export class LoginPageComponent {
       error: (err) => {
         this.isLoginFailed = true;
         this.spinner.hide();
+        this.errorMessage = err?.error?.message || 'Login failed. Check your credentials.';
         console.error('Login failed:', err);
       }
     });
@@ -79,5 +108,27 @@ export class LoginPageComponent {
 
   forgotpassword() { }
 
-  SSO(event: Event) { }
+  // 🔹 SSO login methods
+  loginWithSSO() {
+    this.isSSOLoading = true;
+
+    this.authService.initiateSSOLogin('').subscribe({
+      next: (response: any) => {
+        this.isSSOLoading = false;
+        if (response.loginUrl) {
+          window.location.href = response.loginUrl;  // 👈 redirect directly
+        }
+      },
+      error: () => {
+        this.isSSOLoading = false;
+        this.errorMessage = 'Failed to connect to SSO service.';
+        this.isLoginFailed = true;
+      }
+    });
+  }
+
+  SSO(event: Event) {
+    event.preventDefault();
+    this.loginWithSSO();
+  }
 }

@@ -19,7 +19,7 @@ import { CompanyProfileAttachmentComponent } from '../company-profile-attachment
 export class CompanyRegistrationComponent implements OnInit {
   public config: any = {};
   layoutSub: Subscription;
-  isEditMode: boolean = false; // <-- ADD THIS
+  isEditMode: boolean = false;
 
   // ===== DATA =====
   addressList: any[] = [];
@@ -29,6 +29,12 @@ export class CompanyRegistrationComponent implements OnInit {
   isLoading: boolean = false;
   companyId: number | null = null;
   remarks: string = '';
+
+  // Procurement companies
+  procurementCompanies: any[] = [];
+  selectedprocurementCompanyGUID: string[] = [];
+  dropdownOpen: boolean = false;
+
   // Delete modal states
   showContactDeletePopup: boolean = false;
   showAddressDeletePopup: boolean = false;
@@ -68,14 +74,11 @@ export class CompanyRegistrationComponent implements OnInit {
     private companyService: CompanyService,
     private router: Router,
     private route: ActivatedRoute
-
   ) {
     this.config = this.configService.templateConf;
-
   }
 
   ngOnInit() {
-    // Load UserId from localStorage
     this.userId = localStorage.getItem('userId') || '';
 
     if (!this.userId) {
@@ -98,6 +101,9 @@ export class CompanyRegistrationComponent implements OnInit {
       if (templateConf) this.config = templateConf;
       this.cdr.markForCheck();
     });
+
+    // Load Procurement Companies
+    this.loadProcurementCompanies();
   }
 
   ngAfterViewInit() {
@@ -111,6 +117,11 @@ export class CompanyRegistrationComponent implements OnInit {
     conf.layout.sidebar.collapsed = false;
     this.configService.applyTemplateConfigChange({ layout: conf.layout });
     if (this.layoutSub) this.layoutSub.unsubscribe();
+  }
+
+  // ===== TOGGLE DROPDOWN =====
+  toggleDropdown() {
+    this.dropdownOpen = !this.dropdownOpen;
   }
 
   // ===== LOAD COMPANY =====
@@ -135,7 +146,7 @@ export class CompanyRegistrationComponent implements OnInit {
           this.chain = company.purchasingDemographics?.chain || '';
           this.note = company.purchasingDemographics?.note || '';
 
-          // Correct mapping for collections
+          // Collections
           this.addressList = (company.addresses?.$values || []).map(a => ({
             street: a.street,
             city: a.city,
@@ -163,6 +174,12 @@ export class CompanyRegistrationComponent implements OnInit {
           }));
 
           this.userId = company.vendorId || this.userId;
+
+          // Set previously selected procurement companies if they exist
+          if (company.procurementCompanyGUID) {
+            this.selectedprocurementCompanyGUID = [...company.procurementCompanyGUID];
+          }
+
           this.isEditMode = true;
         }
         this.isLoading = false;
@@ -175,6 +192,25 @@ export class CompanyRegistrationComponent implements OnInit {
     });
   }
 
+  // ===== HANDLE MULTI-SELECT SELECTION =====
+  toggleCompanySelection(guid: string, event: any) {
+    if (event.target.checked) {
+      if (!this.selectedprocurementCompanyGUID.includes(guid)) {
+        this.selectedprocurementCompanyGUID.push(guid);
+      }
+    } else {
+      this.selectedprocurementCompanyGUID = this.selectedprocurementCompanyGUID.filter(id => id !== guid);
+    }
+  }
+
+  // ===== DISPLAY SELECTED COMPANIES TEXT =====
+  getSelectedCompaniesText(): string {
+    if (this.selectedprocurementCompanyGUID.length === 0) return 'Select Procurement Companies';
+    const selectedNames = this.procurementCompanies
+      .filter(c => this.selectedprocurementCompanyGUID.includes(c.companyGUID))
+      .map(c => c.name);
+    return selectedNames.join(', ');
+  }
 
   // ===== GENERATE VENDOR ACCOUNT NUMBER =====
   generateVendorAccountNumber(): void {
@@ -183,6 +219,20 @@ export class CompanyRegistrationComponent implements OnInit {
     sequenceNumber += 1;
     this.vendorAccountNumber = `lits-vcp-vendor-${sequenceNumber.toString().padStart(5, '0')}`;
     localStorage.setItem('vendorSequence', sequenceNumber.toString());
+  }
+
+  // ===== LOAD PROCUREMENT COMPANIES =====
+  loadProcurementCompanies() {
+    this.companyService.getProcurementCompanies().subscribe({
+      next: (res: any) => {
+        this.procurementCompanies = res?.$values || res || [];
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('Error fetching procurement companies:', err);
+        this.procurementCompanies = [];
+      }
+    });
   }
 
   // ===== ADDRESS LOGIC =====
@@ -302,7 +352,7 @@ export class CompanyRegistrationComponent implements OnInit {
       reader.onload = () => {
         const result = reader.result;
         if (typeof result === 'string') {
-          const base64 = result.split(',')[1]; // Remove data:*/*;base64, prefix
+          const base64 = result.split(',')[1];
           resolve(base64);
         } else {
           reject('FileReader result is not a string');
@@ -312,6 +362,7 @@ export class CompanyRegistrationComponent implements OnInit {
       reader.onerror = (error) => reject(error);
     });
   }
+
   // ===== PAYLOAD =====
   getPurchasingDemographicsPayload() {
     return {
@@ -328,7 +379,6 @@ export class CompanyRegistrationComponent implements OnInit {
   }
 
   // ===== SUBMIT FORM =====
-
   async submitForm() {
     if (!this.userId) {
       alert('Vendor ID missing! Please login again.');
@@ -336,7 +386,6 @@ export class CompanyRegistrationComponent implements OnInit {
       return;
     }
 
-    // Ensure attachments are Base64 encoded
     this.attachedFiles = await Promise.all(this.attachedFiles.map(async f => {
       if (f.file && !f.fileContent) {
         f.fileContent = await this.convertFileToBase64(f.file);
@@ -344,18 +393,18 @@ export class CompanyRegistrationComponent implements OnInit {
       return f;
     }));
 
-    // ✅ Build payload as plain VendorCompany object
     const vendorCompanyPayload = {
       name: this.companyName,
       vendorId: this.userId,
       logo: '',
       requestStatusId: 1,
+  ProcurementCompanyGUID: [...this.selectedprocurementCompanyGUID], // note capital P
       addresses: this.getAddressesForPayload(),
       contacts: this.getContactsForPayload(),
       purchasingDemographics: this.getPurchasingDemographicsPayload(),
       attachments: this.attachedFiles.map(f => ({
         fileName: f.fileName,
-        fileFormat: f.format?.split('/').pop() || f.format || 'unknown', // keep under 100 chars
+        fileFormat: f.format?.split('/').pop() || f.format || 'unknown',
         fileContent: f.fileContent || '',
         attachedBy: f.attachedBy,
         remarks: f.remarks,
@@ -363,10 +412,11 @@ export class CompanyRegistrationComponent implements OnInit {
       }))
     };
 
-    // Wrap payload as expected by backend
     const payload = {
       vendorCompany: vendorCompanyPayload,
-      vendorUserId: this.userId
+      vendorUserId: this.userId,
+      ProcurementCompanyGUID: [...this.selectedprocurementCompanyGUID] // exact casing
+
     };
 
     this.isLoading = true;
@@ -389,10 +439,7 @@ export class CompanyRegistrationComponent implements OnInit {
     });
   }
 
-
-
   goBack() {
     this.router.navigate(['/company/company-master']);
   }
-
 }

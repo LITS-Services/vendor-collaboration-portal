@@ -39,40 +39,48 @@ export class CompanyListComponent implements OnInit {
   }
 
   loadCompanies(status?: string) {
-    this.loading = true;
+  this.loading = true;
 
-    const userId = localStorage.getItem('userId');
-
-    this.companyService.getCompanies(status).subscribe({
-      next: (res: any) => {
-        const rawCompanies = res?.$values || res || [];
-
-        this.companyData = rawCompanies
-          .map(c => ({
-            id: c.id,
-            companyGUID: c.companyGUID,
-            name: c.name,
-            logo: c.logo,
-            status: (c.status || '').toLowerCase(),
-            vendorId: c.vendorId,
-            street: c.addressesVM?.$values?.[0]?.street || '',
-            city: c.addressesVM?.$values?.[0]?.city || '',
-            country: c.addressesVM?.$values?.[0]?.country || '',
-            contactNumber: c.contactsVM?.$values?.[0]?.contactNumber || '',
-            contactType: c.contactsVM?.$values?.[0]?.type || ''
-          }))
-          // ✅ Filter only in-progress companies matching vendorUserId
-          .filter(c => c.status === 'inprogress' && c.vendorId && c.vendorId === userId);
-
-        console.log('Filtered InProgress Companies (vendor match):', this.companyData);
-        this.loading = false;
-      },
-      error: err => {
-        console.error('Error fetching companies:', err);
-        this.loading = false;
-      }
-    });
+  const userId = localStorage.getItem('userId');
+  if (!userId) {
+    console.error('No userId found in localStorage');
+    this.loading = false;
+    return;
   }
+
+  // ✅ Corrected the parameter order (vendorId, then status)
+  this.companyService.getCompanyByVendorId(userId, status).subscribe({
+    next: (res: any) => {
+      const rawCompanies = Array.isArray(res)
+        ? res
+        : res?.$values || (res?.vendorId ? [res] : []);
+
+      this.companyData = rawCompanies
+        .map(c => ({
+          id: c.id,
+          companyGUID: c.companyGUID,
+          name: c.name,
+          logo: c.logo,
+          status: (c.status || '').toLowerCase(),
+          vendorId: c.vendorId,
+          street: c.addressesVM?.$values?.[0]?.street || '',
+          city: c.addressesVM?.$values?.[0]?.city || '',
+          country: c.addressesVM?.$values?.[0]?.country || '',
+          contactNumber: c.contactsVM?.$values?.[0]?.contactNumber || '',
+          contactType: c.contactsVM?.$values?.[0]?.type || ''
+        }))
+        .filter(c => c.vendorId?.toLowerCase() === userId.toLowerCase());
+
+      console.log('Company list:', this.companyData);
+      this.loading = false;
+    },
+    error: err => {
+      console.error('Error fetching companies:', err);
+      this.loading = false;
+    }
+  });
+}
+
 
   onSort(event: any) {
     this.loading = true;

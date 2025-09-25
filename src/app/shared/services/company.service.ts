@@ -31,7 +31,17 @@ export class CompanyService {
     return this.http.post(`${this.apiUrl}/register-vendor-company`, payload);
   }
 
-  /** Fetch list of companies (optionally filtered by status) */
+
+getCompanyByVendorId(vendorId: string, status?: string): Observable<any> {
+  let params = new HttpParams();
+  if (status) {
+    params = params.set('status', status);
+  }
+  return this.http.get(`${this.apiUrl}/get-vendor-company/${vendorId}`);
+}
+
+
+
   getCompanies(status?: string): Observable<Company[]> {
     let params = new HttpParams();
     if (status) {
@@ -40,15 +50,24 @@ export class CompanyService {
     return this.http.get<Company[]>(`${this.apiUrl}/get-all-vendor-companies`, { params });
   }
 
-  /** Get single company details */
+
+
+
+
+  getProcurementCompanies(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/get-all-procurement-companies`);
+  }
+
+  /** Fetch list of companies (optionally filtered by status) */
+
+
 getCompanyById(id: number): Observable<Company> {
   return this.http.get<Company>(`${this.apiUrl}/${id}`);
 }
 
 
 
-  /** Update company details */
-// Angular Service example
+
 updateCompany(id: number, payload: any) {
   return this.http.put(`${this.apiUrl}/update-vendor-company/${id}`, payload);
 }

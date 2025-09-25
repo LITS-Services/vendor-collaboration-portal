@@ -136,35 +136,51 @@ export class CompanyMasterComponent implements OnInit {
   }
 
   // Load companies and calculate counts
-// Load companies and calculate counts
 loadCompanyStats() {
-  const userId = localStorage.getItem('userId'); // 👈 adjust if stored differently
+  const userId = localStorage.getItem('userId');
+  console.log('userId =', userId);
 
-  this.companyService.getCompanies().subscribe({
+  if (!userId) {
+    console.error('No user ID found in localStorage');
+    return;
+  }
+
+  this.companyService.getCompanyByVendorId(userId).subscribe({
     next: (res: any) => {
-      const companies = res?.$values || res || [];
+      console.log('API raw response:', res);
 
-      // Filter by vendorId === userId
-      const vendorCompanies = companies.filter(
-        (c: any) => c.vendorId && c.vendorId === userId
+      let companies: any[] = [];
+
+      if (Array.isArray(res)) {
+        companies = res;
+      } else if (res?.$values && Array.isArray(res.$values)) {
+        companies = res.$values;
+      } else if (res?.vendorId) {
+        companies = [res]; // single object response
+      }
+
+      console.log('Parsed companies:', companies);
+
+      const vendorCompanies = companies.filter(c =>
+        (c.vendorId || '').toLowerCase() === userId.toLowerCase()
       );
 
-      // Total companies for this vendor
       this.totalCompaniesCount = vendorCompanies.length;
 
-      // Count rows where status = "inprogress"
-      this.inprogressCount = vendorCompanies.filter(
-        (c: any) => (c.status || '').toLowerCase() === 'inprogress'
+      this.inprogressCount = vendorCompanies.filter(c =>
+        (c.status || '').toLowerCase() === 'inprogress'
       ).length;
 
-      console.log(`Total Companies: ${this.totalCompaniesCount}`);
-      console.log(`InProgress Companies: ${this.inprogressCount}`);
+      console.log('Total Companies:', this.totalCompaniesCount);
+      console.log('InProgress Companies:', this.inprogressCount);
     },
     error: (err) => {
       console.error('Error fetching companies:', err);
     }
   });
 }
+
+
 
 
 

@@ -31,6 +31,35 @@ export class AuthService {
     return this.http.get<any[]>(`${this.baseUrl}/Company/get-all-procurement-companies`);
   }
 
+getSSOCallbackUrl() {
+  return this.http.get<any>('https://localhost:7188/api/Auth/sso/callback');
+}
+  
+ssoCallback(code: string): Observable<any> {
+  return new Observable((observer) => {
+    this.http.get<any>(`${this.baseUrl}/Auth/sso/callback?code=${encodeURIComponent(code)}`)
+      .subscribe({
+        next: (res) => {
+          if (res && res.token) {
+            // Store JWT & user info
+            localStorage.setItem('token', res.token);
+            if (res.user?.email) localStorage.setItem('userEmail', res.user.email);
+            if (res.user?.id) localStorage.setItem('userId', res.user.id);
+            if (res.user?.roles) localStorage.setItem('roles', JSON.stringify(res.user.roles));
+          }
+          observer.next(res);
+          observer.complete();
+        },
+        error: (err) => observer.error(err)
+      });
+  });
+}
+ initiateSSOLogin(returnUrl: string = '/dashboard/dashboard1'): Observable<any> {
+    return this.http.get(`${this.baseUrl}/Auth/sso/login-url?returnUrl=${encodeURIComponent(returnUrl)}`);
+  }
+  
+
+
   // 🔹 Vendor Login API
   sgninUser(username: string, password: string): Observable<any> {
     const body = { username, password };
