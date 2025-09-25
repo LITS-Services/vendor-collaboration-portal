@@ -61,7 +61,7 @@ export class OtpComponent implements OnInit {
         console.log('OTP verified successfully:', res);
         localStorage.removeItem('pendingRegistration');
         this.ngZone.run(() => {
-          this.router.navigate(['/dashboard/dashboard1']);
+          this.router.navigate(['/pages/login']);
         });
       },
       error: (err: any) => {

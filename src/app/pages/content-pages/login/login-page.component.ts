@@ -14,8 +14,8 @@ export class LoginPageComponent implements OnInit {
   public hidePassword: boolean = true;
   loginFormSubmitted = false;
   isLoginFailed = false;
-  isSSOLoading = false;   // 👈 added
-  errorMessage = '';      // 👈 added
+  isSSOLoading = false;   
+  errorMessage = '';      
 
   loginForm = new UntypedFormGroup({
     username: new UntypedFormControl("", [Validators.required]),

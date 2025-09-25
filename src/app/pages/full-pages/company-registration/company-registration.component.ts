@@ -10,6 +10,7 @@ import { Subscription } from 'rxjs';
 import { CompanyContactModalComponent } from '../company-contact-modal/company-contact-modal.component';
 import { CompanyAddressModalComponent } from '../company-address-modal/company-address-modal.component';
 import { CompanyProfileAttachmentComponent } from '../company-profile-attachment/company-profile-attachment.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-company-registration',
@@ -73,7 +74,8 @@ export class CompanyRegistrationComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private companyService: CompanyService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+     private toastr: ToastrService 
   ) {
     this.config = this.configService.templateConf;
   }
@@ -82,7 +84,7 @@ export class CompanyRegistrationComponent implements OnInit {
     this.userId = localStorage.getItem('userId') || '';
 
     if (!this.userId) {
-      alert('Vendor not found! Redirecting to login.');
+    this.toastr.warning('Vendor not found! Redirecting to login.', 'Warning');
       this.router.navigate(['../']);
       return;
     }
@@ -381,8 +383,8 @@ export class CompanyRegistrationComponent implements OnInit {
   // ===== SUBMIT FORM =====
   async submitForm() {
     if (!this.userId) {
-      alert('Vendor ID missing! Please login again.');
-      this.router.navigate(['/auth/login']);
+this.toastr.error('Vendor ID missing! Please login again.', 'Error');    
+  this.router.navigate(['/auth/login']);
       return;
     }
 
@@ -427,14 +429,14 @@ export class CompanyRegistrationComponent implements OnInit {
 
     apiCall.subscribe({
       next: () => {
-        alert(`Company ${this.isEditMode ? 'Updated' : 'Registered'} Successfully!`);
+        this.toastr.success(`Company ${this.isEditMode ? 'Updated' : 'Registered'} Successfully!`);
         this.isLoading = false;
         this.router.navigate(['/company/company-master']);
       },
       error: (err) => {
         console.error('Error saving company:', err);
         this.isLoading = false;
-        alert('Error saving company!');
+        this.toastr.error('Error saving company!');
       }
     });
   }

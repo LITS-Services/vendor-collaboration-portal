@@ -62,13 +62,13 @@
                                     <ngb-accordion [closeOthers]="true" [activeIds]="'static-1'">
 
                                         <!-- About Company -->
-                                        <ngb-panel id="static-1" title="About Company">
+                                        <!-- <ngb-panel id="static-1" title="About Company">
                                             <ng-template ngbPanelContent>
                                                 <textarea name="about" cols="30" rows="10" class="form-control"
                                                     placeholder="Enter Company Description"
                                                     [(ngModel)]="aboutCompany"></textarea>
                                             </ng-template>
-                                        </ngb-panel>
+                                        </ngb-panel> -->
 
                                         <!-- Remarks -->
 
@@ -84,7 +84,7 @@
                                                     <div class="col-12">
                                                         <h6>Identification</h6>
                                                     </div>
-                                                    <div class="col-md-3">
+                                                    <!-- <div class="col-md-3">
                                                         <label>
                                                             Vendor account
                                                             <i class="fa fa-info-circle text-muted ms-1"
@@ -101,38 +101,43 @@
                                                             <option>Organization</option>
                                                             <option>Person</option>
                                                         </select>
+                                                    </div> -->
+                                                    <div class="col-md-6 " *ngIf="!isEditMode">
+                                                        <label>Select Procurement Companies</label>
+                                                        <div class="dropdown">
+                                                            <button class="btn btn-outline-primary w-100 text-start"
+                                                                type="button" (click)="toggleDropdown()">
+                                                                {{ getSelectedCompaniesText() }}
+                                                            </button>
+                                                            <div class="dropdown-menu w-100 p-2"
+                                                                [class.show]="dropdownOpen"
+                                                                style="max-height: 200px; overflow-y: auto;">
+                                                                <div *ngFor="let company of procurementCompanies">
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="checkbox"
+                                                                            [value]="company.companyGUID"
+                                                                            [checked]="selectedprocurementCompanyGUID.includes(company.companyGUID)"
+                                                                            (change)="toggleCompanySelection(company.companyGUID, $event)">
+                                                                        <label class="form-check-label">{{ company.name
+                                                                            }}</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
-<div class="col-md-6 mt-2" *ngIf="!isEditMode">
-  <label>Select Procurement Companies</label>
-  <div class="dropdown">
-    <button class="btn btn-outline-primary w-100 text-start" type="button" (click)="toggleDropdown()">
-      {{ getSelectedCompaniesText() }}
-    </button>
-    <div class="dropdown-menu w-100 p-2" [class.show]="dropdownOpen" style="max-height: 200px; overflow-y: auto;">
-      <div *ngFor="let company of procurementCompanies">
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" [value]="company.companyGUID"
-                 [checked]="selectedprocurementCompanyGUID.includes(company.companyGUID)"
-                 (change)="toggleCompanySelection(company.companyGUID, $event)">
-          <label class="form-check-label">{{ company.name }}</label>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 
-                                                    <div class="col-md-3">
+                                                    <!-- <div class="col-md-3">
                                                         <label>Payment priority</label>
                                                         <input type="text" class="form-control"
                                                             [(ngModel)]="paymentPriority"
                                                             placeholder="Enter payment priority">
-                                                    </div>
+                                                    </div> -->
                                                     <div class="col-md-3">
                                                         <label>Name</label>
                                                         <input type="text" class="form-control"
                                                             [(ngModel)]="companyName" placeholder="Enter company name">
                                                     </div>
-                                                    <div class="col-md-3">
+                                                    <!-- <div class="col-md-3">
                                                         <label>Search name</label>
                                                         <input type="text" class="form-control" [(ngModel)]="searchName"
                                                             placeholder="Enter search name">
@@ -145,13 +150,13 @@
                                                             <option>Group 2</option>
                                                             <option>Group 3</option>
                                                         </select>
-                                                    </div>
+                                                    </div> -->
                                                 </div>
 
                                                 <hr>
 
                                                 <!-- Organization Details -->
-                                                <div class="row">
+                                                <!-- <div class="row">
                                                     <div class="col-12">
                                                         <h6>Organization Details</h6>
                                                     </div>
@@ -187,12 +192,12 @@
                                                             [(ngModel)]="taxNumber"
                                                             placeholder="Enter tax registration number">
                                                     </div>
-                                                </div>
+                                                </div> 
 
-                                                <hr>
+                                                <hr>-->
 
                                                 <!-- Other Information -->
-                                                <div class="row">
+                                                <!-- <div class="row">
                                                     <div class="col-12">
                                                         <h6>Other Information</h6>
                                                     </div>
@@ -211,8 +216,8 @@
                                                             [(ngModel)]="phoneticName"
                                                             placeholder="Enter phonetic name">
                                                     </div>
-                                                </div>
-
+                                                </div> 
+                                            -->
                                             </ng-template>
                                         </ngb-panel>
 
@@ -242,7 +247,8 @@
                                                                     <td>{{ address.state }}</td>
                                                                     <td>{{ address.zip }}</td>
                                                                     <td>{{ address.country }}</td>
-                                                                    <td>{{ address.primary ? 'Yes' : 'No' }}</td>
+                                                                    <td>{{ address.primary ? 'Yes' : 'No' }}
+                                                                    </td>
                                                                     <td>
                                                                         <button class="ft-edit btn" type="button"
                                                                             (click)="editAddress(i)"></button>
@@ -280,7 +286,8 @@
                                                                 <td>{{ contact.type }}</td>
                                                                 <td>{{ contact.contactNumber }}</td>
                                                                 <td>{{ contact.extension }}</td>
-                                                                <td>{{ contact.primary ? 'Yes' : 'No' }}</td>
+                                                                <td>{{ contact.primary ? 'Yes' : 'No' }}
+                                                                </td>
                                                                 <td>
                                                                     <button class="ft-edit btn" type="button"
                                                                         (click)="editContact(i)"></button>
@@ -393,7 +400,8 @@
                                                         </label>
                                                         <select class="form-select" [(ngModel)]="employeeResponsible">
                                                             <option>Select primary contact</option>
-                                                            <option *ngFor="let c of contactList">{{ c.description }}
+                                                            <option *ngFor="let c of contactList">{{
+                                                                c.description }}
                                                             </option>
                                                         </select>
                                                     </div>
@@ -500,22 +508,22 @@
 
 
 
-                         
+
 
 
 
 
                                     </ngb-accordion>
-                                    <div class="card mt-3">
+                                    <div class="card mt-3" *ngIf="isEditMode">
                                         <div class="card-header">
                                             <h5 class="mb-0">Remarks</h5>
                                         </div>
                                         <div class="card-body">
                                             <textarea class="form-control" rows="4" [(ngModel)]="remarks"
-                                                placeholder="Enter remarks" readonly>
-      </textarea>
+                                                placeholder="Enter remarks" readonly></textarea>
                                         </div>
                                     </div>
+
 
                                 </div>
                             </div>

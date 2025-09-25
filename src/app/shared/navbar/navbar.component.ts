@@ -8,6 +8,7 @@ import { CustomizerService } from '../services/customizer.service';
 import { UntypedFormControl } from '@angular/forms';
 import { LISTITEMS } from '../data/template-search';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: "app-navbar",
@@ -50,6 +51,8 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(public translate: TranslateService,
     private layoutService: LayoutService,
     private router: Router,
+    private toastr: ToastrService, // ✅ added
+
     private configService: ConfigService, private cdr: ChangeDetectorRef) {
 
     const browserLang: string = translate.getBrowserLang();
@@ -88,6 +91,7 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
     })
   }
 
+  
   ngOnDestroy() {
     if (this.layoutSub) {
       this.layoutSub.unsubscribe();
@@ -129,6 +133,21 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
   }
+logout() {
+  // Clear everything from localStorage
+  localStorage.clear();
+
+  // Optionally also clear sessionStorage if you use it anywhere
+  sessionStorage.clear();
+
+  // Show toast notification
+  this.toastr.success('You have been logged out successfully', 'Logout');
+
+  // Navigate to login page
+  this.router.navigate(['/pages/login']);
+}
+
+
 
   onSearchKey(event: any) {
     if (this.searchResults && this.searchResults.length > 0) {

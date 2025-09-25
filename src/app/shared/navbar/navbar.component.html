@@ -1,5 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-light header-navbar {{transparentBGClass}}"
-  [ngClass]="{'navbar-brand-center': menuPosition === 'Top', 'navbar-static': menuPosition === 'Side' &&
+<nav class="navbar navbar-expand-lg navbar-light header-navbar {{transparentBGClass}}" [ngClass]="{'navbar-brand-center': menuPosition === 'Top', 'navbar-static': menuPosition === 'Side' &&
   config?.layout.navbar.type === 'Static' , 'navbar-sticky': menuPosition === 'Side' &&
   config?.layout.navbar.type === 'Fixed', 'fixed-top': isSmallScreen && menuPosition === 'Top'}">
   <div class="container-fluid navbar-wrapper">
@@ -264,13 +263,12 @@
               </li>
             </ul>
           </li> -->
-          <li class="dropdown nav-item mr-1" placement="bottom-left" display="static" ngbDropdown >
+          <li class="dropdown nav-item mr-1" placement="bottom-left" display="static" ngbDropdown>
             <a class="nav-link dropdown-toggle user-dropdown d-flex align-items-end" id="dropdownBasic2"
               href="javascript:;" data-toggle="dropdown" ngbDropdownToggle>
               <div class="user d-md-flex d-none mr-2">
-               <span>{{ username }}</span>
-<span
-                  class="text-right text-muted font-small-3">Available</span>
+                <span>{{ username }}</span>
+                <span class="text-right text-muted font-small-3">Available</span>
               </div>
               <img class="avatar" src="assets/img/portrait/small/avatar-s-1.png" alt="avatar" height="35" width="35" />
             </a>
@@ -292,11 +290,12 @@
                 </div>
               </a> -->
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" routerLink="/pages/login">
+              <a class="dropdown-item" (click)="logout()">
                 <div class="d-flex align-items-center">
                   <i class="ft-power mr-2"></i><span>Logout</span>
                 </div>
               </a>
+            
             </div>
           </li>
           <!-- <li class="nav-item d-none d-lg-block mr-2 mt-1">
