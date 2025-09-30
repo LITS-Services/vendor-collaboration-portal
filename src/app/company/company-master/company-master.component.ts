@@ -136,6 +136,7 @@ export class CompanyMasterComponent implements OnInit {
   }
 
   // Load companies and calculate counts
+// Load companies and calculate counts
 loadCompanyStats() {
   const userId = localStorage.getItem('userId');
   console.log('userId =', userId);
@@ -167,18 +168,21 @@ loadCompanyStats() {
 
       this.totalCompaniesCount = vendorCompanies.length;
 
-      this.inprogressCount = vendorCompanies.filter(c =>
-        (c.status || '').toLowerCase() === 'inprogress'
-      ).length;
+      // <-- Updated filter for pending companies (inprogress OR recalled)
+      this.inprogressCount = vendorCompanies.filter(c => {
+        const status = (c.status || '').toLowerCase();
+        return status === 'inprogress' || status === 'recalled';
+      }).length;
 
       console.log('Total Companies:', this.totalCompaniesCount);
-      console.log('InProgress Companies:', this.inprogressCount);
+      console.log('Pending Companies (InProgress + Recalled):', this.inprogressCount);
     },
     error: (err) => {
       console.error('Error fetching companies:', err);
     }
   });
 }
+
 
 
 
