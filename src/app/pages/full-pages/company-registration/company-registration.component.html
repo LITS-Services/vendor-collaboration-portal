@@ -102,29 +102,25 @@
                                                             <option>Person</option>
                                                         </select>
                                                     </div> -->
-                                                    <div class="col-md-6 " *ngIf="!isEditMode">
-                                                        <label>Select Procurement Companies</label>
-                                                        <div class="dropdown">
-                                                            <button class="btn btn-outline-primary w-100 text-start"
-                                                                type="button" (click)="toggleDropdown()">
-                                                                {{ getSelectedCompaniesText() }}
-                                                            </button>
-                                                            <div class="dropdown-menu w-100 p-2"
-                                                                [class.show]="dropdownOpen"
-                                                                style="max-height: 200px; overflow-y: auto;">
-                                                                <div *ngFor="let company of procurementCompanies">
-                                                                    <div class="form-check">
-                                                                        <input class="form-check-input" type="checkbox"
-                                                                            [value]="company.companyGUID"
-                                                                            [checked]="selectedprocurementCompanyGUID.includes(company.companyGUID)"
-                                                                            (change)="toggleCompanySelection(company.companyGUID, $event)">
-                                                                        <label class="form-check-label">{{ company.name
-                                                                            }}</label>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                                 <div class="col-md-6" *ngIf="!isEditMode">
+  <label>Select Procurement Companies</label>
+  <div class="dropdown">
+    <button class="btn btn-outline-primary w-100 text-start" type="button" (click)="toggleDropdown()">
+      {{ getSelectedCompaniesText() }}
+    </button>
+    <div class="dropdown-menu w-100 p-2" [class.show]="dropdownOpen" style="max-height: 200px; overflow-y: auto;">
+      <div *ngFor="let company of procurementCompanies">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox"
+            [value]="company.id"
+            [checked]="selectedProcurementCompanyIds?.includes(company.id)"
+            (change)="toggleCompanySelection(company.id, $event)">
+          <label class="form-check-label">{{ company.name }}</label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
                                                     <!-- <div class="col-md-3">
                                                         <label>Payment priority</label>

@@ -47,7 +47,7 @@ export type ChartOptions = {
 };
 
 var $info = "#249D57",
-    $info_light = "#BDE2CD";
+  $info_light = "#BDE2CD";
 var themeColors = [$info, $info_light];
 
 export interface Chart {
@@ -64,7 +64,7 @@ export interface Chart {
   styleUrls: ['./company-master.component.scss']
 })
 export class CompanyMasterComponent implements OnInit {
-  columnChartOptions : Partial<ChartOptions>;
+  columnChartOptions: Partial<ChartOptions>;
 
   DonutChart: Chart = {
     type: 'Pie',
@@ -85,7 +85,6 @@ export class CompanyMasterComponent implements OnInit {
               dx: data.element.root().width() / 2,
               dy: data.element.root().height() / 2
             });
-            
           } else {
             data.element.remove();
           }
@@ -94,12 +93,15 @@ export class CompanyMasterComponent implements OnInit {
     }
   };
 
-  totalCompaniesCount: number = 0;   // <-- Total companies
-  inprogressCount: number = 0;       // <-- Pending companies
+  totalCompaniesCount: number = 0;      // Total companies
+  inprogressCount: number = 0;          // Pending companies
+  newlyOnboardedCount: number = 0;      // Companies created in last 5 minutes
 
-  constructor(private router: Router,
-              private modalService: NgbModal,
-              private companyService: CompanyService) { 
+  constructor(
+    private router: Router,
+    private modalService: NgbModal,
+    private companyService: CompanyService
+  ) {
     this.columnChartOptions = {
       chart: {
         height: 350,
@@ -123,7 +125,7 @@ export class CompanyMasterComponent implements OnInit {
         { name: 'Revenue', data: [30, 40, 100, 80, 75, 105, 90, 80] }
       ],
       legend: { show: false },
-      xaxis: { 
+      xaxis: {
         categories: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
         axisBorder: { color: "#BDBDBD44" }
       },
@@ -136,58 +138,82 @@ export class CompanyMasterComponent implements OnInit {
   }
 
   // Load companies and calculate counts
-// Load companies and calculate counts
-loadCompanyStats() {
-  const userId = localStorage.getItem('userId');
-  console.log('userId =', userId);
+  loadCompanyStats() {
+    const userId = localStorage.getItem('userId');
+    console.log('userId =', userId);
 
-  if (!userId) {
-    console.error('No user ID found in localStorage');
-    return;
-  }
-
-  this.companyService.getCompanyByVendorId(userId).subscribe({
-    next: (res: any) => {
-      console.log('API raw response:', res);
-
-      let companies: any[] = [];
-
-      if (Array.isArray(res)) {
-        companies = res;
-      } else if (res?.$values && Array.isArray(res.$values)) {
-        companies = res.$values;
-      } else if (res?.vendorId) {
-        companies = [res]; // single object response
-      }
-
-      console.log('Parsed companies:', companies);
-
-      const vendorCompanies = companies.filter(c =>
-        (c.vendorId || '').toLowerCase() === userId.toLowerCase()
-      );
-
-      this.totalCompaniesCount = vendorCompanies.length;
-
-      // <-- Updated filter for pending companies (inprogress OR recalled)
-      this.inprogressCount = vendorCompanies.filter(c => {
-        const status = (c.status || '').toLowerCase();
-        return status === 'inprogress' || status === 'recalled';
-      }).length;
-
-      console.log('Total Companies:', this.totalCompaniesCount);
-      console.log('Pending Companies (InProgress + Recalled):', this.inprogressCount);
-    },
-    error: (err) => {
-      console.error('Error fetching companies:', err);
+    if (!userId) {
+      console.error('No user ID found in localStorage');
+      return;
     }
-  });
-}
+
+    this.companyService.getCompanyByVendorId(userId).subscribe({
+      next: (res: any) => {
+        console.log('API raw response:', res);
+
+        let companies: any[] = [];
+
+        if (Array.isArray(res)) {
+          companies = res;
+        } else if (res?.$values && Array.isArray(res.$values)) {
+          companies = res.$values;
+        } else if (res?.vendorId) {
+          companies = [res]; // single object response
+        }
+
+        console.log('Parsed companies:', companies);
+        //For Get all companies count
+        // const vendorCompanies = companies.filter(c =>
+        //   (c.vendorId || '').toLowerCase() === userId.toLowerCase()
+        // );
+
+        // this.totalCompaniesCount = vendorCompanies.length;
+
+        //For Get Companies which status is Completed 
+        const vendorCompanies = companies.filter(c =>
+          (c.vendorId || '').toLowerCase() === userId.toLowerCase()
+        );
+
+        // Only count companies where status = "completed"
+        this.totalCompaniesCount = vendorCompanies.filter(c =>
+          (c.status || '').toLowerCase() === 'completed'
+        ).length;
 
 
 
 
+        // Pending Companies: InProgress OR Recalled
+        this.inprogressCount = vendorCompanies.filter(c => {
+          const status = (c.status || '').toLowerCase();
+          return status === 'inprogress' || status === 'recalled';
+        }).length;
+
+        // Newly Onboarded Companies: created in last 5 minutes
+        // Newly Onboarded Companies: created in last 10 days AND approved
+        const now = new Date();
+        this.newlyOnboardedCount = vendorCompanies.filter(c => {
+          if (!c.createdDate) return false;
+
+          const createdDate = new Date(c.createdDate + 'Z'); // treat as UTC
+          const diffInDays = (new Date().getTime() - createdDate.getTime()) / (1000 * 60 * 60 * 24);
+          const status = (c.status || '').toLowerCase();
+
+          console.log('Company:', c.vendorId, 'CreatedDate:', createdDate, 'Status:', status, 'DiffInDays:', diffInDays);
+
+          return diffInDays <= 10 && status === 'completed';
+        }).length;
 
 
+
+        console.log('Total Companies:', this.totalCompaniesCount);
+        console.log('Pending Companies:', this.inprogressCount);
+        console.log('Newly Onboarded Companies (last 5 mins):', this.newlyOnboardedCount);
+      },
+      error: (err) => {
+        console.error('Error fetching companies:', err);
+      }
+    });
+  }
 
   onResized(event: any) {
     setTimeout(() => { this.fireRefreshEventOnWindow(); }, 300);

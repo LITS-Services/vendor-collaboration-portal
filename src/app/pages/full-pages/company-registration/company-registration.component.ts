@@ -22,7 +22,6 @@ export class CompanyRegistrationComponent implements OnInit {
   layoutSub: Subscription;
   isEditMode: boolean = false;
 
-  // ===== DATA =====
   addressList: any[] = [];
   contactList: any[] = [];
   attachedFiles: any[] = [];
@@ -31,18 +30,15 @@ export class CompanyRegistrationComponent implements OnInit {
   companyId: number | null = null;
   remarks: string = '';
 
-  // Procurement companies
   procurementCompanies: any[] = [];
-  selectedprocurementCompanyGUID: string[] = [];
+  selectedProcurementCompanyIds: number[] = []; // <-- numeric IDs
   dropdownOpen: boolean = false;
 
-  // Delete modal states
   showContactDeletePopup: boolean = false;
   showAddressDeletePopup: boolean = false;
   contactIndexToDelete: number | null = null;
   addressIndexToDelete: number | null = null;
 
-  // ===== FORM FIELDS =====
   aboutCompany: string = '';
   companyType: string = 'Organization';
   companyName: string = '';
@@ -75,7 +71,7 @@ export class CompanyRegistrationComponent implements OnInit {
     private companyService: CompanyService,
     private router: Router,
     private route: ActivatedRoute,
-     private toastr: ToastrService 
+    private toastr: ToastrService
   ) {
     this.config = this.configService.templateConf;
   }
@@ -84,12 +80,11 @@ export class CompanyRegistrationComponent implements OnInit {
     this.userId = localStorage.getItem('userId') || '';
 
     if (!this.userId) {
-    this.toastr.warning('Vendor not found! Redirecting to login.', 'Warning');
+      this.toastr.warning('Vendor not found! Redirecting to login.', 'Warning');
       this.router.navigate(['../']);
       return;
     }
 
-    // Load companyId from query params
     this.route.queryParams.subscribe(params => {
       if (params['id']) {
         this.companyId = +params['id'];
@@ -104,7 +99,6 @@ export class CompanyRegistrationComponent implements OnInit {
       this.cdr.markForCheck();
     });
 
-    // Load Procurement Companies
     this.loadProcurementCompanies();
   }
 
@@ -121,12 +115,10 @@ export class CompanyRegistrationComponent implements OnInit {
     if (this.layoutSub) this.layoutSub.unsubscribe();
   }
 
-  // ===== TOGGLE DROPDOWN =====
   toggleDropdown() {
     this.dropdownOpen = !this.dropdownOpen;
   }
 
-  // ===== LOAD COMPANY =====
   loadCompanyById(companyId: number) {
     this.isLoading = true;
     this.companyService.getCompanyById(companyId).subscribe({
@@ -148,7 +140,6 @@ export class CompanyRegistrationComponent implements OnInit {
           this.chain = company.purchasingDemographics?.chain || '';
           this.note = company.purchasingDemographics?.note || '';
 
-          // Collections
           this.addressList = (company.addresses?.$values || []).map(a => ({
             street: a.street,
             city: a.city,
@@ -175,11 +166,9 @@ export class CompanyRegistrationComponent implements OnInit {
             attachedAt: f.attachedAt
           }));
 
-          this.userId = company.vendorId || this.userId;
-
-          // Set previously selected procurement companies if they exist
-          if (company.procurementCompanyGUID) {
-            this.selectedprocurementCompanyGUID = [...company.procurementCompanyGUID];
+          // Use numeric IDs instead of GUIDs
+          if (company.procurementCompanyId) {
+            this.selectedProcurementCompanyIds = [...company.procurementCompanyId];
           }
 
           this.isEditMode = true;
@@ -194,27 +183,24 @@ export class CompanyRegistrationComponent implements OnInit {
     });
   }
 
-  // ===== HANDLE MULTI-SELECT SELECTION =====
-  toggleCompanySelection(guid: string, event: any) {
+  toggleCompanySelection(id: number, event: any) {
     if (event.target.checked) {
-      if (!this.selectedprocurementCompanyGUID.includes(guid)) {
-        this.selectedprocurementCompanyGUID.push(guid);
+      if (!this.selectedProcurementCompanyIds.includes(id)) {
+        this.selectedProcurementCompanyIds.push(id);
       }
     } else {
-      this.selectedprocurementCompanyGUID = this.selectedprocurementCompanyGUID.filter(id => id !== guid);
+      this.selectedProcurementCompanyIds = this.selectedProcurementCompanyIds.filter(i => i !== id);
     }
   }
 
-  // ===== DISPLAY SELECTED COMPANIES TEXT =====
   getSelectedCompaniesText(): string {
-    if (this.selectedprocurementCompanyGUID.length === 0) return 'Select Procurement Companies';
+    if (this.selectedProcurementCompanyIds.length === 0) return 'Select Procurement Companies';
     const selectedNames = this.procurementCompanies
-      .filter(c => this.selectedprocurementCompanyGUID.includes(c.companyGUID))
+      .filter(c => this.selectedProcurementCompanyIds.includes(c.id))
       .map(c => c.name);
     return selectedNames.join(', ');
   }
 
-  // ===== GENERATE VENDOR ACCOUNT NUMBER =====
   generateVendorAccountNumber(): void {
     const storedSequence = localStorage.getItem('vendorSequence');
     let sequenceNumber = storedSequence ? parseInt(storedSequence, 10) : 0;
@@ -223,7 +209,6 @@ export class CompanyRegistrationComponent implements OnInit {
     localStorage.setItem('vendorSequence', sequenceNumber.toString());
   }
 
-  // ===== LOAD PROCUREMENT COMPANIES =====
   loadProcurementCompanies() {
     this.companyService.getProcurementCompanies().subscribe({
       next: (res: any) => {
@@ -237,7 +222,6 @@ export class CompanyRegistrationComponent implements OnInit {
     });
   }
 
-  // ===== ADDRESS LOGIC =====
   openAddressModal() {
     const modalRef = this.modalService.open(CompanyAddressModalComponent, { centered: true });
     modalRef.componentInstance.addAddress.subscribe((address) => this.addAddress(address));
@@ -283,7 +267,6 @@ export class CompanyRegistrationComponent implements OnInit {
     }));
   }
 
-  // ===== CONTACT LOGIC =====
   openContactModal() {
     const modalRef = this.modalService.open(CompanyContactModalComponent, { centered: true });
     modalRef.componentInstance.addContact.subscribe((contact) => this.addContact(contact));
@@ -328,7 +311,6 @@ export class CompanyRegistrationComponent implements OnInit {
     }));
   }
 
-  // ===== ATTACHMENTS =====
   openAttachmentModal() {
     const modalRef = this.modalService.open(CompanyProfileAttachmentComponent, { centered: true });
     modalRef.componentInstance.attachedFiles = [...this.attachedFiles];
@@ -365,7 +347,6 @@ export class CompanyRegistrationComponent implements OnInit {
     });
   }
 
-  // ===== PAYLOAD =====
   getPurchasingDemographicsPayload() {
     return {
       primaryCurrency: this.primaryCurrency,
@@ -380,11 +361,10 @@ export class CompanyRegistrationComponent implements OnInit {
     };
   }
 
-  // ===== SUBMIT FORM =====
   async submitForm() {
     if (!this.userId) {
-this.toastr.error('Vendor ID missing! Please login again.', 'Error');    
-  this.router.navigate(['/auth/login']);
+      this.toastr.error('Vendor ID missing! Please login again.', 'Error');
+      this.router.navigate(['/auth/login']);
       return;
     }
 
@@ -397,10 +377,9 @@ this.toastr.error('Vendor ID missing! Please login again.', 'Error');
 
     const vendorCompanyPayload = {
       name: this.companyName,
-      vendorId: this.userId,
       logo: '',
       requestStatusId: 1,
-  ProcurementCompanyGUID: [...this.selectedprocurementCompanyGUID], // note capital P
+      procurementCompanyId: [...this.selectedProcurementCompanyIds], // <-- numeric IDs
       addresses: this.getAddressesForPayload(),
       contacts: this.getContactsForPayload(),
       purchasingDemographics: this.getPurchasingDemographicsPayload(),
@@ -415,10 +394,10 @@ this.toastr.error('Vendor ID missing! Please login again.', 'Error');
     };
 
     const payload = {
+      
       vendorCompany: vendorCompanyPayload,
       vendorUserId: this.userId,
-      ProcurementCompanyGUID: [...this.selectedprocurementCompanyGUID] // exact casing
-
+      procurementCompanyId: [...this.selectedProcurementCompanyIds] 
     };
 
     this.isLoading = true;

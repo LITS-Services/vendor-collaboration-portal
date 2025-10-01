@@ -1,4 +1,3 @@
-// login-page.component.ts 
 import { Component, OnInit } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from "@angular/router";
@@ -15,7 +14,7 @@ export class LoginPageComponent implements OnInit {
   loginFormSubmitted = false;
   isLoginFailed = false;
   isSSOLoading = false;   
-  errorMessage = '';      
+  errorMessage = '';       
 
   loginForm = new UntypedFormGroup({
     username: new UntypedFormControl("", [Validators.required]),
@@ -45,14 +44,14 @@ export class LoginPageComponent implements OnInit {
   const params = new URLSearchParams(window.location.search);
   const token = params.get('token');
   const email = params.get('email');
-const userId = params.get('id'); // match what API sends
+  const userId = params.get('id'); // match what API sends
   const error = params.get('error');
 
   if (token) {
     console.log("Token found in URL:", token);
     localStorage.setItem('token', token);
     if (email) localStorage.setItem('userEmail', email);
-    if (userId) localStorage.setItem('userId', userId);   
+    if (userId) localStorage.setItem('userId', userId);  
 
     this.router.navigate(['/dashboard/dashboard1'], { replaceUrl: true });
     return;
@@ -92,6 +91,9 @@ const userId = params.get('id'); // match what API sends
         if (res && res.token) {
           localStorage.setItem('token', res.token);
         }
+        
+        // Save the username for future use (e.g., displaying on the dashboard)
+        localStorage.setItem('username', this.loginForm.value.username!);
 
         this.router.navigate(['/dashboard/dashboard1']);
       },
