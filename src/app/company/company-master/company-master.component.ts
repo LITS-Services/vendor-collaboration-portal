@@ -176,7 +176,7 @@ export class CompanyMasterComponent implements OnInit {
 
         // Only count companies where status = "completed"
         this.totalCompaniesCount = vendorCompanies.filter(c =>
-          (c.status || '').toLowerCase() === 'completed'
+          (c.status || '').toLowerCase() === 'approve'
         ).length;
 
 
@@ -185,7 +185,7 @@ export class CompanyMasterComponent implements OnInit {
         // Pending Companies: InProgress OR Recalled
         this.inprogressCount = vendorCompanies.filter(c => {
           const status = (c.status || '').toLowerCase();
-          return status === 'inprogress' || status === 'recalled';
+          return status === 'inprocess' || status === 'sendback';
         }).length;
 
         // Newly Onboarded Companies: created in last 5 minutes
@@ -200,7 +200,7 @@ export class CompanyMasterComponent implements OnInit {
 
           console.log('Company:', c.vendorId, 'CreatedDate:', createdDate, 'Status:', status, 'DiffInDays:', diffInDays);
 
-          return diffInDays <= 10 && status === 'completed';
+          return diffInDays <= 10 && status === 'approve';
         }).length;
 
 
