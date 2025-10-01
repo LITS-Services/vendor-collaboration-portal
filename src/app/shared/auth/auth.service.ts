@@ -67,8 +67,8 @@ ssoCallback(code: string): Observable<any> {
       .pipe(
         tap((response: any) => {
           // ✅ Save UserId
-          if (response.UserId) {
-            localStorage.setItem('UserId', response.UserId);
+          if (response.userId) {
+            localStorage.setItem('userId', response.userId);
           }
 
           // ✅ Save token

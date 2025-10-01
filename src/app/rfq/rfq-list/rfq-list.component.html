@@ -9,72 +9,77 @@
                 </div>
             </div>
 
-            <ngx-datatable class="bootstrap core-bootstrap" [rows]="rfqData"
-            [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50" [columns]="columns"
-            rowHeight="50" [limit]="15" [scrollbarH]="true" [loadingIndicator]="loading"
-            [selected]="chkBoxSelected" [swapColumns]="false" [selectionType]="SelectionType.checkbox"
-            (sort)="onSort($event)" (select)="customChkboxOnSelect($event)">
-            <ngx-datatable-column [width]="50" [sortable]="false" [canAutoResize]="false"
-                [draggable]="false" [resizeable]="false">
-                <ng-template ngx-datatable-header-template>
-                    <div class="custom-control">
-                        <input type="checkbox" [checked]="isAllSelected"
-                            (change)="toggleSelectAll($event)" />
-                    </div>
-                </ng-template>
-                <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected"
-                    let-onCheckboxChangeFn="onCheckboxChangeFn">
-
-                    <div class="custom-control custom-checkbox ">
-                        <input type="checkbox" [checked]="isSelected"
-                            (change)="onCheckboxChangeFn($event)" />
-                    </div>
-                </ng-template>
-            </ngx-datatable-column>
-            <ngx-datatable-column name="Sr. No." [resizeable]="false">
-                <ng-template let-rowIndex="rowIndex" let-value="value" ngx-datatable-cell-template>
-                    <span>{{rowIndex + 1}}</span>
-                </ng-template>
-            </ngx-datatable-column>
-
-            <ngx-datatable-column name="Requisition No." prop="requisitionNo" >
-
-            </ngx-datatable-column>
-
-            <ngx-datatable-column name="Company Name" prop="companyName" >
-
-            </ngx-datatable-column>
-
-            <ngx-datatable-column name="Status" prop="status" >
-
-            </ngx-datatable-column>
-            <ngx-datatable-column name="Date" prop="date" >
-            </ngx-datatable-column>
-
-            <ngx-datatable-column name="Owner" prop="owner" >
-
-            </ngx-datatable-column>
-            <!-- <ngx-datatable-column name="Comments" prop="subject">
-            </ngx-datatable-column> -->
-            <ngx-datatable-column name="Total Amount"  prop="totalAmount"
-                [sortable]="false">
-            </ngx-datatable-column>
-
-            <ngx-datatable-column [name]="status === 'in-process' ? 'Remarks' : 'Bid'" prop="action" [sortable]="false">
-                <ng-template let-row="row" ngx-datatable-cell-template>
-                  <button class="btn btn-lg position-relative" (click)="openQuotationBoxModal(row)">
-                    <ng-container *ngIf="status === 'in-process'; else editIcon">
-                    <i class="ft-mail"></i>
-                      <span class="badge counter position-absolute rounded-pill" *ngIf="mailCount > 0">{{ mailCount }}</span>
-                    </ng-container>
-                    <ng-template #editIcon>
-                      <img src="/assets/img/svg/auction.svg" width="30" height="30" alt="Edit">
+            <ngx-datatable class="bootstrap core-bootstrap" [rows]="rows" [columnMode]="'force'" [headerHeight]="50"
+                [footerHeight]="50" [columns]="columns" rowHeight="50" [limit]="15" [scrollbarH]="true"
+                [loadingIndicator]="loading" [selected]="chkBoxSelected" [swapColumns]="false"
+                [selectionType]="SelectionType.checkbox" (sort)="onSort($event)"
+                (select)="customChkboxOnSelect($event)">
+                <ngx-datatable-column [width]="50" [sortable]="false" [canAutoResize]="false" [draggable]="false"
+                    [resizeable]="false">
+                    <ng-template ngx-datatable-header-template>
+                        <div class="custom-control">
+                            <input type="checkbox" [checked]="isAllSelected" (change)="toggleSelectAll($event)" />
+                        </div>
                     </ng-template>
-                  </button>
-                </ng-template>
-              </ngx-datatable-column>
-              
-        <!-- <ngx-datatable-column name="Vendors" [width]="100" prop="action"
+                    <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected"
+                        let-onCheckboxChangeFn="onCheckboxChangeFn">
+
+                        <div class="custom-control custom-checkbox ">
+                            <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)" />
+                        </div>
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Sr. No." [resizeable]="false">
+                    <ng-template let-rowIndex="rowIndex" let-value="value" ngx-datatable-cell-template>
+                        <span>{{rowIndex + 1}}</span>
+                    </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column name="RFQ No." prop="rfqNo">
+
+                </ngx-datatable-column>
+
+                <!-- <ngx-datatable-column name="Company Name" prop="companyName" >
+
+            </ngx-datatable-column> -->
+
+                <ngx-datatable-column name="Status" prop="status">
+                </ngx-datatable-column>
+
+                <!-- <ngx-datatable-column name="Date" prop="date" >
+            </ngx-datatable-column> -->
+
+                <ngx-datatable-column name="Date" prop="date">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        {{ row.date | date:'yyyy-MM-dd' }}
+                    </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column name="Owner" prop="owner">
+
+                </ngx-datatable-column>
+                <!-- <ngx-datatable-column name="Comments" prop="subject">
+            </ngx-datatable-column> -->
+                <ngx-datatable-column name="Total Amount" prop="totalAmount" [sortable]="false">
+                </ngx-datatable-column>
+
+                <ngx-datatable-column [name]="status === 'in-process' ? 'Remarks' : 'Bid'" prop="action"
+                    [sortable]="false">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        <button class="btn btn-lg position-relative" (click)="openQuotationBoxModal(row)">
+                            <ng-container *ngIf="status === 'in-process'; else editIcon">
+                                <i class="ft-mail"></i>
+                                <span class="badge counter position-absolute rounded-pill" *ngIf="mailCount > 0">{{
+                                    mailCount }}</span>
+                            </ng-container>
+                            <ng-template #editIcon>
+                                <img src="/assets/img/svg/auction.svg" width="30" height="30" alt="Edit">
+                            </ng-template>
+                        </button>
+                    </ng-template>
+                </ngx-datatable-column>
+
+                <!-- <ngx-datatable-column name="Vendors" [width]="100" prop="action"
         [sortable]="false">
         <ng-template let-row="row" ngx-datatable-cell-template>
             <button class="btn btn-primary btn-sm" (click)="openVendorsModal(row)"
@@ -83,7 +88,7 @@
           </button>
           </ng-template>
     </ngx-datatable-column> -->
-        </ngx-datatable>
+            </ngx-datatable>
         </div>
     </div>
 </section>

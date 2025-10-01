@@ -22,13 +22,15 @@ import { AngularResizedEventModule } from 'angular-resize-event';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { ChartistModule } from 'ng-chartist';
 import { ChatModule } from 'app/chat/chat.module';
+import { RfqBidAttachmentComponent } from './rfq-bid-attachment/rfq-bid-attachment.component';
 
 
 @NgModule({
   declarations: [
     RfqMasterComponent,
     NewRfqComponent,
-    RfqListComponent
+    RfqListComponent,
+    RfqBidAttachmentComponent
   ],
   imports: [
     CommonModule,
