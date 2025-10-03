@@ -8,6 +8,7 @@ import { DatatableData } from 'app/data-tables/data/datatables.data';
 import { AuthService } from 'app/shared/auth/auth.service';
 import { RfqService } from 'app/shared/services/rfq.service';
 import { RfqBidAttachmentComponent } from '../rfq-bid-attachment/rfq-bid-attachment.component';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-new-rfq',
@@ -37,7 +38,8 @@ export class NewRfqComponent implements OnInit {
   constructor(private router: Router, public activeModal: NgbActiveModal,
     private modalService: NgbModal,
     private rfqService: RfqService,
-    private authService: AuthService) { }
+    private authService: AuthService,
+  private toastr: ToastrService) { }
 
   ngOnInit(): void {
     if (this.data) {
@@ -87,7 +89,8 @@ attachments: item.attachments?.$values?.map((a: any) => ({
 
     this.rfqService.submitBids(submissionList).subscribe({
       next: () => {
-        alert('Bid submitted successfully!');
+        this.toastr.success('Bid submitted successfully!');
+        this.router.navigate(['/rfq/rfq-list']);
         this.activeModal.close(true);
       },
       error: (err) => {

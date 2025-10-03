@@ -106,7 +106,7 @@ export class RfqListComponent implements OnInit {
   { name: 'Sr. No.', prop: 'srNo' }, // optional if you add index
   { name: 'RFQ No.', prop: 'rfqNo' },
   { name: 'Company Name', prop: 'companyName' },
-  { name: 'Status', prop: 'status' },
+  { name: 'Status', prop: 'requestStatus' },
   { name: 'Date', prop: 'date' },
   { name: 'Owner', prop: 'owner' },
   { name: 'Total Amount', prop: 'amount' }
