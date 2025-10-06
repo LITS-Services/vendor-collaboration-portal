@@ -16,6 +16,7 @@ export class LoginPageComponent implements OnInit {
   isSSOLoading = false;   
   errorMessage = '';       
 
+
   loginForm = new UntypedFormGroup({
     username: new UntypedFormControl("", [Validators.required]),
     password: new UntypedFormControl("", [Validators.required]),
@@ -44,14 +45,16 @@ export class LoginPageComponent implements OnInit {
   const params = new URLSearchParams(window.location.search);
   const token = params.get('token');
   const email = params.get('email');
-  const userId = params.get('id'); // match what API sends
+  const userId = params.get('id'); 
+  const username = params.get('username')
   const error = params.get('error');
 
   if (token) {
     console.log("Token found in URL:", token);
     localStorage.setItem('token', token);
     if (email) localStorage.setItem('userEmail', email);
-    if (userId) localStorage.setItem('userId', userId);  
+    if (userId) localStorage.setItem('userId', userId); 
+    if (username) localStorage.setItem('username', username); 
 
     this.router.navigate(['/dashboard/dashboard1'], { replaceUrl: true });
     return;
