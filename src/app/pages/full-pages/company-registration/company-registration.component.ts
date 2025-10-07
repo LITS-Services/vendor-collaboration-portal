@@ -53,6 +53,10 @@ export class CompanyRegistrationComponent implements OnInit {
   note: string = '';
   userId: string = '';
 
+  // ✅ Added fields for CreatedBy / ModifiedBy
+  createdBy: string = '';
+  modifiedBy: string = '';
+
   public swipeConfig: SwiperConfigInterface = {
     slidesPerView: 'auto',
     centeredSlides: false,
@@ -78,6 +82,10 @@ export class CompanyRegistrationComponent implements OnInit {
 
   ngOnInit() {
     this.userId = localStorage.getItem('userId') || '';
+
+    // ✅ Fetch username from localStorage for CreatedBy / ModifiedBy
+    this.createdBy = localStorage.getItem('username') || '';
+    this.modifiedBy = localStorage.getItem('username') || '';
 
     if (!this.userId) {
       this.toastr.warning('Vendor not found! Redirecting to login.', 'Warning');
@@ -283,8 +291,33 @@ export class CompanyRegistrationComponent implements OnInit {
   }
 
   addContact(contact: any) {
+    // Validate email
+    if (!this.validateEmail(contact.contactNumber)) {
+      this.toastr.error('Please enter a valid email address.');
+      return;
+    }
+
+    // Validate phone number (11 digits)
+    if (!this.validatePhoneNumber(contact.contactNumber)) {
+      this.toastr.error('Phone number must contain exactly 11 digits.');
+      return;
+    }
+
     this.contactList.push(contact);
   }
+
+  validateEmail(email: string): boolean {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    return emailRegex.test(email);
+  }
+
+  validatePhoneNumber(phoneNumber: string): boolean {
+    const phoneRegex = /^\d{11}$/;
+    return phoneRegex.test(phoneNumber);
+  }
+
+  // Other methods remain unchanged...
+
 
   confirmContactDeletion(index: number) {
     this.showContactDeletePopup = true;
@@ -390,14 +423,16 @@ export class CompanyRegistrationComponent implements OnInit {
         attachedBy: f.attachedBy,
         remarks: f.remarks,
         attachedAt: f.attachedAt ? new Date(f.attachedAt).toISOString() : new Date().toISOString()
-      }))
+      })),
+      // ✅ Added CreatedBy / ModifiedBy fields
+      createdBy: this.isEditMode ? undefined : this.createdBy,
+      modifiedBy: this.isEditMode ? this.modifiedBy : undefined
     };
 
     const payload = {
-      
       vendorCompany: vendorCompanyPayload,
       vendorUserId: this.userId,
-      procurementCompanyId: [...this.selectedProcurementCompanyIds] 
+      procurementCompanyId: [...this.selectedProcurementCompanyIds]
     };
 
     this.isLoading = true;

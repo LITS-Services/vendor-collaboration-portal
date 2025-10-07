@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from "@angular/router";
 import { AuthService } from 'app/shared/auth/auth.service';
@@ -10,12 +10,12 @@ import { NgxSpinnerService } from "ngx-spinner";
   styleUrls: ['./login-page.component.scss']
 })
 export class LoginPageComponent implements OnInit {
+  
   public hidePassword: boolean = true;
   loginFormSubmitted = false;
   isLoginFailed = false;
-  isSSOLoading = false;   
-  errorMessage = '';       
-
+  isSSOLoading = false;
+  errorMessage = '';
 
   loginForm = new UntypedFormGroup({
     username: new UntypedFormControl("", [Validators.required]),
@@ -27,8 +27,9 @@ export class LoginPageComponent implements OnInit {
     private router: Router,
     private authService: AuthService,
     private spinner: NgxSpinnerService,
-    private route: ActivatedRoute
-  ) { }
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef          // 👈 Added ChangeDetectorRef
+  ) {}
 
   get lf() {
     return this.loginForm.controls;
@@ -38,44 +39,44 @@ export class LoginPageComponent implements OnInit {
     return this.loginFormSubmitted && this.lf.password.invalid;
   }
 
+  // 🔹 Initialization
   ngOnInit() {
-  console.log("Full URL:", window.location.href);
+    console.log("Full URL:", window.location.href);
 
-  // 👇 Handle SSO redirect callback
-  const params = new URLSearchParams(window.location.search);
-  const token = params.get('token');
-  const email = params.get('email');
-  const userId = params.get('id'); 
-  const username = params.get('username')
-  const error = params.get('error');
+    // 👇 Handle SSO redirect callback
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+    const email = params.get('email');
+    const userId = params.get('id');
+    const username = params.get('username');
+    const error = params.get('error');
 
-  if (token) {
-    console.log("Token found in URL:", token);
-    localStorage.setItem('token', token);
-    if (email) localStorage.setItem('userEmail', email);
-    if (userId) localStorage.setItem('userId', userId); 
-    if (username) localStorage.setItem('username', username); 
+    if (token) {
+      console.log("✅ Token found in URL:", token);
+      localStorage.setItem('token', token);
+      if (email) localStorage.setItem('userEmail', email);
+      if (userId) localStorage.setItem('userId', userId);
+      if (username) localStorage.setItem('username', username);
 
-    this.router.navigate(['/dashboard/dashboard1'], { replaceUrl: true });
-    return;
+      this.router.navigate(['/dashboard/dashboard1'], { replaceUrl: true });
+      return;
+    }
+
+    if (error) {
+      this.isLoginFailed = true;
+      this.errorMessage = error;
+      console.error('❌ Error from URL:', error);
+      this.cdr.detectChanges(); // 👈 update UI after error
+      return;
+    }
   }
-
-  if (error) {
-    this.isLoginFailed = true;
-    this.errorMessage = error;
-    console.log('Error from URL:', error);
-    return;
-  }
-}
-
 
   // 🔹 Normal login
   onSubmit() {
     this.loginFormSubmitted = true;
-    if (this.loginForm.invalid) {
-      return;
-    }
+    if (this.loginForm.invalid) return;
 
+    // Show Spinner
     this.spinner.show(undefined, {
       type: 'ball-triangle-path',
       size: 'medium',
@@ -94,26 +95,33 @@ export class LoginPageComponent implements OnInit {
         if (res && res.token) {
           localStorage.setItem('token', res.token);
         }
-        
-        // Save the username for future use (e.g., displaying on the dashboard)
+        if (res && res.userId) {
+          localStorage.setItem('userId', res.userId);
+        }
+
+        // Save username for dashboard/navbar
         localStorage.setItem('username', this.loginForm.value.username!);
 
+        console.log("✅ Login successful");
         this.router.navigate(['/dashboard/dashboard1']);
+
+        this.cdr.detectChanges();  // 👈 Force UI update after login
       },
       error: (err) => {
-        this.isLoginFailed = true;
         this.spinner.hide();
+        this.isLoginFailed = true;
         this.errorMessage = err?.error?.message || 'Login failed. Check your credentials.';
-        console.error('Login failed:', err);
+        console.error('❌ Login failed:', err);
+
+        this.cdr.detectChanges();  
       }
     });
   }
 
-  rememberMe() { }
+  rememberMe() {}
 
-  forgotpassword() { }
+  forgotpassword() {}
 
-  // 🔹 SSO login methods
   loginWithSSO() {
     this.isSSOLoading = true;
 
@@ -121,13 +129,18 @@ export class LoginPageComponent implements OnInit {
       next: (response: any) => {
         this.isSSOLoading = false;
         if (response.loginUrl) {
-          window.location.href = response.loginUrl;  // 👈 redirect directly
+          console.log("🔗 Redirecting to SSO:", response.loginUrl);
+          window.location.href = response.loginUrl; 
         }
+        this.cdr.detectChanges();  
       },
       error: () => {
         this.isSSOLoading = false;
         this.errorMessage = 'Failed to connect to SSO service.';
         this.isLoginFailed = true;
+        console.error('❌ SSO connection failed');
+
+        this.cdr.detectChanges();  
       }
     });
   }

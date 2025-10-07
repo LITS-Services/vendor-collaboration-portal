@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CompanyService } from 'app/shared/services/company.service';
@@ -98,6 +98,7 @@ export class CompanyMasterComponent implements OnInit {
   newlyOnboardedCount: number = 0;      // Companies created in last 5 minutes
 
   constructor(
+     private cdr: ChangeDetectorRef ,
     private router: Router,
     private modalService: NgbModal,
     private companyService: CompanyService
@@ -179,6 +180,7 @@ export class CompanyMasterComponent implements OnInit {
           (c.status || '').toLowerCase() === 'approve'
         ).length;
 
+        this.cdr.detectChanges();
 
 
 
@@ -187,6 +189,7 @@ export class CompanyMasterComponent implements OnInit {
           const status = (c.status || '').toLowerCase();
           return status === 'inprocess' || status === 'sendback';
         }).length;
+        this.cdr.detectChanges();
 
         // Newly Onboarded Companies: created in last 5 minutes
         // Newly Onboarded Companies: created in last 10 days AND approved
@@ -202,6 +205,7 @@ export class CompanyMasterComponent implements OnInit {
 
           return diffInDays <= 10 && status === 'approve';
         }).length;
+        this.cdr.detectChanges();
 
 
 

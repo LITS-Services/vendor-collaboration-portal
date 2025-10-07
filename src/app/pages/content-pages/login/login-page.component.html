@@ -59,15 +59,31 @@
             </div>
 
             <div class="form-group mb-2">
-              <div style="position:relative">
-                <input [type]="hidePassword ? 'password' : 'text'" formControlName="password"
-                  class="form-control password-input" placeholder="Enter password"
-                  [ngClass]="{ 'is-invalid': loginFormSubmitted && lf.password.invalid, 'is-valid': loginFormSubmitted && !lf.password.invalid }"
-                  required>
-                <i class="ft ft-eye eye-icon"
-                   *ngIf="!(loginFormSubmitted && (lf.password.invalid || lf.password.errors?.required))"
-                   (click)="togglePasswordVisibility()"></i>
+         <div class="form-group mb-3">
+              <div class="position-relative">
+                <input
+                  [type]="hidePassword ? 'password' : 'text'"
+                  formControlName="password"
+                  class="form-control"
+                  placeholder="Enter password"
+                  [ngClass]="{
+                    'is-invalid': loginFormSubmitted && lf.password.invalid,
+                    'is-valid': loginFormSubmitted && lf.password.valid
+                  }"
+                  required
+                />
+                <i
+                  class="ft ft-eye eye-icon"
+                  (click)="hidePassword = !hidePassword"
+                  [title]="hidePassword ? 'Show Password' : 'Hide Password'">
+                </i>
               </div>
+              <div
+                *ngIf="loginFormSubmitted && lf.password.invalid"
+                class="invalid-feedback">
+                <i class="ft-alert-circle me-1"></i> Password is required
+              </div>
+            </div>
               <div *ngIf="loginFormSubmitted && (lf.password.invalid || lf.password.errors?.required)"
                 class="invalid-feedback"> Please enter the valid password
               </div>

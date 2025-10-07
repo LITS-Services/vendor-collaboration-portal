@@ -17,13 +17,18 @@
   
   <div class="row" (resized)="onResized($event)">
     <div class="col-xl-4 col-lg-6 col-md-6 col-12">
-  <div class="card card-info">
-    <h4>Total Companies</h4>
+ 
+    <div class="card card-info">
+    <h4>Onboarded Companies</h4>
+    <div class="curve-button">
+      <button class="circle-button" (click)="companyList('Onboarded Companies', 'new')">
+        <i class="ft-arrow-up-right"></i>
+      </button>
+    </div>
     <div class="card-content">
       <div class="card-body py-0">
         <div class="media pb-1">
           <div class="media-body">
-            <!-- Dynamic total count -->
             <h1>{{ totalCompaniesCount }}</h1>
             <div class="row align-items-center">
               <div class="col-2 d-flex justify-content-center">
@@ -46,18 +51,13 @@
 </div>
 
   <div class="col-xl-4 col-lg-6 col-md-6 col-12">
-  <div class="card card-info">
-    <h4>Newly Onboarded Companies</h4>
-    <div class="curve-button">
-      <button class="circle-button" (click)="companyList('Newly Onboarded Companies', 'new')">
-        <i class="ft-arrow-up-right"></i>
-      </button>
-    </div>
+ <div class="card card-info">
+    <h4>Newly Onboarded  Companies</h4>
     <div class="card-content">
       <div class="card-body py-0">
         <div class="media pb-1">
           <div class="media-body">
-            <!-- Dynamic newly onboarded count -->
+            <!-- Dynamic total count -->
             <h1>{{ newlyOnboardedCount }}</h1>
             <div class="row align-items-center">
               <div class="col-2 d-flex justify-content-center">
@@ -66,7 +66,7 @@
                 </div>
               </div>
               <div class="col-8 text-center mt-2">
-                <h6>Last Ten Days</h6>
+                <h6>Last three months</h6>
               </div>
               <div class="col-2 d-flex justify-content-center">
                 <img src="/assets/img/icons/Vector1.svg" class="vector1" alt="">

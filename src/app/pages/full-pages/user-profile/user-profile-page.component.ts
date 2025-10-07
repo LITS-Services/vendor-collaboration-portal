@@ -1,227 +1,218 @@
-import { Component, ViewChild, OnInit, OnDestroy, Inject, Renderer2, ChangeDetectorRef, AfterViewInit, Input } from '@angular/core';
+import {
+  Component, ViewChild, OnInit, OnDestroy, Inject, Renderer2, ChangeDetectorRef, AfterViewInit
+} from '@angular/core';
 import { Subscription } from 'rxjs';
 import { DOCUMENT } from '@angular/common';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConfigService } from 'app/shared/services/config.service';
 import { LayoutService } from 'app/shared/services/layout.service';
-
 import { SwiperDirective, SwiperConfigInterface } from 'ngx-swiper-wrapper';
-import { CompanyAddressModalComponent } from '../company-address-modal/company-address-modal.component';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { CompanyContactModalComponent } from '../company-contact-modal/company-contact-modal.component';
-import { CompanyProfileAttachmentComponent } from '../company-profile-attachment/company-profile-attachment.component';
-
+import { CompanyService } from 'app/shared/services/company.service';
+import { ToastrService } from 'ngx-toastr'; // 👈 toastr
 
 @Component({
-    selector: 'app-user-profile-page',
-    templateUrl: './user-profile-page.component.html',
-    styleUrls: ['./user-profile-page.component.scss']
+  selector: 'app-user-profile-page',
+  templateUrl: './user-profile-page.component.html',
+  styleUrls: ['./user-profile-page.component.scss']
 })
-
 export class UserProfilePageComponent implements OnInit, AfterViewInit, OnDestroy {
+
   public config: any = {};
-  layoutSub: Subscription;
- addressList= [];
-  contactList = [];
-  attachedFiles: any[] = [];
-  showContactDeletePopup: boolean = false;
-  showAddressDeletePopup: boolean = false;
-  contactIndexToDelete: number | null = null;
-  addressIndexToDelete: number | null = null;
-  vendorAccountNumber: string = '';
+  layoutSub!: Subscription;
+
+  userProfileForm: FormGroup;
+  profileImage: string | ArrayBuffer | null = null;
+
+  showPasswordResetPopup = false;
+  passwordResetForm: FormGroup;
+
+  showOldPassword = false;
+  showNewPassword = false;
+  showConfirmPassword = false;
+
+  vendorAccountNumber = '';
   public swipeConfig: SwiperConfigInterface = {
     slidesPerView: 'auto',
     centeredSlides: false,
     spaceBetween: 15
   };
 
-
   @ViewChild(SwiperDirective, { static: false }) directiveRef?: SwiperDirective;
 
-  constructor(private configService: ConfigService,
-    private modalService: NgbModal,
+  constructor(
+    private configService: ConfigService,
     private layoutService: LayoutService,
     @Inject(DOCUMENT) private document: Document,
-    private renderer: Renderer2, private cdr: ChangeDetectorRef
+    private renderer: Renderer2,
+    private cdr: ChangeDetectorRef,
+    private fb: FormBuilder,
+    private companyService: CompanyService,
+    private toastr: ToastrService
   ) {
     this.config = this.configService.templateConf;
+
+    this.userProfileForm = this.fb.group({
+      fullName: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      password: [''],
+      confirmPassword: ['']
+    });
+
+    this.passwordResetForm = this.fb.group({
+      oldPassword: ['', Validators.required],
+      newPassword: ['', [Validators.required, Validators.minLength(6)]],
+      confirmPassword: ['', Validators.required]
+    });
   }
 
-    ngOnInit() {
-      this.generateVendorAccountNumber();
-      this.cdr.detectChanges();
-      this.layoutSub = this.configService.templateConf$.subscribe((templateConf) => {
-        if (templateConf) {
-          this.config = templateConf;
-        }
-        this.cdr.markForCheck();
+  ngOnInit() {
+    this.generateVendorAccountNumber();
+    this.cdr.detectChanges();
+    this.loadUserProfile();
 
-      })
-    }
+    this.layoutSub = this.configService.templateConf$.subscribe(conf => {
+      if (conf) this.config = conf;
+      this.cdr.markForCheck();
+    });
+  }
 
-    ngAfterViewInit() {
-      let conf = this.config;
-      conf.layout.sidebar.collapsed = true;
-      this.configService.applyTemplateConfigChange({ layout: conf.layout });
-    }
+  ngAfterViewInit() {
+    let conf = this.config;
+    conf.layout.sidebar.collapsed = true;
+    this.configService.applyTemplateConfigChange({ layout: conf.layout });
+  }
 
-    ngOnDestroy() {
-      let conf = this.config;
-      conf.layout.sidebar.collapsed = false;
-      this.configService.applyTemplateConfigChange({ layout: conf.layout });
-      if (this.layoutSub) {
-        this.layoutSub.unsubscribe();
-      }
-    }
+  ngOnDestroy() {
+    let conf = this.config;
+    conf.layout.sidebar.collapsed = false;
+    this.configService.applyTemplateConfigChange({ layout: conf.layout });
+    if (this.layoutSub) this.layoutSub.unsubscribe();
+  }
 
-    generateVendorAccountNumber(): void {
-      // Simulating a sequence number generator.
-      // Ideally, this would be fetched from an API or database.
-      const storedSequence = localStorage.getItem('vendorSequence');
-      let sequenceNumber = storedSequence ? parseInt(storedSequence, 10) : 0;
-  
-      // Increment and format the sequence number.
-      sequenceNumber += 1;
-      this.vendorAccountNumber = `lits-vcp-vendor-${sequenceNumber.toString().padStart(5, '0')}`;
-  
-      // Store the updated sequence number.
-      localStorage.setItem('vendorSequence', sequenceNumber.toString());
-    }
+  generateVendorAccountNumber() {
+    const storedSequence = localStorage.getItem('vendorSequence');
+    let sequenceNumber = storedSequence ? parseInt(storedSequence, 10) : 0;
+    sequenceNumber += 1;
+    this.vendorAccountNumber = `lits-vcp-vendor-${sequenceNumber.toString().padStart(5, '0')}`;
+    localStorage.setItem('vendorSequence', sequenceNumber.toString());
+  }
 
-    //Logic for adding address
-    openAddressModal() {
-      const modalRef = this.modalService.open(CompanyAddressModalComponent , { centered: true });
-      modalRef.componentInstance.addAddress.subscribe((address) => {
-        this.addAddress(address);
-      });
-    }
-    //Logic for editing address
-    editAddress(index: number): void {
-      const modalRef = this.modalService.open(CompanyAddressModalComponent, { centered: true });
-    
-      // Pass a copy of the address to prevent mutation
-      modalRef.componentInstance.address = { ...this.addressList[index] };
-      modalRef.componentInstance.isEditAddressMode = true;
-    
-      // Handle saveAddress event from modal
-      modalRef.componentInstance.saveAddress.subscribe((updatedAddress: any) => {
-        // Create a new array reference to trigger change detection
-        const updatedAddressList = [...this.addressList];
-        updatedAddressList[index] = updatedAddress;
-        this.addressList = updatedAddressList;
-    
-        // Manually trigger change detection
-        this.cdr.markForCheck();
-      });
-    }
-    
+  loadUserProfile() {
+    const userId = localStorage.getItem('userId');
+    if (!userId) return;
 
-    
-    confirmAddressDeletion(index: number): void {
-      this.showAddressDeletePopup = true;
-      this.addressIndexToDelete = index; // Save the index to delete after confirmation
+    this.companyService.GetVendoruserByid(userId).subscribe({
+      next: (res: any) => {
+        const userData = res.$values ? res.$values[0] : res;
+        this.userProfileForm.patchValue({
+          fullName: userData.fullName,
+          email: userData.email
+        });
+        this.profileImage = userData.profilePicture || null;
 
-    }
-  
-    closeAddressPopup(): void {
-      this.showAddressDeletePopup = false;
-      this.addressIndexToDelete = null;
-    }
-    removeAddress(index: number) {
-      this.addressList.splice(index, 1);
-      this.closeAddressPopup();
-    }
-  
-    // Method to add a new address to the list
-    addAddress(address) {
-      this.addressList.push(address);
-    }
-  
-    // Method to map data to main form for submission
-    getAddressesForPayload() {
-      return this.addressList;
-    }
+        this.cdr.detectChanges(); // 🔹 after API response
+      },
+      error: err => console.error('Error loading user profile:', err)
+    });
+  }
 
-
-
-
-    // Logic to add a new contact to the list
-    openContactModal() {
-      const modalRef = this.modalService.open(CompanyContactModalComponent, { centered: true });
-      modalRef.componentInstance.addContact.subscribe((contact) => {
-        this.addContact(contact);
-      });
-    }
-
-    //Edit contact
-    editContact(index: number): void {
-      const modalRef = this.modalService.open(CompanyContactModalComponent, { centered: true });
-      modalRef.componentInstance.contact = { ...this.contactList[index] }; // Pass a copy of the contact
-      modalRef.componentInstance.isEditMode = true;
-  
-      // Save the edited contact back to the list
-      modalRef.componentInstance.saveContact.subscribe((updatedContact: any) => {
-        // this.contactList[index] = updatedContact; // Update the specific index
-        // this.cdr.markForCheck();
-        // this.cdr.detectChanges();
-
-        const updatedAddressList = [...this.contactList];
-    updatedAddressList[index] = updatedContact;
-    this.contactList = updatedAddressList;
-
-    // Manually trigger change detection
-    this.cdr.markForCheck();
-      });
-    }
-
-
-    // Add new contact to the list
-    addContact(contact) {
-      this.contactList.push(contact);
-    }
-    confirmContactDeletion(index: number): void {
-      this.showContactDeletePopup = true;
-      this.contactIndexToDelete = index; // Save the index to delete after confirmation
-    }
-  
-    closeContactPopup(): void {
-      this.showContactDeletePopup = false;
-      this.contactIndexToDelete = null;
-    }
-    // Remove contact by index
-    removeContact(index: number) {
-      this.contactList.splice(index, 1);
-      this.closeContactPopup();
-    }
-  
-    // Method to map contact data for payload
-    getContactsForPayload() {
-      return this.contactList;
-    }
-
-
-    //Logic for attachement modal
-    openAttachmentModal(): void {
-      const modalRef = this.modalService.open(CompanyProfileAttachmentComponent, { centered: true });
-      modalRef.componentInstance.attachedFiles = [...this.attachedFiles]; // Pass a copy of the attached files
-  
-      // Handle the save event from the modal
-      modalRef.componentInstance.saveAttachment.subscribe((updatedFiles: any[]) => {
-        this.attachedFiles = [...updatedFiles]; // Update parent component with the new file list
-      });
-    }
-  
-    // For demonstration, log the saved attachments
-    saveAttachments(): void {
-      console.log('Final Attached Files:', this.attachedFiles);
-    }
-
-   // Logic for payload
-
-    submitForm() {
-      const payload = {
-        // ...this.formValues,
-        addresses: this.getAddressesForPayload(),
+  onImageSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.profileImage = reader.result;
+        this.cdr.detectChanges(); // 🔹 update UI after file load
       };
-      // Send payload to backend
+      reader.readAsDataURL(file);
     }
+  }
+
+  resetForm() {
+    this.userProfileForm.reset();
+    this.profileImage = null;
+    this.cdr.detectChanges(); // 🔹 update UI
+  }
+
+  saveProfile() {
+    if (!this.userProfileForm.valid) {
+      this.toastr.error('Please fill in all required fields correctly.');
+      return;
+    }
+
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      this.toastr.error('User ID not found. Please login again.');
+      return;
+    }
+
+    const payload = {
+      userId,
+      fullName: this.userProfileForm.get('fullName')?.value,
+      profilePicture: this.profileImage || ''
+    };
+
+    this.companyService.updateVendoruser(userId, payload).subscribe({
+      next: res => {
+        this.toastr.success('Profile updated successfully!');
+        this.cdr.detectChanges(); // 🔹 after API response
+      },
+      error: err => {
+        this.toastr.error('Failed to update profile. Please try again.');
+        this.cdr.detectChanges(); // 🔹 after API error
+      }
+    });
+  }
+
+  openPasswordResetPopup() {
+    this.passwordResetForm.reset();
+    this.showPasswordResetPopup = true;
+    this.cdr.detectChanges(); // 🔹 open popup immediately
+  }
+
+  closePasswordResetPopup() {
+    this.showPasswordResetPopup = false;
+    this.cdr.detectChanges(); // 🔹 close popup immediately
+  }
+
+  togglePassword(field: string) {
+    if (field === 'old') this.showOldPassword = !this.showOldPassword;
+    if (field === 'new') this.showNewPassword = !this.showNewPassword;
+    if (field === 'confirm') this.showConfirmPassword = !this.showConfirmPassword;
+    this.cdr.detectChanges(); // 🔹 update icon visibility
+  }
+
+  submitPasswordReset() {
+    if (this.passwordResetForm.invalid) {
+      this.toastr.error('Please fill all fields correctly.');
+      return;
+    }
+
+    const { oldPassword, newPassword, confirmPassword } = this.passwordResetForm.value;
+
+    if (newPassword !== confirmPassword) {
+      this.toastr.warning('New password and confirmation do not match!');
+      return;
+    }
+
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      this.toastr.error('User ID not found. Please login again.');
+      return;
+    }
+
+    const payload = { userId, oldPassword, newPassword };
+
+    this.companyService.resetPassword(payload).subscribe({
+      next: () => {
+        this.toastr.success('Password reset successful!');
+        this.closePasswordResetPopup();
+        this.cdr.detectChanges(); // 🔹 after API response
+      },
+      error: () => {
+        this.toastr.error('Failed to reset password. Please try again.');
+        this.cdr.detectChanges(); // 🔹 after API error
+      }
+    });
+  }
 }

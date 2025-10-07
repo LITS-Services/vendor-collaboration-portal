@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { ColumnMode, DatatableComponent, SelectionType } from '@swimlane/ngx-datatable';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -27,60 +27,76 @@ export class CompanyListComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private modalService: NgbModal,
-    private companyService: CompanyService
+    private companyService: CompanyService,
+    private cdr: ChangeDetectorRef          
   ) {}
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe(params => {
-      if (params['title']) this.title = params['title'];
-      this.status = params['status'] || '';
-      this.loadCompanies(this.status);
-    });
-  }
+  this.route.queryParams.subscribe(params => {
+    if (params['title']) this.title = params['title'];
+    this.status = params['status'] || '';
 
-  loadCompanies(status?: string) {
-  this.loading = true;
-
-  const userId = localStorage.getItem('userId');
-  if (!userId) {
-    console.error('No userId found in localStorage');
-    this.loading = false;
-    return;
-  }
-
-  // ✅ Corrected the parameter order (vendorId, then status)
-  this.companyService.getCompanyByVendorId(userId, status).subscribe({
-    next: (res: any) => {
-      const rawCompanies = Array.isArray(res)
-        ? res
-        : res?.$values || (res?.vendorId ? [res] : []);
-
-      this.companyData = rawCompanies
-        .map(c => ({
-          id: c.id,
-          companyGUID: c.companyGUID,
-          name: c.name,
-          logo: c.logo,
-          status: (c.status || '').toLowerCase(),
-          vendorId: c.vendorId,
-          street: c.addressesVM?.$values?.[0]?.street || '',
-          city: c.addressesVM?.$values?.[0]?.city || '',
-          country: c.addressesVM?.$values?.[0]?.country || '',
-          contactNumber: c.contactsVM?.$values?.[0]?.contactNumber || '',
-          contactType: c.contactsVM?.$values?.[0]?.type || ''
-        }))
-        .filter(c => c.vendorId?.toLowerCase() === userId.toLowerCase());
-
-      console.log('Company list:', this.companyData);
-      this.loading = false;
-    },
-    error: err => {
-      console.error('Error fetching companies:', err);
-      this.loading = false;
+    if (this.status === 'new') {
+      this.loadCompanies('approve');
+    } 
+    else if (this.status === 'approve') {
+      this.loadCompanies('approve');
+    } 
+    else {
+      this.loadCompanies('inprocess');
     }
   });
 }
 
+
+  loadCompanies(status: string) {
+    this.loading = true;
+
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      console.error('No userId found in localStorage');
+      this.loading = false;
+      return;
+    }
+
+    this.companyService.getCompanyByVendorId(userId, status).subscribe({
+      next: (res: any) => {
+        const rawCompanies = Array.isArray(res)
+          ? res
+          : res?.$values || (res?.vendorId ? [res] : []);
+
+        // Filter companies by status: Only show companies with the given status (approve or inprocess)
+        this.companyData = rawCompanies
+          .map(c => ({
+            id: c.id,
+            companyGUID: c.companyGUID,
+            name: c.name,
+            logo: c.logo,
+            status: (c.status || '').toLowerCase(),
+            vendorId: c.vendorId,
+            street: c.addressesVM?.$values?.[0]?.street || '',
+            city: c.addressesVM?.$values?.[0]?.city || '',
+            country: c.addressesVM?.$values?.[0]?.country || '',
+            contactNumber: c.contactsVM?.$values?.[0]?.contactNumber || '',
+            contactType: c.contactsVM?.$values?.[0]?.type || ''
+          }))
+          // Filter by vendorId and selected status (approve or inprocess)
+          .filter(c =>
+            c.vendorId?.toLowerCase() === userId.toLowerCase() &&
+            c.status === status
+          );
+
+        console.log('Company list:', this.companyData);
+        this.loading = false;
+        this.cdr.detectChanges();
+      },
+      error: err => {
+        console.error('Error fetching companies:', err);
+        this.loading = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
 
   onSort(event: any) {
     this.loading = true;
@@ -93,6 +109,7 @@ export class CompanyListComponent implements OnInit {
       );
       this.companyData = rows;
       this.loading = false;
+      this.cdr.detectChanges();
     }, 300);
   }
 
@@ -110,17 +127,9 @@ export class CompanyListComponent implements OnInit {
     this.isAllSelected = event.target.checked;
   }
 
-  editSelectedCompany() {
-    if (this.chkBoxSelected.length !== 1) {
-      alert('Please select exactly one company to edit.');
-      return;
-    }
-
-    const selectedCompany = this.chkBoxSelected[0];
-
-    // Navigate to registration/edit page
+  editCompany(company: any) {
     this.router.navigate(['/pages/company-registration'], {
-      queryParams: { id: selectedCompany.id }
+      queryParams: { id: company.id }
     });
   }
 }

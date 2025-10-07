@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import * as Chartist from 'chartist';
 import { ChartType, ChartEvent } from "ng-chartist";
 import ChartistTooltip from 'chartist-plugin-tooltips-updated';
@@ -82,7 +82,8 @@ export class Dashboard1Component implements OnInit {
   newlyOnboardedCount: number = 0;
   rfqCounts!: QuotationRequestsCountVM;
 
-  constructor(private router: Router, private companyService: CompanyService, private rfqService: RfqService) {
+  constructor(private router: Router, private companyService: CompanyService, private rfqService: RfqService,    private cdr: ChangeDetectorRef          
+  ) {
     this.columnChartOptions = {
       chart: {
         height: 350,
@@ -151,15 +152,18 @@ export class Dashboard1Component implements OnInit {
 
       // Only count companies where status = "completed"
       this.totalCompaniesCount = vendorCompanies.filter(c =>
-        (c.status || '').toLowerCase() === 'completed'
-      ).length;
+           (c.status || '').toLowerCase() === 'approve'||
+        (c.status || '').toLowerCase() === 'inprocess'||
+         (c.status || '').toLowerCase() === 'sendback'      ).length;
 
+        this.cdr.detectChanges();
 
         // Pending Companies: InProgress OR Recalled
         this.inprogressCount = vendorCompanies.filter(c => {
           const status = (c.status || '').toLowerCase();
-          return status === 'inprogress' || status === 'recalled';
+          return status === 'inprocess' || status === 'sendback';
         }).length;
+        this.cdr.detectChanges();
 
         // Newly Onboarded Companies: created in last 10 days AND approved
         const now = new Date();
@@ -168,8 +172,9 @@ export class Dashboard1Component implements OnInit {
           const createdDate = new Date(c.createdDate + 'Z'); // treat as UTC
           const diffInDays = (now.getTime() - createdDate.getTime()) / (1000 * 60 * 60 * 24);
           const status = (c.status || '').toLowerCase();
-          return diffInDays <= 10 && status === 'completed';
+          return diffInDays <= 10 && status === 'approve';
         }).length;
+        this.cdr.detectChanges();
 
         console.log('Stats:', {
           total: this.totalCompaniesCount,
@@ -190,6 +195,8 @@ export class Dashboard1Component implements OnInit {
         console.error('Error fetching quotation requests count:', err);
       }
     });
+            this.cdr.detectChanges();
+
   }
 
   // Donut chart configuration Starts

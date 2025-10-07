@@ -42,6 +42,27 @@ getCompanyByVendorId(vendorId: string, status?: string): Observable<any> {
 
 
 
+
+
+//VendorUsers 
+GetVendoruserByid(userId: string): Observable<Company> {
+  return this.http.get<Company>(`${environment.apiUrl}/VendorUsers/GetVendorUserById/${userId}`);
+}
+
+updateVendoruser(userId: string, payload: any) {
+  return this.http.put(`${environment.apiUrl}/VendorUsers/UpdateVendorUser/${userId}`, payload);
+}
+
+resetPassword(payload: any) {
+  return this.http.post(`${environment.apiUrl}/VendorUsers/VendorChangePassword/`, payload);
+}
+
+
+
+
+
+
+
   getCompanies(status?: string): Observable<Company[]> {
     let params = new HttpParams();
     if (status) {

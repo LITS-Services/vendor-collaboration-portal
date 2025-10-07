@@ -9,6 +9,7 @@ import { UntypedFormControl } from '@angular/forms';
 import { LISTITEMS } from '../data/template-search';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { CompanyService } from 'app/shared/services/company.service'; // ✅ added
 
 @Component({
   selector: "app-navbar",
@@ -24,7 +25,8 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   logoUrl = 'assets/img/icons/vp.png';
   menuPosition = 'Side';
   isSmallScreen = false;
-  username: string | null = null;
+  username: string = '';
+  profilePicture: string = 'assets/img/portrait/small/avatar-s-1.png'; // default avatar
 
   protected innerWidth: any;
   searchOpenClass = "";
@@ -37,24 +39,22 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('search') searchElement: ElementRef;
   @ViewChildren('searchResults') searchResults: QueryList<any>;
 
-  @Output()
-  toggleHideSidebar = new EventEmitter<Object>();
-
-  @Output()
-  seachTextEmpty = new EventEmitter<boolean>();
+  @Output() toggleHideSidebar = new EventEmitter<Object>();
+  @Output() seachTextEmpty = new EventEmitter<boolean>();
 
   listItems = [];
   control = new UntypedFormControl();
-
   public config: any = {};
 
-  constructor(public translate: TranslateService,
+  constructor(
+    public translate: TranslateService,
     private layoutService: LayoutService,
     private router: Router,
-    private toastr: ToastrService, // ✅ added
-
-    private configService: ConfigService, private cdr: ChangeDetectorRef) {
-
+    private toastr: ToastrService,
+    private configService: ConfigService,
+    private cdr: ChangeDetectorRef,
+    private companyService: CompanyService // ✅ injected
+  ) {
     const browserLang: string = translate.getBrowserLang();
     translate.use(browserLang.match(/en|es|pt|de/) ? browserLang : "en");
     this.config = this.configService.templateConf;
@@ -64,106 +64,81 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
       isShow => {
         this.hideSidebar = !isShow;
       });
-
   }
 
   ngOnInit() {
     this.listItems = LISTITEMS;
 
-    if (this.innerWidth < 1200) {
-      this.isSmallScreen = true;
-    }
-    else {
-      this.isSmallScreen = false;
-    }  this.username = localStorage.getItem('username');
+    this.isSmallScreen = this.innerWidth < 1200;
 
+    // ✅ Load user profile for navbar
+    this.loadNavbarUser();
   }
 
   ngAfterViewInit() {
-
     this.configSub = this.configService.templateConf$.subscribe((templateConf) => {
-      if (templateConf) {
-        this.config = templateConf;
-      }
+      if (templateConf) this.config = templateConf;
       this.loadLayout();
       this.cdr.markForCheck();
-
-    })
+    });
   }
 
-  
   ngOnDestroy() {
-    if (this.layoutSub) {
-      this.layoutSub.unsubscribe();
-    }
-    if (this.configSub) {
-      this.configSub.unsubscribe();
-    }
+    if (this.layoutSub) this.layoutSub.unsubscribe();
+    if (this.configSub) this.configSub.unsubscribe();
   }
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.innerWidth = event.target.innerWidth;
-    if (this.innerWidth < 1200) {
-      this.isSmallScreen = true;
-    }
-    else {
-      this.isSmallScreen = false;
-    }
+    this.isSmallScreen = this.innerWidth < 1200;
   }
 
   loadLayout() {
-
-    if (this.config.layout.menuPosition && this.config.layout.menuPosition.toString().trim() != "") {
+    if (this.config.layout.menuPosition?.toString().trim() != "") {
       this.menuPosition = this.config.layout.menuPosition;
     }
 
-    if (this.config.layout.variant === "Light") {
-      this.logoUrl = 'assets/img/icons/vp.png';
-    }
-    else {
-      this.logoUrl = 'assets/img/icons/vp.png';
-    }
-
-    if (this.config.layout.variant === "Transparent") {
-      this.transparentBGClass = this.config.layout.sidebar.backgroundColor;
-    }
-    else {
-      this.transparentBGClass = "";
-    }
-
+    this.logoUrl = 'assets/img/icons/vp.png'; // same for light/dark in your setup
+    this.transparentBGClass = this.config.layout.variant === "Transparent" ? this.config.layout.sidebar.backgroundColor : "";
   }
-logout() {
-  // Clear everything from localStorage
-  localStorage.clear();
 
-  // Optionally also clear sessionStorage if you use it anywhere
-  sessionStorage.clear();
+  logout() {
+    localStorage.clear();
+    sessionStorage.clear();
+    this.toastr.success('You have been logged out successfully', 'Logout');
+    this.router.navigate(['/pages/login']);
+  }
 
-  // Show toast notification
-  this.toastr.success('You have been logged out successfully', 'Logout');
+  // =========================
+  // 🔹 Navbar User API
+  // =========================
+  loadNavbarUser() {
+    const userId = localStorage.getItem('userId');
+    if (!userId) return;
 
-  // Navigate to login page
-  this.router.navigate(['/pages/login']);
-}
-
-
+    this.companyService.GetVendoruserByid(userId).subscribe({
+      next: (res: any) => {
+        const userData = res.$values ? res.$values[0] : res;
+        this.username = userData.userName || '';
+        this.profilePicture = userData.profilePicture || 'assets/img/portrait/small/avatar-s-1.png';
+        this.cdr.detectChanges(); // update UI immediately
+      },
+      error: err => {
+        console.error('Error loading navbar user:', err);
+      }
+    });
+  }
 
   onSearchKey(event: any) {
-    if (this.searchResults && this.searchResults.length > 0) {
+    if (this.searchResults?.length > 0) {
       this.searchResults.first.host.nativeElement.classList.add('first-active-item');
     }
-
-    if (event.target.value === "") {
-      this.seachTextEmpty.emit(true);
-    }
-    else {
-      this.seachTextEmpty.emit(false);
-    }
+    this.seachTextEmpty.emit(event.target.value === "");
   }
 
   removeActiveClass() {
-    if (this.searchResults && this.searchResults.length > 0) {
+    if (this.searchResults?.length > 0) {
       this.searchResults.first.host.nativeElement.classList.remove('first-active-item');
     }
   }
@@ -175,9 +150,9 @@ logout() {
   }
 
   onEnter() {
-    if (this.searchResults && this.searchResults.length > 0) {
+    if (this.searchResults?.length > 0) {
       let url = this.searchResults.first.url;
-      if (url && url != '') {
+      if (url) {
         this.control.setValue("");
         this.searchOpenClass = '';
         this.router.navigate([url]);
@@ -191,54 +166,24 @@ logout() {
     this.seachTextEmpty.emit(true);
   }
 
-
   ChangeLanguage(language: string) {
     this.translate.use(language);
-
-    if (language === 'en') {
-      this.selectedLanguageText = "English";
-      this.selectedLanguageFlag = "./assets/img/flags/us.png";
-    }
-    else if (language === 'es') {
-      this.selectedLanguageText = "Spanish";
-      this.selectedLanguageFlag = "./assets/img/flags/es.png";
-    }
-    else if (language === 'pt') {
-      this.selectedLanguageText = "Portuguese";
-      this.selectedLanguageFlag = "./assets/img/flags/pt.png";
-    }
-    else if (language === 'de') {
-      this.selectedLanguageText = "German";
-      this.selectedLanguageFlag = "./assets/img/flags/de.png";
-    }
+    if (language === 'en') { this.selectedLanguageText = "English"; this.selectedLanguageFlag = "./assets/img/flags/us.png"; }
+    else if (language === 'es') { this.selectedLanguageText = "Spanish"; this.selectedLanguageFlag = "./assets/img/flags/es.png"; }
+    else if (language === 'pt') { this.selectedLanguageText = "Portuguese"; this.selectedLanguageFlag = "./assets/img/flags/pt.png"; }
+    else if (language === 'de') { this.selectedLanguageText = "German"; this.selectedLanguageFlag = "./assets/img/flags/de.png"; }
   }
 
   ToggleClass() {
-    if (this.toggleClass === "ft-maximize") {
-      this.toggleClass = "ft-minimize";
-    } else {
-      this.toggleClass = "ft-maximize";
-    }
+    this.toggleClass = this.toggleClass === "ft-maximize" ? "ft-minimize" : "ft-maximize";
   }
 
   toggleSearchOpenClass(display) {
     this.control.setValue("");
-    if (display) {
-      this.searchOpenClass = 'open';
-      setTimeout(() => {
-        this.searchElement.nativeElement.focus();
-      }, 0);
-    }
-    else {
-      this.searchOpenClass = '';
-    }
+    this.searchOpenClass = display ? 'open' : '';
+    if (display) setTimeout(() => this.searchElement.nativeElement.focus(), 0);
     this.seachTextEmpty.emit(true);
-
-
-
   }
-
-
 
   toggleNotificationSidebar() {
     this.layoutService.toggleNotificationSidebar(true);
