@@ -24,6 +24,7 @@ import {
 } from "ng-apexcharts";
 import { Router } from '@angular/router';
 import { CompanyService } from '../../shared/services/company.service'; // <-- Import your service
+import { RfqService } from 'app/shared/services/rfq.service';
 
 const data: any = require('../../shared/data/chartist.json');
 
@@ -46,6 +47,13 @@ export type ChartOptions = {
   theme: ApexTheme,
   responsive: ApexResponsive[]
 };
+
+export interface QuotationRequestsCountVM {
+  totalQuotations: number;
+  newQuotations: number;
+  inProcessQuotations: number;
+  completedQuotations: number;
+}
 
 var $info = "#249D57",
     $info_light = "#BDE2CD"
@@ -72,8 +80,9 @@ export class Dashboard1Component implements OnInit {
   totalCompaniesCount: number = 0;
   inprogressCount: number = 0;
   newlyOnboardedCount: number = 0;
+  rfqCounts!: QuotationRequestsCountVM;
 
-  constructor(private router: Router, private companyService: CompanyService) {
+  constructor(private router: Router, private companyService: CompanyService, private rfqService: RfqService) {
     this.columnChartOptions = {
       chart: {
         height: 350,
@@ -109,6 +118,7 @@ export class Dashboard1Component implements OnInit {
 
   ngOnInit() {
     this.loadCompanyStats();
+     this.loadQuotationRequestsCounts();
   }
 
   loadCompanyStats() {
@@ -168,6 +178,17 @@ export class Dashboard1Component implements OnInit {
         });
       },
       error: (err) => console.error('API Error:', err)
+    });
+  }
+
+    loadQuotationRequestsCounts(): void {
+    this.rfqService.getQuotationRequestsCount().subscribe({
+      next: (data) => {
+        this.rfqCounts = data;
+      },
+      error: (err) => {
+        console.error('Error fetching quotation requests count:', err);
+      }
     });
   }
 

@@ -9,9 +9,9 @@
   <!--Statistics cards Starts-->
   
   <div class="row" (resized)="onResized($event)">
-    <div class="col-xl-4 col-lg-6 col-md-6 col-12">
+    <div class="col-xl-3 col-lg-6 col-md-6 col-12">
         <div class="card card-info">
-          <h4>Total RFQ Requests</h4>
+          <h4>Total RFQs</h4>
           <!-- <div class="curve-button">
             <button class="circle-button" (click)="rfqList('Total RFQ Requests', 'total')">
               <i class="ft-arrow-up-right"></i>
@@ -21,7 +21,7 @@
             <div class="card-body py-0">
               <div class="media pb-1">
                 <div class="media-body">
-                  <h1>13,476</h1>
+                  <h1>{{ rfqCounts?.totalQuotations }}</h1>
                   <div class="row align-items-center">
                     <div class="col-2 d-flex justify-content-center">
                       <div class="cube">
@@ -42,9 +42,9 @@
           </div>
         </div>
       </div>
-    <div class="col-xl-4 col-lg-6 col-md-6 col-12">
+    <div class="col-xl-3 col-lg-6 col-md-6 col-12">
       <div class="card card-info">
-        <h4>New RFQ Requests</h4>
+        <h4>New RFQs</h4>
         <div class="curve-button">
           <button class="circle-button" (click)="rfqList('New RFQ Requests', 'new')">
             <i class="ft-arrow-up-right"></i>
@@ -54,40 +54,7 @@
           <div class="card-body py-0">
             <div class="media pb-1">
               <div class="media-body">
-                <h1>9,476</h1>
-                <div class="row align-items-center">
-                  <div class="col-2 d-flex justify-content-center">
-                    <div class="cube">
-                      <span class="text-card"><i class="ft-chevron-up mr-2"></i>17%</span>
-                    </div>
-                  </div>
-                  <div class="col-8 text-center mt-2">
-                    <h6>Last three months</h6>
-                  </div>
-                  <div class="col-2 d-flex justify-content-center">
-                    <img src="/assets/img/icons/Vector1.svg" class="vector1" alt="">
-                  </div>
-                </div>
-                
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-xl-4 col-lg-6 col-md-6 col-12">
-      <div class="card card-info">
-        <h4>In-Process Requests</h4>
-        <div class="curve-button">
-          <button class="circle-button" (click)="rfqList('In-Process Requests', 'in-process')">
-            <i class="ft-arrow-up-right"></i>
-          </button>
-        </div>
-        <div class="card-content">
-          <div class="card-body py-0">
-            <div class="media pb-1">
-              <div class="media-body">
-                <h1>4,044</h1>
+                <h1>{{ rfqCounts?.newQuotations }}</h1>
                 <div class="row align-items-center">
                   <div class="col-2 d-flex justify-content-center">
                     <div class="cube">
@@ -108,12 +75,78 @@
         </div>
       </div>
     </div>
+    <div class="col-xl-3 col-lg-6 col-md-6 col-12">
+      <div class="card card-info">
+        <h4>In-Process RFQs</h4>
+        <div class="curve-button">
+          <button class="circle-button" (click)="rfqList('In-Process Requests', 'in-process')">
+            <i class="ft-arrow-up-right"></i>
+          </button>
+        </div>
+        <div class="card-content">
+          <div class="card-body py-0">
+            <div class="media pb-1">
+              <div class="media-body">
+                <h1>{{ rfqCounts?.inProcessQuotations }}</h1>
+                <div class="row align-items-center">
+                  <div class="col-2 d-flex justify-content-center">
+                    <div class="cube">
+                      <span class="text-card"><i class="ft-chevron-up mr-2"></i>17%</span>
+                    </div>
+                  </div>
+                  <div class="col-8 text-center mt-2">
+                    <h6>Last three months</h6>
+                  </div>
+                  <div class="col-2 d-flex justify-content-center">
+                    <img src="/assets/img/icons/vector2.svg" class="vector1" alt="">
+                  </div>
+                </div>
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-lg-6 col-md-6 col-12">
+        <div class="card card-info">
+          <h4>Completed RFQs</h4>
+          <div class="curve-button">
+            <button class="circle-button" (click)="rfqList('Completed RFQ Requests', 'completed')">
+              <i class="ft-arrow-up-right"></i>
+            </button>
+          </div>
+          <div class="card-content">
+            <div class="card-body py-0">
+              <div class="media pb-1">
+                <div class="media-body">
+                  <h1>{{ rfqCounts?.completedQuotations }}</h1>
+                  <div class="row align-items-center">
+                    <div class="col-2 d-flex justify-content-center">
+                      <div class="cube">
+                        <span class="text-card"><i class="ft-chevron-up mr-2"></i>17%</span>
+                      </div>
+                    </div>
+                    <div class="col-8 text-center mt-2">
+                      <h6>Last three months</h6>
+                    </div>
+                    <div class="col-2 d-flex justify-content-center">
+                      <img src="/assets/img/icons/vector2.svg" class="vector1" alt="">
+                    </div>
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
   </div>
 
   <!--Statistics cards Ends-->
   
   <!--Line with Area Chart 1 Starts-->
-  <div class="row">
+  <!-- <div class="row">
     <div class="col-xl-4 col-12">
       <div class="card">
         <div class="card-header">
@@ -122,7 +155,7 @@
         </div>
         <div class="card-content">
   
-          <!-- <p class="font-medium-2 text-center mb-0 mt-2">Project Tasks</p> -->
+          <p class="font-medium-2 text-center mb-0 mt-2">Project Tasks</p> 
           <div id="donut-dashboard-chart" class="donut">
             <x-chartist class="height-250" [data]="DonutChart.data" [type]="DonutChart.type"
               [options]="DonutChart.options" [responsiveOptions]="DonutChart.responsiveOptions"
@@ -200,4 +233,4 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->

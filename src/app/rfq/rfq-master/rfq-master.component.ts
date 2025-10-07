@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { RfqService } from 'app/shared/services/rfq.service';
 
 declare var require: any;
 import {
@@ -54,12 +55,22 @@ export interface Chart {
   events?: ChartEvent;
   // plugins?: any;
 }
+
+export interface QuotationRequestsCountVM {
+  totalQuotations: number;
+  newQuotations: number;
+  inProcessQuotations: number;
+  completedQuotations: number;
+}
+
 @Component({
   selector: 'app-rfq-master',
   templateUrl: './rfq-master.component.html',
   styleUrls: ['./rfq-master.component.scss']
 })
 export class RfqMasterComponent implements OnInit {
+    rfqCounts!: QuotationRequestsCountVM;
+  
     columnChartOptions : Partial<ChartOptions>;
   DonutChart: Chart = {
     type: 'Pie',
@@ -92,6 +103,7 @@ export class RfqMasterComponent implements OnInit {
   };
 
   constructor(private router: Router,
+    private rfqService: RfqService,
     private modalService: NgbModal) { 
         this.columnChartOptions = {
             chart: {
@@ -150,6 +162,18 @@ export class RfqMasterComponent implements OnInit {
     }
 
   ngOnInit(): void {
+    this.loadQuotationRequestsCounts();
+  }
+
+      loadQuotationRequestsCounts(): void {
+    this.rfqService.getQuotationRequestsCount().subscribe({
+      next: (data) => {
+        this.rfqCounts = data;
+      },
+      error: (err) => {
+        console.error('Error fetching quotation requests count:', err);
+      }
+    });
   }
   onResized(event: any) {
     setTimeout(() => {

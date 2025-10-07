@@ -115,7 +115,7 @@
   <h1>RFQ <small>(Request for Quotation)</small></h1>
   <div class="col-xl-3 col-lg-6 col-md-6 col-12">
     <div class="card card-info">
-      <h4>New RFQ Requests</h4>
+      <h4>Total RFQs</h4>
       <div class="curve-button">
         <button class="circle-button" (click)="rfq()">
           <i class="ft-arrow-up-right"></i>
@@ -125,7 +125,7 @@
         <div class="card-body py-0">
           <div class="media pb-1">
             <div class="media-body">
-              <h1>9,476</h1>
+              <h1>{{ rfqCounts?.totalQuotations }}</h1>
               <div class="row align-items-center">
                 <div class="col-2 d-flex justify-content-center">
                   <div class="cube">
@@ -148,7 +148,7 @@
   </div>
   <div class="col-xl-3 col-lg-6 col-md-6 col-12">
     <div class="card card-info">
-      <h4>In-Process Requests</h4>
+      <h4>New RFQs</h4>
       <div class="curve-button">
         <button class="circle-button">
           <i class="ft-arrow-up-right"></i>
@@ -158,7 +158,7 @@
         <div class="card-body py-0">
           <div class="media pb-1">
             <div class="media-body">
-              <h1>4,044</h1>
+              <h1>{{ rfqCounts?.newQuotations }}</h1>
               <div class="row align-items-center">
                 <div class="col-2 d-flex justify-content-center">
                   <div class="cube">
@@ -179,7 +179,73 @@
       </div>
     </div>
   </div>
-</div>
+    <div class="col-xl-3 col-lg-6 col-md-6 col-12">
+    <div class="card card-info">
+      <h4>In-Process RFQs</h4>
+      <div class="curve-button">
+        <button class="circle-button">
+          <i class="ft-arrow-up-right"></i>
+        </button>
+      </div>
+      <div class="card-content">
+        <div class="card-body py-0">
+          <div class="media pb-1">
+            <div class="media-body">
+              <h1>{{ rfqCounts?.inProcessQuotations }}</h1>
+              <div class="row align-items-center">
+                <div class="col-2 d-flex justify-content-center">
+                  <div class="cube">
+                    <span class="text-card"><i class="ft-chevron-up mr-2"></i>17%</span>
+                  </div>
+                </div>
+                <div class="col-8 text-center mt-2">
+                  <h6>Last three months</h6>
+                </div>
+                <div class="col-2 d-flex justify-content-center">
+                  <img src="/assets/img/icons/vector2.svg" class="vector1" alt="">
+                </div>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+    <div class="col-xl-3 col-lg-6 col-md-6 col-12">
+    <div class="card card-info">
+      <h4>Completed RFQs</h4>
+      <div class="curve-button">
+        <button class="circle-button">
+          <i class="ft-arrow-up-right"></i>
+        </button>
+      </div>
+      <div class="card-content">
+        <div class="card-body py-0">
+          <div class="media pb-1">
+            <div class="media-body">
+              <h1>{{ rfqCounts?.completedQuotations }}</h1>
+              <div class="row align-items-center">
+                <div class="col-2 d-flex justify-content-center">
+                  <div class="cube">
+                    <span class="text-card"><i class="ft-chevron-up mr-2"></i>17%</span>
+                  </div>
+                </div>
+                <div class="col-8 text-center mt-2">
+                  <h6>Last three months</h6>
+                </div>
+                <div class="col-2 d-flex justify-content-center">
+                  <img src="/assets/img/icons/vector2.svg" class="vector1" alt="">
+                </div>
+              </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
 <div class="row" (resized)="onResized($event)">
   <h1>Tendering</h1>

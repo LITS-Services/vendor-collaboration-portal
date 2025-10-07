@@ -50,7 +50,8 @@ export class NewRfqComponent implements OnInit {
         quotationRequestId: item.quotationRequestId,
         quotationItemId: item.id, // <-- Make sure this is added
         itemType: item.itemType,
-        itemCode: item.itemCode,
+        itemId: item.itemId,
+        itemName: item.itemName,
         description: item.itemDescription,
         amount: item.amount,
         vendorUserId: item.vendorUserId,
