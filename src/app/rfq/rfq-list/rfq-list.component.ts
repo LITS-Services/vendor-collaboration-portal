@@ -1,94 +1,10 @@
-// import { Component, OnInit, ViewChild } from '@angular/core';
-// import { NewRfqComponent } from '../new-rfq/new-rfq.component';
-// import { ActivatedRoute, Router } from '@angular/router';
-// import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-// import { ColumnMode, DatatableComponent, SelectionType } from '@swimlane/ngx-datatable';
-
-// @Component({
-//   selector: 'app-rfq-list',
-//   templateUrl: './rfq-list.component.html',
-//   styleUrls: ['./rfq-list.component.scss']
-// })
-// export class RfqListComponent implements OnInit {
-//  public SelectionType = SelectionType;
-//   public ColumnMode = ColumnMode;
-
-//   @ViewChild(DatatableComponent) table: DatatableComponent;
-//   @ViewChild('tableRowDetails') tableRowDetails: any;
-//   @ViewChild('tableResponsive') tableResponsive: any;
-//   public chkBoxSelected = [];
-//   loading = false;
-//   public rows = [];
-//   columns = [];
-//   title: string = 'Request for Quotation';
-//   status: string = '';
-//   mailCount = 5;
-//   constructor(private router: Router, private route: ActivatedRoute,
-//     private modalService: NgbModal) { }
-
-//   ngOnInit(): void {
-//     this.route.queryParams.subscribe(params => {
-//       if (params['title']) {
-//         this.title = params['title'];
-//       }
-//       if (params['status']) {
-//         this.status = params['status'];
-  
-//         if (this.status === 'in-process') {
-//           // You can call an API here to get mailCount if needed
-//           this.loadFilteredRFQs('in-process');
-//         } else {
-//           this.loadFilteredRFQs(this.status);
-//         }
-//       }
-//     });
-//   }
-//   // RFQ List filteration on the basis of QueryParams
-//   loadFilteredRFQs(status: string) {
-//     // TODO: Call API or filter data based on status
-//     console.log('Filter RFQs by status:', status);
-//   }
-//   homePage() {
-//     this.router.navigate(['/dashboard/dashboard1']);
-//   }
-//   openEmpDetails() {
-//  this.modalService.open(NewRfqComponent, { size: 'lg', backdrop: 'static', centered: true });
-//     // modalRef.componentInstance.data = row;
-//   }
-//   onSort(event) {
-//     this.loading = true;
-//     setTimeout(() => {
-//       const rows = [...this.rows];
-//       const sort = event.sorts[0];
-//       rows.sort((a, b) => {
-//         return a[sort.prop].localeCompare(b[sort.prop]) * (sort.dir === 'desc' ? -1 : 1);
-//       });
-  
-//       this.rows = rows;
-//       this.loading = false;
-//     }, 1000);
-//   }
-//   customChkboxOnSelect({ selected }) {
-//     this.chkBoxSelected = [];
-//     this.chkBoxSelected.splice(0, this.chkBoxSelected.length);
-//     this.chkBoxSelected.push(...selected);
-//   }
-
-
-//   openQuotationBoxModal(row: any): void {
-//     const modalRef = this.modalService.open(NewRfqComponent, { size: 'xl', backdrop: 'static', centered: true, windowClass: 'custom-height-modal' });
-//     modalRef.componentInstance.data = row; 
-//     modalRef.componentInstance.status = this.status;
-//   }
-
-// }
-
 import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ColumnMode, DatatableComponent, SelectionType } from '@swimlane/ngx-datatable';
 import { NewRfqComponent } from '../new-rfq/new-rfq.component';
 import { RfqService } from 'app/shared/services/rfq.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-rfq-list',
@@ -103,50 +19,103 @@ export class RfqListComponent implements OnInit {
   public chkBoxSelected = [];
   public rows: any[] = [];
   public columns = [
-  { name: 'Sr. No.', prop: 'srNo' }, // optional if you add index
-  { name: 'RFQ No.', prop: 'rfqNo' },
-  { name: 'Company Name', prop: 'companyName' },
-  { name: 'Status', prop: 'requestStatus' },
-  { name: 'Date', prop: 'date' },
-  { name: 'Owner', prop: 'owner' },
-  { name: 'Total Amount', prop: 'amount' }
-];
-status: string = ''; // Add this line
+    { name: 'Sr. No.', prop: 'srNo' }, // optional if you add index
+    { name: 'RFQ No.', prop: 'rfqNo' },
+    { name: 'Company Name', prop: 'companyName' },
+    { name: 'Status', prop: 'requestStatus' },
+    { name: 'Start Date', prop: 'startDate' },
+    { name: 'End Date', prop: 'endDate' },
+    { name: 'Owner', prop: 'owner' },
+    { name: 'Total Amount', prop: 'amount' }
+  ];
 
   public loading = false;
 
   title: string = 'Request for Quotation';
-
+  rfqData: any[] = [];
+  userId: string | null = '';
+  status: string = null;
+  isVendorPortal: boolean = false;
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private modalService: NgbModal,
     private rfqService: RfqService,
-    private changeDetectorRef: ChangeDetectorRef
-  ) {}
+    private changeDetectorRef: ChangeDetectorRef,
+    public toastr: ToastrService
+  ) { }
 
-  ngOnInit(): void {
-    this.loadQuotationsForVendor();
+  // ngOnInit() {
+  //   this.route.paramMap.subscribe(params => {
+  //     this.status = this.route.snapshot.queryParamMap.get('status');
+
+  //     const userId = this.route.snapshot.queryParamMap.get('userId') || '';
+  //     if (this.status){
+  //     this.loadStatusFilteredQuotations(userId, this.status);
+  //     }
+  //     else{
+  //       this.loadQuotationsForVendor(userId);
+  //     }
+  //   });
+  // }
+ngOnInit() {
+  const vendorUserId = localStorage.getItem('userId');
+
+  if (!vendorUserId) {
+    console.error('Vendor user ID is missing in localStorage!');
+    // Optionally redirect to login or show a message
+    return;
   }
 
-  loadQuotationsForVendor(): void {
-    const vendorUserId = localStorage.getItem('userId'); 
+  // Listen to route query params
+  this.route.queryParams.subscribe(params => {
+    const status = params['status'] || null;
+    this.loadQuotations(vendorUserId, status);
+  });
+}
 
-    if (!vendorUserId) {
-      console.error('VendorUserId not found in localStorage.');
-      return;
+
+
+  // loadQuotationsForVendor(userId): void {
+  //   // const vendorUserId = localStorage.getItem('userId');
+
+  //   if (!userId) {
+  //     console.error('VendorUserId not found in localStorage.');
+  //     return;
+  //   }
+
+  //   this.loading = true;
+
+  //   this.rfqService.getQuotationByVendor(userId).subscribe(response => {
+
+  //     this.rows = response.$values ?? [];
+  //     this.loading = false;
+  //     this.changeDetectorRef.detectChanges();
+  //   })
+  // }
+loadQuotations(vendorUserId: string, status: string | null) {
+  this.rfqService.getQuotationsByVendor(vendorUserId, status).subscribe({
+    next: (res) => {
+      this.rows = res?.$values || [];
+      this.changeDetectorRef.detectChanges();
+    },
+    error: (err) => {
+      console.error('Error loading quotations:', err);
     }
+  });
+}
 
-    this.loading = true;
 
-    this.rfqService.getQuotationByVendor(vendorUserId).subscribe(response => {
-  
-        this.rows = response.$values ?? [];
-        this.loading = false;
-        this.changeDetectorRef.detectChanges();
-      })
-    };
-  
+// loadStatusFilteredQuotations(userId: string, status: string) {
+//     this.rfqService.getAllQuotationsByStatus(userId, status).subscribe({
+//       next: (response) => {
+//         // Handle $values structure from .NET serialization
+//         this.rows = response?.$values || [];
+//         this.changeDetectorRef.detectChanges();
+//       },
+//       error: (err) => console.error('Error fetching quotations:', err)
+//     });
+//   }
 
   onSort(event): void {
     const sort = event.sorts[0];
@@ -160,6 +129,16 @@ status: string = ''; // Add this line
   }
 
   openQuotationBoxModal(row: any): void {
+    // Check if RFQ has expired
+  if (row.requestStatus === 'Completed' || row.requestStatus === 'InProcess') {
+    this.toastr.warning('Bidding is closed for this RFQ.');
+    return;
+  }
+
+  if (row.endDate && new Date(row.endDate) < new Date()) {
+    this.toastr.warning('The end date has passed for submission of Bids.');
+    return; // Stop execution, don’t open modal
+  }
     const modalRef = this.modalService.open(NewRfqComponent, {
       size: 'xl',
       backdrop: 'static',

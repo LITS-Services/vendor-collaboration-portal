@@ -9,6 +9,7 @@ import { AuthService } from 'app/shared/auth/auth.service';
 import { RfqService } from 'app/shared/services/rfq.service';
 import { RfqBidAttachmentComponent } from '../rfq-bid-attachment/rfq-bid-attachment.component';
 import { ToastrService } from 'ngx-toastr';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-new-rfq',
@@ -71,35 +72,90 @@ attachments: item.attachments?.$values?.map((a: any) => ({
   homePage() {
     this.router.navigate(['/rfq']);
   }
+  // submitForm() {
+  //   const vendorUserId = localStorage.getItem('userId');
+
+  //   if (!vendorUserId) {
+  //     this.toastr.error('Unable to retrieve vendor information. Please log in again.');
+  //     return;
+  //   }
+
+  //   const submissionList = this.newRfqData.map(item => ({
+  //     quotationRequestId: item.quotationRequestId,
+  //     quotationItemId: item.quotationItemId,
+  //     vendorUserId: vendorUserId,
+  //     biddingAmount: item.amount,
+  //     comment: item.comment,
+  //     createdBy: vendorUserId
+  //   }));
+
+  //   this.rfqService.submitBids(submissionList).subscribe({
+  //     next: () => {
+  //       this.toastr.success('Bid submitted successfully!');
+  //       this.router.navigate(['/rfq/rfq-list']);
+  //       this.activeModal.close(true);
+  //     },
+  //     error: (err) => {
+  //       console.error('Error submitting bids:', err);
+  //       this.toastr.error('Failed to submit bids.');
+  //     }
+  //   });
+  // }
   submitForm() {
-    const vendorUserId = localStorage.getItem('userId');
+  const vendorUserId = localStorage.getItem('userId');
 
-    if (!vendorUserId) {
-      alert('Unable to retrieve vendor information. Please log in again.');
-      return;
-    }
-
-    const submissionList = this.newRfqData.map(item => ({
-      quotationRequestId: item.quotationRequestId,
-      quotationItemId: item.quotationItemId,
-      vendorUserId: vendorUserId,
-      biddingAmount: item.amount,
-      comment: item.comment,
-      createdBy: vendorUserId
-    }));
-
-    this.rfqService.submitBids(submissionList).subscribe({
-      next: () => {
-        this.toastr.success('Bid submitted successfully!');
-        this.router.navigate(['/rfq/rfq-list']);
-        this.activeModal.close(true);
-      },
-      error: (err) => {
-        console.error('Error submitting bids:', err);
-        alert('Failed to submit bids.');
-      }
-    });
+  if (!vendorUserId) {
+    this.toastr.error('Unable to retrieve vendor information. Please log in again.');
+    return;
   }
+
+  const submissionList = this.newRfqData.map(item => ({
+    quotationRequestId: item.quotationRequestId,
+    quotationItemId: item.quotationItemId,
+    vendorUserId: vendorUserId,
+    biddingAmount: item.amount,
+    comment: item.comment,
+    createdBy: vendorUserId
+  }));
+
+  // 🔹 Show SweetAlert confirmation
+  Swal.fire({
+    title: 'Are you sure?',
+    text: 'Have you carefully reviewed your bids before submitting?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, submit bids',
+    cancelButtonText: 'Cancel',
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Proceed only if confirmed
+      this.rfqService.submitBids(submissionList).subscribe({
+        next: () => {
+          Swal.fire({
+            title: 'Submitted!',
+            text: 'Your bids have been submitted successfully.',
+            icon: 'success',
+            confirmButtonColor: '#3085d6'
+          });
+          this.router.navigate(['/rfq/rfq-list']);
+          this.activeModal.close(true);
+        },
+        error: (err) => {
+          console.error('Error submitting bids:', err);
+          Swal.fire({
+            title: 'Error!',
+            text: 'Failed to submit bids. Please try again later.',
+            icon: 'error',
+            confirmButtonColor: '#d33'
+          });
+        }
+      });
+    }
+  });
+}
+
 
 
   deleteRow(rowIndex: number): void {

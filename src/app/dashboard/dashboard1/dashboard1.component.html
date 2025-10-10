@@ -14,7 +14,7 @@
     <div class="card card-info">
       <h4>Total</h4>
       <div class="curve-button">
-        <button class="circle-button" (click)="rfq()">
+        <button class="circle-button">
           <i class="ft-arrow-up-right"></i>
         </button>
       </div>
@@ -22,7 +22,7 @@
         <div class="card-body py-0">
           <div class="media pb-1">
             <div class="media-body">
-              <h1>{{ totalCompaniesCount   }}</h1>
+              <h1>{{ totalCompaniesCount }}</h1>
               <div class="row align-items-center">
                 <div class="col-2 d-flex justify-content-center">
                   <div class="cube">
@@ -36,7 +36,7 @@
                   <img src="/assets/img/icons/Vector1.svg" class="vector1" alt="">
                 </div>
               </div>
-              
+
             </div>
           </div>
         </div>
@@ -55,7 +55,7 @@
         <div class="card-body py-0">
           <div class="media pb-1">
             <div class="media-body">
-              <h1>{{ newlyOnboardedCount  }}</h1>
+              <h1>{{ newlyOnboardedCount }}</h1>
               <div class="row align-items-center">
                 <div class="col-2 d-flex justify-content-center">
                   <div class="cube">
@@ -69,7 +69,7 @@
                   <img src="/assets/img/icons/vector2.svg" class="vector1" alt="">
                 </div>
               </div>
-              
+
             </div>
           </div>
         </div>
@@ -88,7 +88,7 @@
         <div class="card-body py-0">
           <div class="media pb-1">
             <div class="media-body">
-              <h1>{{ inprogressCount  }}</h1>
+              <h1>{{ inprogressCount }}</h1>
               <div class="row align-items-center">
                 <div class="col-2 d-flex justify-content-center">
                   <div class="cube">
@@ -102,7 +102,7 @@
                   <img src="/assets/img/icons/vector3.svg" class="vector1" alt="">
                 </div>
               </div>
-              
+
             </div>
           </div>
         </div>
@@ -117,7 +117,7 @@
     <div class="card card-info">
       <h4>Total RFQs</h4>
       <div class="curve-button">
-        <button class="circle-button" (click)="rfq()">
+        <button class="circle-button" (click)="navigateToStatus(null)">
           <i class="ft-arrow-up-right"></i>
         </button>
       </div>
@@ -139,7 +139,7 @@
                   <img src="/assets/img/icons/Vector1.svg" class="vector1" alt="">
                 </div>
               </div>
-              
+
             </div>
           </div>
         </div>
@@ -150,7 +150,7 @@
     <div class="card card-info">
       <h4>New RFQs</h4>
       <div class="curve-button">
-        <button class="circle-button">
+        <button (click)="navigateToStatus('New')" class="circle-button">
           <i class="ft-arrow-up-right"></i>
         </button>
       </div>
@@ -172,18 +172,18 @@
                   <img src="/assets/img/icons/vector2.svg" class="vector1" alt="">
                 </div>
               </div>
-              
+
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-    <div class="col-xl-3 col-lg-6 col-md-6 col-12">
+  <div class="col-xl-3 col-lg-6 col-md-6 col-12">
     <div class="card card-info">
       <h4>In-Process RFQs</h4>
       <div class="curve-button">
-        <button class="circle-button">
+        <button (click)="navigateToStatus('InProcess')" class="circle-button">
           <i class="ft-arrow-up-right"></i>
         </button>
       </div>
@@ -205,18 +205,18 @@
                   <img src="/assets/img/icons/vector2.svg" class="vector1" alt="">
                 </div>
               </div>
-              
+
             </div>
           </div>
         </div>
       </div>
     </div>
-    </div>
-    <div class="col-xl-3 col-lg-6 col-md-6 col-12">
+  </div>
+  <div class="col-xl-3 col-lg-6 col-md-6 col-12">
     <div class="card card-info">
       <h4>Completed RFQs</h4>
       <div class="curve-button">
-        <button class="circle-button">
+        <button (click)="navigateToStatus('Completed')" class="circle-button">
           <i class="ft-arrow-up-right"></i>
         </button>
       </div>
@@ -238,13 +238,13 @@
                   <img src="/assets/img/icons/vector2.svg" class="vector1" alt="">
                 </div>
               </div>
-              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+</div>
 
 
 <div class="row" (resized)="onResized($event)">
@@ -253,7 +253,7 @@
     <div class="card card-info">
       <h4>New Tender Requests</h4>
       <div class="curve-button">
-        <button class="circle-button" (click)="rfq()">
+        <button class="circle-button">
           <i class="ft-arrow-up-right"></i>
         </button>
       </div>
@@ -275,7 +275,7 @@
                   <img src="/assets/img/icons/Vector1.svg" class="vector1" alt="">
                 </div>
               </div>
-              
+
             </div>
           </div>
         </div>
@@ -308,7 +308,7 @@
                   <img src="/assets/img/icons/vector2.svg" class="vector1" alt="">
                 </div>
               </div>
-              
+
             </div>
           </div>
         </div>
@@ -323,7 +323,7 @@
     <div class="card card-info">
       <h4>Awarded POs</h4>
       <div class="curve-button">
-        <button class="circle-button" (click)="rfq()">
+        <button class="circle-button">
           <i class="ft-arrow-up-right"></i>
         </button>
       </div>
@@ -345,7 +345,7 @@
                   <img src="/assets/img/icons/Vector1.svg" class="vector1" alt="">
                 </div>
               </div>
-              
+
             </div>
           </div>
         </div>
@@ -378,7 +378,7 @@
                   <img src="/assets/img/icons/vector2.svg" class="vector1" alt="">
                 </div>
               </div>
-              
+
             </div>
           </div>
         </div>
@@ -411,7 +411,7 @@
                   <img src="/assets/img/icons/vector2.svg" class="vector1" alt="">
                 </div>
               </div>
-              
+
             </div>
           </div>
         </div>
@@ -444,7 +444,7 @@
                   <img src="/assets/img/icons/vector2.svg" class="vector1" alt="">
                 </div>
               </div>
-              
+
             </div>
           </div>
         </div>
@@ -477,7 +477,7 @@
                   <img src="/assets/img/icons/vector2.svg" class="vector1" alt="">
                 </div>
               </div>
-              
+
             </div>
           </div>
         </div>
@@ -510,7 +510,7 @@
                   <img src="/assets/img/icons/vector2.svg" class="vector1" alt="">
                 </div>
               </div>
-              
+
             </div>
           </div>
         </div>
@@ -526,7 +526,7 @@
     <div class="card">
       <div class="card-header">
         <h4 class="card-title">Customer Satisfaction</h4>
-        <p>Customer Satisfaction Score</p>    
+        <p>Customer Satisfaction Score</p>
       </div>
       <div class="card-content">
 
@@ -584,25 +584,14 @@
             </span>
           </div>
           <div id="line-chart1" class="height-350">
-            <apx-chart
-                    [series]="columnChartOptions.series"
-                    [colors]="columnChartOptions.colors"
-                    [chart]="columnChartOptions.chart"
-                    [xaxis]="columnChartOptions.xaxis"
-                    [yaxis]="columnChartOptions.yaxis"
-                    [title]="columnChartOptions.title"
-                    [dataLabels]="columnChartOptions.dataLabels"
-                    [stroke]="columnChartOptions.stroke"
-                    [grid]="columnChartOptions.grid"
-                    [tooltip]="columnChartOptions.tooltip"
-                    [plotOptions]="columnChartOptions.plotOptions"
-                    [fill]="columnChartOptions.fill"
-                    [legend]="columnChartOptions.legend"
-                    [labels]="columnChartOptions.labels"
-                    [markers]="columnChartOptions.markers"
-                    [theme]="columnChartOptions.theme"
-                    [responsive]="columnChartOptions.responsive"
-                  ></apx-chart>
+            <apx-chart [series]="columnChartOptions.series" [colors]="columnChartOptions.colors"
+              [chart]="columnChartOptions.chart" [xaxis]="columnChartOptions.xaxis" [yaxis]="columnChartOptions.yaxis"
+              [title]="columnChartOptions.title" [dataLabels]="columnChartOptions.dataLabels"
+              [stroke]="columnChartOptions.stroke" [grid]="columnChartOptions.grid"
+              [tooltip]="columnChartOptions.tooltip" [plotOptions]="columnChartOptions.plotOptions"
+              [fill]="columnChartOptions.fill" [legend]="columnChartOptions.legend" [labels]="columnChartOptions.labels"
+              [markers]="columnChartOptions.markers" [theme]="columnChartOptions.theme"
+              [responsive]="columnChartOptions.responsive"></apx-chart>
           </div>
         </div>
       </div>

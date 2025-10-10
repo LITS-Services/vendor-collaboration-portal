@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output } from '@angular/core';
 import * as Chartist from 'chartist';
 import { ChartType, ChartEvent } from "ng-chartist";
 import ChartistTooltip from 'chartist-plugin-tooltips-updated';
@@ -56,7 +56,7 @@ export interface QuotationRequestsCountVM {
 }
 
 var $info = "#249D57",
-    $info_light = "#BDE2CD"
+  $info_light = "#BDE2CD"
 var themeColors = [$info, $info_light];
 
 export interface Chart {
@@ -75,8 +75,8 @@ export interface Chart {
 })
 
 export class Dashboard1Component implements OnInit {
-  columnChartOptions : Partial<ChartOptions>;
-
+  columnChartOptions: Partial<ChartOptions>;
+ @Output() statusSelected = new EventEmitter<string | null>();
   totalCompaniesCount: number = 0;
   inprogressCount: number = 0;
   newlyOnboardedCount: number = 0;
@@ -119,7 +119,7 @@ export class Dashboard1Component implements OnInit {
 
   ngOnInit() {
     this.loadCompanyStats();
-     this.loadQuotationRequestsCounts();
+    this.loadQuotationRequestsCounts();
   }
 
   loadCompanyStats() {
@@ -146,9 +146,9 @@ export class Dashboard1Component implements OnInit {
         }
 
         console.log('Parsed companies:', companies);
-    const vendorCompanies = companies.filter(c =>
-        (c.vendorId || '').toLowerCase() === userId.toLowerCase()
-      );
+        const vendorCompanies = companies.filter(c =>
+          (c.vendorId || '').toLowerCase() === userId.toLowerCase()
+        );
 
       // Only count companies where status = "completed"
       this.totalCompaniesCount = vendorCompanies.filter(c =>
@@ -186,7 +186,7 @@ export class Dashboard1Component implements OnInit {
     });
   }
 
-    loadQuotationRequestsCounts(): void {
+  loadQuotationRequestsCounts(): void {
     this.rfqService.getQuotationRequestsCount().subscribe({
       next: (data) => {
         this.rfqCounts = data;
@@ -198,6 +198,26 @@ export class Dashboard1Component implements OnInit {
             this.cdr.detectChanges();
 
   }
+
+  // goToStatusFilteredQuotations(status: string) {
+  //   const userId = localStorage.getItem('userId'); // assuming saved on login
+  //   this.router.navigate(['/rfq/rfq-list'], { queryParams: { userId: userId, status: status } });
+  // }
+
+navigateToStatus(status: string | null) {
+    if (status) {
+      this.router.navigate(['/rfq/rfq-list'], { queryParams: { status } });
+    } else {
+      this.router.navigate(['/rfq/rfq-list']); // Total (no filter)
+    }
+  }
+
+  // goToStatusFilteredQuotations(status: string) {
+  //   const userId = localStorage.getItem('userId'); // assuming saved on login
+  //   this.router.navigate(['/rfq/rfq-list'], { queryParams: { userId: userId, status: status } });
+  // }
+
+
 
   // Donut chart configuration Starts
   DonutChart: Chart = {
@@ -269,7 +289,10 @@ export class Dashboard1Component implements OnInit {
     setTimeout(() => { this.fireRefreshEventOnWindow(); }, 300);
   }
 
-  rfq() { this.router.navigate(['/rfq']); }
+  goToAllVendorQuotations() 
+  {  const userId = localStorage.getItem('userId'); // assuming saved on login
+    this.router.navigate(['/rfq/rfq-list'], { queryParams: { userId: userId } });
+   }
 
   fireRefreshEventOnWindow = function () {
     const evt = document.createEvent("HTMLEvents");
