@@ -50,11 +50,11 @@ export class OtpComponent implements OnInit {
     }
 
     const otpValue = this.otpForm.value.otp;
-    const { Username, PortalType } = this.pendingRegistration;
+    const { email } = this.pendingRegistration;
 
     this.spinner.show();
 
-    this.authService.verifyOtp(otpValue).subscribe({
+    this.authService.verifyOtp(otpValue,email).subscribe({
       next: (res: any) => {
         this.spinner.hide();
         this.toastr.success('OTP verified successfully ✅');

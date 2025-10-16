@@ -93,7 +93,8 @@ export class RegisterVendorComponent implements OnInit {
 
           localStorage.setItem('pendingRegistration', JSON.stringify({
             Username: payload.Username,
-            PortalType: payload.PortalType
+            PortalType: payload.PortalType,
+            email: payload.Email
           }));
 
           this.router.navigate(['pages/otp']);
@@ -113,7 +114,8 @@ export class RegisterVendorComponent implements OnInit {
 
           localStorage.setItem('pendingRegistration', JSON.stringify({
             Username: payload.Username,
-            PortalType: payload.PortalType
+            PortalType: payload.PortalType,
+            email: payload.Email
           }));
 
           this.router.navigate(['pages/otp']);

@@ -92,8 +92,9 @@ ssoCallback(code: string): Observable<any> {
     });
   }
 
-  verifyOtp(otp: string) {
-    return this.http.post(`${this.baseUrl}/Auth/VerifyVendorOtp`, { otp },
+  verifyOtp(otp: string, email: string) {
+      const body = { otp: Number(otp), email };
+    return this.http.post(`${this.baseUrl}/Auth/VerifyVendorOtp`,  body,
     { responseType: 'text' }
     );
   }
