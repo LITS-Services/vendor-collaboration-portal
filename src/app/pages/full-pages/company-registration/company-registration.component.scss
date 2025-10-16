@@ -1,0 +1,84 @@
+.procurement-btn{
+    padding: 9px 16px;
+}
+
+::ng-deep ngb-accordion.cstm-accordion .accordion-item {
+  background-color: #fff !important;
+      border-top: 1px solid #D7D7D7 !important;
+      border: none;
+      padding-bottom: 6px;
+}
+
+::ng-deep ngb-accordion.cstm-accordion .accordion-item .accordion-body{
+    padding-top: 0px !important;
+}
+
+.desc{
+    color: #606060;
+    margin-bottom: 8px;
+}
+
+.accordion-button {
+
+    background-color: #fff !important;
+}
+
+.card{
+    border: 1px solid #b8d4c5 !important;
+    box-shadow: none !important;
+    border-radius: 12px;
+}
+
+thead{
+        background: #F4F4F4;
+        th{
+            font-weight: 500;
+            padding: 12px 12px;
+            font-size: 14px;
+        }
+}
+
+table {
+    box-shadow: none !important;
+    --bs-table-accent-bg: transparent !important;
+     background-color: #fff; /* ensures white base */
+    tbody {
+    tr {
+      transition: background-color 0.2s ease;
+
+      &:nth-child(even) {
+        background-color: #f8fffa; // very light green
+      }
+
+      &:nth-child(odd) {
+        background-color: #ffffff;
+      }
+
+      &:hover {
+        background-color: #f1faf5; // hover highlight
+      }
+
+      td {
+        padding: 10px 14px;
+        border-top: none;
+        color: #444;
+        vertical-align: middle;
+        font-size: 14px;
+      }
+    }
+  }
+
+  th,
+  td {
+    text-align: left;
+  }
+
+    thead tr th {
+    border-bottom: none !important; /* remove underline */
+  }
+
+}
+
+table > :not(:first-child) {
+    border-top: none !important;
+}

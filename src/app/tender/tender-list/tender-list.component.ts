@@ -145,6 +145,95 @@ export class TenderListComponent implements OnInit {
       accounts: '03-63418', // Vendors, Accounts, Total Amount badges
       totalAmount: 2500000
     },
+        {
+      requisitionNo: 'REQ001', // Requisition No.
+      status: 'Pending for Approval' , // Status
+      date: '2024-10-01', // Date (title column)
+      owner: 'Mubashir', // Owner (announcementDate)
+      department: 'IT', // Department (announcementEndDate)
+      title: 'Cleaning Services Contract Renewal', // Title (fileName)
+      vendors: "000035", // File path for download
+      accounts: '03-63418', // Vendors, Accounts, Total Amount badges
+      totalAmount: 2500000
+    },
+        {
+      requisitionNo: 'REQ001', // Requisition No.
+      status: 'Pending for Approval' , // Status
+      date: '2024-10-01', // Date (title column)
+      owner: 'Mubashir', // Owner (announcementDate)
+      department: 'IT', // Department (announcementEndDate)
+      title: 'Cleaning Services Contract Renewal', // Title (fileName)
+      vendors: "000035", // File path for download
+      accounts: '03-63418', // Vendors, Accounts, Total Amount badges
+      totalAmount: 2500000
+    },
+        {
+      requisitionNo: 'REQ001', // Requisition No.
+      status: 'Pending for Approval' , // Status
+      date: '2024-10-01', // Date (title column)
+      owner: 'Mubashir', // Owner (announcementDate)
+      department: 'IT', // Department (announcementEndDate)
+      title: 'Cleaning Services Contract Renewal', // Title (fileName)
+      vendors: "000035", // File path for download
+      accounts: '03-63418', // Vendors, Accounts, Total Amount badges
+      totalAmount: 2500000
+    },
+        {
+      requisitionNo: 'REQ001', // Requisition No.
+      status: 'Pending for Approval' , // Status
+      date: '2024-10-01', // Date (title column)
+      owner: 'Mubashir', // Owner (announcementDate)
+      department: 'IT', // Department (announcementEndDate)
+      title: 'Cleaning Services Contract Renewal', // Title (fileName)
+      vendors: "000035", // File path for download
+      accounts: '03-63418', // Vendors, Accounts, Total Amount badges
+      totalAmount: 2500000
+    },
+        {
+      requisitionNo: 'REQ001', // Requisition No.
+      status: 'Pending for Approval' , // Status
+      date: '2024-10-01', // Date (title column)
+      owner: 'Mubashir', // Owner (announcementDate)
+      department: 'IT', // Department (announcementEndDate)
+      title: 'Cleaning Services Contract Renewal', // Title (fileName)
+      vendors: "000035", // File path for download
+      accounts: '03-63418', // Vendors, Accounts, Total Amount badges
+      totalAmount: 2500000
+    },
+        {
+      requisitionNo: 'REQ001', // Requisition No.
+      status: 'Pending for Approval' , // Status
+      date: '2024-10-01', // Date (title column)
+      owner: 'Mubashir', // Owner (announcementDate)
+      department: 'IT', // Department (announcementEndDate)
+      title: 'Cleaning Services Contract Renewal', // Title (fileName)
+      vendors: "000035", // File path for download
+      accounts: '03-63418', // Vendors, Accounts, Total Amount badges
+      totalAmount: 2500000
+    },
+        {
+      requisitionNo: 'REQ001', // Requisition No.
+      status: 'Pending for Approval' , // Status
+      date: '2024-10-01', // Date (title column)
+      owner: 'Mubashir', // Owner (announcementDate)
+      department: 'IT', // Department (announcementEndDate)
+      title: 'Cleaning Services Contract Renewal', // Title (fileName)
+      vendors: "000035", // File path for download
+      accounts: '03-63418', // Vendors, Accounts, Total Amount badges
+      totalAmount: 2500000
+    },
+        {
+      requisitionNo: 'REQ001', // Requisition No.
+      status: 'Pending for Approval' , // Status
+      date: '2024-10-01', // Date (title column)
+      owner: 'Mubashir', // Owner (announcementDate)
+      department: 'IT', // Department (announcementEndDate)
+      title: 'Cleaning Services Contract Renewal', // Title (fileName)
+      vendors: "000035", // File path for download
+      accounts: '03-63418', // Vendors, Accounts, Total Amount badges
+      totalAmount: 2500000
+    },
+    
    
   ];
   @ViewChild(DatatableComponent) table: DatatableComponent;

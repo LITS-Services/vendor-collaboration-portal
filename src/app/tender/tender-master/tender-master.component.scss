@@ -1,4 +1,58 @@
+.card-title{
+      font-size: 15px;
+    font-weight: 400;
+}
 
+h6{
+  font-size: 14px !important;
+}
+
+.cstm-media{
+  margin-top: 10px;
+}
+
+.media{
+    margin-top: 10px;
+}
+
+.cstm-card-body{
+  padding: 0px 12px !important;
+}
+
+.cstm-card{
+   background: linear-gradient(135deg, #249D57 0%, #187741 100%);
+
+   .card-title{
+    color: #FFFFFF !important;
+   }
+
+   h1{
+    color: #FFFFFF !important;
+   }
+
+   h6{
+    color: #FFFFFF !important;
+   }
+
+   .vector1{
+    color: #FFFFFF !important;
+   }
+}
+
+.media-body{
+  h1{
+    font-size: 36px !important;
+  }
+
+}
+
+h1{
+  font-size: 26px !important;
+}
+
+.card-body {
+   padding: 0px 12px !important;
+}
 ::ng-deep .ngx-datatable{
     .sortable .sort-btn:before {
         // font-family: data-table;
@@ -241,12 +295,12 @@
 }
 
 :host ::ng-deep .donut .ct-done .ct-slice-donut {
-  stroke : #40C057;
-  stroke-width : 24px !important;
+  stroke : #249D57;
+  stroke-width : 16px !important;
 }
 
 :host ::ng-deep .donut .ct-progress .ct-slice-donut {
-  stroke : #F77E17;
+   stroke : #A7D8BC;
   stroke-width : 16px !important;
 }
 
@@ -260,13 +314,17 @@
   stroke-width : 32px !important;
 }
 .text-card{
-  color: #249D57;
-  padding: 5px;
+   color: #249D57;
+    padding: 5px 8px;
+    display: flex;
+    font-size: 12px;
+    gap: 6px;
+    align-items: center;
   
 }
 .cube{
-  border: 1px solid #249D57;
-  background-color: rgba(58, 167, 103, 0.1215686275);
+  //border: 1px solid #249D57;
+  background-color: #A8EEC1;
   border-radius: 20px;
   // padding: 5px;
   align-items: center;
@@ -274,12 +332,14 @@
   justify-self: center;
 }
 .vector1{
+    width: 34px;
+  height: 34px;
   color: #249D57;
 }
 .card{
   border: 1px solid #BDE2CD !important;
   border-radius: 20px !important;
-
+    box-shadow: none;
 }
 .card-info {
   position: relative;
@@ -307,9 +367,9 @@
   position: absolute;
   top: 0;
   right: 0;
-  width: 50px;  /* Adjust for desired curve size */
-  height: 50px;
-  border: 1px solid #BDE2CD;
+  width: 60px;  /* Adjust for desired curve size */
+  height: 60px;
+  //border: 1px solid #BDE2CD;
   border-radius: 0 0 0 20px; /* Curve on bottom-left */
   display: flex;
   align-items: center;
@@ -319,10 +379,10 @@
 }
 
 .circle-button {
-  width: 30px;
-  height: 30px;
-  background-color: white;
-  border: 1px solid #BDE2CD;
+  width: 36px;
+  height: 36px;
+  background-color: #E3FCEC;
+  border: 1px solid #54d98c;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -343,6 +403,23 @@
 
 .circle-button i {
   font-size: 1.2rem; /* Adjust icon size as needed */
+}
+
+.dash-title{
+  font-weight: 500;
+}
+
+.dash-desc{
+  font-weight: 400;
+  font-size: 12px;
+}
+
+.primary-color{
+  color: #249D57 !important;
+}
+
+.sec-color{
+  color: #BDE2CD !important;
 }
 
 
