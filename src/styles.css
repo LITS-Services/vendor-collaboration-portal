@@ -1,20 +1,26 @@
 /* You can add global styles to this file, and also import other style files */
-
+.modal-title {
+  color: white !important;
+}
 .btn-primary{
-    background: linear-gradient(to right, #249D57, #187741);
+    background: #249D57;
+
     color: #ffffff;
     border: #249D57;
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: 9px;
   }
   .btn-primary:hover {
     background-color: #187741;
     border-color: #249D57;
+    color: white;
   }
   .btn-primary:active {
     background-color: #187741;
     border-color: #249D57;
+     color: white;
   }
   .btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active, .show > .btn-primary.dropdown-toggle {
     color: #fff;
@@ -25,6 +31,8 @@
     color: #fff;
     background-color: #249D57 !important;
     border-color: #249D57 !important;
+
+    
   }
   .btn-primary:focus, .btn-primary.focus {
     color: #fff;
@@ -33,10 +41,10 @@
     box-shadow: 0 0 0 0.2rem rgba(115, 204, 255, 0.5);
   }
   .btn-outline-primary {
-    border: 1px solid;
-    border-color: #249D57;
-    background-color: transparent;
+    border: 1px solid #BDE2CD !important;
+    background-color: #ffffff;
     color: #249D57;
+    border-radius: 9px;
 }
 .btn-outline-primary:hover {
   background-color: #249D57 !important;
@@ -75,6 +83,7 @@ a:hover {
     font-weight: 700;
   }
   body{
+    background-color: #fff;
     font-family: "Onest", sans-serif !important;
   }
   html{
@@ -93,16 +102,61 @@ a:hover {
   
   .form-control:focus {
     color: #75787d;
-    background-color: transparent;
-    border-color: #1E89B8;
+    background-color: white;
+    border-color: #299c5b9c;
     outline: 0;
     box-shadow: none;
   }
-  
+
+  .form-control{
+ height: 42px;
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid #D7D7D7;
+  border-radius: 9px;
+  color: #2B2F33;
+  font-size: 15px;
+  transition: all 0.25s ease;
+  background-color: white;
+    background-position: right 4px center; /* moves arrow inward */
+  background-repeat: no-repeat;
+  background-origin: content-box;
+  }
+
+  .pos-relative{
+    position: relative;
+  }
+
+  textarea.form-control{
+    min-height: calc(1.5em + 1.8rem + 0px) !important;
+  }
+
+  select.form-control {
+  appearance: none; /* remove default select styling */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='%23333' d='M0 0l5 6 5-6z'/></svg>");
+  background-position: right 4px center;
+  background-repeat: no-repeat;
+  background-size: 10px 6px;
+}
+
+  .form-control::placeholder {
+  color: #A8A9AC !important;
+  opacity: 1;
+}
+
+.form-control::-ms-expand {
+  display: none; /* removes default arrow in IE/Edge */
+}
   form label, .form-group label {
     text-transform: capitalize !important;
     font-size: 0.85rem;
     font-weight: 500;
+  }
+
+  label{
+    margin-bottom: 4px;
   }
   .example-action-buttons {
     display: flex;
@@ -127,6 +181,15 @@ a:hover {
     color: #249D57 !important;
   }
 
+  h6{
+    color: black !important;
+    font-weight: 400 !important;
+  }
+
+  h1{
+    font-size: 26px !important;
+  }
+
   .accordion-button {
     font-weight: 600 !important;
     position: relative;
@@ -134,10 +197,10 @@ a:hover {
     align-items: center;
     width: 100%;
     padding: 1rem 1rem !important;
-    font-size: 1.5rem !important;
+    font-size: 1rem !important;
     color: #249D57 !important;
     text-align: left;
-    background-color: #F7F7F8;
+    background-color: #fff;
     border: 0;
     border-radius: 0;
     overflow-anchor: none;
@@ -147,8 +210,8 @@ a:hover {
 .accordion-button:not(.collapsed) {
   color: #187741;
   background-color: #f5efff;
-  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.125);
-  background-color: rgba(58, 167, 103, 0.1215686275) !important;
+  box-shadow: none !important;
+  background-color:white !important;
 }
 
 .accordion-button:focus {
@@ -157,4 +220,80 @@ a:hover {
   outline: 0;
   /* box-shadow: 0 0 0 0.25rem rgba(58, 167, 103, 0.1215686275); */
   box-shadow: none !important;
+}
+
+    .ngx-datatable .datatable-header-inner {
+      background-color: #249d57 !important;
+      color: white;
+    }
+
+  .ngx-datatable.bootstrap .datatable-header .datatable-header-cell {
+  border-bottom: none !important;
+}
+
+.ngx-datatable.bootstrap .datatable-body .datatable-body-row {
+  border-top: none !important;   /* allow growth */
+  margin-bottom: -3px !important;
+}
+
+  .ngx-datatable.bootstrap .datatable-body .datatable-body-row.datatable-row-even {
+    background-color: #f1fff7bd !important;
+  }
+
+   .ngx-datatable.bootstrap .datatable-body .datatable-body-row.datatable-row-odd {
+    background-color: white !important;
+  }
+
+  .ngx-datatable.bootstrap .datatable-body .datatable-body-row.active{
+    background-color: #249d57 !important;
+  }
+
+
+  .ngx-datatable.fixed-row .datatable-scroll .datatable-body-row .datatable-body-cell{
+    padding: 0.85rem;
+    display: flex;
+    align-items: center;
+  }
+
+   .ngx-datatable.bootstrap .datatable-footer {
+    color: #747474 !important;
+    background-color: transparent !important;
+  }
+
+  .ngx-datatable.bootstrap .datatable-footer .datatable-pager a {
+        color: #747474 !important;
+        border: 1px solid #D7D7D7 !important;
+  }
+
+  .ngx-datatable.bootstrap .datatable-footer .datatable-pager ul li:not(.disabled).active a {
+    background-color: #249d57 !important;
+    font-weight: bold;
+    color: #ffffff !important;
+  }
+
+  .ngx-datatable.bootstrap .datatable-footer .datatable-pager ul li:not(.disabled):hover a {
+    background-color: #249d57 !important;
+    font-weight: bold;
+    color: #ffffff !important;
+  }
+
+  .cstm-checkbox-form{
+  display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 100% !; 
+}
+  
+datatable-scroller {
+  width: 100% !important;
+}
+
+@media (max-width: 576px) {
+  .wrapper {
+    top: 74px !important;
+  }
+  .vertical-overlay-menu .main-menu.menu-fixed{
+    top: 0 !important;
+    height: 100% !important;
+  }
 }

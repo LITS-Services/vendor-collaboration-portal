@@ -10,6 +10,7 @@ import { LISTITEMS } from '../data/template-search';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { CompanyService } from 'app/shared/services/company.service'; // ✅ added
+import { HROUTES } from '../horizontal-menu/navigation-routes.config';
 
 @Component({
   selector: "app-navbar",
@@ -27,6 +28,8 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   isSmallScreen = false;
   username: string = '';
   profilePicture: string = 'assets/img/portrait/small/avatar-s-1.png'; // default avatar
+
+    public menuItems: any[];
 
   protected innerWidth: any;
   searchOpenClass = "";
@@ -73,6 +76,11 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // ✅ Load user profile for navbar
     this.loadNavbarUser();
+
+        // Build tabs from HROUTES once (or on config stream if needed)
+      this.menuItems = (HROUTES || [])
+    .filter(x => x && x.title && (x.path || x.isExternalLink))   // basic sanity
+    .filter(x => !x.submenu || x.submenu.length === 0);  
   }
 
   ngAfterViewInit() {

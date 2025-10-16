@@ -1,5 +1,5 @@
 <!-- Header Starts -->
-<div class="row mt-3">
+<div class="row">
     <div class="col-12">
       <h1>History</h1>
     </div>
@@ -8,10 +8,10 @@
   
   <!--Statistics cards Starts-->
     
-  <div class="row" (resized)="onResized($event)">
+  <div class="row gx-2" (resized)="onResized($event)">
     <div class="col-xl-4 col-lg-6 col-md-6 col-12">
         <div class="card card-info">
-          <h4>PR Requests</h4>
+          <h4 class="card-title">PR Requests</h4>
           <!-- <div class="curve-button">
             <button class="circle-button" (click)="prRequest()">
               <i class="ft-arrow-up-right"></i>
@@ -44,7 +44,7 @@
       </div>
     <div class="col-xl-4 col-lg-6 col-md-6 col-12">
       <div class="card card-info">
-        <h4>RFQ Requests</h4>
+        <h4 class="card-title">RFQ Requests</h4>
         <div class="curve-button">
           <button class="circle-button" (click)="rfqRequest()">
             <i class="ft-arrow-up-right"></i>
@@ -77,7 +77,7 @@
     </div>
     <div class="col-xl-4 col-lg-6 col-md-6 col-12">
       <div class="card card-info">
-        <h4>PO Details</h4>
+        <h4 class="card-title">PO Details</h4>
         <div class="curve-button">
           <button class="circle-button" (click)="poDetails()">
             <i class="ft-arrow-up-right"></i>
@@ -110,7 +110,7 @@
     </div>
     <div class="col-xl-4 col-lg-6 col-md-6 col-12">
         <div class="card card-info">
-          <h4>Recieving Details</h4>
+          <h4 class="card-title">Recieving Details</h4>
           <!-- <div class="curve-button">
             <button class="circle-button" (click)="recievingDetails()">
               <i class="ft-arrow-up-right"></i>
@@ -143,7 +143,7 @@
       </div>
       <div class="col-xl-4 col-lg-6 col-md-6 col-12">
         <div class="card card-info">
-          <h4>Invoice Details</h4>
+          <h4 class="card-title">Invoice Details</h4>
           <div class="curve-button">
             <button class="circle-button" (click)="invoiceDetails()">
               <i class="ft-arrow-up-right"></i>
@@ -176,7 +176,7 @@
       </div>
       <div class="col-xl-4 col-lg-6 col-md-6 col-12">
         <div class="card card-info">
-          <h4>Payment Details</h4>
+          <h4 class="card-title">Payment Details</h4>
           <div class="curve-button">
             <button class="circle-button" (click)="paymentDetails()">
               <i class="ft-arrow-up-right"></i>
@@ -215,9 +215,9 @@
   <div class="row">
     <div class="col-xl-4 col-12">
       <div class="card">
-        <div class="card-header">
-          <h4 class="card-title">Customer Satisfaction</h4>
-          <p>Customer Satisfaction Score</p>    
+        <div class="card-header mt-1">
+          <h4 class="card-title dash-title">Customer Satisfaction</h4>
+          <p class="dash-desc">Customer Satisfaction Score</p>    
         </div>
         <div class="card-content">
   
@@ -230,7 +230,28 @@
           </div>
   
           <div class="card-body">
-            <div class="row mb-3">
+                 <div class="chart-info gap-3 d-flex text-center justify-content-center mb-2">
+              <span class="mr-3">
+                <i class="fa fa-circle primary-color font-small-3 me-1"></i>
+                <span>Positive</span>
+              </span>
+              <span class="mr-3">
+                <i class="fa fa-circle sec-color lighten-3 font-small-3 me-1"></i>
+                <span>Negative</span>
+              </span>
+            </div>
+            
+            <div class="d-flex align-items-center justify-content-center gap-2 mb-2">
+              <div class="d-flex justify-content-center">
+                <div class="cube">
+                  <span class="text-card"><i class="ft-chevron-up mr-2"></i>17%</span>
+                </div>
+              </div>
+              <div class="text-center mt-2">
+                <h6>Last three months</h6>
+              </div>
+            </div>
+            <!-- <div class="row mb-3">
               <div class="col">
                 <span class="mb-1 text-muted d-block">85% - Satisfied</span>
                 <div class="progress" style="height: 5px;">
@@ -247,33 +268,38 @@
                     aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
     </div>
     <div class="col-xl-8 col-12">
       <div class="card">
-        <div class="card-header">
-          <h4 class="card-title mb-1">
-            <span>Statistics</span>
-            <span class="float-right cursor-pointer">
-              <i class="ft-more-vertical-"></i>
-            </span>
-          </h4>
+      <div class="card-header mt-1">
+        <div class="d-flex align-items-baseline gap-4">
+              <h4 class="card-title dash-title">
+                <span>Statistics</span>
+                <!-- <span class="float-right cursor-pointer">
+                  <i class="ft-more-vertical-"></i>
+                </span> -->
+                </h4>
+                <div class="chart-info gap-3 d-flex">
+                  <span class="mr-3">
+                    <i class="fa fa-circle primary-color font-small-3 me-1"></i>
+                    <span>Net Profit</span>
+                  </span>
+                  <span class="mr-3">
+                    <i class="fa fa-circle sec-color lighten-3 font-small-3 me-1"></i>
+                    <span>Revenue</span>
+                  </span>
+                </div>
+      
         </div>
+          
+      </div>
         <div class="card-content">
           <div class="card-body">
-            <div class="chart-info mb-3">
-              <span class="mr-3">
-                <i class="fa fa-circle info font-small-3 mr-1"></i>
-                <span>Net Profit</span>
-              </span>
-              <span class="mr-3">
-                <i class="fa fa-circle info lighten-3 font-small-3 mr-1"></i>
-                <span>Revenue</span>
-              </span>
-            </div>
+        
             <div id="line-chart1" class="height-350">
               <apx-chart
                       [series]="columnChartOptions.series"

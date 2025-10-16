@@ -5,7 +5,7 @@
 <div class="wrapper" [ngClass]="{'show-overlay': !isNavbarSeachTextEmpty}" (click)="onWrapperClick();" (window:resize)="onResize($event)">
 
   <!-- *TOP* Menu starts -->
-  <app-horizontal-menu appTopMenu *ngIf="menuPosition === 'Top' && !displayOverlayMenu"></app-horizontal-menu>
+  <!-- <app-horizontal-menu appTopMenu *ngIf="!displayOverlayMenu"></app-horizontal-menu> -->
   <!-- *TOP* Menu ends -->
 
   <!-- *SIDE* Menu starts -->

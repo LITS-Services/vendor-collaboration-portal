@@ -8,7 +8,7 @@
             </div>
             <ngx-datatable class="bootstrap core-bootstrap" [rows]="tenderData"
             [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50" [columns]="columns"
-            rowHeight="50" [limit]="15" [scrollbarH]="true" [loadingIndicator]="loading"
+            rowHeight="'auto'" [limit]="15" [scrollbarH]="true" [loadingIndicator]="loading"
             [selected]="chkBoxSelected" [swapColumns]="false" [selectionType]="SelectionType.checkbox"
             (sort)="onSort($event)" (select)="customChkboxOnSelect($event)">
             <ngx-datatable-column [width]="50" [sortable]="false" [canAutoResize]="false"
@@ -28,7 +28,7 @@
                     </div>
                 </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column name="Sr. No." [resizeable]="false">
+            <ngx-datatable-column [width]="50" name="Sr. No." [resizeable]="false">
                 <ng-template let-rowIndex="rowIndex" let-value="value" ngx-datatable-cell-template>
                     <span>{{rowIndex + 1}}</span>
                 </ng-template>

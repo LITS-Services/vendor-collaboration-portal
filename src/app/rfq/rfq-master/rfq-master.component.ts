@@ -107,7 +107,7 @@ export class RfqMasterComponent implements OnInit {
     private modalService: NgbModal) {
     this.columnChartOptions = {
       chart: {
-        height: 350,
+        height: 400,
         type: 'bar',
         toolbar: {
           show: false
