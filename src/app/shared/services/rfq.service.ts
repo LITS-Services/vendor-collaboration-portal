@@ -11,14 +11,10 @@ export class RfqService {
 
   constructor(private http: HttpClient) { }
 
-  // getQuotationByVendor(vendorUserId: string): Observable<any> {
-  //   return this.http.get<any>(`${this.baseUrl}/by-vendor`, {
-  //     params: new HttpParams().set('vendorUserId', vendorUserId)
-  //   });
-  // }
-
   getQuotationsByVendor(vendorUserId: string, status: string | null): Observable<any> {
     let params = new HttpParams().set('vendorUserId', vendorUserId);
+
+    // Only send status if it has a value
     if (status) {
       params = params.set('status', status);
     }
@@ -27,7 +23,7 @@ export class RfqService {
   }
 
   submitBids(bids: any[]): Observable<any> {
-    return this.http.post(`${environment.apiUrl}/Quotation/submit-bid`, bids);
+    return this.http.post(`${environment.apiUrl}/Quotation/submit-bid`, { bids });
   }
 
   getQuotationRequestsCount(): Observable<QuotationRequestsCountVM> {

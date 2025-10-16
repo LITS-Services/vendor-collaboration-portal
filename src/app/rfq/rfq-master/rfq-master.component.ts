@@ -176,14 +176,12 @@ export class RfqMasterComponent implements OnInit {
     });
   }
 
- navigateToStatus(status: string | null) {
-    if (status) {
-      this.router.navigate(['/rfq/rfq-list'], { queryParams: { status } });
-    } else {
-      this.router.navigate(['/rfq/rfq-list']); // Total (no filter)
-    }
+  navigateToStatus(status: string | null) {
+    // Always update query params, omit 'status' if null for Total
+    const queryParams = status ? { status } : {};
+    this.router.navigate(['/rfq/rfq-list'], { queryParams });
   }
-  
+
   onResized(event: any) {
     setTimeout(() => {
       this.fireRefreshEventOnWindow();

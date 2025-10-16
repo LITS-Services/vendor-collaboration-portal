@@ -40,13 +40,13 @@ export class NewRfqComponent implements OnInit {
     private modalService: NgbModal,
     private rfqService: RfqService,
     private authService: AuthService,
-  private toastr: ToastrService) { }
+    private toastr: ToastrService) { }
 
   ngOnInit(): void {
     if (this.data) {
       // Use items if available (convert from $values)
-      const itemList = this.data.qrItems?.$values || [];
-
+      // const itemList = this.data.qrItems?.$values || [];
+      const itemList = this.data.qrItems || [];
       this.newRfqData = itemList.map(item => ({
         quotationRequestId: item.quotationRequestId,
         quotationItemId: item.id, // <-- Make sure this is added
@@ -58,13 +58,14 @@ export class NewRfqComponent implements OnInit {
         vendorUserId: item.vendorUserId,
         comment: '',
 
-attachments: item.attachments?.$values?.map((a: any) => ({
-    id: a.id,
-    fileName: a.fileName,
-    contentType: a.contentType,
-    content: a.content,
-    isNew: false // important to differentiate already-saved files
-  })) || []      }));
+        attachments: item.attachments?.$values?.map((a: any) => ({
+          id: a.id,
+          fileName: a.fileName,
+          contentType: a.contentType,
+          content: a.content,
+          isNew: false // important to differentiate already-saved files
+        })) || []
+      }));
       console.log("RFQ Data: ", this.newRfqData);
 
     }
@@ -72,91 +73,60 @@ attachments: item.attachments?.$values?.map((a: any) => ({
   homePage() {
     this.router.navigate(['/rfq']);
   }
-  // submitForm() {
-  //   const vendorUserId = localStorage.getItem('userId');
 
-  //   if (!vendorUserId) {
-  //     this.toastr.error('Unable to retrieve vendor information. Please log in again.');
-  //     return;
-  //   }
-
-  //   const submissionList = this.newRfqData.map(item => ({
-  //     quotationRequestId: item.quotationRequestId,
-  //     quotationItemId: item.quotationItemId,
-  //     vendorUserId: vendorUserId,
-  //     biddingAmount: item.amount,
-  //     comment: item.comment,
-  //     createdBy: vendorUserId
-  //   }));
-
-  //   this.rfqService.submitBids(submissionList).subscribe({
-  //     next: () => {
-  //       this.toastr.success('Bid submitted successfully!');
-  //       this.router.navigate(['/rfq/rfq-list']);
-  //       this.activeModal.close(true);
-  //     },
-  //     error: (err) => {
-  //       console.error('Error submitting bids:', err);
-  //       this.toastr.error('Failed to submit bids.');
-  //     }
-  //   });
-  // }
   submitForm() {
-  const vendorUserId = localStorage.getItem('userId');
+    const vendorUserId = localStorage.getItem('userId');
 
-  if (!vendorUserId) {
-    this.toastr.error('Unable to retrieve vendor information. Please log in again.');
-    return;
-  }
-
-  const submissionList = this.newRfqData.map(item => ({
-    quotationRequestId: item.quotationRequestId,
-    quotationItemId: item.quotationItemId,
-    vendorUserId: vendorUserId,
-    biddingAmount: item.amount,
-    comment: item.comment,
-    createdBy: vendorUserId
-  }));
-
-  // 🔹 Show SweetAlert confirmation
-  Swal.fire({
-    title: 'Are you sure?',
-    text: 'Have you carefully reviewed your bids before submitting?',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: 'Yes, submit bids',
-    cancelButtonText: 'Cancel',
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      // Proceed only if confirmed
-      this.rfqService.submitBids(submissionList).subscribe({
-        next: () => {
-          Swal.fire({
-            title: 'Submitted!',
-            text: 'Your bids have been submitted successfully.',
-            icon: 'success',
-            confirmButtonColor: '#3085d6'
-          });
-          this.router.navigate(['/rfq/rfq-list']);
-          this.activeModal.close(true);
-        },
-        error: (err) => {
-          console.error('Error submitting bids:', err);
-          Swal.fire({
-            title: 'Error!',
-            text: 'Failed to submit bids. Please try again later.',
-            icon: 'error',
-            confirmButtonColor: '#d33'
-          });
-        }
-      });
+    if (!vendorUserId) {
+      this.toastr.error('Unable to retrieve vendor information. Please log in again.');
+      return;
     }
-  });
-}
 
+    const submissionList = this.newRfqData.map(item => ({
+      quotationRequestId: item.quotationRequestId,
+      quotationItemId: item.quotationItemId,
+      vendorUserId: vendorUserId,
+      biddingAmount: item.amount,
+      comment: item.comment,
+    }));
 
+    // 🔹 Show SweetAlert confirmation
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Have you carefully reviewed your bids before submitting?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, submit bids',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Proceed only if confirmed
+        this.rfqService.submitBids(submissionList).subscribe({
+          next: () => {
+            Swal.fire({
+              title: 'Submitted!',
+              text: 'Your bids have been submitted successfully.',
+              icon: 'success',
+              confirmButtonColor: '#3085d6'
+            });
+            this.router.navigate(['/rfq/rfq-list']);
+            this.activeModal.close(true);
+          },
+          error: (err) => {
+            console.error('Error submitting bids:', err);
+            Swal.fire({
+              title: 'Error!',
+              text: 'Failed to submit bids. Please try again later.',
+              icon: 'error',
+              confirmButtonColor: '#d33'
+            });
+          }
+        });
+      }
+    });
+  }
 
   deleteRow(rowIndex: number): void {
     this.newRfqData.splice(rowIndex, 1);
@@ -181,47 +151,46 @@ attachments: item.attachments?.$values?.map((a: any) => ({
   }
 
   openAttachmentModal(rowIndex: number): void {
-  const sourceRow = rowIndex !== null
-    ? this.newRfqData[rowIndex]
-    : this.newRfqForm.value; // for new item
+    const sourceRow = rowIndex !== null
+      ? this.newRfqData[rowIndex]
+      : this.newRfqForm.value; // for new item
 
-  const modalRef = this.modalService.open(RfqBidAttachmentComponent, {
-    backdrop: 'static',
-    size: 'lg',
-    centered: true
-  });
+    const modalRef = this.modalService.open(RfqBidAttachmentComponent, {
+      backdrop: 'static',
+      size: 'lg',
+      centered: true
+    });
 
-  // Pass inputs to modal
-  // modalRef.componentInstance.viewMode = this.viewMode;
-  modalRef.componentInstance.data = {
-    quotationItemId: sourceRow?.id ?? 0,
-    existingAttachment: sourceRow?.attachments || []
-  };
+    // Pass inputs to modal
+    // modalRef.componentInstance.viewMode = this.viewMode;
+    modalRef.componentInstance.data = {
+      quotationItemId: sourceRow?.id ?? 0,
+      existingAttachment: sourceRow?.attachments || []
+    };
 
-  // Handle modal close (attachments returned)
-  modalRef.result.then((newFiles: any[]) => {
-    if (newFiles?.length) {
-      const merged = [
-        ...(sourceRow.attachments || []),
-        ...newFiles.map(a => ({
-          fileName: a.fileName,
-          contentType: a.contentType,
-          content: a.content,
-          fromForm: a.fromForm,
-          quotationItemId: sourceRow?.id ?? 0,
-          isNew: true
-        }))
-      ];
+    // Handle modal close (attachments returned)
+    modalRef.result.then((newFiles: any[]) => {
+      if (newFiles?.length) {
+        const merged = [
+          ...(sourceRow.attachments || []),
+          ...newFiles.map(a => ({
+            fileName: a.fileName,
+            contentType: a.contentType,
+            content: a.content,
+            fromForm: a.fromForm,
+            quotationItemId: sourceRow?.id ?? 0,
+            isNew: true
+          }))
+        ];
 
-      if (rowIndex !== null) {
-        this.newRfqData = this.newRfqData.map((r, i) =>
-          i === rowIndex ? { ...r, attachments: merged } : r
-        );
-      } else {
-        this.newRfqForm.patchValue({ attachments: merged });
+        if (rowIndex !== null) {
+          this.newRfqData = this.newRfqData.map((r, i) =>
+            i === rowIndex ? { ...r, attachments: merged } : r
+          );
+        } else {
+          this.newRfqForm.patchValue({ attachments: merged });
+        }
       }
-    }
-  }).catch(() => { });
-}
-
+    }).catch(() => { });
+  }
 }

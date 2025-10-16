@@ -76,13 +76,13 @@ export interface Chart {
 
 export class Dashboard1Component implements OnInit {
   columnChartOptions: Partial<ChartOptions>;
- @Output() statusSelected = new EventEmitter<string | null>();
+  @Output() statusSelected = new EventEmitter<string | null>();
   totalCompaniesCount: number = 0;
   inprogressCount: number = 0;
   newlyOnboardedCount: number = 0;
   rfqCounts!: QuotationRequestsCountVM;
 
-  constructor(private router: Router, private companyService: CompanyService, private rfqService: RfqService,    private cdr: ChangeDetectorRef          
+  constructor(private router: Router, private companyService: CompanyService, private rfqService: RfqService, private cdr: ChangeDetectorRef
   ) {
     this.columnChartOptions = {
       chart: {
@@ -150,11 +150,11 @@ export class Dashboard1Component implements OnInit {
           (c.vendorId || '').toLowerCase() === userId.toLowerCase()
         );
 
-      // Only count companies where status = "completed"
-      this.totalCompaniesCount = vendorCompanies.filter(c =>
-           (c.status || '').toLowerCase() === 'approve'||
-        (c.status || '').toLowerCase() === 'inprocess'||
-         (c.status || '').toLowerCase() === 'sendback'      ).length;
+        // Only count companies where status = "completed"
+        this.totalCompaniesCount = vendorCompanies.filter(c =>
+          (c.status || '').toLowerCase() === 'approve' ||
+          (c.status || '').toLowerCase() === 'inprocess' ||
+          (c.status || '').toLowerCase() === 'sendback').length;
 
         this.cdr.detectChanges();
 
@@ -195,29 +195,17 @@ export class Dashboard1Component implements OnInit {
         console.error('Error fetching quotation requests count:', err);
       }
     });
-            this.cdr.detectChanges();
+    this.cdr.detectChanges();
 
   }
 
-  // goToStatusFilteredQuotations(status: string) {
-  //   const userId = localStorage.getItem('userId'); // assuming saved on login
-  //   this.router.navigate(['/rfq/rfq-list'], { queryParams: { userId: userId, status: status } });
-  // }
-
-navigateToStatus(status: string | null) {
+  navigateToStatusFilteredQuotations(status: string | null) {
     if (status) {
       this.router.navigate(['/rfq/rfq-list'], { queryParams: { status } });
     } else {
       this.router.navigate(['/rfq/rfq-list']); // Total (no filter)
     }
   }
-
-  // goToStatusFilteredQuotations(status: string) {
-  //   const userId = localStorage.getItem('userId'); // assuming saved on login
-  //   this.router.navigate(['/rfq/rfq-list'], { queryParams: { userId: userId, status: status } });
-  // }
-
-
 
   // Donut chart configuration Starts
   DonutChart: Chart = {
@@ -289,10 +277,10 @@ navigateToStatus(status: string | null) {
     setTimeout(() => { this.fireRefreshEventOnWindow(); }, 300);
   }
 
-  goToAllVendorQuotations() 
-  {  const userId = localStorage.getItem('userId'); // assuming saved on login
+  goToAllVendorQuotations() {
+    const userId = localStorage.getItem('userId'); // assuming saved on login
     this.router.navigate(['/rfq/rfq-list'], { queryParams: { userId: userId } });
-   }
+  }
 
   fireRefreshEventOnWindow = function () {
     const evt = document.createEvent("HTMLEvents");

@@ -45,77 +45,38 @@ export class RfqListComponent implements OnInit {
     public toastr: ToastrService
   ) { }
 
-  // ngOnInit() {
-  //   this.route.paramMap.subscribe(params => {
-  //     this.status = this.route.snapshot.queryParamMap.get('status');
+  ngOnInit() {
+    const vendorUserId = localStorage.getItem('userId');
+    if (!vendorUserId) {
+      console.error('Vendor user ID is missing in localStorage!');
+      return;
+    }
 
-  //     const userId = this.route.snapshot.queryParamMap.get('userId') || '';
-  //     if (this.status){
-  //     this.loadStatusFilteredQuotations(userId, this.status);
-  //     }
-  //     else{
-  //       this.loadQuotationsForVendor(userId);
-  //     }
-  //   });
-  // }
-ngOnInit() {
-  const vendorUserId = localStorage.getItem('userId');
-
-  if (!vendorUserId) {
-    console.error('Vendor user ID is missing in localStorage!');
-    // Optionally redirect to login or show a message
-    return;
+    // Listen to query params and reload quotations whenever they change
+    this.route.queryParams.subscribe(params => {
+      // Only use query params for filtering
+      const status = params['status'] || null;
+      this.loadQuotations(vendorUserId, status);
+    });
   }
 
-  // Listen to route query params
-  this.route.queryParams.subscribe(params => {
-    const status = params['status'] || null;
-    this.loadQuotations(vendorUserId, status);
-  });
-}
-
-
-
-  // loadQuotationsForVendor(userId): void {
-  //   // const vendorUserId = localStorage.getItem('userId');
-
-  //   if (!userId) {
-  //     console.error('VendorUserId not found in localStorage.');
-  //     return;
-  //   }
-
-  //   this.loading = true;
-
-  //   this.rfqService.getQuotationByVendor(userId).subscribe(response => {
-
-  //     this.rows = response.$values ?? [];
-  //     this.loading = false;
-  //     this.changeDetectorRef.detectChanges();
-  //   })
-  // }
-loadQuotations(vendorUserId: string, status: string | null) {
-  this.rfqService.getQuotationsByVendor(vendorUserId, status).subscribe({
-    next: (res) => {
-      this.rows = res?.$values || [];
-      this.changeDetectorRef.detectChanges();
-    },
-    error: (err) => {
-      console.error('Error loading quotations:', err);
-    }
-  });
-}
-
-
-// loadStatusFilteredQuotations(userId: string, status: string) {
-//     this.rfqService.getAllQuotationsByStatus(userId, status).subscribe({
-//       next: (response) => {
-//         // Handle $values structure from .NET serialization
-//         this.rows = response?.$values || [];
-//         this.changeDetectorRef.detectChanges();
-//       },
-//       error: (err) => console.error('Error fetching quotations:', err)
-//     });
-//   }
+  loadQuotations(vendorUserId: string, status: string | null) {
+    this.rfqService.getQuotationsByVendor(vendorUserId, status).subscribe({
+      next: (res: any) => {
+        if (res?.isSuccess) {
+          this.rows = res.value || [];
+        } else {
+          console.error('Failed to load quotations:', res.errors || res.validationErrors);
+          this.rows = [];
+        }
+        this.changeDetectorRef.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error loading quotations:', err);
+        this.rows = [];
+      }
+    });
+  }
 
   onSort(event): void {
     const sort = event.sorts[0];
@@ -130,15 +91,15 @@ loadQuotations(vendorUserId: string, status: string | null) {
 
   openQuotationBoxModal(row: any): void {
     // Check if RFQ has expired
-  if (row.requestStatus === 'Completed' || row.requestStatus === 'InProcess') {
-    this.toastr.warning('Bidding is closed for this RFQ.');
-    return;
-  }
+    if (row.requestStatus === 'Completed' || row.requestStatus === 'InProcess') {
+      this.toastr.warning('Bidding is closed for this RFQ.');
+      return;
+    }
 
-  if (row.endDate && new Date(row.endDate) < new Date()) {
-    this.toastr.warning('The end date has passed for submission of Bids.');
-    return; // Stop execution, don’t open modal
-  }
+    if (row.endDate && new Date(row.endDate) < new Date()) {
+      this.toastr.warning('The end date has passed for submission of Bids.');
+      return; // Stop execution, don’t open modal
+    }
     const modalRef = this.modalService.open(NewRfqComponent, {
       size: 'xl',
       backdrop: 'static',
