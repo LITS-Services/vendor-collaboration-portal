@@ -217,18 +217,32 @@ export class CompanyRegistrationComponent implements OnInit {
     localStorage.setItem('vendorSequence', sequenceNumber.toString());
   }
 
-  loadProcurementCompanies() {
-    this.companyService.getProcurementCompanies().subscribe({
-      next: (res: any) => {
-        this.procurementCompanies = res?.$values || res || [];
-        this.cdr.markForCheck();
-      },
-      error: (err) => {
-        console.error('Error fetching procurement companies:', err);
+loadProcurementCompanies() {
+  this.companyService.getProcurementCompanies().subscribe({
+    next: (res: any) => {
+      if (res && Array.isArray(res.result)) {
+        // ✅ new paginated API structure
+        this.procurementCompanies = res.result;
+      } else if (Array.isArray(res)) {
+        // fallback if API directly returns an array
+        this.procurementCompanies = res;
+      } else if (res?.$values) {
+        // fallback for .NET-style $values
+        this.procurementCompanies = res.$values;
+      } else {
         this.procurementCompanies = [];
       }
-    });
-  }
+
+      console.log('✅ Procurement Companies:', this.procurementCompanies);
+      this.cdr.detectChanges();
+    },
+    error: (err) => {
+      console.error('❌ Error fetching procurement companies:', err);
+      this.procurementCompanies = [];
+    }
+  });
+}
+
 
   openAddressModal() {
     const modalRef = this.modalService.open(CompanyAddressModalComponent, { centered: true });
@@ -292,29 +306,29 @@ export class CompanyRegistrationComponent implements OnInit {
 
   addContact(contact: any) {
     // Validate email
-    if (!this.validateEmail(contact.contactNumber)) {
-      this.toastr.error('Please enter a valid email address.');
-      return;
-    }
+    // if (!this.validateEmail(contact.contactNumber)) {
+    //   this.toastr.error('Please enter a valid email address.');
+    //   return;
+    // }
 
     // Validate phone number (11 digits)
-    if (!this.validatePhoneNumber(contact.contactNumber)) {
-      this.toastr.error('Phone number must contain exactly 11 digits.');
-      return;
-    }
+    // if (!this.validatePhoneNumber(contact.contactNumber)) {
+    //   this.toastr.error('Phone number must contain exactly 11 digits.');
+    //   return;
+    // }
 
     this.contactList.push(contact);
   }
 
-  validateEmail(email: string): boolean {
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-    return emailRegex.test(email);
-  }
+  // validateEmail(email: string): boolean {
+  //   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+  //   return emailRegex.test(email);
+  // }
 
-  validatePhoneNumber(phoneNumber: string): boolean {
-    const phoneRegex = /^\d{11}$/;
-    return phoneRegex.test(phoneNumber);
-  }
+  // validatePhoneNumber(phoneNumber: string): boolean {
+  //   const phoneRegex = /^\d{11}$/;
+  //   return phoneRegex.test(phoneNumber);
+  // }
 
   // Other methods remain unchanged...
 
@@ -431,7 +445,7 @@ export class CompanyRegistrationComponent implements OnInit {
 
     const payload = {
       vendorCompany: vendorCompanyPayload,
-      vendorUserId: this.userId,
+      SubmitterId: this.userId,
       procurementCompanyId: [...this.selectedProcurementCompanyIds]
     };
 
