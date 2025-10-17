@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'app/shared/auth/auth.service';
+import { CountryISO, PhoneNumberFormat, SearchCountryField } from 'ngx-intl-tel-input';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 
@@ -15,6 +16,10 @@ export class RegisterVendorComponent implements OnInit {
   registerVendorFormSubmitted = false;
   isLoginFailed = false;
 
+    CountryISO = CountryISO;
+  PhoneNumberFormat = PhoneNumberFormat;
+  SearchCountryField = SearchCountryField;
+
   // Removed the companies and selectedCompanies fields
    countryExtensions = [
     { label: '+1 (USA)', value: '+1' },
@@ -23,11 +28,14 @@ export class RegisterVendorComponent implements OnInit {
     { label: '+61 (Australia)', value: '+61' },
   ];
 
+   preferredCountries = [CountryISO.Pakistan, CountryISO.SaudiArabia, CountryISO.UnitedArabEmirates];
+
   registerVendorForm = new UntypedFormGroup({
     username: new UntypedFormControl('', [Validators.required]),
     businessName: new UntypedFormControl('', [Validators.required]),
-    phoneNo: new UntypedFormControl('', [Validators.required]),
-    phoneExtension: new UntypedFormControl('', [Validators.required]),
+    phone: new UntypedFormControl(undefined, [Validators.required]),
+    //phoneNo: new UntypedFormControl('', [Validators.required]),
+    //phoneExtension: new UntypedFormControl('', [Validators.required]),
     email: new UntypedFormControl('', [Validators.required, Validators.email]),
     password: new UntypedFormControl('', [Validators.required, Validators.minLength(6)]),
     confirmPassword: new UntypedFormControl('', [Validators.required]),
@@ -69,11 +77,11 @@ export class RegisterVendorComponent implements OnInit {
     // Removed validation for selectedCompanies as it is no longer required
 
     this.spinner.show();
-
+      const phoneObj = this.registerVendorForm.value.phone;
     const payload = {
       Username: this.lf.username.value,
       FullName: this.lf.businessName.value,
-      PhoneNo: `${this.lf.phoneExtension.value}${this.lf.phoneNo.value}`,
+      PhoneNo:  phoneObj?.e164Number ?? null,
       Email: this.lf.email.value,
       Password: this.lf.password.value,
       Role: 'User',

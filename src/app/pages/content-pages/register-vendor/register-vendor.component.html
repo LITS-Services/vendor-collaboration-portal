@@ -170,7 +170,35 @@
                   <i class="ft-alert-circle align-middle"></i> This is required
                 </div>
               </div> -->
-            <div class="form-group d-flex align-items-center mb-2">
+
+                <div class="form-group mb-2">
+    
+
+                  <ngx-intl-tel-input
+                    name="phone"
+                    formControlName="phone"
+                    [preferredCountries]="preferredCountries"
+                    [enableAutoCountrySelect]="true"
+                    [searchCountryFlag]="true"
+                    [searchCountryField]="[SearchCountryField.All]"
+                    [selectFirstCountry]="true"
+                    [separateDialCode]="true"
+                    [numberFormat]="PhoneNumberFormat.International"
+                    [maxLength]="20"
+                    [cssClass]="'form-control w-100'">
+                  </ngx-intl-tel-input>
+
+                    <div class="help-block mt-1 text-danger"
+                        *ngIf="registerVendorFormSubmitted && lf['phone']?.invalid">
+                      <i class="ft-alert-circle align-middle"></i>
+                      <ng-container *ngIf="lf['phone']?.hasError('required'); else invalidMsg">
+                        Phone is required
+                      </ng-container>
+                      <ng-template #invalidMsg>Invalid phone number</ng-template>
+                    </div>
+                </div>
+                
+            <!-- <div class="form-group d-flex align-items-center mb-2">
             
               <select formControlName="phoneExtension" class="form-control w-auto me-2" required
                 [ngClass]="{'is-invalid': registerVendorFormSubmitted && lf.phoneExtension.invalid}">
@@ -187,7 +215,7 @@
                 class="help-block mt-1 text-danger">
                 <i class="ft-alert-circle align-middle"></i> This is required
               </div>
-            </div>
+            </div> -->
             <div class="form-group mb-2">
               <input type="text" formControlName="email" class="form-control" placeholder="Enter Email Address"
                 [ngClass]="{ 'is-invalid': registerVendorFormSubmitted && lf.email.invalid, 'is-valid': registerVendorFormSubmitted && !lf.email.invalid }"

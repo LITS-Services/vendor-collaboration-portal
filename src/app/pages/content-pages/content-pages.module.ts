@@ -19,6 +19,8 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { RegisterVendorComponent } from './register-vendor/register-vendor.component';
 import { OtpComponent } from './otp/otp.component';
 import { NgSelectModule } from '@ng-select/ng-select'; // <-- Import this
+import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 
 // import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
 
@@ -34,6 +36,8 @@ export function createTranslateLoader(http: HttpClient) {
     ReactiveFormsModule,
     NgbModule,
     NgSelectModule ,
+     NgxIntlTelInputModule,
+     BsDropdownModule.forRoot(),
     // NgxIntlTelInputModule,
     TranslateModule.forChild({
       loader: {
