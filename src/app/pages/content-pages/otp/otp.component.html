@@ -1,52 +1,81 @@
 <section id="otp" class="container-fluid">
   <div class="row full-height-vh m-0">
     <!-- Left half with background image and content -->
-    <div class="col-md-6 d-none d-md-flex align-items-center justify-content-center bg-image">
+        <div class="col-md-6 d-none d-md-flex align-items-center justify-content-center bg-image">
       <div class="icon-container position-absolute">
         <img src="/assets/img/logos/login-logo.png" alt="Icon" class="icon-img">
       </div>
       <div class="content text-white text-center">
-        <h1 class="text-white"><b>Vendor Collaboration Portal</b></h1>
+        <h1 class="text-white vendor-title">Vendor Collaboration Portal</h1>
+        <div class="row mt-4 features justify-content-center">
 
+      <div class="col-md-5 p-2 d-flex align-items-start gap-3">
+        <div class="icon-div">
+            <i class="ft-airplay icon-features"></i>
+        </div>
+  
+        <div class="text-justify">
+          <h4 class="text-white mt-0 mb-1">Seamless UI</h4>
+          <p class="mb-0">Intuitive and Responsive Interfaces<br>on all devices</p>
+        </div>
 
-        <!-- <button (click)="GotoOTP()">OTP</button> -->
-        <!-- <h2>Portal Features</h2> -->
-        <div class="row mt-4 features">
-          <div class="col-md-6 mt-4 p-3"><i class="ft-airplay icon-features"></i>
-            <h4 class="text-white mt-1">Seamless UI</h4>
-            <p>Intuitive and Responsive Interfaces <br> on all devices</p>
-          </div>
-          <div class="col-md-6 mt-4 p-3"><i class="ft-bar-chart-2 icon-features"></i>
-            <h4 class="text-white mt-1">Vendor Dashboard</h4>
-            <p>Pending orders,
+      </div>
+
+      
+      <div class="col-md-5 p-2 d-flex align-items-start gap-3">
+        <div class="icon-div">
+         <i class="ft-bar-chart-2 icon-features"></i>
+        </div>
+  
+        <div class="text-justify">
+          <h4 class="text-white mt-0 mb-1">Vendor Dashboard</h4>
+          <p class="mb-0">Pending orders,
               active contracts,<br> performance metrics, and payment statuses.</p>
-          </div>
-          <div class="col-md-6 p-3"><i class="ft-trending-up icon-features"></i>
-            <h4 class="text-white mt-1">Performance Analytics</h4>
-            <p>Vendors can view real-time <br> analytics and performance reports</p>
-          </div>
-          <div class="col-md-6 p-3"><i class="ft-pie-chart icon-features"></i>
-            <h4 class="text-white mt-1">Compliance Management</h4>
-            <p>Ensures Regulatory and Compliance Requirements</p>
-          </div>
+        </div>
+
+      </div>
+
+
+         <div class="col-md-5 p-2 d-flex align-items-start gap-3">
+        <div class="icon-div">
+        <i class="ft-trending-up icon-features"></i>
+        </div>
+  
+        <div class="text-justify">
+          <h4 class="text-white mt-0 mb-1">Performance Analytics</h4>
+          <p class="mb-0">Vendors can view real-time <br> analytics and performance reports</p>
+        </div>
+
+      </div>
+
+          <div class="col-md-5 p-2 d-flex align-items-start gap-3">
+        <div class="icon-div">
+      <i class="ft-pie-chart icon-features"></i>
+        </div>
+  
+        <div class="text-justify">
+          <h4 class="text-white mt-0 mb-1">Compliance Management</h4>
+          <p class="mb-0">Ensures Regulatory and Compliance Requirements</p>
+        </div>
+
+      </div>
+         
+
         </div>
       </div>
       <div class="icon-container1 position-absolute">
-        <!-- <img src="/assets/img/logos/login-logo.png" alt="Icon" class="icon-img"> -->
-        <p class="text-white">Version 1.0.0</p>
-        <p class="text-white">Powered by <span class="font-weight-600"><b>LITS Services</b></span></p>
+        <p class="text-center">Copyright © 2025 LITS Vendor Portal. Powered by LITS Services. All rights reserved.</p>
       </div>
     </div>
 
     <!-- Right half with the card and form -->
-    <div class="col-md-6 d-flex align-items-center justify-content-center">
-      <div class="back-btn position-absolute">
-        <button class="btn btn-primary" [routerLink]="['/pages/login']">
-          <i class="ft-chevron-left mr-1"></i> Back to login
-        </button>
-      </div>
+    <div class="col-md-6 d-flex align-items-center justify-content-center right-div">
+    
       <div class="card">
         <div class="card-body">
+        <div class="back-btn">
+        <button class="back-icon-div" [routerLink]="['/pages/login']"><i class="ft-arrow-left back-icon"></i></button>
+        </div>
           <div class="w-100 mb-3 text-center">
             <h2 class="heading mb-2">OTP Verification</h2>
             <p>Please enter the 6-digit OTP code sent to your email/phone</p>
@@ -65,7 +94,7 @@
             </div>
 
             <div class="d-flex justify-content-between mb-3">
-              <button type="button" class="btn btn-primary w-100" (click)="onSubmit()">Verify OTP</button>
+              <button type="button" class="btn btn-primary w-100 login-btn" (click)="onSubmit()">Verify OTP</button>
             </div>
 
             <div class="text-center">
@@ -75,7 +104,7 @@
 
           <div class="row mt-3">
             <div class="col-12 text-center">
-              <label class="mt-1 mr-2">Go Back to </label>
+              <label class="mt-1 me-1">Go Back to </label>
               <b><a routerLink="/pages/login">Login</a></b>
             </div>
           </div>
