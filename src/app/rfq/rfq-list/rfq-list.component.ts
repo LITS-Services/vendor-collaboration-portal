@@ -63,8 +63,8 @@ export class RfqListComponent implements OnInit {
   loadQuotations(vendorUserId: string, status: string | null) {
     this.rfqService.getQuotationsByVendor(vendorUserId, status).subscribe({
       next: (res: any) => {
-        if (res?.isSuccess) {
-          this.rows = res.value || [];
+        if (res) {
+          this.rows = res || [];
         } else {
           console.error('Failed to load quotations:', res.errors || res.validationErrors);
           this.rows = [];
