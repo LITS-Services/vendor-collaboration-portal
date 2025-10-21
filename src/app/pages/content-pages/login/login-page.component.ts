@@ -3,6 +3,7 @@ import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms
 import { Router, ActivatedRoute } from "@angular/router";
 import { AuthService } from 'app/shared/auth/auth.service';
 import { NgxSpinnerService } from "ngx-spinner";
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-login-page',
@@ -28,7 +29,8 @@ export class LoginPageComponent implements OnInit {
     private authService: AuthService,
     private spinner: NgxSpinnerService,
     private route: ActivatedRoute,
-    private cdr: ChangeDetectorRef          // 👈 Added ChangeDetectorRef
+    private cdr: ChangeDetectorRef,   // 👈 Added ChangeDetectorRef
+    private toastr: ToastrService       
   ) {}
 
   get lf() {
@@ -41,19 +43,30 @@ export class LoginPageComponent implements OnInit {
 
   // 🔹 Initialization
   ngOnInit() {
+          const msg = sessionStorage.getItem('authFlash');
+            if (msg) {
+                sessionStorage.removeItem('authFlash');
+                this.toastr.warning(msg, 'Session expired', { timeOut: 10000 });
+            }
     console.log("Full URL:", window.location.href);
 
     // 👇 Handle SSO redirect callback
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
+    let refreshToken = params.get("refreshToken") ?? undefined;
+      if (refreshToken) {
+        refreshToken = refreshToken.replace(/ /g, "+");
+      }
     const email = params.get('email');
     const userId = params.get('id');
     const username = params.get('username');
     const error = params.get('error');
+    const code = params.get('code');
 
     if (token) {
       console.log("✅ Token found in URL:", token);
       localStorage.setItem('token', token);
+      if (refreshToken) localStorage.setItem('refreshToken', refreshToken);
       if (email) localStorage.setItem('userEmail', email);
       if (userId) localStorage.setItem('userId', userId);
       if (username) localStorage.setItem('username', username);
@@ -130,7 +143,7 @@ export class LoginPageComponent implements OnInit {
         this.isSSOLoading = false;
         if (response.loginUrl) {
           console.log("🔗 Redirecting to SSO:", response.loginUrl);
-          window.location.href = response.loginUrl; 
+          window.location.href = response.loginUrl;
         }
         this.cdr.detectChanges();  
       },
