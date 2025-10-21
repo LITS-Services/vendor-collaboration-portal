@@ -32,6 +32,7 @@ import { AuthGuard } from "./shared/auth/auth-guard.service";
 import { WINDOW_PROVIDERS } from './shared/services/window.service';
 import { AuthInterceptor } from "./shared/auth/auth.interceptor";
 import { NgSelectModule } from "@ng-select/ng-select";
+import { responseHandlerInterceptor } from "./shared/interceptor/response-handler.interceptor";
 
 var firebaseConfig = {
   apiKey: "AIzaSyC9XfnIpwNoSv7cyAsoccFQ5EYPd7lZXrk", //YOUR_API_KEY
@@ -89,6 +90,7 @@ export function createTranslateLoader(http: HttpClient) {
       useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG
     },
         { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: responseHandlerInterceptor, multi: true },
 
     { provide: PERFECT_SCROLLBAR_CONFIG, useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG },
     WINDOW_PROVIDERS
