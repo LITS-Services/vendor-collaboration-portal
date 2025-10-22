@@ -32,24 +32,20 @@ export class CompanyListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-  this.route.queryParams.subscribe(params => {
-    if (params['title']) this.title = params['title'];
-    this.status = params['status'] || '';
+    this.route.queryParams.subscribe(params => {
+      if (params['title']) this.title = params['title'];
+      this.status = params['status'] || '';
 
-    if (this.status === 'new') {
-      this.loadCompanies('approve');
-    } 
-    else if (this.status === 'approve') {
-      this.loadCompanies('approve');
-    } 
-    else {
-      this.loadCompanies('inprocess');
-    }
-  });
-}
+      // Load companies based on the status
+      if (this.status === 'new' || this.status === 'approve') {
+        this.loadCompanies('approve');
+      } else {
+        this.loadCompanies('inprocess');
+      }
+    });
+  }
 
-
-  loadCompanies(status: string) {
+  loadCompanies(status: string): void {
     this.loading = true;
 
     const userId = localStorage.getItem('userId');
@@ -65,7 +61,7 @@ export class CompanyListComponent implements OnInit {
           ? res
           : res?.$values || (res?.vendorId ? [res] : []);
 
-        // Filter companies by status: Only show companies with the given status (approve or inprocess)
+        // Map raw companies data to display on the table
         this.companyData = rawCompanies
           .map(c => ({
             id: c.id,
@@ -74,23 +70,24 @@ export class CompanyListComponent implements OnInit {
             logo: c.logo,
             status: (c.status || '').toLowerCase(),
             vendorId: c.vendorId,
-            street: c.addressesVM?.$values?.[0]?.street || '',
-            city: c.addressesVM?.$values?.[0]?.city || '',
-            country: c.addressesVM?.$values?.[0]?.country || '',
-            contactNumber: c.contactsVM?.$values?.[0]?.contactNumber || '',
-            contactType: c.contactsVM?.$values?.[0]?.type || ''
+            street: c.addressesVM?.[0]?.street || '',  // Fixed this line to access the array directly
+            city: c.addressesVM?.[0]?.city || '',     // Same as above
+            state: c.addressesVM?.[0]?.state || '',   // Same as above
+            country: c.addressesVM?.[0]?.country || '', 
+            contactNumber: c.contactsVM?.[0]?.contactNumber || '', // Access contact number correctly
+            contactType: c.contactsVM?.[0]?.type || '', // Same as above
+            entity: c.vendorUseCompaniesVM?.map(vuc => vuc.procurementCompany).join(', ') // Mapped entity
           }))
-          // Filter by vendorId and selected status (approve or inprocess)
           .filter(c =>
             c.vendorId?.toLowerCase() === userId.toLowerCase() &&
             c.status === status
           );
 
-        console.log('Company list:', this.companyData);
+        console.log('Company list:', this.companyData); // Debugging to check the data
         this.loading = false;
-        this.cdr.detectChanges();
+        this.cdr.detectChanges(); // Ensure the changes are detected
       },
-      error: err => {
+      error: (err) => {
         console.error('Error fetching companies:', err);
         this.loading = false;
         this.cdr.detectChanges();
@@ -98,7 +95,7 @@ export class CompanyListComponent implements OnInit {
     });
   }
 
-  onSort(event: any) {
+  onSort(event: any): void {
     this.loading = true;
     setTimeout(() => {
       const rows = [...this.companyData];
@@ -113,12 +110,12 @@ export class CompanyListComponent implements OnInit {
     }, 300);
   }
 
-  customChkboxOnSelect({ selected }) {
+  customChkboxOnSelect({ selected }): void {
     this.chkBoxSelected = [...selected];
     this.isAllSelected = this.companyData.length === this.chkBoxSelected.length;
   }
 
-  toggleSelectAll(event: any) {
+  toggleSelectAll(event: any): void {
     if (event.target.checked) {
       this.chkBoxSelected = [...this.companyData];
     } else {
@@ -127,7 +124,7 @@ export class CompanyListComponent implements OnInit {
     this.isAllSelected = event.target.checked;
   }
 
-  editCompany(company: any) {
+  editCompany(company: any): void {
     this.router.navigate(['/pages/company-registration'], {
       queryParams: { id: company.id }
     });

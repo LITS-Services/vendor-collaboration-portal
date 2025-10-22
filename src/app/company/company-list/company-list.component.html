@@ -23,9 +23,9 @@
         [selectionType]="SelectionType.checkbox"
         (sort)="onSort($event)"
         (select)="customChkboxOnSelect($event)">
-        
+
         <!-- Checkbox -->
-        <ngx-datatable-column [width]="50" [sortable]="false" [canAutoResize]="false"
+        <!-- <ngx-datatable-column [width]="50" [sortable]="false" [canAutoResize]="false"
           [draggable]="false" [resizeable]="false">
           <ng-template ngx-datatable-header-template>
             <div class="custom-control">
@@ -37,10 +37,10 @@
               <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)" />
             </div>
           </ng-template>
-        </ngx-datatable-column>
+        </ngx-datatable-column> -->
 
-        <!-- Name -->
-        <ngx-datatable-column name="Name" prop="name"></ngx-datatable-column>
+        <!-- Company Name (old Name column) -->
+        <ngx-datatable-column name="Company Name" prop="name"></ngx-datatable-column>
 
         <!-- Status -->
         <ngx-datatable-column name="Status" prop="status">
@@ -52,14 +52,15 @@
           </ng-template>
         </ngx-datatable-column>
 
-        <!-- Street -->
+        <!-- Entity -->
+        <ngx-datatable-column name="Entity" prop="entity"></ngx-datatable-column>
+
+        <!-- State -->
         <ngx-datatable-column name="Street" prop="street"></ngx-datatable-column>
+<ngx-datatable-column name="City" prop="city"></ngx-datatable-column>
+<ngx-datatable-column name="State" prop="state"></ngx-datatable-column>
+<ngx-datatable-column name="Contact Number" prop="contactNumber"></ngx-datatable-column>
 
-        <!-- City -->
-        <ngx-datatable-column name="City" prop="city"></ngx-datatable-column>
-
-        <!-- Contact Number -->
-        <ngx-datatable-column name="Contact Number" prop="contactNumber"></ngx-datatable-column>
 
         <!-- Edit Button -->
         <ngx-datatable-column name="Edit" [sortable]="false">

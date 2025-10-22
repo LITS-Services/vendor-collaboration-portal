@@ -11,6 +11,7 @@ import { CompanyContactModalComponent } from '../company-contact-modal/company-c
 import { CompanyAddressModalComponent } from '../company-address-modal/company-address-modal.component';
 import { CompanyProfileAttachmentComponent } from '../company-profile-attachment/company-profile-attachment.component';
 import { ToastrService } from 'ngx-toastr';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-company-registration',
@@ -21,9 +22,11 @@ export class CompanyRegistrationComponent implements OnInit {
   public config: any = {};
   layoutSub: Subscription;
   isEditMode: boolean = false;
-
+  bankForm!: FormGroup;
+  bankList: any[] = []; // to store all added bank records
   addressList: any[] = [];
   contactList: any[] = [];
+  // bankList: any[] = []; // ✅ Bank list
   attachedFiles: any[] = [];
   vendorAccountNumber: string = '';
   isLoading: boolean = false;
@@ -36,8 +39,10 @@ export class CompanyRegistrationComponent implements OnInit {
 
   showContactDeletePopup: boolean = false;
   showAddressDeletePopup: boolean = false;
+  showBankDeletePopup: boolean = false; // ✅ Bank delete popup
   contactIndexToDelete: number | null = null;
   addressIndexToDelete: number | null = null;
+  bankIndexToDelete: number | null = null; // ✅ Bank index
 
   aboutCompany: string = '';
   companyType: string = 'Organization';
@@ -53,7 +58,6 @@ export class CompanyRegistrationComponent implements OnInit {
   note: string = '';
   userId: string = '';
 
-  // ✅ Added fields for CreatedBy / ModifiedBy
   createdBy: string = '';
   modifiedBy: string = '';
 
@@ -75,15 +79,32 @@ export class CompanyRegistrationComponent implements OnInit {
     private companyService: CompanyService,
     private router: Router,
     private route: ActivatedRoute,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private fb: FormBuilder
   ) {
     this.config = this.configService.templateConf;
+
+
+
+
   }
 
   ngOnInit() {
-    this.userId = localStorage.getItem('userId') || '';
 
-    // ✅ Fetch username from localStorage for CreatedBy / ModifiedBy
+
+    this.bankForm = this.fb.group({
+      bankName: ['', Validators.required],
+      accountHolderName: ['', Validators.required],
+      accountNumber: ['', Validators.required],
+      iban: ['', Validators.required],
+      swiftCode: [''],
+      branchName: [''],
+      branchAddress: [''],
+      bankCountry: ['', Validators.required],
+      bankCurrency: ['', Validators.required]
+    });
+
+    this.userId = localStorage.getItem('userId') || '';
     this.createdBy = localStorage.getItem('username') || '';
     this.modifiedBy = localStorage.getItem('username') || '';
 
@@ -165,6 +186,15 @@ export class CompanyRegistrationComponent implements OnInit {
             isPrimary: c.isPrimary
           }));
 
+          // ✅ Load bank details
+          this.bankList = (company.bankDetails?.$values || []).map(b => ({
+            description: b.bankName,
+            contactNumber: b.accountNumber,
+            extension: b.iban,
+            type: b.swiftCode,
+            isPrimary: b.isPrimary
+          }));
+
           this.attachedFiles = (company.attachments?.$values || []).map(f => ({
             fileName: f.fileName,
             format: f.fileFormat,
@@ -174,7 +204,6 @@ export class CompanyRegistrationComponent implements OnInit {
             attachedAt: f.attachedAt
           }));
 
-          // Use numeric IDs instead of GUIDs
           if (company.procurementCompanyId) {
             this.selectedProcurementCompanyIds = [...company.procurementCompanyId];
           }
@@ -217,33 +246,28 @@ export class CompanyRegistrationComponent implements OnInit {
     localStorage.setItem('vendorSequence', sequenceNumber.toString());
   }
 
-loadProcurementCompanies() {
-  this.companyService.getProcurementCompanies().subscribe({
-    next: (res: any) => {
-      if (res && Array.isArray(res.result)) {
-        // ✅ new paginated API structure
-        this.procurementCompanies = res.result;
-      } else if (Array.isArray(res)) {
-        // fallback if API directly returns an array
-        this.procurementCompanies = res;
-      } else if (res?.$values) {
-        // fallback for .NET-style $values
-        this.procurementCompanies = res.$values;
-      } else {
+  loadProcurementCompanies() {
+    this.companyService.getProcurementCompanies().subscribe({
+      next: (res: any) => {
+        if (res && Array.isArray(res.result)) {
+          this.procurementCompanies = res.result;
+        } else if (Array.isArray(res)) {
+          this.procurementCompanies = res;
+        } else if (res?.$values) {
+          this.procurementCompanies = res.$values;
+        } else {
+          this.procurementCompanies = [];
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error fetching procurement companies:', err);
         this.procurementCompanies = [];
       }
+    });
+  }
 
-      console.log('✅ Procurement Companies:', this.procurementCompanies);
-      this.cdr.detectChanges();
-    },
-    error: (err) => {
-      console.error('❌ Error fetching procurement companies:', err);
-      this.procurementCompanies = [];
-    }
-  });
-}
-
-
+  // ==================== Address Methods ====================
   openAddressModal() {
     const modalRef = this.modalService.open(CompanyAddressModalComponent, { centered: true });
     modalRef.componentInstance.addAddress.subscribe((address) => this.addAddress(address));
@@ -289,6 +313,7 @@ loadProcurementCompanies() {
     }));
   }
 
+  // ==================== Contact Methods ====================
   openContactModal() {
     const modalRef = this.modalService.open(CompanyContactModalComponent, { centered: true });
     modalRef.componentInstance.addContact.subscribe((contact) => this.addContact(contact));
@@ -305,33 +330,8 @@ loadProcurementCompanies() {
   }
 
   addContact(contact: any) {
-    // Validate email
-    // if (!this.validateEmail(contact.contactNumber)) {
-    //   this.toastr.error('Please enter a valid email address.');
-    //   return;
-    // }
-
-    // Validate phone number (11 digits)
-    // if (!this.validatePhoneNumber(contact.contactNumber)) {
-    //   this.toastr.error('Phone number must contain exactly 11 digits.');
-    //   return;
-    // }
-
     this.contactList.push(contact);
   }
-
-  // validateEmail(email: string): boolean {
-  //   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-  //   return emailRegex.test(email);
-  // }
-
-  // validatePhoneNumber(phoneNumber: string): boolean {
-  //   const phoneRegex = /^\d{11}$/;
-  //   return phoneRegex.test(phoneNumber);
-  // }
-
-  // Other methods remain unchanged...
-
 
   confirmContactDeletion(index: number) {
     this.showContactDeletePopup = true;
@@ -358,6 +358,64 @@ loadProcurementCompanies() {
     }));
   }
 
+  // ==================== Bank Methods ====================
+  openBankModal(bank?: any, index?: number) {
+    const modalRef = this.modalService.open(CompanyContactModalComponent, { centered: true });
+
+    if (bank) {
+      modalRef.componentInstance.contact = { ...bank };
+      modalRef.componentInstance.isEditMode = true;
+      modalRef.componentInstance.saveContact.subscribe((updatedBank: any) => {
+        if (index !== undefined) this.bankList[index] = updatedBank;
+        this.cdr.markForCheck();
+      });
+    } else {
+      modalRef.componentInstance.addContact.subscribe((newBank: any) => {
+        this.bankList.push(newBank);
+        this.cdr.markForCheck();
+      });
+    }
+  }
+
+  confirmBankDeletion(index: number) {
+    this.showBankDeletePopup = true;
+    this.bankIndexToDelete = index;
+  }
+
+  closeBankPopup() {
+    this.showBankDeletePopup = false;
+    this.bankIndexToDelete = null;
+  }
+
+  removeBank(index: number) {
+    this.bankList.splice(index, 1);
+    this.closeBankPopup();
+  }
+
+  getBankForPayload() {
+    const now = new Date().toISOString();
+    return this.bankList.map(b => ({
+      id: b.id || 0,
+      vendorCompanyId: this.companyId || 0,
+      bankName: b.bankName || b.description || '',
+      accountHolderName: b.accountHolderName || b.contactHolderName || '',
+      accountNumber: b.accountNumber || b.contactNumber || '',
+      iban: b.iban || b.extension || '',
+      swifT_BIC_Code: b.swiftCode || b.type || '',
+      branchName: b.branchName || '',
+      branchAddress: b.branchAddress || '',
+      country: b.bankCountry || '',
+      currency: b.bankCurrency || '',
+      createdDate: b.createdDate || now,
+      modifiedDate: b.modifiedDate || now,
+      createdBy: b.createdBy || this.createdBy,
+      modifiedBy: b.modifiedBy || this.modifiedBy,
+      isDeleted: b.isDeleted || false
+    }));
+  }
+
+
+  // ==================== Attachments ====================
   openAttachmentModal() {
     const modalRef = this.modalService.open(CompanyProfileAttachmentComponent, { centered: true });
     modalRef.componentInstance.attachedFiles = [...this.attachedFiles];
@@ -377,9 +435,7 @@ loadProcurementCompanies() {
     return new Promise((resolve, reject) => {
       if (!file) return reject('No file provided');
       const reader = new FileReader();
-
       reader.readAsDataURL(file);
-
       reader.onload = () => {
         const result = reader.result;
         if (typeof result === 'string') {
@@ -389,11 +445,11 @@ loadProcurementCompanies() {
           reject('FileReader result is not a string');
         }
       };
-
       reader.onerror = (error) => reject(error);
     });
   }
 
+  // ==================== Payload Helpers ====================
   getPurchasingDemographicsPayload() {
     return {
       primaryCurrency: this.primaryCurrency,
@@ -408,6 +464,7 @@ loadProcurementCompanies() {
     };
   }
 
+  // ==================== Submit ====================
   async submitForm() {
     if (!this.userId) {
       this.toastr.error('Vendor ID missing! Please login again.', 'Error');
@@ -426,9 +483,10 @@ loadProcurementCompanies() {
       name: this.companyName,
       logo: '',
       requestStatusId: 1,
-      procurementCompanyId: [...this.selectedProcurementCompanyIds], // <-- numeric IDs
+      procurementCompanyId: [...this.selectedProcurementCompanyIds],
       addresses: this.getAddressesForPayload(),
       contacts: this.getContactsForPayload(),
+      bankDetails: this.getBankForPayload(),
       purchasingDemographics: this.getPurchasingDemographicsPayload(),
       attachments: this.attachedFiles.map(f => ({
         fileName: f.fileName,
@@ -438,7 +496,6 @@ loadProcurementCompanies() {
         remarks: f.remarks,
         attachedAt: f.attachedAt ? new Date(f.attachedAt).toISOString() : new Date().toISOString()
       })),
-      // ✅ Added CreatedBy / ModifiedBy fields
       createdBy: this.isEditMode ? undefined : this.createdBy,
       modifiedBy: this.isEditMode ? this.modifiedBy : undefined
     };
@@ -472,4 +529,18 @@ loadProcurementCompanies() {
   goBack() {
     this.router.navigate(['/company/company-master']);
   }
+
+
+  addBank(): void {
+    if (this.bankForm.valid) {
+      // Instead of mutating with .push(), assign a new reference
+      this.bankList = [...this.bankList, this.bankForm.value];
+      console.log('Bank List:', this.bankList);
+      this.bankForm.reset();
+    } else {
+      console.warn('Please fill in all required fields.');
+      this.bankForm.markAllAsTouched();
+    }
+  }
+
 }
