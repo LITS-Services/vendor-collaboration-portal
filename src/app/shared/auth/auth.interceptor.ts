@@ -64,7 +64,7 @@ export class AuthInterceptor implements HttpInterceptor {
                   this.auth.performLogout();
                 }
 
-                return throwError(() => err);
+                return throwError(err);
               })
             );
           })
