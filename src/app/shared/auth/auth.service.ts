@@ -32,6 +32,17 @@ export class AuthService {
     //Get all Entites 
   }
 
+forgetPassword(email: string): Observable<any> {
+  return this.http.post(`${environment.apiUrl}/Auth/VendorForgotPassword`, { email });
+}
+
+ConfirmForgotOtp(payload: any): Observable<any> {
+  return this.http.post<any>(`${environment.apiUrl}/Auth/VendorResetPassword`, payload);
+}
+
+
+
+
       get accessToken(): string | null {
     return localStorage.getItem('token');
   }

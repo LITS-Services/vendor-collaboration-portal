@@ -1,44 +1,67 @@
-import { Component, ViewChild } from '@angular/core';
-import { NgForm, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
-import { Router, ActivatedRoute } from "@angular/router";
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from "@angular/router";
+import { AuthService } from 'app/shared/auth/auth.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
     selector: 'app-forgot-password-page',
     templateUrl: './forgot-password-page.component.html',
     styleUrls: ['./forgot-password-page.component.scss']
 })
+export class ForgotPasswordPageComponent implements OnInit {
 
-export class ForgotPasswordPageComponent {
-    @ViewChild('f') forogtPasswordForm: NgForm;
-    public hidePassword: boolean = true;
+    forogtPasswordForm!: FormGroup;
     forgotPasswordFormSubmitted = false;
-    isLoginFailed = false;
-    public shouldHighlightPasswordField(): boolean {
-      return this.forgotPasswordFormSubmitted && this.lf.passwordHash.invalid;
+    isLoading = false;
+
+    constructor(
+        private fb: FormBuilder,
+        private authService: AuthService,
+        private toastr: ToastrService,
+        private router: Router,
+          private route: ActivatedRoute
+
+    ) { }
+
+    ngOnInit(): void {
+        this.forogtPasswordForm = this.fb.group({
+            email: ['', [Validators.required, Validators.email]]
+        });
     }
-    loginForm = new UntypedFormGroup({
-      username: new UntypedFormControl('guest@apex.com', [Validators.required]),
-      password: new UntypedFormControl('Password', [Validators.required]),
-      rememberMe: new UntypedFormControl(true)
-    });
-  
-    constructor(private router: Router,
-        private route: ActivatedRoute) { }
-        get lf() {
-            return this.loginForm.controls;
-          }
-    // On submit click, reset form fields
+
+    get f() {
+        return this.forogtPasswordForm.controls;
+    }
+
     onSubmit() {
-        this.forogtPasswordForm.reset();
-    }
+        this.forgotPasswordFormSubmitted = true;
 
-    // On login link click
-    onLogin() {
-        this.router.navigate(['login'], { relativeTo: this.route.parent });
-    }
+        if (this.forogtPasswordForm.invalid) {
+            this.toastr.warning('Please provide a valid email');
+            return;
+        }
 
-    // On registration link click
-    onRegister() {
-        this.router.navigate(['register'], { relativeTo: this.route.parent });
+        this.isLoading = true;
+
+        const email = this.forogtPasswordForm.value.email;
+
+        this.authService.forgetPassword(email).subscribe({
+            next: (res) => {
+                this.isLoading = false;
+
+                // ✅ Store email in local storage
+                localStorage.setItem('forgotEmail', email);
+
+                this.toastr.success('Password reset email sent!');
+                debugger;
+                // ✅ Navigate immediately to /NewPassword
+                this.router.navigate(['../NewPassword'], { relativeTo: this.route });
+            },
+            error: (err) => {
+                this.isLoading = false;
+                this.toastr.error('Unable to send reset email. Please try again.');
+            }
+        });
     }
 }

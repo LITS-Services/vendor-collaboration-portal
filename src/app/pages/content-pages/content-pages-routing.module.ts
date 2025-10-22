@@ -10,6 +10,7 @@ import { MaintenancePageComponent } from "./maintenance/maintenance-page.compone
 import { RegisterPageComponent } from "./register/register-page.component";
 import { RegisterVendorComponent } from './register-vendor/register-vendor.component';
 import { OtpComponent } from './otp/otp.component';
+import { VerifyForgotPasswordOtpComponent } from './verify-forgot-password-otp/verify-forgot-password-otp.component';
 
 
 const routes: Routes = [
@@ -37,7 +38,13 @@ const routes: Routes = [
           title: 'Forgot Password Page'
         }
       },   
-      
+        {
+        path: 'NewPassword',
+        component: VerifyForgotPasswordOtpComponent,
+        data: {
+          title: 'New Password'
+        }
+      }, 
       {
         path: 'lockscreen',
         component: LockScreenPageComponent,
@@ -87,6 +94,6 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
+  exports: [RouterModule],  
 })
 export class ContentPagesRoutingModule { }
