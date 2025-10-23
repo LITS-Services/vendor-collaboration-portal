@@ -3,7 +3,7 @@
   <div class="col-12 d-flex justify-content-between">
     <div>
     <h1 class="mb-0">Dashboard</h1>
-    <p class="mb-0">Welcome Back!</p>
+    <!-- <p class="mb-0">Welcome Back!</p> -->
     </div>
     <div class="d-flex gap-2 align-items-center">
         <div class="search-input-wrapper">
@@ -164,7 +164,40 @@
       </div>
     </div>
   </div>
+ <div class="col-xl-3 col-lg-6 col-md-6 col-6 pos-relative">
+       <div class="curve-button">
+        <button class="circle-button"  (click)="navigateToStatusFilteredQuotations(null)">
+          <i class="ft-arrow-up-right"></i>
+        </button>
+      </div>
+    <div class="card card-info">
+      <h4 class="card-title">Total RFQs</h4>
+   
+      <div class="card-content">
+        <div class="card-body py-0">
+          <div class="media pb-1">
+            <div class="media-body">
+              <h1>{{  rfqCounts?.totalQuotations }}</h1>
+              <div class="row gx-0 cstm-gx align-items-center">
+                <div class="col-2 d-flex justify-content-center">
+                  <div class="cube">
+                    <span class="text-card"><i class="ft-chevron-up mr-2"></i>17%</span>
+                  </div>
+                </div>
+                <div class="col-8 text-center mt-2">
+                  <h6>Last three months</h6>
+                </div>
+                <div class="col-2 d-flex justify-content-center">
+                  <img src="/assets/img/icons/vector2.svg" class="vector1" alt="">
+                </div>
+              </div>
 
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
    <div class="col-xl-3 col-lg-6 col-md-6 col-6 pos-relative">
        <div class="curve-button">
         <button class="circle-button"(click)="navigateToStatusFilteredQuotations('New')">
