@@ -177,7 +177,7 @@ export class CompanyMasterComponent implements OnInit {
 
         // Only count companies where status = "completed"
         this.totalCompaniesCount = vendorCompanies.filter(c =>
-          (c.status || '').toLowerCase() === 'approve'
+          (c.status || '').toLowerCase() === 'approve' || (c.status || '').toLowerCase() === 'completed'
         ).length;
 
         this.cdr.detectChanges();

@@ -37,9 +37,9 @@ export class CompanyListComponent implements OnInit {
       this.status = params['status'] || '';
 
       // Load companies based on the status
-      if (this.status === 'new' || this.status === 'approve') {
-        this.loadCompanies('approve');
-      } else {
+      if (this.status === 'completed' || this.status === 'approve' || this.status === 'new') {
+        this.loadCompanies('completed');
+      }  else {
         this.loadCompanies('inprocess');
       }
     });
