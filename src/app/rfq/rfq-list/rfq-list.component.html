@@ -1,100 +1,86 @@
 <section>
-    <div class="row">
-        <div class="col-12">
+  <div class="row mb-3">
+    <div class="col-12 text-end">
+      <!-- Filter Icon Button -->
+      <div ngbDropdown class="d-inline-block">
+        <button class="btn btn-outline-secondary" id="filterDropdown" ngbDropdownToggle ngbTooltip="Filter"
+          container="body">
+          <i class="bi bi-sliders"></i>
+        </button>
 
-            <!-- Header -->
-            <div class="row mb-3">
-                <div class="col-md-12">
-                    <h4 class="heading">{{ title }}</h4>
-                </div>
-            </div>
-
-            <ngx-datatable class="bootstrap core-bootstrap" [rows]="rows" [columnMode]="'force'" [headerHeight]="50"
-                [footerHeight]="50" [columns]="columns" rowHeight="50" [limit]="15" [scrollbarH]="true"
-                [loadingIndicator]="loading" [selected]="chkBoxSelected" [swapColumns]="false"
-                [selectionType]="SelectionType.checkbox" (sort)="onSort($event)"
-                (select)="customChkboxOnSelect($event)">
-                <ngx-datatable-column [width]="50" [sortable]="false" [canAutoResize]="false" [draggable]="false"
-                    [resizeable]="false">
-                    <ng-template ngx-datatable-header-template>
-                        <div class="custom-control">
-                            <input type="checkbox" [checked]="isAllSelected" (change)="toggleSelectAll($event)" />
-                        </div>
-                    </ng-template>
-                    <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected"
-                        let-onCheckboxChangeFn="onCheckboxChangeFn">
-
-                        <div class="custom-control custom-checkbox ">
-                            <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)" />
-                        </div>
-                    </ng-template>
-                </ngx-datatable-column>
-                <ngx-datatable-column name="Sr. No." [resizeable]="false">
-                    <ng-template let-rowIndex="rowIndex" let-value="value" ngx-datatable-cell-template>
-                        <span>{{rowIndex + 1}}</span>
-                    </ng-template>
-                </ngx-datatable-column>
-
-                <ngx-datatable-column name="RFQ No." prop="rfqNo">
-
-                </ngx-datatable-column>
-
-                <!-- <ngx-datatable-column name="Company Name" prop="companyName" >
-
-            </ngx-datatable-column> -->
-
-                <ngx-datatable-column name="Status" prop="requestStatus">
-                </ngx-datatable-column>
-
-                <!-- <ngx-datatable-column name="Date" prop="date" >
-            </ngx-datatable-column> -->
-
-                <ngx-datatable-column name="Start Date" prop="startDate">
-                    <ng-template let-row="row" ngx-datatable-cell-template>
-                        {{ row.startDate | date:'yyyy-MM-dd' }}
-                    </ng-template>
-                </ngx-datatable-column>
-
-                <ngx-datatable-column name="End Date" prop="endDate">
-                    <ng-template let-row="row" ngx-datatable-cell-template>
-                        {{ row.endDate | date:'yyyy-MM-dd' }}
-                    </ng-template>
-                </ngx-datatable-column>
-
-                <ngx-datatable-column name="Owner" prop="owner">
-
-                </ngx-datatable-column>
-                <!-- <ngx-datatable-column name="Comments" prop="subject">
-            </ngx-datatable-column> -->
-                <ngx-datatable-column name="Total Amount" prop="totalAmount" [sortable]="false">
-                </ngx-datatable-column>
-
-                <ngx-datatable-column [name]="status === 'in-process' ? 'Remarks' : 'Bid'" prop="action"
-                    [sortable]="false">
-                    <ng-template let-row="row" ngx-datatable-cell-template>
-                        <button class="btn btn-lg position-relative" (click)="openQuotationBoxModal(row)">
-                            <ng-container *ngIf="status === 'in-process'; else editIcon">
-                                <i class="ft-mail"></i>
-                                <span class="badge counter position-absolute rounded-pill" *ngIf="mailCount > 0">{{
-                                    mailCount }}</span>
-                            </ng-container>
-                            <ng-template #editIcon>
-                                <img src="/assets/img/svg/auction.svg" width="30" height="30" alt="Edit">
-                            </ng-template>
-                        </button>
-                    </ng-template>
-                </ngx-datatable-column>
-
-                <!-- <ngx-datatable-column name="Vendors" [width]="100" prop="action"
-        [sortable]="false">
-        <ng-template let-row="row" ngx-datatable-cell-template>
-            <button class="btn btn-primary btn-sm" (click)="openVendorsModal(row)"
-            >
-            <i class="ft-user-check"></i>
-          </button>
-          </ng-template>
-    </ngx-datatable-column> -->
-            </ngx-datatable>
+        <div ngbDropdownMenu class="dropdown-menu-end p-3 shadow filter-dropdown" aria-labelledby="filterDropdown"
+          style="min-width: 220px;" placement="bottom-end" container="body">
+          <label for="statusFilter" class="form-label fw-semibold mb-2">Status:</label>
+          <select id="statusFilter" [(ngModel)]="selectedStatus" (change)="loadQuotations()"
+            class="form-select form-select-sm">
+            <option value="">All</option>
+            <option value="New">New</option>
+            <option value="InProcess">In Process</option>
+            <option value="Completed">Completed</option>
+          </select>
         </div>
+      </div>
     </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <ngx-datatable class="bootstrap core-bootstrap" [rows]="quotations" [columnMode]="'force'" [headerHeight]="50"
+        [footerHeight]="50" [rowHeight]="50" [scrollbarH]="true">
+
+        <!-- Sr. No Column -->
+        <ngx-datatable-column name="Sr. No." [sortable]="false" [resizeable]="false">
+          <ng-template let-rowIndex="rowIndex" ngx-datatable-cell-template>
+            {{ rowIndex + 1 }}
+          </ng-template>
+        </ngx-datatable-column>
+
+        <!-- RFQ No -->
+        <ngx-datatable-column name="RFQ No." prop="rfqNo" [sortable]="false"></ngx-datatable-column>
+
+        <!-- Status -->
+        <ngx-datatable-column name="Status" prop="requestStatus" [sortable]="false"></ngx-datatable-column>
+
+        <!-- Start Date -->
+        <ngx-datatable-column name="Start Date" prop="startDate" [sortable]="false">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.startDate | date: 'yyyy-MM-dd' }}
+          </ng-template>
+        </ngx-datatable-column>
+
+        <!-- End Date -->
+        <ngx-datatable-column name="End Date" prop="endDate" [sortable]="false">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.endDate | date: 'yyyy-MM-dd' }}
+          </ng-template>
+        </ngx-datatable-column>
+
+        <!-- Owner -->
+        <ngx-datatable-column name="Owner" prop="owner" [sortable]="false"></ngx-datatable-column>
+
+        <!-- Total Amount -->
+        <ngx-datatable-column name="Total Amount" prop="totalAmount" [sortable]="false">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.totalAmount }}
+          </ng-template>
+        </ngx-datatable-column>
+
+        <!-- Action -->
+        <ngx-datatable-column name="Action" [sortable]="false">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <div class="d-flex justify-content-center align-items-center">
+              <button class="btn btn-light btn-sm position-relative action-bid-btn" (click)="openBidModal(row)"
+                ngbTooltip="Submit Bids" container="body">
+                <i class="ft-file-text"></i>
+                <span class="badge bg-primary position-absolute top-0 start-100 translate-middle rounded-pill"
+                  *ngIf="row.qrItems?.length > 0">
+                  {{ row.qrItems.length }}
+                </span>
+              </button>
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+    </div>
+  </div>
 </section>

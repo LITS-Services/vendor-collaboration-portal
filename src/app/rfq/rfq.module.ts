@@ -23,6 +23,7 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 import { ChartistModule } from 'ng-chartist';
 import { ChatModule } from 'app/chat/chat.module';
 import { RfqBidAttachmentComponent } from './rfq-bid-attachment/rfq-bid-attachment.component';
+import { QuotationBidModalComponent } from './quotation-bid-modal/quotation-bid-modal.component';
 
 
 @NgModule({
@@ -30,7 +31,8 @@ import { RfqBidAttachmentComponent } from './rfq-bid-attachment/rfq-bid-attachme
     RfqMasterComponent,
     NewRfqComponent,
     RfqListComponent,
-    RfqBidAttachmentComponent
+    RfqBidAttachmentComponent,
+    QuotationBidModalComponent
   ],
   imports: [
     CommonModule,

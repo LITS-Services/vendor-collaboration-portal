@@ -159,7 +159,7 @@
           <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
             <div class="form-group mb-2">
               <label>Status</label>
-              <input type="text" [value]="data?.requestStatus"disabled class="form-control" />
+              <input type="text" [value]="data?.requestStatus" disabled class="form-control" />
             </div>
           </div>
 
@@ -239,12 +239,14 @@
             <ngx-datatable-column name="Description" prop="description" [width]="150"></ngx-datatable-column>
             <ngx-datatable-column name="Amount" [width]="150">
               <ng-template let-row="row" ngx-datatable-cell-template>
-                <input type="number" class="form-control" [(ngModel)]="row.amount" placeholder="Enter amount" />
+                <input type="number" class="form-control" [(ngModel)]="row.amount"
+                  placeholder="Enter amount" />
               </ng-template>
             </ngx-datatable-column>
             <ngx-datatable-column name="Comment" [width]="200">
               <ng-template let-row="row" ngx-datatable-cell-template>
-                <input type="text" class="form-control" [(ngModel)]="row.comment" placeholder="Enter comment" />
+                <input type="text" class="form-control" [(ngModel)]="row.comment"
+                  placeholder="Enter comment" />
               </ng-template>
             </ngx-datatable-column>
             <ngx-datatable-column name="Attachment" [width]="100">
@@ -254,6 +256,13 @@
                 </button>
               </ng-template>
             </ngx-datatable-column>
+            <ngx-datatable-column name="Status" prop="hasSubmittedBid">
+              <ng-template let-row="row" ngx-datatable-cell-template>
+                <span *ngIf="row.hasSubmittedBid" class="badge bg-success">Submitted</span>
+                <span *ngIf="!row.hasSubmittedBid" class="badge bg-warning text-dark">Pending</span>
+              </ng-template>
+            </ngx-datatable-column>
+
           </ngx-datatable>
         </div>
       </div>

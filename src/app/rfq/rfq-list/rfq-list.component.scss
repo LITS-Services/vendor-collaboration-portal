@@ -1,17 +1,24 @@
 .badge {
-    display: inline-block;
-    padding: 0.3rem 0.5rem !important;
-    font-size: 61%;
-    font-weight: 400 !important;
-    line-height: 1;
-    background-color: #187741 !important;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: baseline;
-    border-radius: 0.35rem;
-    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-  }
-  .counter{
-    top: -3px;
-    right: -3px;
-  }
+  display: inline-block;
+  padding: 0.3rem 0.5rem !important;
+  font-size: 61%;
+  font-weight: 400 !important;
+  line-height: 1;
+  background-color: #187741 !important;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.35rem;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.counter {
+  top: -3px;
+  right: -3px;
+}
+.filter-dropdown {
+  border-radius: 0.75rem;
+  border: 1px solid #dee2e6;
+  background-color: #fff;
+  z-index: 2000; // ensures it's above table
+}

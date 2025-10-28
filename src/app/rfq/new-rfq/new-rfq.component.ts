@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgbAccordion, NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -27,49 +27,83 @@ export class NewRfqComponent implements OnInit {
   public rows = DatatableData;
   columns = [];
   itemType: string = 'Inventory'; // Default selection
-  @Input() data: any; // Row data passed to the modal
+
+  @Input() data: any;
   @Input() status: string;
+
   public SelectionType = SelectionType;
   public ColumnMode = ColumnMode;
   newRfqForm: FormGroup;
+
   @ViewChild('accordion') accordion: NgbAccordion;
   @ViewChild(DatatableComponent) table: DatatableComponent;
   @ViewChild('tableRowDetails') tableRowDetails: any;
   @ViewChild('tableResponsive') tableResponsive: any;
-  constructor(private router: Router, public activeModal: NgbActiveModal,
+
+  constructor(
+    private router: Router,
+    public activeModal: NgbActiveModal,
     private modalService: NgbModal,
     private rfqService: RfqService,
     private authService: AuthService,
-    private toastr: ToastrService) { }
+    private toastr: ToastrService,
+    public cdr: ChangeDetectorRef
+  ) { }
 
   ngOnInit(): void {
     if (this.data) {
-      // Use items if available (convert from $values)
-      // const itemList = this.data.qrItems?.$values || [];
       const itemList = this.data.qrItems || [];
-      this.newRfqData = itemList.map(item => ({
-        quotationRequestId: item.quotationRequestId,
-        quotationItemId: item.id, // <-- Make sure this is added
-        itemType: item.itemType,
-        itemId: item.itemId,
-        itemName: item.itemName,
-        description: item.itemDescription,
-        amount: item.amount,
-        vendorUserId: item.vendorUserId,
-        comment: '',
 
-        attachments: item.attachments?.$values?.map((a: any) => ({
-          id: a.id,
-          fileName: a.fileName,
-          contentType: a.contentType,
-          content: a.content,
-          isNew: false // important to differentiate already-saved files
-        })) || []
-      }));
-      console.log("RFQ Data: ", this.newRfqData);
+      // Map quotation items into local structure
+      // this.newRfqData = itemList.map(item => ({
+      //    quotationRequestId: item.quotationRequestId,
+      //   quotationItemId: item.id, 
+      //   itemType: item.itemType,
+      //   itemId: item.itemId,
+      //   itemName: item.itemName,
+      //   description: item.itemDescription,
+      //   amount: item.amount,
+      //   vendorUserId: item.vendorUserId,
+      //   comment: '',
+      //   hasSubmittedBid,
+      //   attachments: item.attachments?.map((a: any) => ({
+      //     id: a.id,
+      //     fileName: a.fileName,
+      //     contentType: a.contentType,
+      //     content: a.content,
+      //     fromForm: a.fromForm,
+      //     isNew: false
+      //   })) || []
+      // }));
+      this.newRfqData = itemList.map(item => {
+  const hasSubmittedBid = item.bidSubmissionDetails && item.bidSubmissionDetails.length > 0;
 
+  return {
+    quotationRequestId: item.quotationRequestId,
+    quotationItemId: item.id,
+    itemType: item.itemType,
+    itemId: item.itemId,
+    itemName: item.itemName,
+    description: item.itemDescription,
+    amount: item.amount,
+    vendorUserId: item.vendorUserId,
+    comment: '',
+    hasSubmittedBid,
+    attachments: item.attachments?.map((a: any) => ({
+      id: a.id,
+      fileName: a.fileName,
+      contentType: a.contentType,
+      content: a.content,
+      fromForm: a.fromForm,
+      isNew: false
+    })) || []
+  };
+
+});
+  this.cdr.detectChanges();
     }
   }
+
   homePage() {
     this.router.navigate(['/rfq']);
   }
@@ -82,15 +116,62 @@ export class NewRfqComponent implements OnInit {
       return;
     }
 
-    const submissionList = this.newRfqData.map(item => ({
-      quotationRequestId: item.quotationRequestId,
-      quotationItemId: item.quotationItemId,
-      vendorUserId: vendorUserId,
-      biddingAmount: item.amount,
-      comment: item.comment,
-    }));
+    // const submissionList = this.newRfqData
+    //  .filter(item => !item.hasSubmittedBid) // ✅ only new bids
+    // .map(item => ({
+      
+    //   quotationRequestId: item.quotationRequestId,
+    //   quotationItemId: item.quotationItemId,
+    //   vendorUserId: vendorUserId,
+    //   biddingAmount: item.amount,
+    //   comment: item.comment,
+    //   vendorBidAttachments: item.attachments?.filter(att => att.fromForm === "Vendor Upload").map(att => ({
+    //     id: att.id || null,
+    //     content: att.content || '',
+    //     contentType: att.contentType || '',
+    //     fileName: att.fileName || '',
+    //     fromForm: att.fromForm || '',
+    //     createdBy: att.createdBy || '',
+    //     isDeleted: false,
+    //     bidSubmissionDetailsId: att.bidSubmissionDetailsId || 0,
+    //   }))
 
-    // 🔹 Show SweetAlert confirmation
+    // }));
+    const submissionList = this.newRfqData
+  // 1️⃣ Only items that are NOT already submitted
+  .filter(item => !item.hasSubmittedBid)
+  // 2️⃣ Only items with actual input from vendor
+  .filter(item =>
+    (item.amount && item.amount > 0) ||
+    (item.comment && item.comment.trim() !== '') ||
+    (item.attachments && item.attachments.some(att => att.fromForm === "Vendor Upload"))
+  )
+  // 3️⃣ Map only valid items into payload
+  .map(item => ({
+    quotationRequestId: item.quotationRequestId,
+    quotationItemId: item.quotationItemId,
+    vendorUserId: vendorUserId,
+    biddingAmount: item.amount,
+    comment: item.comment,
+    vendorBidAttachments: item.attachments
+      ?.filter(att => att.fromForm === "Vendor Upload")
+      .map(att => ({
+        id: att.id || null,
+        content: att.content || '',
+        contentType: att.contentType || '',
+        fileName: att.fileName || '',
+        fromForm: att.fromForm || '',
+        createdBy: att.createdBy || '',
+        isDeleted: false,
+        bidSubmissionDetailsId: att.bidSubmissionDetailsId || 0,
+      })) ?? []
+  }));
+
+    console.log('📤 Submitting payload:', submissionList); // helpful debug log
+if (submissionList.length === 0) {
+    this.toastr.info('Submission of Bid includes an already submitted bid. Please check your bids.');
+    return; // stop execution, don’t show SweetAlert
+  }
     Swal.fire({
       title: 'Are you sure?',
       text: 'Have you carefully reviewed your bids before submitting?',
@@ -100,9 +181,8 @@ export class NewRfqComponent implements OnInit {
       cancelButtonText: 'Cancel',
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33'
-    }).then((result) => {
+    }).then(result => {
       if (result.isConfirmed) {
-        // Proceed only if confirmed
         this.rfqService.submitBids(submissionList).subscribe({
           next: () => {
             Swal.fire({
@@ -131,29 +211,19 @@ export class NewRfqComponent implements OnInit {
   deleteRow(rowIndex: number): void {
     this.newRfqData.splice(rowIndex, 1);
   }
+
   closeDialog() {
     this.activeModal.close(false);
   }
+
   updateValue(event: any, prop: string, rowIndex: number) {
-    const newValue = event.target.value || ''; // Capture the new value or empty string if cleared
-    const row = this.rows[rowIndex]; // Get the corresponding row
-
-    // Update the property value in the row
+    const newValue = event.target.value || '';
+    const row = this.rows[rowIndex];
     row[prop] = newValue;
-
-    // Check if the property being updated is 'ExpiryDate' and call updateExpiryDate
-    if (prop === 'ExpiryDate') {
-      // this.updateExpiryDate(row, newValue); // Trigger the API call to update expiry date
-    }
-
-    // Disable editing mode for this row's expiry field
-    // this.editing[rowIndex + '-expiry'] = false;
   }
 
   openAttachmentModal(rowIndex: number): void {
-    const sourceRow = rowIndex !== null
-      ? this.newRfqData[rowIndex]
-      : this.newRfqForm.value; // for new item
+    const sourceRow = this.newRfqData[rowIndex];
 
     const modalRef = this.modalService.open(RfqBidAttachmentComponent, {
       backdrop: 'static',
@@ -161,36 +231,45 @@ export class NewRfqComponent implements OnInit {
       centered: true
     });
 
-    // Pass inputs to modal
-    // modalRef.componentInstance.viewMode = this.viewMode;
     modalRef.componentInstance.data = {
-      quotationItemId: sourceRow?.id ?? 0,
-      existingAttachment: sourceRow?.attachments || []
+      bidSubmissionDetailsId: sourceRow?.bidSubmissionDetailsId ?? 0,
+      existingAttachment: sourceRow?.attachments?.filter((a: any) => a.fromForm !== 'Vendor Upload') || [], // Procurement
+      vendorAttachments: sourceRow?.attachments?.filter((a: any) => a.fromForm === 'Vendor Upload') || []  // Vendor side
     };
 
-    // Handle modal close (attachments returned)
-    modalRef.result.then((newFiles: any[]) => {
-      if (newFiles?.length) {
-        const merged = [
-          ...(sourceRow.attachments || []),
-          ...newFiles.map(a => ({
-            fileName: a.fileName,
-            contentType: a.contentType,
-            content: a.content,
-            fromForm: a.fromForm,
-            quotationItemId: sourceRow?.id ?? 0,
-            isNew: true
-          }))
-        ];
+    modalRef.result
+      .then((newVendorFiles: any[]) => {
+        if (newVendorFiles?.length) {
+          // Merge new vendor uploads into vendorAttachments only
+          const updatedVendorAttachments = [
+            ...(sourceRow.vendorAttachments || []),
+            ...newVendorFiles.map(f => ({
+              ...f,
+              bidSubmissionDetailsId: sourceRow?.bidSubmissionDetailsId ?? 0,
+              fromForm: 'Vendor Upload',
+              isNew: true
+            }))
+          ];
 
-        if (rowIndex !== null) {
+          // Rebuild a combined attachments list (for display)
+          const combinedAttachments = [
+            ...(sourceRow.attachments?.filter((a: any) => a.fromForm !== 'Vendor Upload') || []), // procurement
+            ...updatedVendorAttachments
+          ];
+
+          // Update the row data immutably
           this.newRfqData = this.newRfqData.map((r, i) =>
-            i === rowIndex ? { ...r, attachments: merged } : r
+            i === rowIndex
+              ? {
+                ...r,
+                vendorAttachments: updatedVendorAttachments,
+                attachments: combinedAttachments
+              }
+              : r
           );
-        } else {
-          this.newRfqForm.patchValue({ attachments: merged });
         }
-      }
-    }).catch(() => { });
+      })
+      .catch(() => { });
   }
+
 }

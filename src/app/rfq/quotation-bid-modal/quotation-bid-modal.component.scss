@@ -1,0 +1,159 @@
+.submit-bid-page {
+
+  // === General Card Styling ===
+  .cstm-ui-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+
+  // === Action Bar Buttons (Back + Submit) ===
+  .header-buttons,
+  .cstm-ui-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      font-size: 1rem;
+      padding: 0.4rem 0.8rem;
+      transition: all 0.2s ease;
+
+      i {
+        font-size: 1rem;
+      }
+
+      label {
+        margin: 0;
+        font-weight: 500;
+        cursor: pointer;
+      }
+    }
+
+    .back-btn,
+    .btn-lg {
+      background: #f9fafb;
+      border: 1px solid #d1d5db;
+      color: #374151;
+
+      &:hover {
+        background: #f3f4f6;
+      }
+    }
+
+    .cstm-ui-table-btn {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+
+      &:hover {
+        background-color: #0069d9;
+      }
+
+      i,
+      label {
+        color: #fff;
+      }
+    }
+
+    .vl {
+      width: 1px;
+      height: 28px;
+      background-color: #d1d5db;
+      align-self: center;
+      display: inline-block;
+    }
+  }
+
+  // === RFQ Info & Input Fields ===
+  .form-control:disabled {
+    background-color: #f9fafb;
+    color: #6b7280;
+  }
+
+  // === Section Titles ===
+  .section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #374151;
+  }
+
+  // === Quotation Items ===
+  .quotation-item {
+    background-color: #fafafa;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    transition: box-shadow 0.2s ease;
+
+    &:hover {
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+  }
+
+  // === Attachments ===
+  .attachment-container i {
+    font-size: 1rem;
+    cursor: pointer;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: #007bff;
+    }
+  }
+
+  .attachment-list a {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 0.9rem;
+    font-style: italic;
+    color: #007bff;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  // === Bid Section ===
+  .bid-section {
+    background-color: #f8fafc;
+    border: 1px dashed #d1d5db;
+    border-radius: 6px;
+    padding: 1rem;
+  }
+
+  .badge {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    font-size: 0.85rem;
+    cursor: default;
+  }
+
+  .badge button {
+    border: none;
+    background: transparent;
+  }
+
+  .badge:hover {
+    background-color: #f1f1f1;
+  }
+.green-border {
+  border: 1px solid green;
+  padding: 1rem;
+  border-radius: 4px;
+}
+.custom-vl {
+    border-left: 1.4px solid #000 !important;
+    height: 3px;
+    position: absolute;
+    margin-left: -3px;
+    top: 3px;
+    bottom: 3px;
+    background-color: red;
+}
+
+}

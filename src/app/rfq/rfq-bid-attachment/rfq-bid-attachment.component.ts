@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
@@ -11,114 +10,71 @@ import { DatatableComponent } from '@swimlane/ngx-datatable';
 })
 export class RfqBidAttachmentComponent implements OnInit {
 
- @Input() viewMode: boolean = false;
-  @Input() attachments: any[] = []; 
+  @Input() viewMode: boolean = false;
+  @Input() data!: {
+    existingAttachment?: any[],     // procurement attachments
+    vendorAttachments?: any[],      // vendor attachments if editing
+    bidSubmissionDetailsId: number;
+  };
+
   @Output() attachmentsChange = new EventEmitter<any[]>();
+
   @ViewChild(DatatableComponent) table: DatatableComponent;
-  @ViewChild('tableRowDetails') tableRowDetails: any;
-  @ViewChild('tableResponsive') tableResponsive: any;
-  data!: {
-    existingAttachment?: any[],
-    quotationItemId: number;
-  }
 
-  itemId: number;
-  selectedFiles: File[] = [];
   AttachmentForm: FormGroup;
-  uploadedFiles: any[] = [];
-  newQuotationItemAttachmentData = [];
+  procurementAttachments: any[] = [];
+  vendorAttachments: any[] = [];
 
-  constructor(private http: HttpClient, private fb: FormBuilder, public activeModal: NgbActiveModal) {
-    this.AttachmentForm = this.fb.group({
-    });
+  constructor(private fb: FormBuilder, public activeModal: NgbActiveModal) {
+    this.AttachmentForm = this.fb.group({});
   }
 
   ngOnInit(): void {
-    // this.uploadedFiles = this.attachments ? [...this.attachments] : [];
-    this.uploadedFiles = this.data?.existingAttachment
-      ? this.data.existingAttachment.map((f: any) => ({ ...f, isNew: false })) // ⬅️ key line
+    // Procurement files (read-only)
+    this.procurementAttachments = this.data?.existingAttachment
+      ? this.data.existingAttachment.map(f => ({ ...f, isNew: false }))
       : [];
-    // this.uploadedFiles = this.data?.existingAttachment ? [...this.data.existingAttachment] : [];
-    this.itemId = this.data?.quotationItemId;
+
+    // Vendor files (editable)
+    this.vendorAttachments = this.data?.vendorAttachments
+      ? [...this.data.vendorAttachments]
+      : [];
   }
 
   async onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
-    if (!input.files || input.files.length === 0) return;
+    if (!input.files?.length) return;
 
-    const file = input.files[0];
-    await this.addAttachment(file);
+    for (const file of Array.from(input.files)) {
+      const base64 = await this.toBase64(file);
+      this.vendorAttachments.push({
+        fileName: file.name,
+        contentType: file.type,
+        content: base64,
+        fromForm: 'Vendor Upload',
+        bidSubmissionDetailsId: this.data?.bidSubmissionDetailsId,
+        isNew: true
+      });
+    }
+
+    this.vendorAttachments = [...this.vendorAttachments]; // trigger UI update
   }
 
   uploadFiles() {
-    if (this.viewMode) return;
-
-    const payload = this.uploadedFiles.filter(a => a.isNew).map(a => ({
-      content: a.content,
-      contentType: a.contentType,
-      fileName: a.fileName,
-      fromForm: a.fromForm,
-      quotationItemId: a.quotationItemId
-    }));
-
-    this.activeModal.close(payload);
+    const payload = this.vendorAttachments.filter(f => f.isNew);
+    this.activeModal.close(payload); // return new files to parent
   }
 
+  deleteVendorAttachment(index: number) {
+    this.vendorAttachments.splice(index, 1);
+    this.vendorAttachments = [...this.vendorAttachments];
+  }
 
   downloadLocalFile(file: any) {
     const link = document.createElement('a');
     link.href = file.content;
     link.download = file.fileName;
     link.click();
-  }
-
-  async addAttachment(file: File) {
-    if (!file) return;
-
-    try {
-      const base64 = await this.toBase64(file);
-      const quotationItemId = this.itemId ?? 0;
-
-      const newAttachment = {
-        fileName: file.name,
-        contentType: file.type,
-        content: base64,
-        fromForm: 'Quotation Item Attachment',
-        quotationItemId: quotationItemId,
-        isNew: true
-      };
-
-      this.uploadedFiles.push(newAttachment);
-      this.uploadedFiles = [...this.uploadedFiles]; // Trigger UI update
-
-    } catch (error) {
-      console.error('Failed to convert file to base64:', error);
-    }
-  }
-
-  removeFile(index: number) {
-    this.uploadedFiles.splice(index, 1);
-  }
-
-  downloadAttachment(attachment: any) {
-    if (!attachment) return;
-
-    if (attachment.isNew) {
-      // Download from base64 string
-      const link = document.createElement('a');
-      link.href = attachment.attachment;
-      link.download = attachment.name;
-      link.click();
-    } else {
-      // Download from API if exists
-      this.http.get(`api/Quotation/Download-Attachment/${attachment.id}`, { responseType: 'blob' }).subscribe(blob => {
-        const link = document.createElement('a');
-        link.href = window.URL.createObjectURL(blob);
-        link.download = attachment.name;
-        link.click();
-        window.URL.revokeObjectURL(link.href);
-      });
-    }
   }
 
   private toBase64(file: File): Promise<string> {
@@ -130,12 +86,7 @@ export class RfqBidAttachmentComponent implements OnInit {
     });
   }
 
-  private emitChanges() {
-    this.attachmentsChange.emit(this.uploadedFiles);
-  }
-
   closeDialog() {
     this.activeModal.close(false);
   }
-
 }
