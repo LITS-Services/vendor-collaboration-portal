@@ -1,9 +1,10 @@
-import { Component, OnInit, Input, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectorRef, NgZone, ElementRef, TemplateRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BidSubmissionDetails } from '../../models/bid-submission.model';
 import { RfqService } from 'app/shared/services/rfq.service';
 import { QuotationItemAttachmentResponse, QuotationRequestWithDetailsResponse } from 'app/models/quotation-request-with-details.model';
 import { ToastrService } from 'ngx-toastr';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-quotation-bid-modal',
@@ -18,13 +19,18 @@ export class QuotationBidModalComponent implements OnInit {
   showAttachments: { [key: number]: boolean } = {};
   editingBidItemId: number | null = null;
 
+  selectedItem: any;
+  private activeModal?: NgbModalRef;
+
   constructor(
     private rfqService: RfqService,
     private route: ActivatedRoute,
     public router: Router,
     private cdr: ChangeDetectorRef,
     private zone: NgZone,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private modalService: NgbModal
+
   ) { }
 
   ngOnInit(): void {
@@ -183,6 +189,16 @@ export class QuotationBidModalComponent implements OnInit {
         this.router.navigate(['/rfq/rfq-list']);
       },
       error: err => console.error(err)
+    });
+  }
+
+  openAttachmentsModal(item: any, modalTemplate: TemplateRef<any>) {
+    this.selectedItem = item;
+    this.activeModal = this.modalService.open(modalTemplate, {
+      centered: true,
+      size: 'lg',
+      backdrop: 'static',
+      keyboard: true
     });
   }
 }

@@ -66,7 +66,7 @@
           </div>
 
           <!-- Attachments -->
-          <div class="attachment-container position-relative mb-2">
+          <!-- <div class="attachment-container position-relative mb-2">
             <i class="fa fa-paperclip text-secondary cursor-pointer" (click)="toggleAttachments(item.id)"></i>
             <div class="attachment-list position-absolute bg-white border rounded shadow-sm p-2"
               *ngIf="showAttachments[item.id]" style="top: 24px; left: -10px; min-width: 180px; z-index: 10;">
@@ -76,6 +76,15 @@
                 </a>
               </div>
             </div>
+          </div> -->
+          <!-- Attachments Button -->
+          <div class="mb-2">
+            <button class="btn btn-outline-secondary btn-sm d-flex align-items-center"
+              (click)="openAttachmentsModal(item, attachmentsModal)">
+
+              <i class="fa fa-paperclip me-2"></i>
+              View Procurement Attachments
+            </button>
           </div>
 
           <!-- Bid Section -->
@@ -125,10 +134,10 @@
 
             <!-- VIEW MODE -->
             <ng-template #viewBidSection>
-              <div class="d-flex justify-content-between align-items-center p-2 bg-light rounded">
+              <div class="d-flex justify-content-between align-items-center p-2 rounded" style="background-color: #dbdbdb;">
                 <div>
                   <strong>Bid:</strong> {{ getBid(item.id).biddingAmount | currency }} <br>
-                  <small class="text-muted">Comment: {{ getBid(item.id).comment || '—' }}</small>
+                  <small>Comment: {{ getBid(item.id).comment || '—' }}</small>
                   <div class="mt-1 d-flex flex-wrap gap-2">
                     <div *ngFor="let att of getBid(item.id).vendorBidAttachments"
                       class="badge bg-light text-dark border rounded-pill px-2 py-1 d-flex align-items-center">
@@ -156,3 +165,40 @@
     </div>
   </div>
 </section>
+
+<!-- Attachments Modal -->
+<ng-template #attachmentsModal let-modal>
+  <div class="modal-header bg-light">
+    <h5 class="modal-title">
+      <i class="fa fa-paperclip me-2 text-white"></i>
+      Procurement Attachments - {{ selectedItem?.itemName }}
+    </h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+  </div>
+
+  <div class="modal-body">
+    <div *ngIf="selectedItem?.quotationItemAttachments?.length; else noAttachments">
+      <ul class="list-group">
+        <li class="list-group-item d-flex justify-content-between align-items-center"
+          *ngFor="let att of selectedItem.quotationItemAttachments">
+          <span>
+            <i class="fa fa-file text-secondary me-2"></i>
+            {{ att.fileName }}
+          </span>
+          <button class="btn btn-sm btn-outline-primary" (click)="downloadAttachment(att)">
+            <i class="fa fa-download me-1"></i>
+            Download
+          </button>
+        </li>
+      </ul>
+    </div>
+
+    <ng-template #noAttachments>
+      <p class="text-muted mb-0">No attachments available for this item.</p>
+    </ng-template>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.close()">Close</button>
+  </div>
+</ng-template>

@@ -155,5 +155,16 @@
     bottom: 3px;
     background-color: red;
 }
+.modal-content {
+  border-radius: 12px;
+}
+
+.modal-header {
+  border-bottom: 1px solid #dee2e6;
+}
+
+.list-group-item {
+  font-size: 0.9rem;
+}
 
 }
