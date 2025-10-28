@@ -45,7 +45,7 @@
   }
 
   .wrapper {
-    top: 4rem;
+    top: 7rem;
   }
 
   .app-sidebar {
@@ -102,8 +102,8 @@
 
     &.menu-fixed {
       position: fixed;
-      top: 4rem;
-      height: calc(100% - 4rem);
+      // top: 4rem;
+      // height: calc(100% - 4rem);
     }
   }
 

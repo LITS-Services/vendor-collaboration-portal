@@ -33,17 +33,10 @@ import { WINDOW_PROVIDERS } from './shared/services/window.service';
 import { AuthInterceptor } from "./shared/auth/auth.interceptor";
 import { NgSelectModule } from "@ng-select/ng-select";
 import { responseHandlerInterceptor } from "./shared/interceptor/response-handler.interceptor";
+import { environment } from "environments/environment";
+import { AngularFireMessagingModule } from "@angular/fire/messaging";
 
-var firebaseConfig = {
-  apiKey: "AIzaSyC9XfnIpwNoSv7cyAsoccFQ5EYPd7lZXrk", //YOUR_API_KEY
-  authDomain: "apex-angular.firebaseapp.com", //YOUR_AUTH_DOMAIN
-  databaseURL: "https://apex-angular.firebaseio.com", //YOUR_DATABASE_URL
-  projectId: "apex-angular", //YOUR_PROJECT_ID
-  storageBucket: "apex-angular.appspot.com", //YOUR_STORAGE_BUCKET
-  messagingSenderId: "447277845463", //YOUR_MESSAGING_SENDER_ID
-  appId: "1:447277845463:web:9a7db7aaeaf3a7217a9992", //YOUR_APP_ID
-  measurementId: "G-ZVSYZRJ211" //YOUR_MEASUREMENT_ID
-};
+
 
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
@@ -64,7 +57,8 @@ export function createTranslateLoader(http: HttpClient) {
     AppRoutingModule,
     SharedModule,
     HttpClientModule,
-    AngularFireModule.initializeApp(firebaseConfig),
+    AngularFireModule.initializeApp(environment.firebaseConfig),
+    AngularFireMessagingModule,
     AngularFireAuthModule,
     ToastrModule.forRoot(),
     NgbModule,

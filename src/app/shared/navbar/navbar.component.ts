@@ -11,11 +11,13 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { CompanyService } from 'app/shared/services/company.service'; // ✅ added
 import { HROUTES } from '../horizontal-menu/navigation-routes.config';
+import { FirebaseMessagingService } from 'app/firebase-messaging.service';
+import { NotifcationService } from '../services/notification.service';
 
 @Component({
   selector: "app-navbar",
   templateUrl: "./navbar.component.html",
-  styleUrls: ["./navbar.component.scss"]
+  styleUrls: ["./navbar.component.scss"],
 })
 export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   currentLang = "en";
@@ -23,13 +25,13 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   selectedLanguageFlag = "./assets/img/flags/us.png";
   toggleClass = "ft-maximize";
   placement = "bottom-right";
-  logoUrl = 'assets/img/icons/vp.png';
-  menuPosition = 'Side';
+  logoUrl = "assets/img/icons/vp.png";
+  menuPosition = "Side";
   isSmallScreen = false;
-  username: string = '';
-  profilePicture: string = 'assets/img/portrait/small/avatar-s-1.png'; // default avatar
+  username: string = "";
+  profilePicture: string = "assets/img/portrait/small/avatar-s-1.png"; // default avatar
 
-    public menuItems: any[];
+  public menuItems: any[];
 
   protected innerWidth: any;
   searchOpenClass = "";
@@ -39,8 +41,8 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   layoutSub: Subscription;
   configSub: Subscription;
 
-  @ViewChild('search') searchElement: ElementRef;
-  @ViewChildren('searchResults') searchResults: QueryList<any>;
+  @ViewChild("search") searchElement: ElementRef;
+  @ViewChildren("searchResults") searchResults: QueryList<any>;
 
   @Output() toggleHideSidebar = new EventEmitter<Object>();
   @Output() seachTextEmpty = new EventEmitter<boolean>();
@@ -49,6 +51,16 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   control = new UntypedFormControl();
   public config: any = {};
 
+  @ViewChild("notifRoot", { static: false })
+  notifRoot!: ElementRef<HTMLElement>;
+
+  notifOpen = false;
+
+  notifications: any[] = []
+  unreadCount: number = null;
+  notificationCount: number = null;
+
+
   constructor(
     public translate: TranslateService,
     private layoutService: LayoutService,
@@ -56,20 +68,36 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
     private toastr: ToastrService,
     private configService: ConfigService,
     private cdr: ChangeDetectorRef,
-    private companyService: CompanyService // ✅ injected
+    private companyService: CompanyService, // ✅ injected
+    private messagingService: FirebaseMessagingService,
+    private toaster: ToastrService,
+    private notificationService: NotifcationService
   ) {
     const browserLang: string = translate.getBrowserLang();
     translate.use(browserLang.match(/en|es|pt|de/) ? browserLang : "en");
     this.config = this.configService.templateConf;
     this.innerWidth = window.innerWidth;
 
-    this.layoutSub = layoutService.toggleSidebar$.subscribe(
-      isShow => {
-        this.hideSidebar = !isShow;
-      });
+    this.layoutSub = layoutService.toggleSidebar$.subscribe((isShow) => {
+      this.hideSidebar = !isShow;
+    });
   }
 
   ngOnInit() {
+    this.getNotification();
+    var userId = localStorage.getItem("userId");
+    this.messagingService.requestPermission(userId);
+
+    this.messagingService.currentMessage.subscribe((msg) => {
+      if (msg) {
+        this.toaster.success(
+          msg.notification?.title || "New Notification",
+          msg.notification?.body || ""
+        );
+        this.getNotification();
+        // You can show a toast or alert here
+      }
+    });
     this.listItems = LISTITEMS;
 
     this.isSmallScreen = this.innerWidth < 1200;
@@ -77,18 +105,20 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
     // ✅ Load user profile for navbar
     this.loadNavbarUser();
 
-        // Build tabs from HROUTES once (or on config stream if needed)
-      this.menuItems = (HROUTES || [])
-    .filter(x => x && x.title && (x.path || x.isExternalLink))   // basic sanity
-    .filter(x => !x.submenu || x.submenu.length === 0);  
+    // Build tabs from HROUTES once (or on config stream if needed)
+    this.menuItems = (HROUTES || [])
+      .filter((x) => x && x.title && (x.path || x.isExternalLink)) // basic sanity
+      .filter((x) => !x.submenu || x.submenu.length === 0);
   }
 
   ngAfterViewInit() {
-    this.configSub = this.configService.templateConf$.subscribe((templateConf) => {
-      if (templateConf) this.config = templateConf;
-      this.loadLayout();
-      this.cdr.markForCheck();
-    });
+    this.configSub = this.configService.templateConf$.subscribe(
+      (templateConf) => {
+        if (templateConf) this.config = templateConf;
+        this.loadLayout();
+        this.cdr.markForCheck();
+      }
+    );
   }
 
   ngOnDestroy() {
@@ -96,64 +126,104 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.configSub) this.configSub.unsubscribe();
   }
 
-  @HostListener('window:resize', ['$event'])
+  @HostListener("window:resize", ["$event"])
   onResize(event) {
     this.innerWidth = event.target.innerWidth;
     this.isSmallScreen = this.innerWidth < 1200;
   }
 
+  togglePanel(): void {
+    this.notifOpen = !this.notifOpen;
+  }
+
+  closePanel(): void {
+    this.notifOpen = false;
+  }
+
+  @HostListener("document:click", ["$event"])
+  onDocClick(ev: MouseEvent): void {
+    if (!this.notifOpen) return;
+    const root = this.notifRoot?.nativeElement;
+    if (root && !root.contains(ev.target as Node)) {
+      this.closePanel();
+    }
+  }
+
+  getNotification() {
+    this.notificationService.getNotification().subscribe((res: any) => {
+      this.notifications = res.messages.map((m: any, index: number) => ({
+        title: m.title,
+        message: m.message,
+        timeAgo: this.timeSince(new Date(m.createdOn)),
+        read: false,
+        status: m.status,
+        createdOn: m.createdOn,
+      }));
+      this.notificationCount = res.messages?.length;
+      this.unreadCount = res.unreadCount;
+      this.cdr.detectChanges();
+    });
+  }
   loadLayout() {
     if (this.config.layout.menuPosition?.toString().trim() != "") {
       this.menuPosition = this.config.layout.menuPosition;
     }
 
-    this.logoUrl = 'assets/img/icons/vp.png'; // same for light/dark in your setup
-    this.transparentBGClass = this.config.layout.variant === "Transparent" ? this.config.layout.sidebar.backgroundColor : "";
+    this.logoUrl = "assets/img/icons/vp.png"; // same for light/dark in your setup
+    this.transparentBGClass =
+      this.config.layout.variant === "Transparent"
+        ? this.config.layout.sidebar.backgroundColor
+        : "";
   }
 
   logout() {
     localStorage.clear();
     sessionStorage.clear();
-    this.toastr.success('You have been logged out successfully', 'Logout');
-    this.router.navigate(['/pages/login']);
+    this.toastr.success("You have been logged out successfully", "Logout");
+    this.router.navigate(["/pages/login"]);
   }
 
   // =========================
   // 🔹 Navbar User API
   // =========================
   loadNavbarUser() {
-    const userId = localStorage.getItem('userId');
+    const userId = localStorage.getItem("userId");
     if (!userId) return;
 
     this.companyService.GetVendoruserByid(userId).subscribe({
       next: (res: any) => {
         const userData = res.$values ? res.$values[0] : res;
-        this.username = userData.userName || '';
-        this.profilePicture = userData.profilePicture || 'assets/img/portrait/small/avatar-s-1.png';
+        this.username = userData.userName || "";
+        this.profilePicture =
+          userData.profilePicture || "assets/img/portrait/small/avatar-s-1.png";
         this.cdr.detectChanges(); // update UI immediately
       },
-      error: err => {
-        console.error('Error loading navbar user:', err);
-      }
+      error: (err) => {
+        console.error("Error loading navbar user:", err);
+      },
     });
   }
 
   onSearchKey(event: any) {
     if (this.searchResults?.length > 0) {
-      this.searchResults.first.host.nativeElement.classList.add('first-active-item');
+      this.searchResults.first.host.nativeElement.classList.add(
+        "first-active-item"
+      );
     }
     this.seachTextEmpty.emit(event.target.value === "");
   }
 
   removeActiveClass() {
     if (this.searchResults?.length > 0) {
-      this.searchResults.first.host.nativeElement.classList.remove('first-active-item');
+      this.searchResults.first.host.nativeElement.classList.remove(
+        "first-active-item"
+      );
     }
   }
 
   onEscEvent() {
     this.control.setValue("");
-    this.searchOpenClass = '';
+    this.searchOpenClass = "";
     this.seachTextEmpty.emit(true);
   }
 
@@ -162,7 +232,7 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
       let url = this.searchResults.first.url;
       if (url) {
         this.control.setValue("");
-        this.searchOpenClass = '';
+        this.searchOpenClass = "";
         this.router.navigate([url]);
         this.seachTextEmpty.emit(true);
       }
@@ -176,19 +246,29 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ChangeLanguage(language: string) {
     this.translate.use(language);
-    if (language === 'en') { this.selectedLanguageText = "English"; this.selectedLanguageFlag = "./assets/img/flags/us.png"; }
-    else if (language === 'es') { this.selectedLanguageText = "Spanish"; this.selectedLanguageFlag = "./assets/img/flags/es.png"; }
-    else if (language === 'pt') { this.selectedLanguageText = "Portuguese"; this.selectedLanguageFlag = "./assets/img/flags/pt.png"; }
-    else if (language === 'de') { this.selectedLanguageText = "German"; this.selectedLanguageFlag = "./assets/img/flags/de.png"; }
+    if (language === "en") {
+      this.selectedLanguageText = "English";
+      this.selectedLanguageFlag = "./assets/img/flags/us.png";
+    } else if (language === "es") {
+      this.selectedLanguageText = "Spanish";
+      this.selectedLanguageFlag = "./assets/img/flags/es.png";
+    } else if (language === "pt") {
+      this.selectedLanguageText = "Portuguese";
+      this.selectedLanguageFlag = "./assets/img/flags/pt.png";
+    } else if (language === "de") {
+      this.selectedLanguageText = "German";
+      this.selectedLanguageFlag = "./assets/img/flags/de.png";
+    }
   }
 
   ToggleClass() {
-    this.toggleClass = this.toggleClass === "ft-maximize" ? "ft-minimize" : "ft-maximize";
+    this.toggleClass =
+      this.toggleClass === "ft-maximize" ? "ft-minimize" : "ft-maximize";
   }
 
   toggleSearchOpenClass(display) {
     this.control.setValue("");
-    this.searchOpenClass = display ? 'open' : '';
+    this.searchOpenClass = display ? "open" : "";
     if (display) setTimeout(() => this.searchElement.nativeElement.focus(), 0);
     this.seachTextEmpty.emit(true);
   }
@@ -199,5 +279,27 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
 
   toggleSidebar() {
     this.layoutService.toggleSidebarSmallScreen(this.hideSidebar);
+  }
+
+  timeSince(date: Date): string {
+    const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
+
+    if (seconds < 30) return "just now";
+
+    const units = [
+      { label: "y", secs: 31536000 },
+      { label: "mo", secs: 2592000 },
+      { label: "w", secs: 604800 },
+      { label: "d", secs: 86400 },
+      { label: "h", secs: 3600 },
+      { label: "m", secs: 60 },
+    ];
+
+    for (const u of units) {
+      const v = Math.floor(seconds / u.secs);
+      if (v >= 1) return `${v}${u.label} ago`;
+    }
+    // Fallback: seconds level shows as "1m ago" minimum; we handled <30s above
+    return "1m ago";
   }
 }

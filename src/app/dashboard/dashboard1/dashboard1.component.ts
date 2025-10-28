@@ -25,6 +25,8 @@ import {
 import { Router } from '@angular/router';
 import { CompanyService } from '../../shared/services/company.service'; // <-- Import your service
 import { RfqService } from 'app/shared/services/rfq.service';
+import { FirebaseMessagingService } from 'app/firebase-messaging.service';
+import { ToastrService } from 'ngx-toastr';
 
 const data: any = require('../../shared/data/chartist.json');
 
@@ -82,7 +84,12 @@ export class Dashboard1Component implements OnInit {
   newlyOnboardedCount: number = 0;
   rfqCounts!: QuotationRequestsCountVM;
 
-  constructor(private router: Router, private companyService: CompanyService, private rfqService: RfqService, private cdr: ChangeDetectorRef
+  constructor(private router: Router,
+     private companyService: CompanyService,
+      private rfqService: RfqService,
+      private messagingService: FirebaseMessagingService,
+      private toaster: ToastrService,
+      private cdr: ChangeDetectorRef
   ) {
     this.columnChartOptions = {
       chart: {
