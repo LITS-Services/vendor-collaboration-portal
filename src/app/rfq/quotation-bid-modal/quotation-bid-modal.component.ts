@@ -82,7 +82,18 @@ export class QuotationBidModalComponent implements OnInit {
     return this.bidMap.get(itemId)!;
   }
 
+  private isBidClosed(): boolean {
+    if (!this.rfq) return false;
+    const today = new Date();
+    const endDate = new Date(this.rfq.endDate);
+    return this.rfq.requestStatus === 'Completed' || endDate < today;
+  }
+
   addBid(itemId: number) {
+    if (this.isBidClosed()) {
+      this.toastr.info('Bid submission is closed for this RFQ.');
+      return;
+    }
     // Ensure the bid object exists in the map
     this.getBid(itemId);
 
@@ -95,10 +106,18 @@ export class QuotationBidModalComponent implements OnInit {
   }
 
   editBid(itemId: number) {
+    if (this.isBidClosed()) {
+      this.toastr.info('Bid submission is closed for this RFQ.');
+      return;
+    }
     this.editingBidItemId = itemId;
   }
 
   deleteBid(itemId: number) {
+    if (this.isBidClosed()) {
+      this.toastr.info('Bid submission is closed for this RFQ.');
+      return;
+    }
     const bid = this.bidMap.get(itemId);
     if (bid) {
       if (bid.id) {
@@ -181,6 +200,10 @@ export class QuotationBidModalComponent implements OnInit {
   }
 
   submitBids() {
+    if (this.isBidClosed()) {
+      this.toastr.info('Bid submission is closed for this RFQ.');
+      return;
+    }
     const bids = Array.from(this.bidMap.values())
       .filter(b => b.id || !b.isDeleted); // include existing bids even if deleted
 

@@ -49,17 +49,6 @@ export class RfqListComponent implements OnInit {
       return;
     }
 
-    const endDate = new Date(rfq.endDate);
-    if (endDate < new Date()) {
-      this.toastr.info('Bid submission is closed for this RFQ.');
-      return;
-    }
-
-    if (rfq.requestStatus === 'Completed') {
-      this.toastr.info('Bid submission is closed for this RFQ.');
-      return;
-    }
-
     this.router.navigate(['/rfq/submit-bid', rfq.id]);
   }
 
