@@ -43,11 +43,22 @@ export class RfqService {
   }
 
 
-  getRfqById(rfqId: number): Observable<QuotationRequestWithDetailsResponse> {
-    const params = new HttpParams().set('id', rfqId);
-    return this.http.get<QuotationRequestWithDetailsResponse>(
-      `${environment.apiUrl}/Quotation/get-quotation-by-id`, // <-- added Quotation
-      { params }
-    );
-  }
+  // getRfqById(rfqId: number): Observable<QuotationRequestWithDetailsResponse> {
+  //   const params = new HttpParams().set('id', rfqId);
+  //   return this.http.get<QuotationRequestWithDetailsResponse>(
+  //     `${environment.apiUrl}/Quotation/get-quotation-by-id`, // <-- added Quotation
+  //     { params }
+  //   );
+  // }
+  getRfqById(rfqId: number, isVendor: boolean): Observable<QuotationRequestWithDetailsResponse> {
+  const params = new HttpParams()
+    .set('id', rfqId)
+    .set('isVendor', isVendor);
+
+  return this.http.get<QuotationRequestWithDetailsResponse>(
+    `${environment.apiUrl}/Quotation/get-quotation-by-id`,
+    { params }
+  );
+}
+
 }

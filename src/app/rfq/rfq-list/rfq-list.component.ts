@@ -4,6 +4,7 @@ import { QuotationRequest } from '../../models/quotation-request.model';
 import { RfqService } from 'app/shared/services/rfq.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { skip } from 'rxjs/operators';
 
 @Component({
   selector: 'app-rfq-list',
@@ -49,7 +50,11 @@ export class RfqListComponent implements OnInit {
       return;
     }
 
-    this.router.navigate(['/rfq/submit-bid', rfq.id]);
+    this.router.navigate(['/rfq/submit-bid', rfq.id],
+      {
+        skipLocationChange: true
+      }
+    );
   }
 
   toggleFilterDropdown() {
