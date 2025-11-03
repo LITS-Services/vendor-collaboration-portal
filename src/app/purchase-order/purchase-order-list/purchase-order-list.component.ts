@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ColumnMode, DatatableComponent, SelectionType } from '@swimlane/ngx-datatable';
@@ -14,7 +14,6 @@ import { ToastrService } from 'ngx-toastr';
 export class PurchaseOrderListComponent implements OnInit {
   public SelectionType = SelectionType;
   public ColumnMode = ColumnMode;
-
   @ViewChild(DatatableComponent) table: DatatableComponent;
   @ViewChild('tableRowDetails') tableRowDetails: any;
   @ViewChild('tableResponsive') tableResponsive: any;
@@ -135,5 +134,17 @@ export class PurchaseOrderListComponent implements OnInit {
     const modalRef = this.modalService.open(NewPurchaseOrderComponent, { size: 'xl', backdrop: 'static', centered: true, windowClass: 'custom-height-modal' });
     modalRef.componentInstance.data = row;  // Pass selected row data if needed
   }
+onRowClick(event: any) {
+  const poId = event.row.id;
+  console.log(event.row);
+  this.router.navigate(['/purchase-order/purchase-order-details', poId]);
+}
+onActivate(event: any) {
+  if (event.type === 'click' && event.row) {
+    const id = event.row.id;
+    console.log(event.row);
+    this.router.navigate(['/purchase-order/purchase-order-details', id]);
+  }
+}
 
 }

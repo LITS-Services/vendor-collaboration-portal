@@ -14,4 +14,8 @@ export class PurchaseOrderService {
     const params = new HttpParams().set('vendorUserId', vendorUserId);
     return this.http.get<any>(`${this.baseUrl}/get-purchase-orders-by-vendor`, { params });
   }
+
+  getPurchaseOrderById(id: number) {
+    return this.http.get<any>(`${this.baseUrl}/get-purchase-order-by-id?id=${id}`);
+  }
 }

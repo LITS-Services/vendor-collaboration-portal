@@ -12,8 +12,8 @@
             <ngx-datatable class="bootstrap core-bootstrap" [rows]="purchaseOrders" [columnMode]="'force'"
                 [headerHeight]="50" [footerHeight]="50" [columns]="columns" rowHeight="50" [limit]="15"
                 [scrollbarH]="true" [loadingIndicator]="loading" [selected]="chkBoxSelected" [swapColumns]="false"
-                [selectionType]="SelectionType.checkbox" (sort)="onSort($event)"
-                (select)="customChkboxOnSelect($event)">
+                [selectionType]="SelectionType.single" (sort)="onSort($event)"
+                (select)="customChkboxOnSelect($event)" (rowClick)="onRowClick($event)" (activate)="onActivate($event)" (clicktype)="'single'">
                 <ngx-datatable-column [width]="50" [sortable]="false" [canAutoResize]="false" [draggable]="false"
                     [resizeable]="false">
                     <ng-template ngx-datatable-header-template>
@@ -48,22 +48,22 @@
                 <ngx-datatable-column name="Status" prop="requestStatus" [sortable]="false">
 
                 </ngx-datatable-column>
-                <ngx-datatable-column name="Date" prop="reqByDate" [sortable]="false">
+                <ngx-datatable-column name="Date" prop="createdDate" [sortable]="false">
                     <ng-template let-row="row" ngx-datatable-cell-template>
-                        {{ row.reqByDate | date:'yyyy-MM-dd' }}
+                        {{ row.createdDate | date:'yyyy-MM-dd' }}
                     </ng-template>
                 </ngx-datatable-column>
 
-                <ngx-datatable-column name="Item" prop="itemName" [sortable]="false">
-                </ngx-datatable-column>
+                <!-- <ngx-datatable-column name="Item" prop="itemName" [sortable]="false">
+                </ngx-datatable-column> -->
 
                 <!-- <ngx-datatable-column name="Description" prop="itemDescription" [sortable]="false">
                 </ngx-datatable-column> -->
-                <ngx-datatable-column name="Owner" prop="owner" [sortable]="false">
+                <!-- <ngx-datatable-column name="Owner" prop="owner" [sortable]="false">
 
-                </ngx-datatable-column>
+                </ngx-datatable-column> -->
 
-                <ngx-datatable-column name="Department" prop="department" [sortable]="false">
+                <!-- <ngx-datatable-column name="Department" prop="department" [sortable]="false">
 
                 </ngx-datatable-column>
                 <ngx-datatable-column name="Title" prop="title" [sortable]="false">
@@ -74,7 +74,7 @@
                 </ngx-datatable-column>
 
                 <ngx-datatable-column name="Total Amount" prop="amount" [sortable]="false">
-                </ngx-datatable-column>
+                </ngx-datatable-column> -->
 
             </ngx-datatable>
         </div>

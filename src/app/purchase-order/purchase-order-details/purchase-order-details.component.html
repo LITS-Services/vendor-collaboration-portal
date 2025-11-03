@@ -1,0 +1,91 @@
+<section class="submit-bid-page">
+  <div class="container-fluid">
+
+    <!-- Action Bar -->
+    <div class="card cstm-ui-card mb-3 py-2 px-3 d-flex justify-content-between flex-wrap">
+      <div class="d-flex align-items-center">
+        <!-- <button class="btn btn-lg position-relative me-2" type="button" (click)="router.navigate(['vendor/purchase-order-list'])"> -->
+          <!-- <i class="ft-arrow-left"></i>
+        </button> -->
+        <span class="custom-vl mx-2"></span>
+
+        <h5 class="mt-2 fw-bold">Purchase Order Details</h5>
+      </div>
+    </div>
+
+    <!-- PO Info -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-body" style="border: 0.5px solid #53bd53; padding: 1rem; border-radius: 8px;">
+
+        <div class="row">
+          <div class="col-lg-4 col-md-6 mb-3">
+            <label class="form-label small mb-1">PO No.</label>
+            <input class="form-control form-control-sm" [value]="poDetails?.purchaseOrderNo" disabled>
+          </div>
+
+          <div class="col-lg-4 col-md-6 mb-3">
+            <label class="form-label small mb-1">Requisition No</label>
+            <input class="form-control form-control-sm" [value]="poDetails?.requisitionNo || '-'" disabled>
+          </div>
+
+          <div class="col-lg-4 col-md-6 mb-3">
+            <label class="form-label small mb-1">RFQ No</label>
+            <input class="form-control form-control-sm" [value]="poDetails?.rfqNo || '-'" disabled>
+          </div>
+
+          <div class="col-lg-4 col-md-6 mb-3">
+            <label class="form-label small mb-1">Status</label>
+            <input class="form-control form-control-sm" [value]="poDetails?.requestStatus" disabled>
+          </div>
+
+          <div class="col-lg-4 col-md-6 mb-3">
+            <label class="form-label small mb-1">Date</label>
+            <input class="form-control form-control-sm" [value]="poDetails?.createdDate | date:'yyyy-MM-dd'" disabled>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Line Items -->
+<h5 class="section-title mb-3">Items</h5>
+
+<div *ngFor="let item of poDetails?.items" class="mb-3 p-3 rounded border quotation-item">
+
+  <div class="d-flex justify-content-between align-items-center mb-2">
+    <div>
+      <strong class="me-1">{{ item.itemName }}</strong>
+      <span class="small text-muted">{{ item.itemDescription }}</span>
+    </div>
+  </div>
+
+  <div class="row small">
+    <div class="col-md-3 mb-2">
+      <label class="fw-semibold">Qty</label>
+      <input class="form-control form-control-sm" [value]="item.quantity" disabled>
+    </div>
+
+    <div class="col-md-3 mb-2">
+      <label class="fw-semibold">Unit Price</label>
+      <input class="form-control form-control-sm" [value]="item.unitPrice | number:'1.2-2'" disabled>
+    </div>
+
+    <div class="col-md-3 mb-2">
+      <label class="fw-semibold">Amount</label>
+      <input class="form-control form-control-sm" [value]="item.amount | number:'1.2-2'" disabled>
+    </div>
+  </div>
+</div>
+
+<div class="text-end fw-bold mt-3">
+  Total: {{ poDetails?.totalAmount | number:'1.2-2' }}
+</div>
+
+
+  </div>
+</section>
+
+<!-- Loader -->
+<div class="text-center mt-5" *ngIf="loading">
+  <div class="spinner-border"></div>
+  <p>Loading PO details...</p>
+</div>

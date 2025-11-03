@@ -3,34 +3,44 @@ import { RouterModule, Routes } from '@angular/router';
 import { PurchaseOrderMasterComponent } from './purchase-order-master/purchase-order-master.component';
 import { NewPurchaseOrderComponent } from './new-purchase-order/new-purchase-order.component';
 import { PurchaseOrderListComponent } from './purchase-order-list/purchase-order-list.component';
+import { PurchaseOrderDetailsComponent } from './purchase-order-details/purchase-order-details.component';
 
 const routes: Routes = [
-    {
-      path: '',
-        children: [
-           {
-             path: 'purchase-order-master',
-             component: PurchaseOrderMasterComponent,
-             data: {
-               title: 'Request for Quotation'
-             }
-           },
-           {
-             path: 'new-purchase-order',
-             component: NewPurchaseOrderComponent,
-             data: {
-               title: 'Create RFQ'
-             }
-           },
-           {
-            path: 'purchase-order-list',
-            component: PurchaseOrderListComponent,
-            data: {
-              title: 'RFQ List'
-            }
-          },
-         ]
-    },
+  {
+    path: '',
+    children: [
+      {
+        path: 'purchase-order-master',
+        component: PurchaseOrderMasterComponent,
+        data: {
+          title: 'Request for Quotation'
+        }
+      },
+      {
+        path: 'new-purchase-order',
+        component: NewPurchaseOrderComponent,
+        data: {
+          title: 'Create RFQ'
+        }
+      },
+      {
+        path: 'purchase-order-list',
+        component: PurchaseOrderListComponent,
+        data: {
+          title: 'Purchase Order List'
+        }
+      },
+      {
+        path: 'purchase-order-details/:id',
+        component: PurchaseOrderDetailsComponent,
+        data:
+        {
+          title: 'Purchase Order Details'
+        }
+      }
+
+    ]
+  },
 ];
 
 @NgModule({

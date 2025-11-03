@@ -44,11 +44,29 @@
 
         <div *ngFor="let item of rfq?.quotationItems" class="quotation-item mb-3 p-3 rounded border">
           <div class="d-flex justify-content-between align-items-center mb-2">
-            <div>
+            <!-- <div>
               <strong class="me-1">{{ item.itemName }}</strong>
               <span class="small me-1">({{ item.itemType }})</span> —
-              <!-- <span class="fw-semibold me-1">{{ item.amount | currency }}</span> -->
-            </div>
+              <span class="fw-semibold me-1">Quantity: {{ item.orderQuantity }}</span>
+              <span class="fw-semibold me-1">Request Date: {{ item.reqByDate | date:'yyyy-MM-dd'}}</span>
+            </div> -->
+<div>
+  <div>
+    <strong class="me-1">{{ item.itemName }}</strong> —
+    <span class="small me-1">({{ item.itemType }})</span>
+  </div>
+
+  <div>
+    <span class="fw-bold me-1">Quantity:</span>
+    <span class="fw-semibold me-1">{{ item.orderQuantity }}</span> —
+<span class="fw-bold me-1">UoM:</span>
+    <span class="fw-semibold me-1">{{ item.unitOfMeasurementCode }}</span> —
+    <span class="fw-bold me-1">Request Date:</span>
+    <span class="fw-semibold">{{ item.reqByDate | date:'yyyy-MM-dd' }}</span>
+  </div>
+</div>
+
+
             <!-- <button class="btn btn-outline-primary btn-sm" (click)="addBid(item.id)" [disabled]="bidMap.has(item.id)">
               <i class="ft-plus me-1"></i> Add Bid
             </button> -->

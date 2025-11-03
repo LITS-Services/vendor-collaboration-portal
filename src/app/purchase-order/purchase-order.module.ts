@@ -21,13 +21,15 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 import { AngularResizedEventModule } from 'angular-resize-event';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { ChartistModule } from 'ng-chartist';
+import { PurchaseOrderDetailsComponent } from './purchase-order-details/purchase-order-details.component';
 
 
 @NgModule({
   declarations: [
     PurchaseOrderMasterComponent,
     NewPurchaseOrderComponent,
-    PurchaseOrderListComponent
+    PurchaseOrderListComponent,
+    PurchaseOrderDetailsComponent
   ],
   imports: [
     CommonModule,
