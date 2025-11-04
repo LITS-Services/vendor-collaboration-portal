@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from 'app/shared/auth/auth.service';
 
 @Component({
@@ -22,21 +22,25 @@ export class VerifyForgotPasswordOtpComponent implements OnInit {
     private fb: FormBuilder,
     private toastr: ToastrService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    // Get email from local storage
-    this.userEmail = localStorage.getItem('forgotEmail');
+    // ✅ Get email from query params
+    this.route.queryParams.subscribe(params => {
+      this.userEmail = params['userEmail'] || null;
+    });
 
     if (!this.userEmail) {
-      this.toastr.warning('Session expired, please try again.');
+      this.toastr.warning('Email not found. Please try again.');
       this.router.navigate(['/ForgotPassword']);
       return;
     }
 
+    // OTP field kept but no validation (optional)
     this.verifyOtpForm = this.fb.group({
-      otp: ['', [Validators.required, Validators.pattern(/^\d+$/)]],
+      otp: [''], 
       password: ['', [
         Validators.required,
         Validators.minLength(6),
@@ -85,7 +89,7 @@ export class VerifyForgotPasswordOtpComponent implements OnInit {
     }
 
     const payload = {
-      email: this.userEmail,
+      email: this.userEmail, // ✅ from query param
       otp: Number(this.verifyOtpForm.value.otp),
       newPassword: this.verifyOtpForm.value.password
     };
@@ -93,7 +97,6 @@ export class VerifyForgotPasswordOtpComponent implements OnInit {
     this.authService.ConfirmForgotOtp(payload).subscribe({
       next: () => {
         this.toastr.success('Password reset successfully!');
-        localStorage.removeItem('forgotEmail');
         this.router.navigate(['/pages/login']);
       },
       error: () => {

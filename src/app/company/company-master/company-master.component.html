@@ -5,9 +5,15 @@
   </div>
   <div class="col-6 text-end">
     <!-- Register New Company Button -->
-    <button class="btn btn-primary" (click)="newCompany()" style="    float: right;">
-      Register New Company
-    </button>
+  <!-- Register New Company Button -->
+<button
+  *ngIf="showRegisterButton"
+  class="btn btn-primary"
+  (click)="newCompany()"
+  style="float: right;">
+  Register New Company
+</button>
+
   </div>
 </div>
 <!-- Header End -->

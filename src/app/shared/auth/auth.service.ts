@@ -16,7 +16,7 @@ export class AuthService {
 
   private _refreshInProgress = false;
   private _refreshSubject = new ReplaySubject<string | null>(1);
-  
+
   constructor(public _firebaseAuth: AngularFireAuth, public router: Router, private http: HttpClient,) {
     this.user = _firebaseAuth.authState;
     this.user.subscribe(
@@ -32,72 +32,72 @@ export class AuthService {
     //Get all Entites 
   }
 
-forgetPassword(email: string): Observable<any> {
-  return this.http.post(`${environment.apiUrl}/Auth/VendorForgotPassword`, { email });
-}
+  forgetPassword(email: string): Observable<any> {
+    return this.http.post(`${environment.apiUrl}/Auth/VendorForgotPassword`, { email });
+  }
 
-ConfirmForgotOtp(payload: any): Observable<any> {
-  return this.http.post<any>(`${environment.apiUrl}/Auth/VendorResetPassword`, payload);
-}
-
-
+  ConfirmForgotOtp(payload: any): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}/Auth/VendorResetPassword`, payload);
+  }
 
 
-      get accessToken(): string | null {
+
+
+  get accessToken(): string | null {
     return localStorage.getItem('token');
   }
- set accessToken(token: string | null) {
-  if (token) {
-    console.log('[AUTH] Setting accessToken:', token.slice(0, 12) + '...');
-    localStorage.setItem('token', token);
-  } else {
-    console.log('[AUTH] Clearing accessToken');
-    localStorage.removeItem('token');
+  set accessToken(token: string | null) {
+    if (token) {
+      console.log('[AUTH] Setting accessToken:', token.slice(0, 12) + '...');
+      localStorage.setItem('token', token);
+    } else {
+      console.log('[AUTH] Clearing accessToken');
+      localStorage.removeItem('token');
+    }
   }
-}
 
   get refreshToken(): string | null {
     return localStorage.getItem('refreshToken');
   }
-set refreshToken(token: string | null) {
-  if (token) {
-    console.log('[AUTH] Setting refreshToken:', token.slice(0, 12) + '...');
-    localStorage.setItem('refreshToken', token);
-  } else {
-    console.log('[AUTH] Clearing refreshToken');
-    localStorage.removeItem('refreshToken');
+  set refreshToken(token: string | null) {
+    if (token) {
+      console.log('[AUTH] Setting refreshToken:', token.slice(0, 12) + '...');
+      localStorage.setItem('refreshToken', token);
+    } else {
+      console.log('[AUTH] Clearing refreshToken');
+      localStorage.removeItem('refreshToken');
+    }
   }
-}
 
   // getProCompanies(): Observable<any[]> {
   //   return this.http.get<any[]>(`${this.baseUrl}/Company/get-all-procurement-companies`);
   // }
 
-// getSSOCallbackUrl() {
-//   return this.http.get<any>('https://localhost:7188/api/Auth/sso/callback');
-// }
-  
-// ssoCallback(code: string): Observable<any> {
-//   return new Observable((observer) => {
-//     this.http.get<any>(`${this.baseUrl}/Auth/sso/callback?code=${encodeURIComponent(code)}`)
-//       .subscribe({
-//         next: (res) => {
-//           if (res && res.token) {
-//             // Store JWT & user info
-//             this._applySessionFromAny(res);
-//           }
-//           observer.next(res);
-//           observer.complete();
-//         },
-//         error: (err) => observer.error(err)
-//       });
-//   });
-// }
+  // getSSOCallbackUrl() {
+  //   return this.http.get<any>('https://localhost:7188/api/Auth/sso/callback');
+  // }
 
- initiateSSOLogin(returnUrl: string = '/dashboard/dashboard1'): Observable<any> {
+  // ssoCallback(code: string): Observable<any> {
+  //   return new Observable((observer) => {
+  //     this.http.get<any>(`${this.baseUrl}/Auth/sso/callback?code=${encodeURIComponent(code)}`)
+  //       .subscribe({
+  //         next: (res) => {
+  //           if (res && res.token) {
+  //             // Store JWT & user info
+  //             this._applySessionFromAny(res);
+  //           }
+  //           observer.next(res);
+  //           observer.complete();
+  //         },
+  //         error: (err) => observer.error(err)
+  //       });
+  //   });
+  // }
+
+  initiateSSOLogin(returnUrl: string = '/dashboard/dashboard1'): Observable<any> {
     return this.http.get(`${this.baseUrl}/Auth/sso/login-url?returnUrl=${encodeURIComponent(returnUrl)}`);
   }
-  
+
 
 
   // 🔹 Vendor Login API
@@ -119,10 +119,17 @@ set refreshToken(token: string | null) {
     });
   }
 
-  verifyOtp(otp: string, email: string) {
-      const body = { otp: Number(otp), email };
-    return this.http.post(`${this.baseUrl}/Auth/VerifyVendorOtp`,  body,
-    { responseType: 'text' }
+  verifyOtp(otp: string, email: string, resetOtp: boolean = false) {
+    const body = {
+      otp: Number(otp),
+      email,
+      resetOtp
+    };
+
+    return this.http.post(
+      `${this.baseUrl}/Auth/VerifyVendorOtp`,
+      body,
+      { responseType: 'text' }
     );
   }
 
@@ -151,7 +158,7 @@ set refreshToken(token: string | null) {
     this.router.navigate(['YOUR_LOGOUT_URL']);
   }
 
-    performLogout(): void {
+  performLogout(): void {
     localStorage.clear();
     this.router.navigate(['/pages/login']);
   }
@@ -176,12 +183,12 @@ set refreshToken(token: string | null) {
   //   }
   // }
 
-    isAuthenticated(): boolean {
+  isAuthenticated(): boolean {
     const token = this.accessToken;
     return !!token && !AuthUtils.isTokenExpired(token);
   }
 
-    ensureValidAccessToken$(): Observable<string | null> {
+  ensureValidAccessToken$(): Observable<string | null> {
     const token = this.accessToken;
 
     // still valid for at least 5s?
@@ -219,7 +226,7 @@ set refreshToken(token: string | null) {
       );
   }
 
-   private _applySessionFromAny(res: any): void {
+  private _applySessionFromAny(res: any): void {
     if (!res) return;
     if (res.token) this.accessToken = res.token;
     if (res.refreshToken) this.refreshToken = res.refreshToken;
@@ -240,7 +247,7 @@ set refreshToken(token: string | null) {
   private _applySessionFromRefresh(res: any): void {
     if (!res) return;
     if (res.token) this.accessToken = res.token;
-    if (res.refreshToken) this.refreshToken = res.refreshToken; 
+    if (res.refreshToken) this.refreshToken = res.refreshToken;
 
     if (res.userId) localStorage.setItem('userId', res.userId);
     const username = res.username ?? res.user?.username ?? res.user?.email ?? null;

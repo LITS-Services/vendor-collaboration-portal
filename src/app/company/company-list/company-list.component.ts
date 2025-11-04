@@ -28,8 +28,8 @@ export class CompanyListComponent implements OnInit {
     private route: ActivatedRoute,
     private modalService: NgbModal,
     private companyService: CompanyService,
-    private cdr: ChangeDetectorRef          
-  ) {}
+    private cdr: ChangeDetectorRef
+  ) { }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
@@ -37,10 +37,10 @@ export class CompanyListComponent implements OnInit {
       this.status = params['status'] || '';
 
       // Load companies based on the status
-      if (this.status === 'completed' || this.status === 'approve' || this.status === 'new') {
+      if (['completed', 'approve', 'new'].includes(this.status)) {
         this.loadCompanies('completed');
-      }  else {
-        this.loadCompanies('inprocess');
+      } else {
+        this.loadCompanies('inprocess'); // Pending list
       }
     });
   }
@@ -61,7 +61,6 @@ export class CompanyListComponent implements OnInit {
           ? res
           : res?.$values || (res?.vendorId ? [res] : []);
 
-        // Map raw companies data to display on the table
         this.companyData = rawCompanies
           .map(c => ({
             id: c.id,
@@ -70,22 +69,34 @@ export class CompanyListComponent implements OnInit {
             logo: c.logo,
             status: (c.status || '').toLowerCase(),
             vendorId: c.vendorId,
-            street: c.addressesVM?.[0]?.street || '',  // Fixed this line to access the array directly
-            city: c.addressesVM?.[0]?.city || '',     // Same as above
-            state: c.addressesVM?.[0]?.state || '',   // Same as above
-            country: c.addressesVM?.[0]?.country || '', 
-            contactNumber: c.contactsVM?.[0]?.contactNumber || '', // Access contact number correctly
-            contactType: c.contactsVM?.[0]?.type || '', // Same as above
-            entity: c.vendorUseCompaniesVM?.map(vuc => vuc.procurementCompany).join(', ') // Mapped entity
-          }))
-          .filter(c =>
-            c.vendorId?.toLowerCase() === userId.toLowerCase() &&
-            c.status === status
-          );
+            street: c.addressesVM?.[0]?.street || '',
+            city: c.addressesVM?.[0]?.city || '',
+            state: c.addressesVM?.[0]?.state || '',
+            country: c.addressesVM?.[0]?.country || '',
+            contactNumber: c.contactsVM?.[0]?.contactNumber || '',
+            contactType: c.contactsVM?.[0]?.type || '',
+            entity: c.vendorUseCompaniesVM?.map(vuc => vuc.procurementCompany).join(', ') || '',
+            procurementCompanyId: c.vendorUseCompaniesVM?.[0]?.procurementCompanyId || null 
 
-        console.log('Company list:', this.companyData); // Debugging to check the data
+          }))
+          .filter(c => {
+            const companyStatus = c.status.toLowerCase();
+            // Always match vendorId
+            const isVendorMatch = c.vendorId?.toLowerCase() === userId.toLowerCase();
+
+            // Include logic for "Pending" list (inprocess)
+            if (status === 'inprocess') {
+              // Show all "inprocess", "rejected", and "sendback" statuses together
+              return isVendorMatch && ['inprocess', 'rejected', 'sendback'].includes(companyStatus);
+            }
+
+            // Default logic for other statuses
+            return isVendorMatch && companyStatus === status;
+          });
+
+        console.log('Company list:', this.companyData);
         this.loading = false;
-        this.cdr.detectChanges(); // Ensure the changes are detected
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error fetching companies:', err);
@@ -126,7 +137,12 @@ export class CompanyListComponent implements OnInit {
 
   editCompany(company: any): void {
     this.router.navigate(['/pages/company-registration'], {
-      queryParams: { id: company.id }
+      queryParams: {
+        id: company.id,
+        procurementCompanyId: company.procurementCompanyId 
+      }
     });
   }
+
+
 }

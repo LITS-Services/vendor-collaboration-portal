@@ -20,7 +20,7 @@ export class ForgotPasswordPageComponent implements OnInit {
         private authService: AuthService,
         private toastr: ToastrService,
         private router: Router,
-          private route: ActivatedRoute
+        private route: ActivatedRoute
 
     ) { }
 
@@ -50,13 +50,14 @@ export class ForgotPasswordPageComponent implements OnInit {
             next: (res) => {
                 this.isLoading = false;
 
-                // ✅ Store email in local storage
                 localStorage.setItem('forgotEmail', email);
 
                 this.toastr.success('Password reset email sent!');
                 debugger;
-                // ✅ Navigate immediately to /NewPassword
-                this.router.navigate(['../NewPassword'], { relativeTo: this.route });
+                this.router.navigate(['../otp'], {
+                    relativeTo: this.route,
+                    queryParams: { resetOtp: true }
+                });
             },
             error: (err) => {
                 this.isLoading = false;

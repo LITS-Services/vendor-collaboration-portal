@@ -8,21 +8,10 @@
         </div>
       </div>
 
-      <ngx-datatable
-        class="bootstrap core-bootstrap"
-        [rows]="companyData"
-        [columnMode]="'force'"
-        [headerHeight]="50"
-        [footerHeight]="50"
-        rowHeight="50"
-        [limit]="15"
-        [scrollbarH]="true"
-        [loadingIndicator]="loading"
-        [selected]="chkBoxSelected"
-        [swapColumns]="false"
-        [selectionType]="SelectionType.checkbox"
-        (sort)="onSort($event)"
-        (select)="customChkboxOnSelect($event)">
+      <ngx-datatable class="bootstrap core-bootstrap" [rows]="companyData" [columnMode]="'force'" [headerHeight]="50"
+        [footerHeight]="50" rowHeight="50" [limit]="15" [scrollbarH]="true" [loadingIndicator]="loading"
+        [selected]="chkBoxSelected" [swapColumns]="false" [selectionType]="SelectionType.checkbox"
+        (sort)="onSort($event)" (select)="customChkboxOnSelect($event)">
 
         <!-- Checkbox -->
         <!-- <ngx-datatable-column [width]="50" [sortable]="false" [canAutoResize]="false"
@@ -45,8 +34,7 @@
         <!-- Status -->
         <ngx-datatable-column name="Status" prop="status">
           <ng-template let-row="row" ngx-datatable-cell-template>
-            <span class="badge"
-              [ngClass]="row.status === 'inprocess' ? 'badge-warning' : 'badge-success'">
+            <span class="badge" [ngClass]="row.status === 'inprocess' ? 'badge-warning' : 'badge-success'">
               {{ row.status }}
             </span>
           </ng-template>
@@ -57,18 +45,21 @@
 
         <!-- State -->
         <ngx-datatable-column name="Street" prop="street"></ngx-datatable-column>
-<ngx-datatable-column name="City" prop="city"></ngx-datatable-column>
-<ngx-datatable-column name="State" prop="state"></ngx-datatable-column>
-<ngx-datatable-column name="Contact Number" prop="contactNumber"></ngx-datatable-column>
+        <ngx-datatable-column name="City" prop="city"></ngx-datatable-column>
+        <ngx-datatable-column name="State" prop="state"></ngx-datatable-column>
+        <ngx-datatable-column name="Contact Number" prop="contactNumber"></ngx-datatable-column>
 
 
         <!-- Edit Button -->
         <ngx-datatable-column name="Edit" [sortable]="false">
           <ng-template let-row="row" ngx-datatable-cell-template>
             <!-- Hide edit button when status is approve -->
-            <button *ngIf="row.status !== 'approve'" class="btn btn-sm btn-primary" (click)="editCompany(row)">
+            <button *ngIf="row.status !== 'completed' && row.status !== 'rejected' && row.status !== 'inprocess'" class="btn btn-sm btn-primary"
+              (click)="editCompany(row)">
               <i class="ft-edit"></i>
             </button>
+
+
           </ng-template>
         </ngx-datatable-column>
       </ngx-datatable>

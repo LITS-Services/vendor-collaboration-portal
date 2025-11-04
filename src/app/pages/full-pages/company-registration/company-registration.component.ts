@@ -23,10 +23,10 @@ export class CompanyRegistrationComponent implements OnInit {
   layoutSub: Subscription;
   isEditMode: boolean = false;
   bankForm!: FormGroup;
-  bankList: any[] = []; // to store all added bank records
+  companyForm!: FormGroup; // <-- FormGroup for user remarks
+  bankList: any[] = [];
   addressList: any[] = [];
   contactList: any[] = [];
-  // bankList: any[] = []; // ✅ Bank list
   attachedFiles: any[] = [];
   vendorAccountNumber: string = '';
   isLoading: boolean = false;
@@ -34,15 +34,15 @@ export class CompanyRegistrationComponent implements OnInit {
   remarks: string = '';
 
   procurementCompanies: any[] = [];
-  selectedProcurementCompanyIds: number[] = []; // <-- numeric IDs
+  selectedProcurementCompanyIds: number[] = [];
   dropdownOpen: boolean = false;
 
   showContactDeletePopup: boolean = false;
   showAddressDeletePopup: boolean = false;
-  showBankDeletePopup: boolean = false; // ✅ Bank delete popup
+  showBankDeletePopup: boolean = false;
   contactIndexToDelete: number | null = null;
   addressIndexToDelete: number | null = null;
-  bankIndexToDelete: number | null = null; // ✅ Bank index
+  bankIndexToDelete: number | null = null;
 
   aboutCompany: string = '';
   companyType: string = 'Organization';
@@ -83,15 +83,10 @@ export class CompanyRegistrationComponent implements OnInit {
     private fb: FormBuilder
   ) {
     this.config = this.configService.templateConf;
-
-
-
-
   }
 
   ngOnInit() {
-
-
+    // ==================== Bank Form ====================
     this.bankForm = this.fb.group({
       bankName: ['', Validators.required],
       accountHolderName: ['', Validators.required],
@@ -104,6 +99,11 @@ export class CompanyRegistrationComponent implements OnInit {
       bankCurrency: ['', Validators.required]
     });
 
+    // ==================== Company Form (User Remarks) ====================
+    this.companyForm = this.fb.group({
+      remarks: ['']
+    });
+
     this.userId = localStorage.getItem('userId') || '';
     this.createdBy = localStorage.getItem('username') || '';
     this.modifiedBy = localStorage.getItem('username') || '';
@@ -113,13 +113,25 @@ export class CompanyRegistrationComponent implements OnInit {
       this.router.navigate(['../']);
       return;
     }
+    this.remarks = '';
 
     this.route.queryParams.subscribe(params => {
       if (params['id']) {
         this.companyId = +params['id'];
         this.loadCompanyById(this.companyId);
       }
+
+      if (params['procurementCompanyId']) {
+        const ids = params['procurementCompanyId']
+          .split(',')
+          .map((id: string) => parseInt(id, 10))
+          .filter(id => !isNaN(id));
+
+        this.selectedProcurementCompanyIds = ids;
+        console.log('Selected ProcurementCompanyIds from list:', this.selectedProcurementCompanyIds);
+      }
     });
+
 
     this.generateVendorAccountNumber();
 
@@ -154,48 +166,64 @@ export class CompanyRegistrationComponent implements OnInit {
       next: (res: any) => {
         const company = res?.vendorCompany || res;
         if (company) {
+          // Basic Info
           this.companyName = company.name || '';
           this.companyType = company.companyType || 'Organization';
           this.aboutCompany = company.aboutCompany || '';
           this.remarks = company.remarks || '';
+          this.companyForm.patchValue({ remarks: this.remarks }); // <-- patch user remarks
 
-          this.vendorCategory = company.purchasingDemographics?.vendorType || '';
-          this.primaryCurrency = company.purchasingDemographics?.primaryCurrency || '';
-          this.lineOfBusiness = company.purchasingDemographics?.lineOfBusiness || '';
-          this.birthCountry = company.purchasingDemographics?.birthCountry || '';
-          this.employeeResponsible = company.purchasingDemographics?.employeeResponsible || '';
-          this.segment = company.purchasingDemographics?.segment || '';
-          this.speciality = company.purchasingDemographics?.speciality || '';
-          this.chain = company.purchasingDemographics?.chain || '';
-          this.note = company.purchasingDemographics?.note || '';
+          // Purchasing Demographics
+          const pd = company.purchasingDemographics || {};
+          this.vendorCategory = pd.vendorType || '';
+          this.primaryCurrency = pd.primaryCurrency || '';
+          this.lineOfBusiness = pd.lineOfBusiness || '';
+          this.birthCountry = pd.birthCountry || '';
+          this.employeeResponsible = pd.employeeResponsible || '';
+          this.segment = pd.segment || '';
+          this.speciality = pd.speciality || '';
+          this.chain = pd.chain || '';
+          this.note = pd.note || '';
 
-          this.addressList = (company.addresses?.$values || []).map(a => ({
+          // Addresses
+          this.addressList = (company.addresses || []).map(a => ({
             street: a.street,
             city: a.city,
             state: a.state,
             zip: a.zip,
             country: a.country,
-            isPrimary: a.isPrimary
+            isPrimary: a.isPrimary || false
           }));
 
-          this.contactList = (company.contacts?.$values || []).map(c => ({
+          // Contacts
+          this.contactList = (company.contacts || []).map(c => ({
             description: c.description,
             type: c.type,
             contactNumber: c.contactNumber,
-            extension: c.extension,
-            isPrimary: c.isPrimary
+            extension: c.extension || '',
+            isPrimary: c.isPrimary || false
           }));
 
-          // ✅ Load bank details
-          this.bankList = (company.bankDetails?.$values || []).map(b => ({
-            description: b.bankName,
-            contactNumber: b.accountNumber,
-            extension: b.iban,
-            type: b.swiftCode,
-            isPrimary: b.isPrimary
+          // Bank Details
+          this.bankList = (company.bankDetails || []).map(b => ({
+            id: b.id,
+            vendorCompanyId: b.vendorCompanyId,
+            bankName: b.bankName,
+            accountHolderName: b.accountHolderName,
+            accountNumber: b.accountNumber,
+            iban: b.iban,
+            swiftCode: b.swifT_BIC_Code,
+            branchName: b.branchName,
+            branchAddress: b.branchAddress,
+            bankCountry: b.country,
+            bankCurrency: b.currency,
+            isPrimary: b.isPrimary || false,
+            createdBy: b.createdBy,
+            createdDate: b.createdDate
           }));
 
-          this.attachedFiles = (company.attachments?.$values || []).map(f => ({
+          // Attachments
+          this.attachedFiles = (company.attachments || []).map(f => ({
             fileName: f.fileName,
             format: f.fileFormat,
             fileContent: f.fileContent,
@@ -204,12 +232,16 @@ export class CompanyRegistrationComponent implements OnInit {
             attachedAt: f.attachedAt
           }));
 
-          if (company.procurementCompanyId) {
+          // Procurement Companies
+          if (Array.isArray(company.procurementCompanyId)) {
             this.selectedProcurementCompanyIds = [...company.procurementCompanyId];
+          } else if (company.procurementCompanyId) {
+            this.selectedProcurementCompanyIds = [company.procurementCompanyId];
           }
 
           this.isEditMode = true;
         }
+
         this.isLoading = false;
         this.cdr.markForCheck();
       },
@@ -232,11 +264,12 @@ export class CompanyRegistrationComponent implements OnInit {
 
   getSelectedCompaniesText(): string {
     if (this.selectedProcurementCompanyIds.length === 0) return 'Select Procurement Companies';
-    const selectedNames = this.procurementCompanies
+    return this.procurementCompanies
       .filter(c => this.selectedProcurementCompanyIds.includes(c.id))
-      .map(c => c.name);
-    return selectedNames.join(', ');
+      .map(c => c.name)
+      .join(', ');
   }
+
 
   generateVendorAccountNumber(): void {
     const storedSequence = localStorage.getItem('vendorSequence');
@@ -472,6 +505,7 @@ export class CompanyRegistrationComponent implements OnInit {
       return;
     }
 
+    // Convert attachments to base64
     this.attachedFiles = await Promise.all(this.attachedFiles.map(async f => {
       if (f.file && !f.fileContent) {
         f.fileContent = await this.convertFileToBase64(f.file);
@@ -496,6 +530,7 @@ export class CompanyRegistrationComponent implements OnInit {
         remarks: f.remarks,
         attachedAt: f.attachedAt ? new Date(f.attachedAt).toISOString() : new Date().toISOString()
       })),
+      remarks: this.companyForm?.get('remarks')?.value || this.remarks, // <-- User remarks
       createdBy: this.isEditMode ? undefined : this.createdBy,
       modifiedBy: this.isEditMode ? this.modifiedBy : undefined
     };
@@ -530,10 +565,8 @@ export class CompanyRegistrationComponent implements OnInit {
     this.router.navigate(['/company/company-master']);
   }
 
-
   addBank(): void {
     if (this.bankForm.valid) {
-      // Instead of mutating with .push(), assign a new reference
       this.bankList = [...this.bankList, this.bankForm.value];
       console.log('Bank List:', this.bankList);
       this.bankForm.reset();

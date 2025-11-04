@@ -95,10 +95,11 @@ export class CompanyMasterComponent implements OnInit {
 
   totalCompaniesCount: number = 0;      // Total companies
   inprogressCount: number = 0;          // Pending companies
-  newlyOnboardedCount: number = 0;      // Companies created in last 5 minutes
+  newlyOnboardedCount: number = 0;      // Companies created recently
+  showRegisterButton: boolean = true;   // ✅ Controls button visibility
 
   constructor(
-     private cdr: ChangeDetectorRef ,
+    private cdr: ChangeDetectorRef,
     private router: Router,
     private modalService: NgbModal,
     private companyService: CompanyService
@@ -163,36 +164,29 @@ export class CompanyMasterComponent implements OnInit {
         }
 
         console.log('Parsed companies:', companies);
-        //For Get all companies count
-        // const vendorCompanies = companies.filter(c =>
-        //   (c.vendorId || '').toLowerCase() === userId.toLowerCase()
-        // );
 
-        // this.totalCompaniesCount = vendorCompanies.length;
+        // ✅ Hide button if any company exists
+        this.showRegisterButton = companies.length === 0;
 
-        //For Get Companies which status is Completed 
+        // Filter vendor's companies
         const vendorCompanies = companies.filter(c =>
           (c.vendorId || '').toLowerCase() === userId.toLowerCase()
         );
 
-        // Only count companies where status = "completed"
+        // Approved or Completed
         this.totalCompaniesCount = vendorCompanies.filter(c =>
           (c.status || '').toLowerCase() === 'approve' || (c.status || '').toLowerCase() === 'completed'
         ).length;
-
         this.cdr.detectChanges();
 
-
-
-        // Pending Companies: InProgress OR Recalled
+        // Pending Companies: InProcess OR SendBack
         this.inprogressCount = vendorCompanies.filter(c => {
           const status = (c.status || '').toLowerCase();
           return status === 'inprocess' || status === 'sendback';
         }).length;
         this.cdr.detectChanges();
 
-        // Newly Onboarded Companies: created in last 5 minutes
-        // Newly Onboarded Companies: created in last 10 days AND approved
+        // Newly Onboarded: created within last 10 days & approved
         const now = new Date();
         this.newlyOnboardedCount = vendorCompanies.filter(c => {
           if (!c.createdDate) return false;
@@ -201,17 +195,13 @@ export class CompanyMasterComponent implements OnInit {
           const diffInDays = (new Date().getTime() - createdDate.getTime()) / (1000 * 60 * 60 * 24);
           const status = (c.status || '').toLowerCase();
 
-          console.log('Company:', c.vendorId, 'CreatedDate:', createdDate, 'Status:', status, 'DiffInDays:', diffInDays);
-
           return diffInDays <= 10 && status === 'approve';
         }).length;
         this.cdr.detectChanges();
 
-
-
         console.log('Total Companies:', this.totalCompaniesCount);
         console.log('Pending Companies:', this.inprogressCount);
-        console.log('Newly Onboarded Companies (last 5 mins):', this.newlyOnboardedCount);
+        console.log('Newly Onboarded Companies:', this.newlyOnboardedCount);
       },
       error: (err) => {
         console.error('Error fetching companies:', err);

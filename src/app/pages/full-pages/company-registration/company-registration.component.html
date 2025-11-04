@@ -10,8 +10,9 @@
             <h1 class="mb-0">Company Profile</h1>
         </div>
         <div class="col-6 d-flex align-items-center justify-content-end">
-            <button class="btn btn-outline-primary me-2">Cancel</button>
-            <button class="btn btn-primary" (click)="submitForm()">Save</button>
+            <!-- <button class="btn btn-outline-primary me-2">Cancel</button> -->
+            <button class="btn btn-primary" (click)="submitForm()"> {{ isEditMode ? 'Update Company' : 'Add Company'
+                }}</button>
             <!-- <button 
     class="btn btn-primary"
     [disabled]="isLoading"
@@ -658,15 +659,27 @@
 
 
                                     </ngb-accordion>
-                                    <div class="card mt-3" *ngIf="isEditMode">
-                                        <div class="card-header">
-                                            <h5 class="mb-0">Remarks</h5>
+                                    <!-- ==================== Existing Readonly Remarks ==================== -->
+                                        <div class="card mt-3" *ngIf="isEditMode">
+                                            <div class="card-header">
+                                                <h5 class="mb-0">Remarks</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <textarea class="form-control" rows="4" [(ngModel)]="remarks"
+                                                    placeholder="Enter remarks" readonly></textarea>
+                                            </div>
                                         </div>
-                                        <div class="card-body">
-                                            <textarea class="form-control" rows="4" [(ngModel)]="remarks"
-                                                placeholder="Enter remarks" readonly></textarea>
+
+                                    <!-- ==================== User Remarks Input ==================== -->
+                                    <form [formGroup]="companyForm" *ngIf="isEditMode"> 
+                                        <div class="mb-3 mt-3">
+                                            <label for="remarks" class="form-label">User Remarks</label>
+                                            <textarea id="remarks" class="form-control" formControlName="remarks"
+                                                rows="3" placeholder="Enter remarks here">
+    </textarea>
                                         </div>
-                                    </div>
+                                    </form>
+
 
 
                                 </div>
