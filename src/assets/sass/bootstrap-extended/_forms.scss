@@ -109,7 +109,7 @@ form,
     }
     ~.form-control-position{
       i{
-        color: map-get($primary-color, base);
+        color: #1a7d45;
       }
     }
   }
@@ -291,7 +291,7 @@ form,
     // Before - Outer Circle
     &::before {
       content: "";
-      border: 1px solid map-get($primary-color, base);
+      border: 1px solid #1a7d45;
       border-radius: 50%;
       width: 20px;
       height: 20px;
@@ -303,7 +303,7 @@ form,
       content: "";
       height: 12px;
       width: 12px;
-      background-color: map-get($primary-color, base);
+      background-color: #1a7d45;
       border-radius: 50%;
       left: 4px;
       opacity: 0;
@@ -346,7 +346,7 @@ form,
           transform: rotate(-45deg);
           height: 0.4rem;
           width: 0.8rem;
-          border-color: map-get($primary-color, base);
+          border-color: #1a7d45;
           border-radius: 0;
           border-width: 2px;
           top: 6px;
@@ -368,7 +368,7 @@ form,
         ~label {
           // after
           &:after {
-            border-color: map-get($grey-color, lighten-1);
+            border-color: #1a7d45;
           }
         }
       }
@@ -471,11 +471,11 @@ form,
     padding: 4px 28px 6px 0;
     margin: 5px 10px 5px 0;
     background: map-get($primary-color, lighten-4);
-    color: map-get($primary-color, base);
+    color: #1a7d45;
     border-radius: $border-radius;
     span {
       padding: 5px 12px 8px;
-      background: map-get($primary-color, base);
+      background: #1a7d45;
       color: map-get($primary-color, lighten-4);
       border-bottom-left-radius: $border-radius;
       border-top-left-radius: $border-radius;
@@ -484,7 +484,7 @@ form,
       font-size: 1.5rem;
       top: 0.95rem;
       right: 0.65rem;
-      color: map-get($primary-color, base);
+      color: #1a7d45;
       text-decoration: none;
     }
   }

@@ -13,6 +13,7 @@ import { CompanyService } from 'app/shared/services/company.service'; // ✅ add
 import { HROUTES } from '../horizontal-menu/navigation-routes.config';
 import { FirebaseMessagingService } from 'app/firebase-messaging.service';
 import { NotifcationService } from '../services/notification.service';
+import { UserServiceService } from '../services/user-service.service';
 
 @Component({
   selector: "app-navbar",
@@ -29,7 +30,8 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   menuPosition = "Side";
   isSmallScreen = false;
   username: string = "";
-  profilePicture: string = "assets/img/portrait/small/avatar-s-1.png"; // default avatar
+  profilePicture: string = "assets/img/profile/user.png"; // default avatar
+  private sub!: Subscription;
 
   public menuItems: any[];
 
@@ -71,7 +73,9 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
     private companyService: CompanyService, // ✅ injected
     private messagingService: FirebaseMessagingService,
     private toaster: ToastrService,
-    private notificationService: NotifcationService
+    private notificationService: NotifcationService,
+    private userService: UserServiceService
+
   ) {
     const browserLang: string = translate.getBrowserLang();
     translate.use(browserLang.match(/en|es|pt|de/) ? browserLang : "en");
@@ -84,6 +88,12 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.sub = this.userService.profilePicture$.subscribe(url => {
+      this.profilePicture = url || 'assets/img/profile/user.png';
+      this.cdr.detectChanges();
+    });
+
+
     this.getNotification();
     var userId = localStorage.getItem("userId");
     this.messagingService.requestPermission(userId);
@@ -195,7 +205,7 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
         const userData = res.$values ? res.$values[0] : res;
         this.username = userData.userName || "";
         this.profilePicture =
-          userData.profilePicture || "assets/img/portrait/small/avatar-s-1.png";
+          userData.profilePicture || "assets/img/profile/user.png";
         this.cdr.detectChanges(); // update UI immediately
       },
       error: (err) => {

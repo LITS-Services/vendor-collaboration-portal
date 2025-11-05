@@ -30,6 +30,7 @@ import { CompanyContactModalComponent } from './company-contact-modal/company-co
 import { CompanyProfileAttachmentComponent } from './company-profile-attachment/company-profile-attachment.component';
 import { CompanyProfileContactModalComponent } from './company-profile-contact-modal/company-profile-contact-modal.component';
 import { CompanyRegistrationComponent } from './company-registration/company-registration.component';
+import { NgxSpinnerModule } from "ngx-spinner";
 @NgModule({
   imports: [
     CommonModule,
@@ -43,6 +44,7 @@ import { CompanyRegistrationComponent } from './company-registration/company-reg
     SwiperModule,
     PipeModule,
     NgxDatatableModule,
+    NgxSpinnerModule
   ],
   declarations: [
     GalleryPageComponent,

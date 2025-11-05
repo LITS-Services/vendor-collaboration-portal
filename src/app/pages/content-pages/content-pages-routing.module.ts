@@ -11,11 +11,13 @@ import { RegisterPageComponent } from "./register/register-page.component";
 import { RegisterVendorComponent } from './register-vendor/register-vendor.component';
 import { OtpComponent } from './otp/otp.component';
 import { VerifyForgotPasswordOtpComponent } from './verify-forgot-password-otp/verify-forgot-password-otp.component';
+import { MainLayoutComponent } from './main-layout/main-layout.component';
 
 
 const routes: Routes = [
   {
     path: '',
+    component: MainLayoutComponent,
     children: [
       {
         path: 'comingsoon',
@@ -37,21 +39,21 @@ const routes: Routes = [
         data: {
           title: 'Forgot Password Page'
         }
-      },   
-        {
+      },
+      {
         path: 'NewPassword',
         component: VerifyForgotPasswordOtpComponent,
         data: {
           title: 'New Password'
         }
-      }, 
+      },
       {
         path: 'lockscreen',
         component: LockScreenPageComponent,
         data: {
           title: 'Lock Screen page'
         }
-      },   
+      },
       {
         path: 'login',
         component: LoginPageComponent,
@@ -79,21 +81,21 @@ const routes: Routes = [
         data: {
           title: 'Vendor Registeration'
         }
-      }  ,
-       {
+      },
+      {
         path: 'otp',
         component: OtpComponent,
         data: {
           title: 'OTP Verification'
         }
-      }  
-      
+      }
+
     ]
   }
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],  
+  exports: [RouterModule],
 })
 export class ContentPagesRoutingModule { }

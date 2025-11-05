@@ -1,9 +1,10 @@
 /* Top bar wrapper */
 .vp-navbar {
   background: transparent;
-  padding: 10px 8px;  
+  padding: 10px 8px;
   z-index: 1040;
 }
+
 .user-btn::after {
   display: none !important;
 }
@@ -21,7 +22,9 @@
 .vp-logo {
   display: flex;
   align-items: center;
-  min-width: 96px; /* keeps center area centered nicely */
+  min-width: 96px;
+
+  /* keeps center area centered nicely */
   img {
     height: 36px;
     display: block;
@@ -41,13 +44,16 @@
   align-items: center;
   padding: 8px;
   border-radius: 9999px;
-  background:rgba(58, 167, 104, 1);
+  background: rgba(58, 167, 104, 1);
   overflow: auto hidden;
   margin-bottom: 6px;
   margin-top: 6px;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  &::-webkit-scrollbar { display: none; }
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   li {
     list-style: none;
@@ -89,31 +95,37 @@
     gap: 8px;
     text-decoration: none;
     cursor: pointer;
+
     .user-name {
       color: #e6f6ec;
       font-size: .9rem;
     }
+
     .avatar {
       border-radius: 50%;
-      border: 2px solid rgba(255,255,255,.7);
-      box-shadow: 0 1px 2px rgba(0,0,0,.2);
+      border: 2px solid rgba(255, 255, 255, .7);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+    }
+
+    .default-avatar {
+      mix-blend-mode: luminosity;
     }
   }
 }
 
-  .icon-btn {
-    height: 36px;
-    width: 36px;
-    border: 0;
-    border-radius: 50%;
-    background: #1b6e3c;
-    color: #e6f6ec;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    outline: none;
-  }
+.icon-btn {
+  height: 36px;
+  width: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: #1b6e3c;
+  color: #e6f6ec;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  outline: none;
+}
 
 /* Mobile hamburger */
 .vp-burger {
@@ -130,50 +142,84 @@
 
 /* Responsive */
 @media (max-width: 1199.98px) {
-  .vp-logo { min-width: 120px; img { height: 32px; } }
-  .vp-actions { min-width: 120px; }
+  .vp-logo {
+    min-width: 120px;
+
+    img {
+      height: 32px;
+    }
+  }
+
+  .vp-actions {
+    min-width: 120px;
+  }
 }
 
 @media (max-width: 991.98px) {
-  .vp-burger { display: inline-flex; }
-  .vp-logo { margin-left: 36px; }
-  .vp-tabs li a { padding: 8px 12px; font-size: .82rem; }
+  .vp-burger {
+    display: inline-flex;
+  }
+
+  .vp-logo {
+    margin-left: 36px;
+  }
+
+  .vp-tabs li a {
+    padding: 8px 12px;
+    font-size: .82rem;
+  }
 }
 
 @media (max-width: 575.98px) {
-  .vp-tabs { padding: 6px; }
-  .vp-tabs li a { padding: 6px 10px; font-size: .8rem; }
-  .vp-actions .user-name { display: none !important; }
+  .vp-tabs {
+    padding: 6px;
+  }
+
+  .vp-tabs li a {
+    padding: 6px 10px;
+    font-size: .8rem;
+  }
+
+  .vp-actions .user-name {
+    display: none !important;
+  }
 }
 
 
 /* Transparent wrapper spanning the screen */
-.vp-navbar{
+.vp-navbar {
   background: transparent;
-  padding: 10px 8px;          /* top/bottom space around the pill */
+  padding: 10px 8px;
+  /* top/bottom space around the pill */
 }
 
 /* The green rounded pill */
-.vp-rail{
-    width: calc(100% - 40px); 
-    margin: 0 auto;
-    background: #249D57;
-    border-radius: 9999px;
-    padding: 6px 12px;
+.vp-rail {
+  width: calc(100% - 40px);
+  margin: 0 auto;
+  background: #249D57;
+  border-radius: 9999px;
+  padding: 6px 12px;
 
 }
 
 /* Optional: make gutters smaller on tiny screens */
-@media (max-width: 575.98px){
-  .vp-navbar{ padding: 8px 6px; }
-  .vp-rail{ width: min(1320px, calc(100% - 12px)); }
+@media (max-width: 575.98px) {
+  .vp-navbar {
+    padding: 8px 6px;
+  }
+
+  .vp-rail {
+    width: min(1320px, calc(100% - 12px));
+  }
 }
 
 
 .vp-mobile {
 
   width: 100%;
-  z-index: 1030; /* above content, below modals */
+  z-index: 1030;
+  /* above content, below modals */
 }
 
 .vp-mobile-wrap {
@@ -189,7 +235,8 @@
 .icon-square {
   width: 34px;
   height: 34px;
-  border: 1px solid #3aa46433; /* subtle green stroke */
+  border: 1px solid #3aa46433;
+  /* subtle green stroke */
   border-radius: 12px;
   background: #fff;
   display: inline-flex;
@@ -221,7 +268,8 @@
 .icon-square i,
 .icon-circle i {
   font-size: 16px;
-  color: #249D57; /* green icon */
+  color: #249D57;
+  /* green icon */
 }
 
 /* Avatar */
@@ -235,6 +283,7 @@
 .avatar-btn::after {
   display: none !important;
 }
+
 .avatar {
   border-radius: 50%;
   display: block;
@@ -247,15 +296,20 @@
 
 /* --- RESPONSIVE OVERRIDES --- */
 @media (min-width: 768px) {
+
   .vp-mobile,
   .vp-mobile-offset {
-    display: none !important; /* desktop shows your original navbar */
+    display: none !important;
+    /* desktop shows your original navbar */
   }
 }
 
 @media (max-width: 767.98px) {
+
   /* Hide desktop pill/tabs area if the desktop navbar ever slips through */
-  .vp-navbar .vp-pill { display: none !important; }
+  .vp-navbar .vp-pill {
+    display: none !important;
+  }
 }
 
 
@@ -263,20 +317,21 @@
 
 
 .notification-bell .dot {
-    position: absolute;
-    top: 3px;
-    right: 5px;
-    width: 14px;
-    height: 14px;
-    background: #ffffff;
-    border-radius: 50%;
-    font-size: 10px;
-    color: #249d57;
-    font-weight: 600;
+  position: absolute;
+  top: 3px;
+  right: 5px;
+  width: 14px;
+  height: 14px;
+  background: #ffffff;
+  border-radius: 50%;
+  font-size: 10px;
+  color: #249d57;
+  font-weight: 600;
 }
 
 .notification-wrapper {
-  position: relative; /* anchor the panel */
+  position: relative;
+  /* anchor the panel */
 }
 
 
@@ -285,7 +340,8 @@
 .notif-panel {
   position: absolute;
   top: calc(100% + 10px);
-  right: 0; /* align bottom-right to bell */
+  right: 0;
+  /* align bottom-right to bell */
   width: 300px;
   max-height: 70vh;
   display: flex;
@@ -316,12 +372,12 @@
     height: 14px;
     background: #fff;
     transform: rotate(45deg);
-    box-shadow: -3px -3px 8px rgba(0,0,0,0.03);
+    box-shadow: -3px -3px 8px rgba(0, 0, 0, 0.03);
   }
 }
 
 .unread-notif {
-  background: #ecfff4 !important;  
+  background: #ecfff4 !important;
 
   &:hover {
     background: #dfffed !important;
@@ -336,16 +392,18 @@
   padding: 12px 14px;
   border-bottom: 1px solid #eef0f3;
 
-  .panel-row{
+  .panel-row {
     display: flex;
     gap: 8px;
     align-items: center;
   }
+
   .title {
     font-weight: 500;
     font-size: 16px;
   }
-  .count-div{
+
+  .count-div {
     font-size: 12px;
     padding: 4px 10px;
     border-radius: 8px;
@@ -355,7 +413,8 @@
 
 .panel-body {
   padding: 8px;
-  overflow: auto; /* scroll list if long */
+  overflow: auto;
+  /* scroll list if long */
 }
 
 .panel-footer {
@@ -378,14 +437,14 @@
   margin-bottom: 10px;
   border-radius: 10px;
   border-bottom: 1px solid #eaeaea;
-    border-bottom-right-radius: 0px;
-    border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+  border-bottom-left-radius: 0px;
 
   &:hover {
     background: #dfffed !important;
   }
 
-  + .notif-item {
+  +.notif-item {
     margin-top: 4px;
   }
 
@@ -415,11 +474,11 @@
   }
 }
 
-.dot-unread{
-    height: 6px;
-    background: #007bff;
-    border-radius: 50%;
-    width: 6px;
+.dot-unread {
+  height: 6px;
+  background: #007bff;
+  border-radius: 50%;
+  width: 6px;
 }
 
 /* Utilities */
@@ -437,32 +496,38 @@
 }
 
 .panel-body {
-  scrollbar-width: thin;              /* Firefox */
-  scrollbar-color: rgba(0,0,0,0.25) transparent;
+  scrollbar-width: thin;
+  /* Firefox */
+  scrollbar-color: rgba(0, 0, 0, 0.25) transparent;
 }
 
 .panel-body::-webkit-scrollbar {
-  width: 6px;                         /* Slim width */
+  width: 6px;
+  /* Slim width */
 }
 
 .panel-body::-webkit-scrollbar-track {
-  background: transparent;            /* No ugly light grey track */
+  background: transparent;
+  /* No ugly light grey track */
 }
 
 .panel-body::-webkit-scrollbar-thumb {
-  background: rgba(0,0,0,0.25);
-  border-radius: 4px;                 /* Smooth edges */
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+  /* Smooth edges */
 }
 
 .panel-body::-webkit-scrollbar-thumb:hover {
-  background: rgba(0,0,0,0.4);        /* Slightly darker on hover */
+  background: rgba(0, 0, 0, 0.4);
+  /* Slightly darker on hover */
 }
+
 .panel-body::-webkit-scrollbar-button {
   display: none !important;
 }
 
-.bell-icon{
-      font-size: 18px;
+.bell-icon {
+  font-size: 18px;
 }
 
 /* Responsive: narrow width on small screens */
@@ -470,14 +535,12 @@
   .notif-panel {
     width: calc(100vw - 80%) !important;
     right: -50px;
-    
+
   }
 
-  .notification-bell .dot{
+  .notification-bell .dot {
     background: #1e8a4c !important;
     font-size: 9px !important;
     color: #ffffff !important;
   }
 }
-
-

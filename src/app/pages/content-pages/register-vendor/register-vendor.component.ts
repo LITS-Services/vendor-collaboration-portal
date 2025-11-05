@@ -13,22 +13,24 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class RegisterVendorComponent implements OnInit {
   public hidePassword: boolean = true;
+  public hideConfirmPassword: boolean = true;
+
   registerVendorFormSubmitted = false;
   isLoginFailed = false;
 
-    CountryISO = CountryISO;
+  CountryISO = CountryISO;
   PhoneNumberFormat = PhoneNumberFormat;
   SearchCountryField = SearchCountryField;
 
   // Removed the companies and selectedCompanies fields
-   countryExtensions = [
+  countryExtensions = [
     { label: '+1 (USA)', value: '+1' },
     { label: '+44 (UK)', value: '+44' },
     { label: '+91 (India)', value: '+91' },
     { label: '+61 (Australia)', value: '+61' },
   ];
 
-   preferredCountries = [CountryISO.Pakistan, CountryISO.SaudiArabia, CountryISO.UnitedArabEmirates];
+  preferredCountries = [CountryISO.Pakistan, CountryISO.SaudiArabia, CountryISO.UnitedArabEmirates];
 
   registerVendorForm = new UntypedFormGroup({
     username: new UntypedFormControl('', [Validators.required]),
@@ -48,7 +50,7 @@ export class RegisterVendorComponent implements OnInit {
     private authService: AuthService,
     private spinner: NgxSpinnerService,
     private toastr: ToastrService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     // Removed the fetchCompanies() call
@@ -58,8 +60,19 @@ export class RegisterVendorComponent implements OnInit {
     return this.registerVendorForm.controls;
   }
 
-  togglePasswordVisibility() {
-    this.hidePassword = !this.hidePassword;
+  // togglePasswordVisibility() {
+  //   this.hidePassword = !this.hidePassword;
+  // }
+
+  togglePasswordVisibility(field: string) {
+    switch (field) {
+      case 'password':
+        this.hidePassword = !this.hidePassword;
+        break;
+      case 'confirmPassword':
+        this.hideConfirmPassword = !this.hideConfirmPassword;
+        break;
+    }
   }
 
   shouldHighlightPasswordField(): boolean {
@@ -77,11 +90,11 @@ export class RegisterVendorComponent implements OnInit {
     // Removed validation for selectedCompanies as it is no longer required
 
     this.spinner.show();
-      const phoneObj = this.registerVendorForm.value.phone;
+    const phoneObj = this.registerVendorForm.value.phone;
     const payload = {
       Username: this.lf.username.value,
       FullName: this.lf.businessName.value,
-      PhoneNo:  phoneObj?.e164Number ?? null,
+      PhoneNo: phoneObj?.e164Number ?? null,
       Email: this.lf.email.value,
       Password: this.lf.password.value,
       Role: 'User',
@@ -94,10 +107,10 @@ export class RegisterVendorComponent implements OnInit {
         this.spinner.hide();
         console.log('Registration response:', res);
 
-        // ✅ Handle string response
+        // Handle string response
         const message = typeof res === 'string' ? res : res?.message || '';
         if (message.toLowerCase().includes('otp sent')) {
-          this.toastr.success(message);
+          this.toastr.success('OTP verified successfully');
 
           localStorage.setItem('pendingRegistration', JSON.stringify({
             Username: payload.Username,
@@ -108,7 +121,7 @@ export class RegisterVendorComponent implements OnInit {
           this.router.navigate(['pages/otp']);
         } else {
           this.isLoginFailed = true;
-          this.toastr.error('Vendor registration failed ❌');
+          this.toastr.error('Vendor registration failed');
         }
       },
       error: (err: any) => {
@@ -129,13 +142,13 @@ export class RegisterVendorComponent implements OnInit {
           this.router.navigate(['pages/otp']);
         } else {
           this.isLoginFailed = true;
-          this.toastr.error('Vendor registration failed ❌');
+          this.toastr.error('Vendor registration failed');
         }
       }
     });
   }
 
-  rememberMe() {}
-  forgotpassword() {}
-  SSO(event: Event) {}
+  rememberMe() { }
+  forgotpassword() { }
+  SSO(event: Event) { }
 }

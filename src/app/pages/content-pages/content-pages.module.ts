@@ -22,6 +22,7 @@ import { NgSelectModule } from '@ng-select/ng-select'; // <-- Import this
 import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { VerifyForgotPasswordOtpComponent } from './verify-forgot-password-otp/verify-forgot-password-otp.component';
+import { MainLayoutComponent } from './main-layout/main-layout.component';
 
 // import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
 
@@ -60,6 +61,7 @@ export function createTranslateLoader(http: HttpClient) {
     RegisterPageComponent,
     OtpComponent,
     VerifyForgotPasswordOtpComponent,
+    MainLayoutComponent,
 
   ]
 })

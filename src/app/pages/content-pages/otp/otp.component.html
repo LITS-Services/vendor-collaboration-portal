@@ -1,122 +1,38 @@
-<section id="otp" class="container-fluid">
-  <div class="row full-height-vh m-0">
-    <!-- Left half with background image and content -->
-        <div class="col-md-6 d-none d-md-flex align-items-center justify-content-center bg-image">
-      <div class="icon-container position-absolute">
-        <img src="/assets/img/logos/login-logo.png" alt="Icon" class="icon-img">
-      </div>
-      <div class="content text-white text-center">
-        <h1 class="text-white vendor-title">Vendor Collaboration Portal</h1>
-        <div class="row mt-4 features justify-content-center">
-
-      <div class="col-md-5 p-2 d-flex align-items-start gap-3">
-        <div class="icon-div">
-            <i class="ft-airplay icon-features"></i>
-        </div>
-  
-        <div class="text-justify">
-          <h4 class="text-white mt-0 mb-1">Seamless UI</h4>
-          <p class="mb-0">Intuitive and Responsive Interfaces<br>on all devices</p>
-        </div>
-
-      </div>
-
-      
-      <div class="col-md-5 p-2 d-flex align-items-start gap-3">
-        <div class="icon-div">
-         <i class="ft-bar-chart-2 icon-features"></i>
-        </div>
-  
-        <div class="text-justify">
-          <h4 class="text-white mt-0 mb-1">Vendor Dashboard</h4>
-          <p class="mb-0">Pending orders,
-              active contracts,<br> performance metrics, and payment statuses.</p>
-        </div>
-
-      </div>
-
-
-         <div class="col-md-5 p-2 d-flex align-items-start gap-3">
-        <div class="icon-div">
-        <i class="ft-trending-up icon-features"></i>
-        </div>
-  
-        <div class="text-justify">
-          <h4 class="text-white mt-0 mb-1">Performance Analytics</h4>
-          <p class="mb-0">Vendors can view real-time <br> analytics and performance reports</p>
-        </div>
-
-      </div>
-
-          <div class="col-md-5 p-2 d-flex align-items-start gap-3">
-        <div class="icon-div">
-      <i class="ft-pie-chart icon-features"></i>
-        </div>
-  
-        <div class="text-justify">
-          <h4 class="text-white mt-0 mb-1">Compliance Management</h4>
-          <p class="mb-0">Ensures Regulatory and Compliance Requirements</p>
-        </div>
-
-      </div>
-         
-
-        </div>
-      </div>
-      <div class="icon-container1 position-absolute">
-        <p class="text-center">Copyright © 2025 LITS Vendor Portal. Powered by LITS Services. All rights reserved.</p>
-      </div>
+<div class="card">
+  <div class="card-body">
+    <div class="back-btn">
+      <button class="back-icon-div" [routerLink]="['/pages/login']"><i class="ft-arrow-left back-icon"></i></button>
+    </div>
+    <div class="w-100 mb-3 text-center">
+      <h2 class="heading mb-2">OTP Verification</h2>
+      <p>Please enter the 6-digit OTP code sent to your email/phone</p>
     </div>
 
-    <!-- Right half with the card and form -->
-    <div class="col-md-6 d-flex align-items-center justify-content-center right-div">
-    
-      <div class="card">
-        <div class="card-body">
-        <div class="back-btn">
-        <button class="back-icon-div" [routerLink]="['/pages/login']"><i class="ft-arrow-left back-icon"></i></button>
+    <!-- OTP Form -->
+    <form [formGroup]="otpForm">
+      <div class="form-group mb-3">
+        <input type="text" formControlName="otp" maxlength="6" class="form-control text-center" placeholder="Enter OTP"
+          [ngClass]="{ 'is-invalid': otpFormSubmitted && lf.otp.invalid, 'is-valid': otpFormSubmitted && !lf.otp.invalid }"
+          required>
+        <div *ngIf="otpFormSubmitted && lf.otp.invalid" class="help-block mt-1 text-danger text-center">
+          <i class="ft-alert-circle align-middle"></i> OTP is required
         </div>
-          <div class="w-100 mb-3 text-center">
-            <h2 class="heading mb-2">OTP Verification</h2>
-            <p>Please enter the 6-digit OTP code sent to your email/phone</p>
-          </div>
+      </div>
 
-          <!-- OTP Form -->
-          <form [formGroup]="otpForm">
-            <div class="form-group mb-3">
-              <input type="text" formControlName="otp" maxlength="6" class="form-control text-center"
-                placeholder="Enter OTP"
-                [ngClass]="{ 'is-invalid': otpFormSubmitted && lf.otp.invalid, 'is-valid': otpFormSubmitted && !lf.otp.invalid }"
-                required>
-              <div *ngIf="otpFormSubmitted && lf.otp.invalid" class="help-block mt-1 text-danger text-center">
-                <i class="ft-alert-circle align-middle"></i> OTP is required
-              </div>
-            </div>
+      <div class="d-flex justify-content-between mb-3">
+        <button type="button" class="btn btn-primary w-100 login-btn" (click)="onSubmit()">Verify OTP</button>
+      </div>
 
-            <div class="d-flex justify-content-between mb-3">
-              <button type="button" class="btn btn-primary w-100 login-btn" (click)="onSubmit()">Verify OTP</button>
-            </div>
+      <div class="text-center">
+        <a href="javascript:void(0)" (click)="resendOtp()" class="text-primary">Resend OTP</a>
+      </div>
+    </form>
 
-            <div class="text-center">
-              <a href="javascript:void(0)" (click)="resendOtp()" class="text-primary">Resend OTP</a>
-            </div>
-          </form>
-
-          <div class="row mt-3">
-            <div class="col-12 text-center">
-              <label class="mt-1 me-1">Go Back to </label>
-              <b><a routerLink="/pages/login">Login</a></b>
-            </div>
-          </div>
-        </div>
+    <div class="row mt-3">
+      <div class="col-12 text-center">
+        <label class="mt-1 me-1">Go Back to </label>
+        <b><a routerLink="/pages/login">Login</a></b>
       </div>
     </div>
   </div>
-</section>
-
-<ngx-spinner 
-  bdColor="rgba(0,0,0,0.8)" 
-  size="medium" 
-  color="#fff" 
-  type="ball-triangle-path">
-</ngx-spinner>
+</div>

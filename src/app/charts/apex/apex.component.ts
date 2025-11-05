@@ -39,7 +39,7 @@ export type ChartOptions = {
   responsive: ApexResponsive[]
 };
 
-var $primary = "#975AFF",
+var $primary = "#249D57",
   $success = "#40C057",
   $info = "#2F8BE6",
   $warning = "#F77E17",

@@ -82,7 +82,7 @@ export class OtpComponent implements OnInit {
     this.authService.verifyOtp(otpValue, email, this.resetOtp).subscribe({
       next: (res: any) => {
         this.spinner.hide();
-        this.toastr.success('OTP verified successfully ✅');
+        this.toastr.success('OTP verified successfully');
         console.log('OTP verified successfully:', res);
 
         // Cleanup
@@ -105,7 +105,7 @@ export class OtpComponent implements OnInit {
       error: (err: any) => {
         this.spinner.hide();
         this.isOtpFailed = true;
-        this.toastr.error('Invalid or expired OTP ❌');
+        this.toastr.error('Invalid or expired OTP');
         console.error('OTP verification failed:', err);
       }
     });
@@ -127,12 +127,12 @@ export class OtpComponent implements OnInit {
       this.authService.resendOtp(forgotEmail, portalType).subscribe({
         next: (res: any) => {
           this.spinner.hide();
-          this.toastr.info('OTP resent successfully 🔄');
+          this.toastr.info('OTP resent successfully');
           console.log('OTP resent successfully:', res);
         },
         error: (err) => {
           this.spinner.hide();
-          this.toastr.error('Failed to resend OTP ❌');
+          this.toastr.error('Failed to resend OTP');
           console.error('Failed to resend OTP:', err);
         }
       });
@@ -151,12 +151,12 @@ export class OtpComponent implements OnInit {
       this.authService.resendOtp(Username, portalType).subscribe({
         next: (res: any) => {
           this.spinner.hide();
-          this.toastr.info('OTP resent successfully 🔄');
+          this.toastr.info('OTP resent successfully');
           console.log('OTP resent successfully:', res);
         },
         error: (err) => {
           this.spinner.hide();
-          this.toastr.error('Failed to resend OTP ❌');
+          this.toastr.error('Failed to resend OTP');
           console.error('Failed to resend OTP:', err);
         }
       });

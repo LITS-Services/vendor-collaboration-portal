@@ -1,240 +1,267 @@
-.right-div{
-  position:relative;
+.right-div {
+  position: relative;
 }
 
 #login .right-div {
-  height: 100dvh;        /* set a containing height */
-  overflow-y: auto;      /* enable vertical scroll */
-  align-items: flex-start !important; /* avoid vertical centering that can trap content */
+  height: 100dvh;
+  /* set a containing height */
+  overflow-y: auto;
+  /* enable vertical scroll */
+  align-items: flex-start !important;
+  /* avoid vertical centering that can trap content */
   justify-content: center;
-  padding: 0px 24px;         /* optional breathing room */
+  padding: 0px 24px;
+  /* optional breathing room */
 }
 
-.heading{
+.heading {
   font-weight: 600 !important;
 }
 
-  .login-btn{
-   background: linear-gradient(180deg, #249D57 0%, #187741 100%);
-    padding: 16px 0px;
+.login-btn {
+  background: linear-gradient(180deg, #249D57 0%, #187741 100%);
+  padding: 16px 0px;
   border-radius: 10px;
   font-weight: 500;
 }
 
-.text-justify{
+.text-justify {
   text-align: left !important;
 }
-.vendor-title{
+
+.vendor-title {
   font-size: 36px !important;
 }
-h4{
+
+h4 {
   font-size: 20px;
 }
 
-p{
+p {
   font-size: 14px;
 }
-.icon-div{
-      text-align: center;
-    display: flex
-;
-    justify-content: center;
-    align-items: center;
-    padding: 12px;
-    background: #bde2cd52;
-    border-radius: 50px;
-    width: 36px;
-    height: 36px;
-}
-.alert-light-danger {
-    background-color: #FEEFD0 !important;
-    color: #F55252  !important;
-    border-color: #FEEFD0;
-  }
-  
-  .ms-logo{
-    background-image: url('/assets/img/icons/ms-icon.png');
-    height: 30px;
-    width: 30px;
-    // top: -0.25rem;
-    // margin-top: 1rem;
-    // margin-bottom: -0.85rem;
-    // margin-left: 40px;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center center;
-    display: inline-block;
-  }
-  .or-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 1rem 0;
-  }
-    .horizontal-line {
-      flex: 1;
-      height: 1.2px;
-      background-color: #ccc;
-      margin: 2px;
-    }
-  .auth-height {
-    height: 100%;
-  }
-  
-  // .full-height-vh {
-  //   display: flex;
-  //   justify-content: center;
-  //   align-items: center;
-  // }
-  
-  .card {
-    width: 100%;
-    padding: 25px;
-    width: 600px; /* Adjust this width as needed */
-    margin: 0 auto;
-    background: transparent; /* Slight transparency to show the background */
-    border-radius: 15px;
-    box-shadow:none;
-    background-color: white;
-  }
-  
-  .ms-btn{
-    width: 50%;
-  }
-  
-  /* Ensure full viewport height for both halves */
-  .full-height-vh {
-    min-height: 100vh;
-  }
-  .container-fluid, .container-xl, .container-lg, .container-md, .container-sm {
-    width: 100%;
-    padding-right: 0;
-    padding-left: 0;
-    margin-right: auto;
-    margin-left: auto;
-    background-color: white;
-  }
-  /* Left half background image */
-  .bg-image {
-    background-image: url('/assets/img/Background.png');
-    background-size: cover;
-    background-position: center;
-  }
-  /* Icon at the top-left corner */
-  .icon-container {
-    top: 30px;
-    left: 30px;
-  }
-  .icon-container1 {
-    bottom: 30px;
 
-    p{
+.icon-div {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px;
+  background: #bde2cd52;
+  border-radius: 50px;
+  width: 36px;
+  height: 36px;
+}
+
+.alert-light-danger {
+  background-color: #FEEFD0 !important;
+  color: #F55252 !important;
+  border-color: #FEEFD0;
+}
+
+.ms-logo {
+  background-image: url('/assets/img/icons/ms-icon.png');
+  height: 30px;
+  width: 30px;
+  // top: -0.25rem;
+  // margin-top: 1rem;
+  // margin-bottom: -0.85rem;
+  // margin-left: 40px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  display: inline-block;
+}
+
+.or-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1rem 0;
+}
+
+.horizontal-line {
+  flex: 1;
+  height: 1.2px;
+  background-color: #ccc;
+  margin: 2px;
+}
+
+.auth-height {
+  height: 100%;
+}
+
+// .full-height-vh {
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+// }
+
+.card {
+  width: 100%;
+  padding: 25px;
+  width: 600px;
+  /* Adjust this width as needed */
+  margin: 0 auto;
+  background: transparent;
+  /* Slight transparency to show the background */
+  border-radius: 15px;
+  box-shadow: none;
+  background-color: white;
+}
+
+.ms-btn {
+  width: 50%;
+}
+
+/* Ensure full viewport height for both halves */
+.full-height-vh {
+  min-height: 100vh;
+}
+
+.container-fluid,
+.container-xl,
+.container-lg,
+.container-md,
+.container-sm {
+  width: 100%;
+  padding-right: 0;
+  padding-left: 0;
+  margin-right: auto;
+  margin-left: auto;
+  background-color: white;
+}
+
+/* Left half background image */
+.bg-image {
+  background-image: url('/assets/img/Background.png');
+  background-size: cover;
+  background-position: center;
+}
+
+/* Icon at the top-left corner */
+.icon-container {
+  top: 30px;
+  left: 30px;
+}
+
+.icon-container1 {
+  bottom: 30px;
+
+  p {
     font-size: 14px !important;
     font-weight: 400 !important;
     color: #E9F5EE !important;
   }
-    
-  }
-  
-  .icon-img {
-    width: 120px;
-    height: 60px;
-  }
-  .icon-features{
-    font-size: 1.5rem;
-  }
 
-  .back-icon-div{
-      border: 1px solid #50B179;
-    background: #E3FCEC;
-    border-radius: 9px;
-    width: 40px;
-    height: 40px;
-    transition-duration: 300ms;
-    .back-icon{
+}
+
+.icon-img {
+  width: 120px;
+  height: 60px;
+}
+
+.icon-features {
+  font-size: 1.5rem;
+}
+
+.back-icon-div {
+  border: 1px solid #50B179;
+  background: #E3FCEC;
+  border-radius: 9px;
+  width: 40px;
+  height: 40px;
+  transition-duration: 300ms;
+
+  .back-icon {
     font-size: 18px;
     display: flex;
     justify-content: center;
-    }
+  }
 }
 
-.back-icon-div:hover{
-      background: #d0ffe1;
+.back-icon-div:hover {
+  background: #d0ffe1;
 }
-  .cstm-form{
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+
+.cstm-form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.back-btn {
+  margin-bottom: 32px;
+  z-index: 10;
+}
+
+// .form-control {
+//   display: block;
+//   width: 100%;
+//   height: calc(1.5em + 0.75rem + 3px);
+//   padding: 0.375rem 0.75rem;
+//   font-size: 1rem;
+//   font-weight: 400;
+//   line-height: 1.5;
+//   color: #75787d;
+//   background-color: transparent;
+//   background-clip: padding-box;
+//   border: 1px solid #a7a4a4;
+//   border-radius: 0.35rem;
+//   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+// }
+.checkbox label:before {
+  content: "";
+  height: 20px;
+  width: 20px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 0.35rem;
+  border: 1px solid #8f8f8f;
+}
+
+.checkbox label:after {
+  content: "";
+  height: 20px;
+  width: 20px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 0.35rem;
+  border: 1px solid #8f8f8f;
+}
+
+/* Hide left half on small screens and center card */
+@media screen and (max-width: 1024px) {
+  .bg-image {
+    display: none;
   }
 
-  .back-btn{
-    margin-bottom: 32px;
-    z-index: 10;
+  .features {
+    display: none;
   }
-  // .form-control {
-  //   display: block;
-  //   width: 100%;
-  //   height: calc(1.5em + 0.75rem + 3px);
-  //   padding: 0.375rem 0.75rem;
-  //   font-size: 1rem;
-  //   font-weight: 400;
-  //   line-height: 1.5;
-  //   color: #75787d;
-  //   background-color: transparent;
-  //   background-clip: padding-box;
-  //   border: 1px solid #a7a4a4;
-  //   border-radius: 0.35rem;
-  //   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+  .icon-container1 {
+    display: none;
+  }
+
+  // .icon-container{
+  //   display: none;
   // }
-  .checkbox label:before {
-    content: "";
-    height: 20px;
-    width: 20px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    border-radius: 0.35rem;
-    border: 1px solid #8f8f8f;
+
+  .col-md-6 {
+    flex: 0 0 100%;
+    max-width: 100%;
+    justify-content: center;
+    align-items: center;
   }
-  .checkbox label:after {
-    content: "";
-    height: 20px;
-    width: 20px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    border-radius: 0.35rem;
-    border: 1px solid #8f8f8f;
+}
+
+@media screen and (max-width: 425px) {
+  .ms-btn {
+    width: 100%;
   }
-  /* Hide left half on small screens and center card */
-  @media screen and (max-width: 1024px){
-    .bg-image {
-      display: none;
-    }
-    .features{
-      display: none;
-    }
-    .icon-container1{
-      display: none;
-    }
-    // .icon-container{
-    //   display: none;
-    // }
-  
-    .col-md-6 {
-      flex: 0 0 100%;
-      max-width: 100%;
-      justify-content: center;
-      align-items: center;
-    }
-  }
-  
-  @media screen and (max-width: 425px){
-    .ms-btn{
-      width: 100%;
-    }
-    .fp{
-      
-    }
-  }
-  
+
+  .fp {}
+}

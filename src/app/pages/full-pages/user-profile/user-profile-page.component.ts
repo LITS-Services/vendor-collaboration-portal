@@ -9,6 +9,10 @@ import { LayoutService } from 'app/shared/services/layout.service';
 import { SwiperDirective, SwiperConfigInterface } from 'ngx-swiper-wrapper';
 import { CompanyService } from 'app/shared/services/company.service';
 import { ToastrService } from 'ngx-toastr'; // 👈 toastr
+import { Router } from '@angular/router';
+import { UserServiceService } from 'app/shared/services/user-service.service';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-user-profile-page',
@@ -21,7 +25,8 @@ export class UserProfilePageComponent implements OnInit, AfterViewInit, OnDestro
   layoutSub!: Subscription;
 
   userProfileForm: FormGroup;
-  profileImage: string | ArrayBuffer | null = null;
+  // profileImage: string | ArrayBuffer | null = null;
+  public profileImage: string = 'assets/img/profile/user.png';
 
   showPasswordResetPopup = false;
   passwordResetForm: FormGroup;
@@ -29,6 +34,10 @@ export class UserProfilePageComponent implements OnInit, AfterViewInit, OnDestro
   showOldPassword = false;
   showNewPassword = false;
   showConfirmPassword = false;
+  hidePassword: boolean = true;
+  hideOldPassword: boolean = true;
+  hideConfirmPassword: boolean = true;
+  activeTab: 'details' | 'password' = 'password'; // default active tab
 
   vendorAccountNumber = '';
   public swipeConfig: SwiperConfigInterface = {
@@ -47,7 +56,10 @@ export class UserProfilePageComponent implements OnInit, AfterViewInit, OnDestro
     private cdr: ChangeDetectorRef,
     private fb: FormBuilder,
     private companyService: CompanyService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private router: Router,
+    private userService: UserServiceService,
+    private spinner: NgxSpinnerService
   ) {
     this.config = this.configService.templateConf;
 
@@ -66,6 +78,7 @@ export class UserProfilePageComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   ngOnInit() {
+    this.activeTab = 'details';
     this.generateVendorAccountNumber();
     this.cdr.detectChanges();
     this.loadUserProfile();
@@ -89,6 +102,11 @@ export class UserProfilePageComponent implements OnInit, AfterViewInit, OnDestro
     if (this.layoutSub) this.layoutSub.unsubscribe();
   }
 
+  // Navigate back to dashboard
+  homePage() {
+    this.router.navigate(['/dashboard/dashboard1']);
+  }
+
   generateVendorAccountNumber() {
     const storedSequence = localStorage.getItem('vendorSequence');
     let sequenceNumber = storedSequence ? parseInt(storedSequence, 10) : 0;
@@ -101,32 +119,83 @@ export class UserProfilePageComponent implements OnInit, AfterViewInit, OnDestro
     const userId = localStorage.getItem('userId');
     if (!userId) return;
 
-    this.companyService.GetVendoruserByid(userId).subscribe({
-      next: (res: any) => {
-        const userData = res.$values ? res.$values[0] : res;
-        this.userProfileForm.patchValue({
-          fullName: userData.fullName,
-          email: userData.email
-        });
-        this.profileImage = userData.profilePicture || null;
-
-        this.cdr.detectChanges(); // 🔹 after API response
-      },
-      error: err => console.error('Error loading user profile:', err)
-    });
+    this.spinner.show();
+    this.companyService
+      .GetVendoruserByid(userId)
+      .pipe(finalize(() => { this.spinner.hide(); }))
+      .subscribe({
+        next: (res: any) => {
+          const userData = res.$values ? res.$values[0] : res;
+          this.userProfileForm.patchValue({
+            fullName: userData.fullName,
+            email: userData.email
+          });
+          if (res.profilePicture) {
+            this.profileImage = res.profilePicture;
+          }
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          console.error('Error loading user profile:', err);
+        }
+      });
   }
+
+  // onImageSelected(event: any) {
+  //   const file = event.target.files[0];
+  //   if (file) {
+  //     const reader = new FileReader();
+  //     reader.onload = (e) => {
+  //       this.profileImage = e.target?.result as string;
+  //       this.cdr.detectChanges(); // 🔹 update UI after file load
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  // }
+
 
   onImageSelected(event: any) {
     const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.profileImage = reader.result;
-        this.cdr.detectChanges(); // 🔹 update UI after file load
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      this.profileImage = e.target?.result as string;
+      this.cdr.detectChanges();
+
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        this.toastr.error('User ID not found. Please login again.');
+        return;
+      }
+
+      const payload = {
+        userId,
+        fullName: this.userProfileForm.get('fullName')?.value,
+        profilePicture: this.profileImage || ''
       };
-      reader.readAsDataURL(file);
-    }
+
+      this.spinner.show();
+      // this.userService.updateProfilePicture(this.profileImage);
+      this.companyService.updateVendoruser(userId, payload)
+        .pipe(finalize(() => this.spinner.hide()))
+        .subscribe({
+          next: (res: string) => {
+            this.toastr.success('Profile picture updated successfully!');
+            this.userService.updateProfilePicture(this.profileImage);
+            this.cdr.detectChanges();
+          },
+          error: (err) => {
+            console.error('Profile update error:', err);
+            this.toastr.error('Failed to update profile picture. Please try again.');
+            this.cdr.detectChanges();
+          }
+        });
+    };
+
+    reader.readAsDataURL(file);
   }
+
 
   resetForm() {
     this.userProfileForm.reset();
@@ -203,16 +272,38 @@ export class UserProfilePageComponent implements OnInit, AfterViewInit, OnDestro
 
     const payload = { userId, oldPassword, newPassword };
 
-    this.companyService.resetPassword(payload).subscribe({
-      next: () => {
-        this.toastr.success('Password reset successful!');
-        this.closePasswordResetPopup();
-        this.cdr.detectChanges(); // 🔹 after API response
-      },
-      error: () => {
-        this.toastr.error('Failed to reset password. Please try again.');
-        this.cdr.detectChanges(); // 🔹 after API error
-      }
-    });
+    this.spinner.show();
+
+    this.companyService
+      .resetPassword(payload)
+      .pipe(
+        finalize(() => {
+          this.spinner.hide();
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.toastr.success('Password reset successful!');
+          this.closePasswordResetPopup();
+        },
+        error: () => {
+          this.toastr.error('Failed to reset password. Please try again.');
+        }
+      });
+  }
+
+  togglePasswordVisibility(field: string) {
+    switch (field) {
+      case 'password':
+        this.hidePassword = !this.hidePassword;
+        break;
+      case 'oldPassword':
+        this.hideOldPassword = !this.hideOldPassword;
+        break;
+      case 'confirmPassword':
+        this.hideConfirmPassword = !this.hideConfirmPassword;
+        break;
+    }
   }
 }

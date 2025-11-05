@@ -1,125 +1,111 @@
-<nav
-  class="vp-navbar d-none d-md-block"
-  [ngClass]="{ 'fixed-top': isSmallScreen && menuPosition === 'Top' }"
->
+<nav class="vp-navbar d-none d-md-block" [ngClass]="{ 'fixed-top': isSmallScreen && menuPosition === 'Top' }">
   <div class="vp-rail">
 
- 
-  <div class="vp-container">
-    <!-- Left: Logo -->
-    <a class="vp-logo" [routerLink]="['/dashboard/dashboard1']">
-      <img [src]="logoUrl" alt="Vendor Portal" />
-    </a>
 
-     <button class="icon-btn" appToggleFullscreen (click)="ToggleClass()">
+    <div class="vp-container">
+      <!-- Left: Logo -->
+      <a class="vp-logo" [routerLink]="['/dashboard/dashboard1']">
+        <img [src]="logoUrl" alt="Vendor Portal" />
+      </a>
+
+      <button class="icon-btn" appToggleFullscreen (click)="ToggleClass()">
         <i class="{{ toggleClass }}"></i>
       </button>
 
-    <!-- Center: Rounded Tabs (scrollable if overflow) -->
-    <div class="vp-pill">
-      <ul class="vp-tabs" (clickOutside)="toggleSearchOpenClass(false)">
-  <li *ngFor="let item of menuItems"
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: true }">
+      <!-- Center: Rounded Tabs (scrollable if overflow) -->
+      <div class="vp-pill">
+        <ul class="vp-tabs" (clickOutside)="toggleSearchOpenClass(false)">
+          <li *ngFor="let item of menuItems" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
 
-    <!-- internal route -->
-    <a *ngIf="!item.isExternalLink"
-       [routerLink]="[item.path]">
-      {{ item.title }}
-    </a>
+            <!-- internal route -->
+            <a *ngIf="!item.isExternalLink" [routerLink]="[item.path]">
+              {{ item.title }}
+            </a>
 
-    <!-- external link -->
-    <a *ngIf="item.isExternalLink"
-       [href]="item.path"
-       target="_blank"
-       rel="noopener">
-      {{ item.title }}
-    </a>
-  </li>
-</ul>
-    </div>
+            <!-- external link -->
+            <a *ngIf="item.isExternalLink" [href]="item.path" target="_blank" rel="noopener">
+              {{ item.title }}
+            </a>
+          </li>
+        </ul>
+      </div>
 
-    <!-- Right: Actions -->
-    <div class="vp-actions">
-      <!-- Fullscreen / any quick action -->
+      <!-- Right: Actions -->
+      <div class="vp-actions">
+        <!-- Fullscreen / any quick action -->
 
-      <div class="notification-wrapper" #notifRoot>
-        <button class="icon-btn notification-bell" (click)="togglePanel()" aria-haspopup="true"
-          [attr.aria-expanded]="notifOpen">
-          <i class="ft-bell bell-icon"></i>
-          <span class="dot" *ngIf="unreadCount > 0">{{unreadCount}}</span>
-        </button>
-      
-        <!-- Floating Panel -->
-        <div class="notif-panel" *ngIf="notifOpen" [class.show]="notifOpen" (click)="$event.stopPropagation()">
-          <div class="panel-header">
-            <div class="panel-row">
-              <span class="title">Notifications</span>
-              <span *ngIf="notificationCount > 0" class="count-div">{{notificationCount}}</span>
-            </div>
-            <button class="btn" (click)="closePanel()" aria-label="Close">
-              <i class="ft-x"></i>
-            </button>
-          </div>
-      
-          <div class="panel-body">
-            <ng-container *ngIf="notifications?.length; else emptyState">
-              <div class="notif-item" [ngClass]="{ 'unread-notif': n.status === 0 }" *ngFor="let n of notifications">
-                <div class="row-1">
-                  <div class="title text-ellipsis d-flex align-items-center">{{ n.title }}
-                    <span *ngIf="n.status === 0" class="dot-unread ms-1"></span>
-                  </div>
-                  <span [container]="'body'" [ngbTooltip]="n.createdOn | date: 'short'" class="time">{{ n.timeAgo }}</span>
-                </div>
-                <div class="message text-ellipsis-2" *ngIf="n.message">{{ n.message }}</div>
+        <div class="notification-wrapper" #notifRoot>
+          <button class="icon-btn notification-bell" (click)="togglePanel()" aria-haspopup="true"
+            [attr.aria-expanded]="notifOpen">
+            <i class="ft-bell bell-icon"></i>
+            <span class="dot" *ngIf="unreadCount > 0">{{unreadCount}}</span>
+          </button>
+
+          <!-- Floating Panel -->
+          <div class="notif-panel" *ngIf="notifOpen" [class.show]="notifOpen" (click)="$event.stopPropagation()">
+            <div class="panel-header">
+              <div class="panel-row">
+                <span class="title">Notifications</span>
+                <span *ngIf="notificationCount > 0" class="count-div">{{notificationCount}}</span>
               </div>
-            </ng-container>
-      
-            <ng-template #emptyState>
-              <div class="empty p-2">No Notifcation: You're all caught up</div>
-            </ng-template>
-          </div>
-      
-          <!-- <div class="panel-footer">
+              <button class="btn" (click)="closePanel()" aria-label="Close">
+                <i class="ft-x"></i>
+              </button>
+            </div>
+
+            <div class="panel-body">
+              <ng-container *ngIf="notifications?.length; else emptyState">
+                <div class="notif-item" [ngClass]="{ 'unread-notif': n.status === 0 }" *ngFor="let n of notifications">
+                  <div class="row-1">
+                    <div class="title text-ellipsis d-flex align-items-center">{{ n.title }}
+                      <span *ngIf="n.status === 0" class="dot-unread ms-1"></span>
+                    </div>
+                    <span [container]="'body'" [ngbTooltip]="n.createdOn | date: 'short'" class="time">{{ n.timeAgo
+                      }}</span>
+                  </div>
+                  <div class="message text-ellipsis-2" *ngIf="n.message">{{ n.message }}</div>
+                </div>
+              </ng-container>
+
+              <ng-template #emptyState>
+                <div class="empty p-2">No Notifcation: You're all caught up</div>
+              </ng-template>
+            </div>
+
+            <!-- <div class="panel-footer">
                                     <a class="view-all" [routerLink]="['/notifications']">View all</a>
                                   </div> -->
+          </div>
         </div>
-      </div>
-      <!-- User dropdown (kept from your code) -->
-      <div class="dropdown"
-      container="body"
-      ngbDropdown  placement="bottom-right">
-        <a class="user-btn" ngbDropdownToggle>
-          <!-- <span class="user-name d-none d-md-inline">{{ username }}</span> -->
-          <img
-            class="avatar"
-            src="assets/img/portrait/small/avatar-s-1.png"
-            alt="avatar"
-            height="34"
-            width="34"
-          />
-        </a>
-        <div class="dropdown-menu dropdown-menu-right" ngbDropdownMenu>
-          <a class="dropdown-item" routerLink="/pages/profile">
-            <i class="ft-edit mr-2"></i> Edit Profile
+        <!-- User dropdown (kept from your code) -->
+        <div class="dropdown" container="body" ngbDropdown placement="bottom-right">
+          <a class="user-btn" ngbDropdownToggle>
+            <!-- <span class="user-name d-none d-md-inline">{{ username }}</span> -->
+            <img [title]="username" class="avatar"
+              [ngClass]="{ 'default-avatar': profilePicture === 'assets/img/profile/user.png' || !profilePicture }"
+              [src]="profilePicture || 'assets/img/profile/user.png'" alt="avatar" height="34" width="34" />
           </a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" (click)="logout()">
-            <i class="ft-power mr-2"></i> Logout
-          </a>
+          <div class="dropdown-menu dropdown-menu-right" ngbDropdownMenu>
+            <a class="dropdown-item" routerLink="/pages/profile">
+              <i class="ft-edit mr-3"></i> Edit Profile
+            </a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" (click)="logout()">
+              <i class="ft-power mr-3"></i> Logout
+            </a>
+          </div>
         </div>
+
+
       </div>
-     
-      
+
+      <!-- Mobile hamburger (optional) -->
+      <button class="vp-burger d-xl-none" (click)="toggleSidebar()">
+        <i class="ft-menu"></i>
+      </button>
     </div>
 
-    <!-- Mobile hamburger (optional) -->
-    <button class="vp-burger d-xl-none" (click)="toggleSidebar()">
-      <i class="ft-menu"></i>
-    </button>
   </div>
-
-   </div>
 </nav>
 
 
@@ -133,24 +119,24 @@
 
     <!-- Right: circle icon buttons + avatar -->
     <div class="vp-mobile-actions">
-      <button class="icon-circle"  aria-label="Search">
+      <button class="icon-circle" aria-label="Search">
         <i class="ft-search"></i>
       </button>
-      <button class="icon-circle"  aria-label="Filters">
+      <button class="icon-circle" aria-label="Filters">
         <i class="ft-sliders"></i>
       </button>
-<!-- 
+      <!-- 
       <button class="icon-circle"  aria-label="Notifications">
         <i class="ft-bell"></i>
       </button> -->
 
-         <div class="notification-wrapper" #notifRoot>
-        <button class="icon-circle notification-bell" (click)="$event.stopPropagation(); togglePanel()" aria-haspopup="true"
-          [attr.aria-expanded]="notifOpen">
+      <div class="notification-wrapper" #notifRoot>
+        <button class="icon-circle notification-bell" (click)="$event.stopPropagation(); togglePanel()"
+          aria-haspopup="true" [attr.aria-expanded]="notifOpen">
           <i class="ft-bell bell-icon"></i>
           <span class="dot" *ngIf="unreadCount > 0">{{unreadCount}}</span>
         </button>
-      
+
         <!-- Floating Panel -->
         <div class="notif-panel" *ngIf="notifOpen" [class.show]="notifOpen" (click)="$event.stopPropagation()">
           <div class="panel-header">
@@ -162,7 +148,7 @@
               <i class="ft-x"></i>
             </button>
           </div>
-      
+
           <div class="panel-body">
             <ng-container *ngIf="notifications?.length; else emptyState">
               <div class="notif-item" [ngClass]="{ 'unread-notif': n.status === 0 }" *ngFor="let n of notifications">
@@ -170,17 +156,18 @@
                   <div class="title text-ellipsis d-flex align-items-center">{{ n.title }}
                     <span *ngIf="n.status === 0" class="dot-unread ms-1"></span>
                   </div>
-                  <span [container]="'body'" [ngbTooltip]="n.createdOn | date: 'short'" class="time">{{ n.timeAgo }}</span>
+                  <span [container]="'body'" [ngbTooltip]="n.createdOn | date: 'short'" class="time">{{ n.timeAgo
+                    }}</span>
                 </div>
                 <div class="message text-ellipsis-2" *ngIf="n.message">{{ n.message }}</div>
               </div>
             </ng-container>
-      
+
             <ng-template #emptyState>
               <div class="empty p-2">No Notifcation: You're all caught up</div>
             </ng-template>
           </div>
-      
+
           <!-- <div class="panel-footer">
                                     <a class="view-all" [routerLink]="['/notifications']">View all</a>
                                   </div> -->
@@ -190,13 +177,8 @@
       <!-- User dropdown -->
       <div class="dropdown" ngbDropdown container="body" placement="bottom-right">
         <a class="avatar-btn d-flex" ngbDropdownToggle>
-          <img
-            class="avatar"
-            [src]="profilePicture || 'assets/img/portrait/small/avatar-s-1.png'"
-            alt="avatar"
-            height="34"
-            width="34"
-          />
+          <img class="avatar" [src]="profilePicture || 'assets/img/portrait/small/avatar-s-1.png'" alt="avatar"
+            height="34" width="34" />
         </a>
         <div class="dropdown-menu dropdown-menu-right" ngbDropdownMenu>
           <a class="dropdown-item" routerLink="/pages/profile">

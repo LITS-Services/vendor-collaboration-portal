@@ -4,29 +4,45 @@
     <h1>User Profile</h1>
     <p>Manage your account details</p>
   </div>
-  <div class="col-6 d-flex align-items-center justify-content-end">
-    <!-- Reset Password Button -->
+  <!-- <div class="col-6 d-flex align-items-center justify-content-end">
     <button class="btn btn-outline-secondary me-3" (click)="openPasswordResetPopup()">
       Reset Password
     </button>
     <button class="btn btn-outline-primary me-3" (click)="resetForm()">Reset</button>
     <button class="btn btn-primary" (click)="saveProfile()">Save</button>
-  </div>
+  </div> -->
 </div>
 <!-- Header End -->
 
+
+<div class="card cstm-ui-card">
+  <div class="row">
+    <div class="col-md-6">
+      <!-- Back Button -->
+      <button class="btn btn-lg me-1" type="button" (click)="homePage()">
+        <i class="ft-arrow-left"></i>
+      </button>
+      <span class="vl"></span>
+      <button style="cursor: pointer;" type="button" class="btn btn-sm cstm-ui-table-btn"
+        [disabled]="passwordResetForm.invalid" (click)="submitPasswordReset()">
+        <i class="ft-lock"></i>
+        <label class="ms-2 mt-1">Change Password</label>
+      </button>
+    </div>
+  </div>
+</div>
+
+
 <!-- Profile Section Start -->
 <section class="page-user-profile mt-3">
-  <div class="row justify-content-center">
+  <div class="row justify-content-center d-none">
     <div class="col-md-6">
       <div class="card">
         <div class="card-body text-center">
           <!-- Profile Image -->
           <div class="mb-3 position-relative">
             <img style="width: 140px; height: 140px; border: 2px solid black;"
-              [src]="profileImage || 'assets/img/portrait/small/image'" 
-              class="rounded-circle" 
-              alt="User Profile Image" 
+              [src]="profileImage || 'assets/img/portrait/small/image'" class="rounded-circle" alt="User Profile Image"
               width="140" height="140">
             <label for="imageUpload" class="btn btn-sm btn-outline-primary position-absolute bottom-0 end-0">
               Upload
@@ -38,11 +54,13 @@
           <form [formGroup]="userProfileForm">
             <div class="mb-3 text-start">
               <label for="fullName" class="form-label">Full Name</label>
-              <input type="text" id="fullName" formControlName="fullName" class="form-control" placeholder="Enter full name" disabled>
+              <input type="text" id="fullName" formControlName="fullName" class="form-control"
+                placeholder="Enter full name" disabled>
             </div>
             <div class="mb-3 text-start">
               <label for="email" class="form-label">Email</label>
-              <input type="email" id="email" formControlName="email" class="form-control" placeholder="Enter email" disabled>
+              <input type="email" id="email" formControlName="email" class="form-control" placeholder="Enter email"
+                disabled>
             </div>
             <!-- <div class="mb-3 text-start">
               <label for="password" class="form-label">Password</label>
@@ -57,6 +75,145 @@
       </div>
     </div>
   </div>
+
+
+
+  <div class="card p-4 h-100 shadow-lg border-0" style="border-radius: 12px;">
+
+    <div class="row">
+      <div class="col-md-4" style="display: flex;justify-content: center;margin-top: 3.5em;">
+        <!-- Profile Image Upload -->
+        <div class="d-flex justify-content-center">
+          <div class="profile-image-upload-area position-relative d-inline-block mb-4">
+            <label for="profileImageUpload" class="d-block m-0 position-relative cursor-pointer">
+              <div class="profile-image-wrapper position-relative">
+                <!-- <img [src]="profileImage"
+                   [ngClass]="{ 'default-avatar': profileImage === 'assets/img/profile/user.png' || !profileImage }"
+                  class="user-profile-image rounded-circle border border-5 border-custom-primary"
+                  alt="User Profile Image" height="280" width="280"
+                  style="object-fit: cover; box-shadow: 17px 1rem 0.25rem rgba(0, 0, 0, 0.075) !important;"> -->
+
+
+                <div class="position-relative d-inline-block">
+                  <!-- If image exists and not default -->
+                  <img *ngIf="profileImage && profileImage !== 'assets/img/profile/user.png'" [src]="profileImage"
+                    class="user-profile-image rounded-circle border border-5 border-custom-primary"
+                    alt="User Profile Image" height="280" width="280"
+                    style="object-fit: cover; box-shadow: 17px 1rem 0.25rem rgba(0, 0, 0, 0.075) !important;">
+
+                  <!-- If no image or default image -->
+                  <div *ngIf="!profileImage || profileImage === 'assets/img/profile/user.png'"
+                    class="rounded-circle border border-5 border-custom-primary d-flex align-items-center justify-content-center"
+                    style="height: 280px; width: 280px; box-shadow: 17px 1rem 0.25rem rgba(0, 0, 0, 0.075) !important; background-color: #f8f9fa;">
+                    <i class="ft-camera" style="font-size: 100px; color: #6c757d;"></i>
+                  </div>
+                </div>
+
+
+                <div
+                  class="camera-overlay d-flex align-items-center justify-content-center position-absolute rounded-circle"
+                  title="Change Profile Picture">
+                  <i class="ft-camera text-white" style="font-size:3.5em"></i>
+                </div>
+              </div>
+            </label>
+            <input type="file" id="profileImageUpload" (change)="onImageSelected($event)" accept="image/*" hidden>
+          </div>
+        </div>
+
+      </div>
+      <div class="col-md-8">
+
+        <div class="custom-tabs-container">
+          <!-- Tabs Header -->
+          <div class="custom-tabs-header d-flex">
+            <button class="tab-btn" [ngClass]="{ 'active': activeTab === 'details' }" (click)="activeTab = 'details'">
+              <i class="ft-user me-2"></i> User Details
+            </button>
+
+            <button class="tab-btn" [ngClass]="{ 'active': activeTab === 'password' }" (click)="activeTab = 'password'">
+              <i class="ft-lock me-2"></i> Change Password
+            </button>
+          </div>
+
+          <!-- Tabs Body -->
+          <div class="custom-tabs-body p-3">
+            <!-- User Details -->
+            <div *ngIf="activeTab === 'details'" class="tab-content fade-in">
+              <div class="user-info-card rounded-3 p-4 shadow-sm bg-white border border-light">
+                <div class="user-info-item mb-3">
+                  <div class="label">Full Name</div>
+                  <div class="value">{{ userProfileForm.get('fullName')?.value || '—' }}</div>
+                </div>
+
+                <div class="user-info-item mb-3">
+                  <div class="label">Email</div>
+                  <div class="value">{{ userProfileForm.get('email')?.value || '—' }}</div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Change Password -->
+            <div *ngIf="activeTab === 'password'" class="tab-content fade-in">
+              <form [formGroup]="passwordResetForm" (ngSubmit)="submitPasswordReset()"
+                class="p-4 shadow-sm rounded-3 bg-white border border-light">
+
+                <!-- Old Password -->
+                <div class="mb-3">
+                  <label class="form-label"><i class="ft-lock me-2 text-secondary"></i> Old Password</label>
+                  <div class="password-input-group">
+                    <input [type]="hideOldPassword ? 'password' : 'text'" formControlName="oldPassword"
+                      class="form-control custom-input" placeholder="Enter old password" />
+                    <i class="eye-icon ft" [ngClass]="hideOldPassword ? 'ft-eye-off' : 'ft-eye'"
+                      (click)="togglePasswordVisibility('oldPassword')"></i>
+                  </div>
+                </div>
+
+                <!-- New Password -->
+                <div class="mb-3">
+                  <label class="form-label"><i class="ft-unlock me-2 text-secondary"></i> New Password</label>
+                  <div class="password-input-group">
+                    <input [type]="hidePassword ? 'password' : 'text'" formControlName="newPassword"
+                      class="form-control custom-input" placeholder="Enter new password" />
+                    <i class="eye-icon ft" [ngClass]="hidePassword ? 'ft-eye-off' : 'ft-eye'"
+                      (click)="togglePasswordVisibility('password')"></i>
+                  </div>
+                  <small class="text-danger"
+                    *ngIf="passwordResetForm.get('newPassword')?.invalid && passwordResetForm.get('newPassword')?.touched">
+                    Password must be at least 6 characters, include 1 uppercase letter and 1 number, and must not match
+                    old password.
+                  </small>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="mb-3">
+                  <label class="form-label"><i class="ft-check-circle me-2 text-secondary"></i> Confirm
+                    Password</label>
+                  <div class="password-input-group">
+                    <input [type]="hideConfirmPassword ? 'password' : 'text'" formControlName="confirmPassword"
+                      class="form-control custom-input" placeholder="Confirm new password" />
+                    <i class="eye-icon ft" [ngClass]="hideConfirmPassword ? 'ft-eye-off' : 'ft-eye'"
+                      (click)="togglePasswordVisibility('confirmPassword')"></i>
+                  </div>
+                  <small class="text-danger"
+                    *ngIf="passwordResetForm.hasError('passwordMismatch') && passwordResetForm.get('confirmPassword')?.touched">
+                    Passwords do not match.
+                  </small>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+
+
+
+  </div>
+
 </section>
 <!-- Profile Section End -->
 
@@ -65,10 +222,11 @@
      PASSWORD RESET POPUP
 ========================= -->
 <!-- Password Reset Popup -->
-<div class="modal fade show" tabindex="-1" [ngClass]="{'d-block': showPasswordResetPopup}" *ngIf="showPasswordResetPopup">
+<div class="modal fade show" tabindex="-1" [ngClass]="{'d-block': showPasswordResetPopup}"
+  *ngIf="showPasswordResetPopup">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      
+
       <div class="modal-header">
         <h5 class="modal-title">Reset Password</h5>
         <button type="button" class="btn-close" aria-label="Close" (click)="closePasswordResetPopup()"></button>
@@ -79,16 +237,12 @@
           <!-- Old Password -->
           <div class="mb-3 position-relative">
             <label class="form-label">Old Password</label>
-            <input 
-              [type]="showOldPassword ? 'text' : 'password'" 
-              formControlName="oldPassword" 
-              class="form-control" 
+            <input [type]="showOldPassword ? 'text' : 'password'" formControlName="oldPassword" class="form-control"
               placeholder="Enter old password">
-            <i class="fas" 
-               [ngClass]="showOldPassword ? 'fa-eye-slash' : 'fa-eye'" 
-               (click)="togglePassword('old')" 
-               style="position:absolute; top:35px; right:10px; cursor:pointer;"></i>
-            <div class="text-danger mt-1" *ngIf="passwordResetForm.get('oldPassword')?.touched && passwordResetForm.get('oldPassword')?.invalid">
+            <i class="fas" [ngClass]="showOldPassword ? 'fa-eye-slash' : 'fa-eye'" (click)="togglePassword('old')"
+              style="position:absolute; top:35px; right:10px; cursor:pointer;"></i>
+            <div class="text-danger mt-1"
+              *ngIf="passwordResetForm.get('oldPassword')?.touched && passwordResetForm.get('oldPassword')?.invalid">
               Old password is required.
             </div>
           </div>
@@ -96,37 +250,31 @@
           <!-- New Password -->
           <div class="mb-3 position-relative">
             <label class="form-label">New Password</label>
-            <input 
-              [type]="showNewPassword ? 'text' : 'password'" 
-              formControlName="newPassword" 
-              class="form-control" 
+            <input [type]="showNewPassword ? 'text' : 'password'" formControlName="newPassword" class="form-control"
               placeholder="Enter new password">
-            <i class="fas" 
-               [ngClass]="showNewPassword ? 'fa-eye-slash' : 'fa-eye'" 
-               (click)="togglePassword('new')" 
-               style="position:absolute; top:35px; right:10px; cursor:pointer;"></i>
-            <div class="text-danger mt-1" *ngIf="passwordResetForm.get('newPassword')?.touched && passwordResetForm.get('newPassword')?.errors">
+            <i class="fas" [ngClass]="showNewPassword ? 'fa-eye-slash' : 'fa-eye'" (click)="togglePassword('new')"
+              style="position:absolute; top:35px; right:10px; cursor:pointer;"></i>
+            <div class="text-danger mt-1"
+              *ngIf="passwordResetForm.get('newPassword')?.touched && passwordResetForm.get('newPassword')?.errors">
               <div *ngIf="passwordResetForm.get('newPassword')?.errors?.['required']">New password is required.</div>
-              <div *ngIf="passwordResetForm.get('newPassword')?.errors?.['minlength']">Password must be at least 6 characters.</div>
+              <div *ngIf="passwordResetForm.get('newPassword')?.errors?.['minlength']">Password must be at least 6
+                characters.</div>
             </div>
           </div>
 
           <!-- Confirm Password -->
           <div class="mb-3 position-relative">
             <label class="form-label">Confirm Password</label>
-            <input 
-              [type]="showConfirmPassword ? 'text' : 'password'" 
-              formControlName="confirmPassword" 
-              class="form-control" 
-              placeholder="Confirm new password">
-            <i class="fas" 
-               [ngClass]="showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'" 
-               (click)="togglePassword('confirm')" 
-               style="position:absolute; top:35px; right:10px; cursor:pointer;"></i>
-            <div class="text-danger mt-1" *ngIf="passwordResetForm.get('confirmPassword')?.touched && passwordResetForm.get('confirmPassword')?.invalid">
+            <input [type]="showConfirmPassword ? 'text' : 'password'" formControlName="confirmPassword"
+              class="form-control" placeholder="Confirm new password">
+            <i class="fas" [ngClass]="showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'"
+              (click)="togglePassword('confirm')" style="position:absolute; top:35px; right:10px; cursor:pointer;"></i>
+            <div class="text-danger mt-1"
+              *ngIf="passwordResetForm.get('confirmPassword')?.touched && passwordResetForm.get('confirmPassword')?.invalid">
               Confirm password is required.
             </div>
-            <div class="text-danger mt-1" *ngIf="passwordResetForm.get('confirmPassword')?.value && passwordResetForm.get('confirmPassword')?.value !== passwordResetForm.get('newPassword')?.value">
+            <div class="text-danger mt-1"
+              *ngIf="passwordResetForm.get('confirmPassword')?.value && passwordResetForm.get('confirmPassword')?.value !== passwordResetForm.get('newPassword')?.value">
               Passwords do not match.
             </div>
           </div>
@@ -135,7 +283,8 @@
 
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="closePasswordResetPopup()">Cancel</button>
-        <button type="button" class="btn btn-primary" (click)="submitPasswordReset()" [disabled]="passwordResetForm.invalid">Save</button>
+        <button type="button" class="btn btn-primary" (click)="submitPasswordReset()"
+          [disabled]="passwordResetForm.invalid">Save</button>
       </div>
 
     </div>
