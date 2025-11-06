@@ -4,6 +4,7 @@ import { PurchaseOrderMasterComponent } from './purchase-order-master/purchase-o
 import { NewPurchaseOrderComponent } from './new-purchase-order/new-purchase-order.component';
 import { PurchaseOrderListComponent } from './purchase-order-list/purchase-order-list.component';
 import { PurchaseOrderDetailsComponent } from './purchase-order-details/purchase-order-details.component';
+import { ShipmentDetailsComponent } from './purchase-order-details/shipment-details/shipment-details.component';
 
 const routes: Routes = [
   {
@@ -32,12 +33,14 @@ const routes: Routes = [
       },
       {
         path: 'purchase-order-details/:id',
-        component: PurchaseOrderDetailsComponent,
-        data:
-        {
-          title: 'Purchase Order Details'
-        }
-      }
+        component: PurchaseOrderDetailsComponent
+      },
+      // {
+      //   path: 'purchase-order-details/:id/shipment',
+      //   component: ShipmentDetailsComponent
+      // }
+
+
 
     ]
   },

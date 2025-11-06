@@ -1,0 +1,100 @@
+
+
+    <!-- Action Bar -->
+    <div class="card cstm-ui-card mb-3 py-2 px-3 d-flex justify-content-start flex-wrap">
+      <div class="d-flex align-items-center">
+        <button class="btn btn-lg position-relative me-2" type="button" (click)="goBack()">
+          <i class="ft-arrow-left"></i>
+        </button>
+        <h5 class="mt-2 fw-bold">Invoice Details</h5>
+      </div>
+    </div>
+
+    <div class="card shadow-sm p-3 border border-success rounded">
+
+      <div class="row">
+        <div class="col-md-4 mb-2">
+          <label class="form-label small">Invoice No</label>
+          <input class="form-control form-control-sm" [value]="invoiceDetails.invoiceNo" disabled>
+        </div>
+
+        <div class="col-md-4 mb-2">
+          <label class="form-label small">PO No</label>
+          <input class="form-control form-control-sm" [value]="invoiceDetails.poNo" disabled>
+        </div>
+
+        <div class="col-md-4 mb-2">
+          <label class="form-label small">Vendor</label>
+          <input class="form-control form-control-sm" [value]="invoiceDetails.vendorName" disabled>
+        </div>
+
+        <div class="col-md-4 mb-2">
+          <label class="form-label small">Invoice Date</label>
+          <input class="form-control form-control-sm" [value]="invoiceDetails.invoiceDate" disabled>
+        </div>
+
+        <div class="col-md-4 mb-2">
+          <label class="form-label small">GRN No</label>
+          <input class="form-control form-control-sm" [value]="invoiceDetails.grnNo" disabled>
+        </div>
+
+        <div class="col-md-4 mb-2">
+          <label class="form-label small">Delivery Challan No</label>
+          <input class="form-control form-control-sm" [value]="invoiceDetails.deliveryChallan" disabled>
+        </div>
+
+        <div class="col-md-4 mb-2">
+          <label class="form-label small">Payment Terms</label>
+          <input class="form-control form-control-sm" [value]="invoiceDetails.paymentTerms" disabled>
+        </div>
+
+        <div class="col-md-4 mb-2">
+          <label class="form-label small">Due Date</label>
+          <input class="form-control form-control-sm" [value]="invoiceDetails.dueDate" disabled>
+        </div>
+
+        <div class="col-12 mb-2">
+          <label class="form-label small">Remarks</label>
+          <textarea class="form-control form-control-sm" disabled rows="2">{{ invoiceDetails.remarks }}</textarea>
+        </div>
+      </div>
+      
+    </div>
+
+    <!-- Items Table -->
+      <div class="d-flex justify-content-between align-items-center mb-2 cursor-pointer" (click)="toggleItems()">
+        <h5 class="section-title m-0">Items</h5>
+        <i class="ft-chevron-down transition-icon" [ngClass]="{ 'rotate-icon': itemsExpanded }"></i>
+      </div>
+
+      <div class="expand-wrapper" [ngClass]="{ 'expanded': itemsExpanded }">
+        <div class="table-responsive">
+          <table class="table custom-modern-table">
+            <thead>
+              <tr>
+            <th>Item</th>
+            <th class="text-center">Qty</th>
+            <th class="text-end">Unit Price</th>
+            <th class="text-end">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of invoiceDetails.items">
+            <td>{{ item.itemName }}</td>
+            <td class="text-center">{{ item.qty }}</td>
+            <td class="text-end">{{ item.price | number:'1.2-2' }}</td>
+            <td class="text-end fw-bold">{{ item.amount | number:'1.2-2' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+      </div>
+    <!-- Totals -->
+    <div class="text-end mt-2">
+      <div><strong>Subtotal:</strong> {{ invoiceDetails.subtotal | number:'1.2-2' }}</div>
+      <div><strong>Tax:</strong> {{ invoiceDetails.tax | number:'1.2-2' }}</div>
+      <div><strong>Other Charges:</strong> {{ invoiceDetails.otherCharges | number:'1.2-2' }}</div>
+      <h6 class="fw-bold mt-1">Total: {{ invoiceDetails.total | number:'1.2-2' }}</h6>
+    </div>
+
+

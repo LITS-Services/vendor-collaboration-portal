@@ -29,20 +29,6 @@ export class PurchaseOrderListComponent implements OnInit {
   isAllSelected: boolean = false;
   title: string = 'Purchase Orders';
   status: string = '';
-  // constructor(private router: Router, private route: ActivatedRoute,
-  //   private modalService: NgbModal) { }
-
-  // ngOnInit(): void {
-  //   this.route.queryParams.subscribe(params => {
-  //     if (params['title']) {
-  //       this.title = params['title'];
-  //     }
-  //     if (params['status']) {
-  //       this.status = params['status'];
-  //       this.loadFilteredRFQs(this.status);
-  //     }
-  //   });
-  // }
 
   vendorUserId!: string;
   purchaseOrders: any[] = [];
@@ -134,17 +120,16 @@ export class PurchaseOrderListComponent implements OnInit {
     const modalRef = this.modalService.open(NewPurchaseOrderComponent, { size: 'xl', backdrop: 'static', centered: true, windowClass: 'custom-height-modal' });
     modalRef.componentInstance.data = row;  // Pass selected row data if needed
   }
-onRowClick(event: any) {
-  const poId = event.row.id;
-  console.log(event.row);
-  this.router.navigate(['/purchase-order/purchase-order-details', poId]);
-}
-onActivate(event: any) {
-  if (event.type === 'click' && event.row) {
-    const id = event.row.id;
+  onRowClick(event: any) {
+    const poId = event.row.id;
     console.log(event.row);
-    this.router.navigate(['/purchase-order/purchase-order-details', id]);
+    this.router.navigate(['/purchase-order/purchase-order-details', poId], { skipLocationChange: true });
   }
-}
-
+  onActivate(event: any) {
+    if (event.type === 'click' && event.row) {
+      const id = event.row.id;
+      console.log(event.row);
+      this.router.navigate(['/purchase-order/purchase-order-details', id], { skipLocationChange: true });
+    }
+  }
 }

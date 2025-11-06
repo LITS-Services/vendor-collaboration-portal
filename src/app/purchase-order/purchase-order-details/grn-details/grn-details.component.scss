@@ -1,0 +1,136 @@
+textarea[disabled],
+input[disabled] {
+  background-color: #f9fafb !important;
+  cursor: not-allowed;
+}
+
+.table {
+  font-size: 0.85rem;
+}
+
+  // === General Card Styling ===
+  .cstm-ui-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+
+  // === Action Bar Buttons (Back + Submit) ===
+  .header-buttons,
+  .cstm-ui-card {
+    display: flex;
+    justify-content: flex-start !important;
+    gap: 0.75rem;
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0.35rem;
+      font-size: 1.25rem;
+      padding: 0.5rem 1rem;
+      transition: all 0.2s ease;
+
+      i {
+        font-size: 1rem;
+      }
+
+      label {
+        margin: 0;
+        font-weight: 500;
+        cursor: pointer;
+      }
+    }
+
+    .cstm-ui-table-btn {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+
+      &:hover {
+        background-color: #0069d9;
+      }
+
+      i,
+      label {
+        color: #fff;
+      }
+    }
+
+    .vl {
+      width: 1px;
+      height: 28px;
+      background-color: #d1d5db;
+      align-self: center;
+      display: inline-block;
+    }
+  }
+
+    .section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #374151;
+  }
+
+    .transition-icon {
+    transition: transform 0.25s ease-in-out;
+    font-size: 18px;
+  }
+
+  .rotate-icon {
+    transform: rotate(180deg);
+  }
+  /* Smooth expand/collapse animation */
+  .expand-wrapper {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease, opacity 0.25s ease;
+    opacity: 0;
+  }
+
+  .expand-wrapper.expanded {
+    max-height: 500px;
+    /* adjust if needed */
+    opacity: 1;
+  }
+
+    .custom-modern-table {
+    border-collapse: separate;
+    border-spacing: 0 6px;
+    width: 100%;
+    font-size: 0.9rem;
+  }
+
+  .custom-modern-table thead tr {
+    background: #f3f8f3;
+    border-radius: 8px;
+  }
+
+  .custom-modern-table thead th {
+    font-weight: 600;
+    color: #2a3d2a;
+    border-bottom: 2px solid #b5d4b5;
+    padding: 10px;
+  }
+
+  .custom-modern-table tbody tr {
+    background: #ffffff;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+
+  .custom-modern-table tbody td {
+    padding: 10px;
+    border: none;
+  }
+
+  .custom-modern-table tbody tr:hover {
+    background: #f4fff4;
+    transition: 0.2s ease-in-out;
+  }
+
+  .item-title {
+    font-weight: 600;
+    color: #2b4b2b;
+  }

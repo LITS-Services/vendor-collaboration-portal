@@ -167,7 +167,8 @@ export class PurchaseOrderMasterComponent implements OnInit {
       queryParams: {
         title: title,
         status: status || ''
-      }
+      },
+      skipLocationChange: true
     });
   }  
   fireRefreshEventOnWindow = function () {

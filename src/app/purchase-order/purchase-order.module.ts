@@ -22,6 +22,10 @@ import { AngularResizedEventModule } from 'angular-resize-event';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { ChartistModule } from 'ng-chartist';
 import { PurchaseOrderDetailsComponent } from './purchase-order-details/purchase-order-details.component';
+import { AgmCoreModule } from "@agm/core";
+import { ShipmentDetailsComponent } from './purchase-order-details/shipment-details/shipment-details.component';
+import { GrnDetailsComponent } from './purchase-order-details/grn-details/grn-details.component';
+import { InvoiceComponent } from './purchase-order-details/invoice/invoice.component';
 
 
 @NgModule({
@@ -29,31 +33,35 @@ import { PurchaseOrderDetailsComponent } from './purchase-order-details/purchase
     PurchaseOrderMasterComponent,
     NewPurchaseOrderComponent,
     PurchaseOrderListComponent,
-    PurchaseOrderDetailsComponent
+    PurchaseOrderDetailsComponent,
+    ShipmentDetailsComponent,
+    GrnDetailsComponent,
+    InvoiceComponent
   ],
   imports: [
     CommonModule,
     PurchaseOrderRoutingModule,
-     NgbModule,
-        ReactiveFormsModule,
-        FormsModule,
-        HttpClientModule,
-        CustomFormsModule,
-        MatchHeightModule,
-        NgbModule,
-        UiSwitchModule,
-        PipeModule,
-        QuillModule.forRoot(),
-        NgSelectModule,
-        TagInputModule,
-        NgxDatatableModule,
-        NgbAccordionModule,
-        NgbDatepickerModule,
-        ToastrModule.forRoot() ,
-        NgxSpinnerModule,
-        AngularResizedEventModule,
-        NgApexchartsModule,
-        ChartistModule,MatchHeightModule,
+    NgbModule,
+    ReactiveFormsModule,
+    FormsModule,
+    HttpClientModule,
+    CustomFormsModule,
+    MatchHeightModule,
+    NgbModule,
+    UiSwitchModule,
+    PipeModule,
+    QuillModule.forRoot(),
+    NgSelectModule,
+    TagInputModule,
+    NgxDatatableModule,
+    NgbAccordionModule,
+    NgbDatepickerModule,
+    ToastrModule.forRoot(),
+    NgxSpinnerModule,
+    AngularResizedEventModule,
+    NgApexchartsModule,
+    ChartistModule, MatchHeightModule,
+    AgmCoreModule
   ]
 })
 export class PurchaseOrderModule { }

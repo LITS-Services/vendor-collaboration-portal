@@ -16,7 +16,7 @@
                 (select)="customChkboxOnSelect($event)" (rowClick)="onRowClick($event)" (activate)="onActivate($event)" (clicktype)="'single'">
                 <ngx-datatable-column [width]="50" [sortable]="false" [canAutoResize]="false" [draggable]="false"
                     [resizeable]="false">
-                    <ng-template ngx-datatable-header-template>
+                    <!-- <ng-template ngx-datatable-header-template>
                         <div class="custom-control">
                             <input type="checkbox" [checked]="isAllSelected" (change)="toggleSelectAll($event)" />
                         </div>
@@ -27,7 +27,7 @@
                         <div class="custom-control custom-checkbox ">
                             <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)" />
                         </div>
-                    </ng-template>
+                    </ng-template> -->
                 </ngx-datatable-column>
                 <ngx-datatable-column name="Sr. No." [resizeable]="false" [sortable]="false">
                     <ng-template let-rowIndex="rowIndex" let-value="value" ngx-datatable-cell-template>
