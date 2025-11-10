@@ -26,7 +26,6 @@ export class RfqService {
     return this.http.get<any>(`${this.baseUrl}/get-quotations-by-status`, { params });
   }
 
-  // today's work - 25 oct
   getQuotationsByVendor(vendorUserId: string, status: string | null): Observable<QuotationRequest[]> {
     let params = new HttpParams().set('vendorUserId', vendorUserId);
     if (status) params = params.set('status', status);
@@ -42,23 +41,14 @@ export class RfqService {
     return this.http.put(`${environment.apiUrl}/Quotation/update-bid`, { bids });
   }
 
-
-  // getRfqById(rfqId: number): Observable<QuotationRequestWithDetailsResponse> {
-  //   const params = new HttpParams().set('id', rfqId);
-  //   return this.http.get<QuotationRequestWithDetailsResponse>(
-  //     `${environment.apiUrl}/Quotation/get-quotation-by-id`, // <-- added Quotation
-  //     { params }
-  //   );
-  // }
   getRfqById(rfqId: number, isVendor: boolean): Observable<QuotationRequestWithDetailsResponse> {
-  const params = new HttpParams()
-    .set('id', rfqId)
-    .set('isVendor', isVendor);
+    const params = new HttpParams()
+      .set('id', rfqId)
+      .set('isVendor', isVendor);
 
-  return this.http.get<QuotationRequestWithDetailsResponse>(
-    `${environment.apiUrl}/Quotation/get-quotation-by-id`,
-    { params }
-  );
-}
-
+    return this.http.get<QuotationRequestWithDetailsResponse>(
+      `${environment.apiUrl}/Quotation/get-quotation-by-id`,
+      { params }
+    );
+  }
 }

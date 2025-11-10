@@ -27,6 +27,7 @@ import { CompanyService } from '../../shared/services/company.service'; // <-- I
 import { RfqService } from 'app/shared/services/rfq.service';
 import { FirebaseMessagingService } from 'app/firebase-messaging.service';
 import { ToastrService } from 'ngx-toastr';
+import { PurchaseOrderService } from 'app/shared/services/purchase-order.service';
 
 const data: any = require('../../shared/data/chartist.json');
 
@@ -57,6 +58,13 @@ export interface QuotationRequestsCountVM {
   completedQuotations: number;
 }
 
+export interface PurchaseOrdersCountVM {
+  totalPurchaseOrders: number;
+  awardedPurchaseOrders: number;
+  inProcessPurchaseOrders: number;
+  deliveredPurchaseOrders: number;
+}
+
 var $info = "#249D57",
   $info_light = "#BDE2CD"
 var themeColors = [$info, $info_light];
@@ -83,13 +91,15 @@ export class Dashboard1Component implements OnInit {
   inprogressCount: number = 0;
   newlyOnboardedCount: number = 0;
   rfqCounts!: QuotationRequestsCountVM;
+  poCounts!: PurchaseOrdersCountVM;
 
   constructor(private router: Router,
-     private companyService: CompanyService,
-      private rfqService: RfqService,
-      private messagingService: FirebaseMessagingService,
-      private toaster: ToastrService,
-      private cdr: ChangeDetectorRef
+    private companyService: CompanyService,
+    private rfqService: RfqService,
+    private purchaseOrderService: PurchaseOrderService,
+    private messagingService: FirebaseMessagingService,
+    private toaster: ToastrService,
+    private cdr: ChangeDetectorRef
   ) {
     this.columnChartOptions = {
       chart: {
@@ -127,6 +137,7 @@ export class Dashboard1Component implements OnInit {
   ngOnInit() {
     this.loadCompanyStats();
     this.loadQuotationRequestsCounts();
+    this.loadPurchaseOrdersCount();
   }
 
   loadCompanyStats() {
@@ -203,7 +214,19 @@ export class Dashboard1Component implements OnInit {
       }
     });
     this.cdr.detectChanges();
+  }
 
+  loadPurchaseOrdersCount(): void {
+    const userId = localStorage.getItem('userId');
+    this.purchaseOrderService.getPurchaseOrdersCount(userId).subscribe({
+      next: (data) => {
+        this.poCounts = data;
+      },
+      error: (err) => {
+        console.error('Error fetching purchase orders count:', err);
+      }
+    });
+    this.cdr.detectChanges();
   }
 
   navigateToStatusFilteredQuotations(status: string | null) {

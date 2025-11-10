@@ -1,258 +1,258 @@
 <!-- Header Starts -->
 <div class="row">
-    <div class="col-12">
-      <h1 class="mb-1">Purchase Orders/Sale Orders</h1>
-    </div>
+  <div class="col-12">
+    <h1 class="mb-1">Purchase Orders/Sale Orders</h1>
   </div>
-  <!-- Header End -->
-  
-  <!--Statistics cards Starts-->
-  
-  <div class="row gx-2" (resized)="onResized($event)">
-    <div class="col-xl-4 col-lg-6 col-md-6 col-12">
-        <div class="card card-info">
-          <h4 class="card-title">Awarded POs/SOs</h4>
-          <div class="curve-button">
-            <button class="circle-button" (click)="purchaseOrderList('Awarded POs/SOs', 'total')">
-              <i class="ft-arrow-up-right"></i>
-            </button>
-          </div>
-          <div class="card-content">
-            <div class="card-body py-0">
-              <div class="media pb-1">
-                <div class="media-body">
-                  <h1>13,476</h1>
-                  <div class="row align-items-center">
-                    <div class="col-2 d-flex justify-content-center">
-                      <div class="cube">
-                        <span class="text-card"><i class="ft-chevron-up mr-2"></i>17%</span>
-                      </div>
-                    </div>
-                    <div class="col-8 text-center mt-2">
-                      <h6>Last three months</h6>
-                    </div>
-                    <div class="col-2 d-flex justify-content-center">
-                      <img src="/assets/img/icons/Vector1.svg" class="vector1" alt="">
-                    </div>
-                  </div>
-                  
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    <div class="col-xl-4 col-lg-6 col-md-6 col-12">
-      <div class="card card-info">
-        <h4 class="card-title">In-Process POs/SOs</h4>
-        <div class="curve-button">
-          <button class="circle-button" (click)="purchaseOrderList('In-Process POs/SOs', 'in-process')">
-            <i class="ft-arrow-up-right"></i>
-          </button>
-        </div>
-        <div class="card-content">
-          <div class="card-body py-0">
-            <div class="media pb-1">
-              <div class="media-body">
-                <h1>4,044</h1>
-                <div class="row align-items-center">
-                  <div class="col-2 d-flex justify-content-center">
-                    <div class="cube">
-                      <span class="text-card"><i class="ft-chevron-up mr-2"></i>17%</span>
-                    </div>
-                  </div>
-                  <div class="col-8 text-center mt-2">
-                    <h6>Last three months</h6>
-                  </div>
-                  <div class="col-2 d-flex justify-content-center">
-                    <img src="/assets/img/icons/vector2.svg" class="vector1" alt="">
-                  </div>
-                </div>
-                
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-xl-4 col-lg-6 col-md-6 col-12">
-      <div class="card card-info">
-        <h4 class="card-title">Delivered POs/SOs</h4>
-        <div class="curve-button">
-          <button class="circle-button" (click)="purchaseOrderList('Delivered POs/SOs', 'new')">
-            <i class="ft-arrow-up-right"></i>
-          </button>
-        </div>
-        <div class="card-content">
-          <div class="card-body py-0">
-            <div class="media pb-1">
-              <div class="media-body">
-                <h1>9,476</h1>
-                <div class="row align-items-center">
-                  <div class="col-2 d-flex justify-content-center">
-                    <div class="cube">
-                      <span class="text-card"><i class="ft-chevron-up mr-2"></i>17%</span>
-                    </div>
-                  </div>
-                  <div class="col-8 text-center mt-2">
-                    <h6>Last three months</h6>
-                  </div>
-                  <div class="col-2 d-flex justify-content-center">
-                    <img src="/assets/img/icons/Vector1.svg" class="vector1" alt="">
-                  </div>
-                </div>
-                
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-xl-4 col-lg-6 col-md-6 col-12">
-      <div class="card card-info">
-        <h4 class="card-title">Pending Shipments</h4>
-        <div class="curve-button">
-          <button class="circle-button" (click)="purchaseOrderList('Pending Shipments', 'new')">
-            <i class="ft-arrow-up-right"></i>
-          </button>
-        </div>
-        <div class="card-content">
-          <div class="card-body py-0">
-            <div class="media pb-1">
-              <div class="media-body">
-                <h1>9,476</h1>
-                <div class="row align-items-center">
-                  <div class="col-2 d-flex justify-content-center">
-                    <div class="cube">
-                      <span class="text-card"><i class="ft-chevron-up mr-2"></i>17%</span>
-                    </div>
-                  </div>
-                  <div class="col-8 text-center mt-2">
-                    <h6>Last three months</h6>
-                  </div>
-                  <div class="col-2 d-flex justify-content-center">
-                    <img src="/assets/img/icons/Vector1.svg" class="vector1" alt="">
-                  </div>
-                </div>
-                
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-xl-4 col-lg-6 col-md-6 col-12">
-      <div class="card card-info">
-        <h4 class="card-title">Pending Invoices</h4>
-        <div class="curve-button">
-          <button class="circle-button" (click)="purchaseOrderList('Pending Invoices', 'new')">
-            <i class="ft-arrow-up-right"></i>
-          </button>
-        </div>
-        <div class="card-content">
-          <div class="card-body py-0">
-            <div class="media pb-1">
-              <div class="media-body">
-                <h1>9,476</h1>
-                <div class="row align-items-center">
-                  <div class="col-2 d-flex justify-content-center">
-                    <div class="cube">
-                      <span class="text-card"><i class="ft-chevron-up mr-2"></i>17%</span>
-                    </div>
-                  </div>
-                  <div class="col-8 text-center mt-2">
-                    <h6>Last three months</h6>
-                  </div>
-                  <div class="col-2 d-flex justify-content-center">
-                    <img src="/assets/img/icons/Vector1.svg" class="vector1" alt="">
-                  </div>
-                </div>
-                
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-xl-4 col-lg-6 col-md-6 col-12">
-      <div class="card card-info">
-        <h4 class="card-title">Pending Payments</h4>
-        <div class="curve-button">
-          <button class="circle-button" (click)="purchaseOrderList('Pending Payments', 'new')">
-            <i class="ft-arrow-up-right"></i>
-          </button>
-        </div>
-        <div class="card-content">
-          <div class="card-body py-0">
-            <div class="media pb-1">
-              <div class="media-body">
-                <h1>9,476</h1>
-                <div class="row align-items-center">
-                  <div class="col-2 d-flex justify-content-center">
-                    <div class="cube">
-                      <span class="text-card"><i class="ft-chevron-up mr-2"></i>17%</span>
-                    </div>
-                  </div>
-                  <div class="col-8 text-center mt-2">
-                    <h6>Last three months</h6>
-                  </div>
-                  <div class="col-2 d-flex justify-content-center">
-                    <img src="/assets/img/icons/Vector1.svg" class="vector1" alt="">
-                  </div>
-                </div>
-                
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+</div>
+<!-- Header End -->
 
-  <!--Statistics cards Ends-->
-  
-  <!--Line with Area Chart 1 Starts-->
-  <div class="row">
-    <div class="col-xl-4 col-12">
-      <div class="card">
-        <div class="card-header mt-1">
-          <h4 class="card-title dash-title">Customer Satisfaction</h4>
-          <p class="dash-desc">Customer Satisfaction Score</p>    
-        </div>
-        <div class="card-content">
-  
-          <!-- <p class="font-medium-2 text-center mb-0 mt-2">Project Tasks</p> -->
-          <div id="donut-dashboard-chart" class="donut">
-            <x-chartist class="height-250" [data]="DonutChart.data" [type]="DonutChart.type"
-              [options]="DonutChart.options" [responsiveOptions]="DonutChart.responsiveOptions"
-              [events]="DonutChart.events">
-            </x-chartist>
-          </div>
-  
-          <div class="card-body">
+<!--Statistics cards Starts-->
 
-              <div class="chart-info gap-3 d-flex text-center justify-content-center mb-2">
-                  <span class="mr-3">
-                    <i class="fa fa-circle primary-color font-small-3 me-1"></i>
-                    <span>Positive</span>
-                  </span>
-                  <span class="mr-3">
-                    <i class="fa fa-circle sec-color lighten-3 font-small-3 me-1"></i>
-                    <span>Negative</span>
-                  </span>
-                </div>
-
-                  <div class="d-flex align-items-center justify-content-center gap-2 mb-2">
-                <div class="d-flex justify-content-center">
+<div class="row gx-2" (resized)="onResized($event)">
+  <div class="col-xl-4 col-lg-6 col-md-6 col-12">
+    <div class="card card-info">
+      <h4 class="card-title">Awarded POs/SOs</h4>
+      <div class="curve-button">
+        <button class="circle-button" (click)="navigateToStatus('Awarded')">
+          <i class="ft-arrow-up-right"></i>
+        </button>
+      </div>
+      <div class="card-content">
+        <div class="card-body py-0">
+          <div class="media pb-1">
+            <div class="media-body">
+              <h1>{{poCounts?.awardedPurchaseOrders}}</h1>
+              <div class="row align-items-center">
+                <div class="col-2 d-flex justify-content-center">
                   <div class="cube">
                     <span class="text-card"><i class="ft-chevron-up mr-2"></i>17%</span>
                   </div>
                 </div>
-                <div class="text-center mt-2">
+                <div class="col-8 text-center mt-2">
                   <h6>Last three months</h6>
                 </div>
+                <div class="col-2 d-flex justify-content-center">
+                  <img src="/assets/img/icons/Vector1.svg" class="vector1" alt="">
                 </div>
-            <!-- <div class="row mb-3">
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-4 col-lg-6 col-md-6 col-12">
+    <div class="card card-info">
+      <h4 class="card-title">In-Process POs/SOs</h4>
+      <div class="curve-button">
+        <button class="circle-button" (click)="navigateToStatus('InProcess')">
+          <i class="ft-arrow-up-right"></i>
+        </button>
+      </div>
+      <div class="card-content">
+        <div class="card-body py-0">
+          <div class="media pb-1">
+            <div class="media-body">
+              <h1>{{poCounts?.inProcessPurchaseOrders}}</h1>
+              <div class="row align-items-center">
+                <div class="col-2 d-flex justify-content-center">
+                  <div class="cube">
+                    <span class="text-card"><i class="ft-chevron-up mr-2"></i>17%</span>
+                  </div>
+                </div>
+                <div class="col-8 text-center mt-2">
+                  <h6>Last three months</h6>
+                </div>
+                <div class="col-2 d-flex justify-content-center">
+                  <img src="/assets/img/icons/vector2.svg" class="vector1" alt="">
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-4 col-lg-6 col-md-6 col-12">
+    <div class="card card-info">
+      <h4 class="card-title">Delivered POs/SOs</h4>
+      <div class="curve-button">
+        <button class="circle-button" (click)="navigateToStatus('Delivered')">
+          <i class="ft-arrow-up-right"></i>
+        </button>
+      </div>
+      <div class="card-content">
+        <div class="card-body py-0">
+          <div class="media pb-1">
+            <div class="media-body">
+              <h1>{{poCounts?.deliveredPurchaseOrders}}</h1>
+              <div class="row align-items-center">
+                <div class="col-2 d-flex justify-content-center">
+                  <div class="cube">
+                    <span class="text-card"><i class="ft-chevron-up mr-2"></i>17%</span>
+                  </div>
+                </div>
+                <div class="col-8 text-center mt-2">
+                  <h6>Last three months</h6>
+                </div>
+                <div class="col-2 d-flex justify-content-center">
+                  <img src="/assets/img/icons/Vector1.svg" class="vector1" alt="">
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-4 col-lg-6 col-md-6 col-12">
+    <div class="card card-info">
+      <h4 class="card-title">Pending Shipments</h4>
+      <div class="curve-button">
+        <button class="circle-button" (click)="purchaseOrderList('Pending Shipments', 'new')">
+          <i class="ft-arrow-up-right"></i>
+        </button>
+      </div>
+      <div class="card-content">
+        <div class="card-body py-0">
+          <div class="media pb-1">
+            <div class="media-body">
+              <h1>9,476</h1>
+              <div class="row align-items-center">
+                <div class="col-2 d-flex justify-content-center">
+                  <div class="cube">
+                    <span class="text-card"><i class="ft-chevron-up mr-2"></i>17%</span>
+                  </div>
+                </div>
+                <div class="col-8 text-center mt-2">
+                  <h6>Last three months</h6>
+                </div>
+                <div class="col-2 d-flex justify-content-center">
+                  <img src="/assets/img/icons/Vector1.svg" class="vector1" alt="">
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-4 col-lg-6 col-md-6 col-12">
+    <div class="card card-info">
+      <h4 class="card-title">Pending Invoices</h4>
+      <div class="curve-button">
+        <button class="circle-button" (click)="purchaseOrderList('Pending Invoices', 'new')">
+          <i class="ft-arrow-up-right"></i>
+        </button>
+      </div>
+      <div class="card-content">
+        <div class="card-body py-0">
+          <div class="media pb-1">
+            <div class="media-body">
+              <h1>9,476</h1>
+              <div class="row align-items-center">
+                <div class="col-2 d-flex justify-content-center">
+                  <div class="cube">
+                    <span class="text-card"><i class="ft-chevron-up mr-2"></i>17%</span>
+                  </div>
+                </div>
+                <div class="col-8 text-center mt-2">
+                  <h6>Last three months</h6>
+                </div>
+                <div class="col-2 d-flex justify-content-center">
+                  <img src="/assets/img/icons/Vector1.svg" class="vector1" alt="">
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-4 col-lg-6 col-md-6 col-12">
+    <div class="card card-info">
+      <h4 class="card-title">Pending Payments</h4>
+      <div class="curve-button">
+        <button class="circle-button" (click)="purchaseOrderList('Pending Payments', 'new')">
+          <i class="ft-arrow-up-right"></i>
+        </button>
+      </div>
+      <div class="card-content">
+        <div class="card-body py-0">
+          <div class="media pb-1">
+            <div class="media-body">
+              <h1>9,476</h1>
+              <div class="row align-items-center">
+                <div class="col-2 d-flex justify-content-center">
+                  <div class="cube">
+                    <span class="text-card"><i class="ft-chevron-up mr-2"></i>17%</span>
+                  </div>
+                </div>
+                <div class="col-8 text-center mt-2">
+                  <h6>Last three months</h6>
+                </div>
+                <div class="col-2 d-flex justify-content-center">
+                  <img src="/assets/img/icons/Vector1.svg" class="vector1" alt="">
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Statistics cards Ends-->
+
+<!--Line with Area Chart 1 Starts-->
+<div class="row">
+  <div class="col-xl-4 col-12">
+    <div class="card">
+      <div class="card-header mt-1">
+        <h4 class="card-title dash-title">Customer Satisfaction</h4>
+        <p class="dash-desc">Customer Satisfaction Score</p>
+      </div>
+      <div class="card-content">
+
+        <!-- <p class="font-medium-2 text-center mb-0 mt-2">Project Tasks</p> -->
+        <div id="donut-dashboard-chart" class="donut">
+          <x-chartist class="height-250" [data]="DonutChart.data" [type]="DonutChart.type"
+            [options]="DonutChart.options" [responsiveOptions]="DonutChart.responsiveOptions"
+            [events]="DonutChart.events">
+          </x-chartist>
+        </div>
+
+        <div class="card-body">
+
+          <div class="chart-info gap-3 d-flex text-center justify-content-center mb-2">
+            <span class="mr-3">
+              <i class="fa fa-circle primary-color font-small-3 me-1"></i>
+              <span>Positive</span>
+            </span>
+            <span class="mr-3">
+              <i class="fa fa-circle sec-color lighten-3 font-small-3 me-1"></i>
+              <span>Negative</span>
+            </span>
+          </div>
+
+          <div class="d-flex align-items-center justify-content-center gap-2 mb-2">
+            <div class="d-flex justify-content-center">
+              <div class="cube">
+                <span class="text-card"><i class="ft-chevron-up mr-2"></i>17%</span>
+              </div>
+            </div>
+            <div class="text-center mt-2">
+              <h6>Last three months</h6>
+            </div>
+          </div>
+          <!-- <div class="row mb-3">
               <div class="col">
                 <span class="mb-1 text-muted d-block">85% - Satisfied</span>
                 <div class="progress" style="height: 5px;">
@@ -270,61 +270,50 @@
                 </div>
               </div>
             </div> -->
-          </div>
         </div>
       </div>
     </div>
-    <div class="col-xl-8 col-12">
-      <div class="card">
-        <div class="card-header mt-1">
+  </div>
+  <div class="col-xl-8 col-12">
+    <div class="card">
+      <div class="card-header mt-1">
         <div class="d-flex align-items-baseline gap-4">
-              <h4 class="card-title dash-title">
-                <span>Statistics</span>
-                <!-- <span class="float-right cursor-pointer">
+          <h4 class="card-title dash-title">
+            <span>Statistics</span>
+            <!-- <span class="float-right cursor-pointer">
                   <i class="ft-more-vertical-"></i>
                 </span> -->
-                </h4>
-                <div class="chart-info gap-3 d-flex">
-                  <span class="mr-3">
-                    <i class="fa fa-circle primary-color font-small-3 me-1"></i>
-                    <span>Net Profit</span>
-                  </span>
-                  <span class="mr-3">
-                    <i class="fa fa-circle sec-color lighten-3 font-small-3 me-1"></i>
-                    <span>Revenue</span>
-                  </span>
-                </div>
-      
+          </h4>
+          <div class="chart-info gap-3 d-flex">
+            <span class="mr-3">
+              <i class="fa fa-circle primary-color font-small-3 me-1"></i>
+              <span>Net Profit</span>
+            </span>
+            <span class="mr-3">
+              <i class="fa fa-circle sec-color lighten-3 font-small-3 me-1"></i>
+              <span>Revenue</span>
+            </span>
+          </div>
+
         </div>
-       
-          
+
+
       </div>
-        <div class="card-content">
-          <div class="card-body">
-        
-            <div id="line-chart1" class="height-350">
-              <apx-chart
-                      [series]="columnChartOptions.series"
-                      [colors]="columnChartOptions.colors"
-                      [chart]="columnChartOptions.chart"
-                      [xaxis]="columnChartOptions.xaxis"
-                      [yaxis]="columnChartOptions.yaxis"
-                      [title]="columnChartOptions.title"
-                      [dataLabels]="columnChartOptions.dataLabels"
-                      [stroke]="columnChartOptions.stroke"
-                      [grid]="columnChartOptions.grid"
-                      [tooltip]="columnChartOptions.tooltip"
-                      [plotOptions]="columnChartOptions.plotOptions"
-                      [fill]="columnChartOptions.fill"
-                      [legend]="columnChartOptions.legend"
-                      [labels]="columnChartOptions.labels"
-                      [markers]="columnChartOptions.markers"
-                      [theme]="columnChartOptions.theme"
-                      [responsive]="columnChartOptions.responsive"
-                    ></apx-chart>
-            </div>
+      <div class="card-content">
+        <div class="card-body">
+
+          <div id="line-chart1" class="height-350">
+            <apx-chart [series]="columnChartOptions.series" [colors]="columnChartOptions.colors"
+              [chart]="columnChartOptions.chart" [xaxis]="columnChartOptions.xaxis" [yaxis]="columnChartOptions.yaxis"
+              [title]="columnChartOptions.title" [dataLabels]="columnChartOptions.dataLabels"
+              [stroke]="columnChartOptions.stroke" [grid]="columnChartOptions.grid"
+              [tooltip]="columnChartOptions.tooltip" [plotOptions]="columnChartOptions.plotOptions"
+              [fill]="columnChartOptions.fill" [legend]="columnChartOptions.legend" [labels]="columnChartOptions.labels"
+              [markers]="columnChartOptions.markers" [theme]="columnChartOptions.theme"
+              [responsive]="columnChartOptions.responsive"></apx-chart>
           </div>
         </div>
       </div>
     </div>
   </div>
+</div>

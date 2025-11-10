@@ -29,6 +29,7 @@ export class PurchaseOrderListComponent implements OnInit {
   isAllSelected: boolean = false;
   title: string = 'Purchase Orders';
   status: string = '';
+  selectedStatus: string = '';
 
   vendorUserId!: string;
   purchaseOrders: any[] = [];
@@ -41,28 +42,24 @@ export class PurchaseOrderListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.vendorUserId = localStorage.getItem('userId') || '';
-    if (this.vendorUserId) {
+    this.route.queryParams.subscribe(params => {
+      this.selectedStatus = params['status'] || '';
       this.loadPurchaseOrders();
-    } else {
-      this.toastr.warning('Vendor ID not found');
-    }
+    });
   }
 
   loadPurchaseOrders(): void {
     this.loading = true;
-    this.poService.getPurchaseOrdersByVendor(this.vendorUserId).subscribe({
-      next: (res) => {
-        this.purchaseOrders = res || []; // because you’re using Ardalis.Result
-        this.loading = false;
+    const vendorUserId = localStorage.getItem('userId');
+    if (!vendorUserId) {
+      this.toastr.error('Vendor user not found. Please login again.');
+      return;
+    }
+    this.poService.getPurchaseOrdersByVendorAndStatus(vendorUserId, this.selectedStatus)
+      .subscribe(res => {
+        this.purchaseOrders = res;
         this.cdr.detectChanges();
-      },
-      error: (err) => {
-        this.toastr.error(err.error || 'Failed to load purchase orders');
-        this.loading = false;
-        this.cdr.detectChanges();
-      }
-    });
+      });
   }
   // RFQ List filteration on the basis of QueryParams
   loadFilteredRFQs(status: string) {
