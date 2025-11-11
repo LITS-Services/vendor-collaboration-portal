@@ -1,6 +1,13 @@
 <!-- Header Starts -->
 <div class="px-2 pb-1">
 
+    <!-- Add warning message for readonly state -->
+    <div *ngIf="isReadonlyEntityFields" class="alert alert-warning mt-3 mb-3">
+        <i class="fa fa-exclamation-triangle me-2"></i>
+        This company profile cannot be edited because the selected entity has "InProcess" status.
+        Please select a different entity to enable editing.
+    </div>
+
     <div class="row">
         <div class="col-6 gap-2 d-flex align-items-center">
             <button class="btn btn-outline-secondary rounded-circle" (click)="goBack()"
@@ -10,44 +17,12 @@
             <h1 class="mb-0">Company Profile</h1>
         </div>
         <div class="col-6 d-flex align-items-center justify-content-end">
-            <!-- <button class="btn btn-outline-primary me-2">Cancel</button> -->
-            <button class="btn btn-primary" (click)="submitForm()"> {{ isEditMode ? 'Update Company' : 'Add Company'
-                }}</button>
-            <!-- <button 
-    class="btn btn-primary"
-    [disabled]="isLoading"
-    (click)="submitForm()">
-    {{ isEditMode ? 'Update Company' : 'Add Company' }}
-</button> -->
-
+            <button class="btn btn-primary" (click)="submitForm()" [disabled]="isReadonlyEntityFields"> 
+                {{ isEditMode ? 'Update Company' : 'Add Company' }}
+            </button>
         </div>
     </div>
-    <!-- Header End -->
-
-    <!-- Profile Start -->
-    <!-- <section class="page-user-profile">
-  <div class="row">
-    <div class="col-12">
-      <div class="card">
-        <div class="user-profile-images">
-          <img src="assets/img/banner/profile-image.jpg" class="img-fluid rounded-top user-timeline-image" alt="User Timeline Image">
-          <img src="assets/img/portrait/small/avatar-s-20.png" class="user-profile-image rounded" alt="User Profile Image" height="140" width="140">
-        </div>
-        <div class="card-content">
-          <div class="card-body">
-            <div class="user-profile-buttons d-flex justify-content-center justify-content-sm-start align-items-end">
-              <h4 class="profile-text-color mb-0 me-2"><a href="https://www.lits.services/">LITS Services Ltd</a></h4>
-              <small> Vendor</small>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section> -->
-    <!-- Profile End -->
-
-    <!-- Inputs start -->
+ 
     <section id="basic-input">
         <div class="row">
             <div class="col-12">
@@ -56,172 +31,82 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-12 d-flex align-items-center justify-content-end mb-2">
-                                    <!-- <button class="btn btn-outline-primary me-3">Contact</button>
-                                    <button class="btn btn-outline-primary me-3">Checklist</button> -->
-                                    <button class="btn btn-primary" (click)="openAttachmentModal()">Attachment</button>
+                                    <button class="btn btn-primary" (click)="openAttachmentModal()" [disabled]="isReadonlyEntityFields">Attachment</button>
                                 </div>
                                 <div class="col-12">
                                     <ngb-accordion class="cstm-accordion" [closeOthers]="false"
                                         [activeIds]="'static-2'">
 
-                                        <!-- About Company -->
-                                        <!-- <ngb-panel id="static-1" title="About Company">
-                                            <ng-template ngbPanelContent>
-                                                <textarea name="about" cols="30" rows="10" class="form-control"
-                                                    placeholder="Enter Company Description"
-                                                    [(ngModel)]="aboutCompany"></textarea>
-                                            </ng-template>
-                                        </ngb-panel> -->
-
-                                        <!-- Remarks -->
-
-
-
-
-                                        <!-- General Information -->
                                         <ngb-panel id="static-2" title="General Information">
                                             <ng-template ngbPanelContent>
-
-
                                                 <div class="row">
 
                                                     <p class="desc">Identification</p>
 
-                                                    <!-- <div class="col-md-3">
-                                                        <label>
-                                                            Vendor account
-                                                            <i class="fa fa-info-circle text-muted ms-1"
-                                                                ngbTooltip="This is a system-generated unique vendor account number"
-                                                                placement="right"></i>
-                                                        </label>
-                                                        <input type="text" class="form-control"
-                                                            [value]="vendorAccountNumber" disabled>
-                                                    </div>
-
-                                                    <div class="col-md-3">
-                                                        <label>Type</label>
-                                                        <select class="form-select" [(ngModel)]="companyType">
-                                                            <option>Organization</option>
-                                                            <option>Person</option>
-                                                        </select>
-                                                    </div> -->
-                                                    <div class="col-md-6" *ngIf="!isEditMode">
+                                                    <!-- Procurement Companies Selection -->
+                                                    <div *ngIf="!isEditMode" class="col-md-6">
                                                         <label>Select Procurement Companies</label>
                                                         <div class="dropdown">
-                                                            <button
-                                                                class="btn btn-outline-primary w-100 text-start procurement-btn"
-                                                                type="button" (click)="toggleDropdown()">
-                                                                {{ getSelectedCompaniesText() }}
+                                                            <button class="btn btn-outline-primary w-100 text-start procurement-btn"
+                                                                    type="button" (click)="dropdownOpen = !dropdownOpen">
+                                                                {{ getSelectedCompaniesText() || 'Select Companies' }}
                                                             </button>
-                                                            <div class="dropdown-menu w-100 p-2"
-                                                                [class.show]="dropdownOpen"
-                                                                style="max-height: 200px; overflow-y: auto;">
+                                                            <div class="dropdown-menu w-100 p-2" [class.show]="dropdownOpen"
+                                                                 style="max-height: 200px; overflow-y: auto;">
                                                                 <div *ngFor="let company of procurementCompanies">
                                                                     <div class="form-check">
                                                                         <input class="form-check-input" type="checkbox"
-                                                                            [value]="company.id"
-                                                                            [checked]="selectedProcurementCompanyIds?.includes(company.id)"
-                                                                            (change)="toggleCompanySelection(company.id, $event)">
-                                                                        <label class="form-check-label">{{ company.name
-                                                                            }}</label>
+                                                                               [value]="company.id"
+                                                                               [checked]="selectedProcurementCompanyIds?.includes(company.id)"
+                                                                               (change)="toggleCompanySelection(company.id, $event)">
+                                                                        <label class="form-check-label">{{ company.name }}</label>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
 
-                                                    <!-- <div class="col-md-3">
-                                                        <label>Payment priority</label>
-                                                        <input type="text" class="form-control"
-                                                            [(ngModel)]="paymentPriority"
-                                                            placeholder="Enter payment priority">
-                                                    </div> -->
+                                                    <div *ngIf="isEditMode" class="col-md-6 mb-3">
+                                                        <label>Select Entity</label>
+                                                        <div class="dropdown">
+                                                            <button class="btn btn-outline-primary w-100 text-start"
+                                                                    type="button"
+                                                                    (click)="entityDropdownOpen = !entityDropdownOpen">
+                                                                {{ getSelectedEntityName() || 'Select Entity' }}
+                                                            </button>
+                                                            <div class="dropdown-menu w-100 p-2"
+                                                                 [class.show]="entityDropdownOpen"
+                                                                 style="max-height: 200px; overflow-y: auto;">
+                                                                <div *ngFor="let entity of procurementCompanies">
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="radio"
+                                                                               name="entityRadio"
+                                                                               [id]="'entity-' + entity.procurementCompanyId"
+                                                                               [value]="entity.procurementCompanyId"
+                                                                               [checked]="selectedEntityId === entity.procurementCompanyId"
+                                                                               (change)="onEntitySelect(entity)">
+                                                                        <label class="form-check-label"
+                                                                               [for]="'entity-' + entity.procurementCompanyId">
+                                                                            {{ entity.procurementCompany.name }}
+                                                                            <span class="text-muted" *ngIf="entity.requestStatus">
+                                                                                ({{ entity.requestStatus.status }})
+                                                                            </span>
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Company Name -->
                                                     <div class="col-md-3">
                                                         <label>Name</label>
                                                         <input type="text" class="form-control"
-                                                            [(ngModel)]="companyName" placeholder="Enter company name">
+                                                               [(ngModel)]="companyName"
+                                                               [disabled]="isReadonlyEntityFields"
+                                                               placeholder="Enter company name">
                                                     </div>
-                                                    <!-- <div class="col-md-3">
-                                                        <label>Search name</label>
-                                                        <input type="text" class="form-control" [(ngModel)]="searchName"
-                                                            placeholder="Enter search name">
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <label>Group</label>
-                                                        <select class="form-select" [(ngModel)]="group">
-                                                            <option>Select Group</option>
-                                                            <option>Group 1</option>
-                                                            <option>Group 2</option>
-                                                            <option>Group 3</option>
-                                                        </select>
-                                                    </div> -->
                                                 </div>
-
-
-
-                                                <!-- Organization Details -->
-                                                <!-- <div class="row">
-                                                    <div class="col-12">
-                                                        <h6>Organization Details</h6>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <label>Number of employees</label>
-                                                        <input type="number" class="form-control"
-                                                            [(ngModel)]="numEmployees"
-                                                            placeholder="Enter number of employees">
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <label>Organization number</label>
-                                                        <input type="number" class="form-control"
-                                                            [(ngModel)]="organizationNumber"
-                                                            placeholder="Enter organization number">
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <label>ABC code</label>
-                                                        <select class="form-select" [(ngModel)]="abcCode"></select>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <label>DUNS number</label>
-                                                        <select class="form-select" [(ngModel)]="dunsNumber"></select>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <label>Company registration number</label>
-                                                        <input type="number" class="form-control"
-                                                            [(ngModel)]="registrationNumber"
-                                                            placeholder="Enter company registration number">
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <label>Tax registration number</label>
-                                                        <input type="number" class="form-control"
-                                                            [(ngModel)]="taxNumber"
-                                                            placeholder="Enter tax registration number">
-                                                    </div>
-                                                </div> 
-
-                                                <hr>-->
-
-                                                <!-- Other Information -->
-                                                <!-- <div class="row">
-                                                    <div class="col-12">
-                                                        <h6>Other Information</h6>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <label>Address books</label>
-                                                        <select class="form-select" [(ngModel)]="addressBook"></select>
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <label>Known as</label>
-                                                        <input type="text" class="form-control" [(ngModel)]="knownAs"
-                                                            placeholder="Enter known as">
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <label>Phonetic name</label>
-                                                        <input type="text" class="form-control"
-                                                            [(ngModel)]="phoneticName"
-                                                            placeholder="Enter phonetic name">
-                                                    </div>
-                                                </div> 
-                                            -->
                                             </ng-template>
                                         </ngb-panel>
 
@@ -230,7 +115,8 @@
                                             <ng-template ngbPanelContent>
                                                 <div class="address-table-container">
                                                     <button class="btn btn-primary mb-3"
-                                                        (click)="openAddressModal()">Add Address</button>
+                                                        (click)="openAddressModal()" 
+                                                        [disabled]="isReadonlyEntityFields">Add Address</button>
                                                     <div class="table-responsive">
                                                         <table class="table">
                                                             <thead>
@@ -255,9 +141,11 @@
                                                                     </td>
                                                                     <td>
                                                                         <button class="ft-edit btn" type="button"
-                                                                            (click)="editAddress(i)"></button>
+                                                                            (click)="editAddress(i)"
+                                                                            [disabled]="isReadonlyEntityFields"></button>
                                                                         <button class="ft-trash btn"
-                                                                            (click)="confirmAddressDeletion(i)"></button>
+                                                                            (click)="confirmAddressDeletion(i)"
+                                                                            [disabled]="isReadonlyEntityFields"></button>
                                                                     </td>
                                                                 </tr>
                                                             </tbody>
@@ -270,8 +158,9 @@
                                         <!-- Company Contact Details -->
                                         <ngb-panel id="static-4" title="Company Contact Details">
                                             <ng-template ngbPanelContent>
-                                                <button class="btn btn-primary mb-3" (click)="openContactModal()">Add
-                                                    Contact</button>
+                                                <button class="btn btn-primary mb-3" 
+                                                    (click)="openContactModal()"
+                                                    [disabled]="isReadonlyEntityFields">Add Contact</button>
                                                 <div class="table-responsive">
                                                     <table class="table">
                                                         <thead>
@@ -294,9 +183,11 @@
                                                                 </td>
                                                                 <td>
                                                                     <button class="ft-edit btn" type="button"
-                                                                        (click)="editContact(i)"></button>
+                                                                        (click)="editContact(i)"
+                                                                        [disabled]="isReadonlyEntityFields"></button>
                                                                     <button class="ft-trash btn" type="button"
-                                                                        (click)="confirmContactDeletion(i)"></button>
+                                                                        (click)="confirmContactDeletion(i)"
+                                                                        [disabled]="isReadonlyEntityFields"></button>
                                                                 </td>
                                                             </tr>
                                                         </tbody>
@@ -305,76 +196,6 @@
                                             </ng-template>
                                         </ngb-panel>
 
-                                        <!-- Purchasing Demographics -->
-                                        <!-- <ngb-panel id="static-5" title="Purchasing Demographics">
-                                            <ng-template ngbPanelContent>
-                                                <div class="row">
-                                                    <div class="col-md-3 mt-1">
-                                                        <label>Primary currency</label>
-                                                        <select class="form-select" [(ngModel)]="primaryCurrency">
-                                                            <option>Select primary currency</option>
-                                                            <option>USD</option>
-                                                            <option>GBP</option>
-                                                            <option>AED</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-md-3 mt-1">
-                                                        <label>Primary contact</label>
-                                                        <select class="form-select" [(ngModel)]="employeeResponsible">
-                                                            <option>Select primary contact</option>
-                                                            <option *ngFor="let c of contactList">{{ c.description }}
-                                                            </option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-md-3 mt-1">
-                                                        <label>Vendor type</label>
-                                                        <select class="form-select" [(ngModel)]="vendorCategory">
-                                                            <option>Select vendor type</option>
-                                                            <option>Local</option>
-                                                            <option>Foreign</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-md-3 mt-1">
-                                                        <label>Line of business</label>
-                                                        <input type="text" class="form-control"
-                                                            [(ngModel)]="lineOfBusiness"
-                                                            placeholder="Enter line of business">
-                                                    </div>
-                                                    <div class="col-md-3 mt-1">
-                                                        <label>Birth country</label>
-                                                        <input type="text" class="form-control"
-                                                            [(ngModel)]="birthCountry"
-                                                            placeholder="Enter birth country">
-                                                    </div>
-                                                    <div class="col-md-3 mt-1">
-                                                        <label>Employee responsible</label>
-                                                        <input type="text" class="form-control"
-                                                            [(ngModel)]="employeeResponsible"
-                                                            placeholder="Enter employee responsible">
-                                                    </div>
-                                                    <div class="col-md-3 mt-1">
-                                                        <label>Segment</label>
-                                                        <input type="text" class="form-control" [(ngModel)]="segment"
-                                                            placeholder="Enter segment">
-                                                    </div>
-                                                    <div class="col-md-3 mt-1">
-                                                        <label>Speciality</label>
-                                                        <input type="text" class="form-control" [(ngModel)]="speciality"
-                                                            placeholder="Enter speciality">
-                                                    </div>
-                                                    <div class="col-md-3 mt-1">
-                                                        <label>Chain</label>
-                                                        <input type="text" class="form-control" [(ngModel)]="chain"
-                                                            placeholder="Enter chain">
-                                                    </div>
-                                                    <div class="col-12 mt-1">
-                                                        <label>Note</label>
-                                                        <textarea class="form-control" rows="3" [(ngModel)]="note"
-                                                            placeholder="Enter note"></textarea>
-                                                    </div>
-                                                </div>
-                                            </ng-template>
-                                        </ngb-panel> -->
                                         <!-- Purchasing Demographics -->
                                         <ngb-panel id="static-5" title="Purchasing Demographics">
                                             <ng-template ngbPanelContent>
@@ -387,9 +208,10 @@
                                                                 ngbTooltip="Select the main currency used for transactions with this company"
                                                                 placement="right"></i>
                                                         </label>
-                                                        <select container="body" class="form-control"
-                                                            [(ngModel)]="primaryCurrency">
-                                                            <option>Select primary currency</option>
+                                                        <select class="form-control"
+                                                            [(ngModel)]="primaryCurrency"
+                                                            [disabled]="isReadonlyEntityFields">
+                                                            <option value="">Select primary currency</option>
                                                             <option>USD</option>
                                                             <option>GBP</option>
                                                             <option>AED</option>
@@ -403,11 +225,11 @@
                                                                 ngbTooltip="Choose the main contact person for this vendor"
                                                                 placement="right"></i>
                                                         </label>
-                                                        <select class="form-control" [(ngModel)]="employeeResponsible">
-                                                            <option>Select primary contact</option>
-                                                            <option *ngFor="let c of contactList">{{
-                                                                c.description }}
-                                                            </option>
+                                                        <select class="form-control" 
+                                                            [(ngModel)]="employeeResponsible"
+                                                            [disabled]="isReadonlyEntityFields">
+                                                            <option value="">Select primary contact</option>
+                                                            <option *ngFor="let c of contactList">{{ c.description }}</option>
                                                         </select>
                                                     </div>
 
@@ -418,7 +240,9 @@
                                                                 ngbTooltip="Specify whether this vendor is Local or Foreign"
                                                                 placement="right"></i>
                                                         </label>
-                                                        <select class="form-control" [(ngModel)]="vendorCategory">
+                                                        <select class="form-control" 
+                                                            [(ngModel)]="vendorCategory"
+                                                            [disabled]="isReadonlyEntityFields">
                                                             <option>Select vendor type</option>
                                                             <option>Local</option>
                                                             <option>Foreign</option>
@@ -434,6 +258,7 @@
                                                         </label>
                                                         <input type="text" class="form-control"
                                                             [(ngModel)]="lineOfBusiness"
+                                                            [disabled]="isReadonlyEntityFields"
                                                             placeholder="Enter line of business">
                                                     </div>
 
@@ -446,6 +271,7 @@
                                                         </label>
                                                         <input type="text" class="form-control"
                                                             [(ngModel)]="birthCountry"
+                                                            [disabled]="isReadonlyEntityFields"
                                                             placeholder="Enter birth country">
                                                     </div>
 
@@ -458,6 +284,7 @@
                                                         </label>
                                                         <input type="text" class="form-control"
                                                             [(ngModel)]="employeeResponsible"
+                                                            [disabled]="isReadonlyEntityFields"
                                                             placeholder="Enter employee responsible">
                                                     </div>
 
@@ -468,7 +295,9 @@
                                                                 ngbTooltip="Enter the business segment this vendor belongs to"
                                                                 placement="right"></i>
                                                         </label>
-                                                        <input type="text" class="form-control" [(ngModel)]="segment"
+                                                        <input type="text" class="form-control" 
+                                                            [(ngModel)]="segment"
+                                                            [disabled]="isReadonlyEntityFields"
                                                             placeholder="Enter segment">
                                                     </div>
 
@@ -479,7 +308,9 @@
                                                                 ngbTooltip="Enter the specific expertise or speciality of this vendor"
                                                                 placement="right"></i>
                                                         </label>
-                                                        <input type="text" class="form-control" [(ngModel)]="speciality"
+                                                        <input type="text" class="form-control" 
+                                                            [(ngModel)]="speciality"
+                                                            [disabled]="isReadonlyEntityFields"
                                                             placeholder="Enter speciality">
                                                     </div>
 
@@ -490,7 +321,9 @@
                                                                 ngbTooltip="Enter the chain or group the company is associated with"
                                                                 placement="right"></i>
                                                         </label>
-                                                        <input type="text" class="form-control" [(ngModel)]="chain"
+                                                        <input type="text" class="form-control" 
+                                                            [(ngModel)]="chain"
+                                                            [disabled]="isReadonlyEntityFields"
                                                             placeholder="Enter chain">
                                                     </div>
 
@@ -501,7 +334,9 @@
                                                                 ngbTooltip="Add any additional notes or remarks about this vendor"
                                                                 placement="right"></i>
                                                         </label>
-                                                        <textarea class="form-control" rows="3" [(ngModel)]="note"
+                                                        <textarea class="form-control" rows="3" 
+                                                            [(ngModel)]="note"
+                                                            [disabled]="isReadonlyEntityFields"
                                                             placeholder="Enter note"></textarea>
                                                     </div>
 
@@ -509,8 +344,6 @@
                                             </ng-template>
                                         </ngb-panel>
 
-
-                                        <!-- Bank Details -->
                                         <!-- Bank Details -->
                                         <ngb-panel id="static-6" title="Bank Details">
                                             <ng-template ngbPanelContent>
@@ -590,12 +423,13 @@
 
                                                         <div class="col-12 mt-3">
                                                             <button type="button" class="btn btn-primary"
-                                                                (click)="addBank()">Add Bank</button>
+                                                                (click)="addBank()"
+                                                                [disabled]="isReadonlyEntityFields">Add Bank</button>
                                                         </div>
                                                     </div>
                                                 </form>
 
-                                                <!-- ✅ ngx-datatable below -->
+                                                <!-- ngx-datatable -->
                                                 <div class="mt-4">
                                                     <ngx-datatable *ngIf="bankList.length > 0" class="bootstrap"
                                                         [rows]="bankList" [headerHeight]="50" [footerHeight]="50"
@@ -619,68 +453,43 @@
                                                             prop="bankCountry"></ngx-datatable-column>
                                                         <ngx-datatable-column name="Currency"
                                                             prop="bankCurrency"></ngx-datatable-column>
+                                                        
+                                                        <!-- Add Actions Column for Bank -->
+                                                        <ngx-datatable-column name="Actions">
+                                                            <ng-template let-row="row" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+                                                                <button class="ft-edit btn me-2" type="button"
+                                                                    [disabled]="isReadonlyEntityFields"></button>
+                                                                <button class="ft-trash btn" type="button"
+                                                                    (click)="confirmBankDeletion(rowIndex)"
+                                                                    [disabled]="isReadonlyEntityFields"></button>
+                                                            </ng-template>
+                                                        </ngx-datatable-column>
                                                     </ngx-datatable>
-
                                                 </div>
-
                                             </ng-template>
                                         </ngb-panel>
 
-                                        <!-- Bank Delete Modal -->
-                                        <ng-container *ngIf="showBankDeletePopup">
-                                            <div class="modal" tabindex="-1" role="dialog"
-                                                style="display: block; background: rgba(0,0,0,0.5);">
-                                                <div class="modal-dialog modal-dialog-centered">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title">Delete Bank</h5>
-                                                            <button type="button" class="fa fa-times btn"
-                                                                (click)="closeBankPopup()"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <p>Are you sure you want to delete this bank?</p>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-danger"
-                                                                (click)="removeBank(bankIndexToDelete!)">Delete</button>
-                                                            <button type="button" class="btn btn-secondary"
-                                                                (click)="closeBankPopup()">Cancel</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </ng-container>
-
-
-
-
-
-
-
-
                                     </ngb-accordion>
-                                    <!-- ==================== Existing Readonly Remarks ==================== -->
-                                        <div class="card mt-3" *ngIf="isEditMode">
-                                            <div class="card-header">
-                                                <h5 class="mb-0">Remarks</h5>
-                                            </div>
-                                            <div class="card-body">
-                                                <textarea class="form-control" rows="4" [(ngModel)]="remarks"
-                                                    placeholder="Enter remarks" readonly></textarea>
-                                            </div>
-                                        </div>
 
-                                    <!-- ==================== User Remarks Input ==================== -->
-                                    <form [formGroup]="companyForm" *ngIf="isEditMode"> 
+                                    <!-- Remarks Section (commented but kept for reference) -->
+                                    <!-- <div class="card mt-3" *ngIf="isEditMode">
+                                        <div class="card-header">
+                                            <h5 class="mb-0">Remarks</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <textarea class="form-control" rows="4" [(ngModel)]="remarks"
+                                                placeholder="Enter remarks" readonly></textarea>
+                                        </div>
+                                    </div> -->
+
+                                    <!-- <form [formGroup]="companyForm" *ngIf="isEditMode">
                                         <div class="mb-3 mt-3">
                                             <label for="remarks" class="form-label">User Remarks</label>
                                             <textarea id="remarks" class="form-control" formControlName="remarks"
                                                 rows="3" placeholder="Enter remarks here">
-    </textarea>
+                                            </textarea>
                                         </div>
-                                    </form>
-
-
+                                    </form> -->
 
                                 </div>
                             </div>
@@ -728,6 +537,30 @@
                         <button type="button" class="btn btn-danger"
                             (click)="removeContact(contactIndexToDelete!)">Delete</button>
                         <button type="button" class="btn btn-secondary" (click)="closeContactPopup()">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <!-- Bank Delete Modal -->
+    <ng-container *ngIf="showBankDeletePopup">
+        <div class="modal" tabindex="-1" role="dialog"
+            style="display: block; background: rgba(0,0,0,0.5);">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Delete Bank</h5>
+                        <button type="button" class="fa fa-times btn" (click)="closeBankPopup()"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Are you sure you want to delete this bank?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger"
+                            (click)="removeBank(bankIndexToDelete!)">Delete</button>
+                        <button type="button" class="btn btn-secondary"
+                            (click)="closeBankPopup()">Cancel</button>
                     </div>
                 </div>
             </div>

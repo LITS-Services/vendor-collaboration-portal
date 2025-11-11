@@ -33,6 +33,12 @@ export class CompanyRegistrationComponent implements OnInit {
   companyId: number | null = null;
   remarks: string = '';
 
+// For entity selection dropdown
+entityDropdownOpen: boolean = false;
+selectedEntityId: number | null = null;
+isReadonlyEntityFields: boolean = false;
+
+
   procurementCompanies: any[] = [];
   selectedProcurementCompanyIds: number[] = [];
   dropdownOpen: boolean = false;
@@ -160,97 +166,160 @@ export class CompanyRegistrationComponent implements OnInit {
     this.dropdownOpen = !this.dropdownOpen;
   }
 
-  loadCompanyById(companyId: number) {
-    this.isLoading = true;
-    this.companyService.getCompanyById(companyId).subscribe({
-      next: (res: any) => {
-        const company = res?.vendorCompany || res;
-        if (company) {
-          // Basic Info
-          this.companyName = company.name || '';
-          this.companyType = company.companyType || 'Organization';
-          this.aboutCompany = company.aboutCompany || '';
-          this.remarks = company.remarks || '';
-          this.companyForm.patchValue({ remarks: this.remarks }); // <-- patch user remarks
+loadCompanyById(companyId: number) {
+  this.isLoading = true;
+  this.companyService.getCompanyById(companyId).subscribe({
+    next: (res: any) => {
+      const company = res?.vendorCompany || res;
+      if (company) {
+        // Basic Info
+        this.companyName = company.name || '';
+        this.companyType = company.companyType || 'Organization';
+        this.aboutCompany = company.aboutCompany || '';
+        this.remarks = company.remarks || '';
+        this.companyForm.patchValue({ remarks: this.remarks });
 
-          // Purchasing Demographics
-          const pd = company.purchasingDemographics || {};
-          this.vendorCategory = pd.vendorType || '';
-          this.primaryCurrency = pd.primaryCurrency || '';
-          this.lineOfBusiness = pd.lineOfBusiness || '';
-          this.birthCountry = pd.birthCountry || '';
-          this.employeeResponsible = pd.employeeResponsible || '';
-          this.segment = pd.segment || '';
-          this.speciality = pd.speciality || '';
-          this.chain = pd.chain || '';
-          this.note = pd.note || '';
+        // Purchasing Demographics
+        const pd = company.purchasingDemographics || {};
+        this.vendorCategory = pd.vendorType || '';
+        this.primaryCurrency = pd.primaryCurrency || '';
+        this.lineOfBusiness = pd.lineOfBusiness || '';
+        this.birthCountry = pd.birthCountry || '';
+        this.employeeResponsible = pd.employeeResponsible || '';
+        this.segment = pd.segment || '';
+        this.speciality = pd.speciality || '';
+        this.chain = pd.chain || '';
+        this.note = pd.note || '';
 
-          // Addresses
-          this.addressList = (company.addresses || []).map(a => ({
-            street: a.street,
-            city: a.city,
-            state: a.state,
-            zip: a.zip,
-            country: a.country,
-            isPrimary: a.isPrimary || false
-          }));
+        // Addresses
+        this.addressList = (company.addresses || []).map(a => ({
+          street: a.street,
+          city: a.city,
+          state: a.state,
+          zip: a.zip,
+          country: a.country,
+          isPrimary: a.isPrimary || false
+        }));
 
-          // Contacts
-          this.contactList = (company.contacts || []).map(c => ({
-            description: c.description,
-            type: c.type,
-            contactNumber: c.contactNumber,
-            extension: c.extension || '',
-            isPrimary: c.isPrimary || false
-          }));
+        // Vendor User Companies (Entities)
+        if (company.vendorUserCompanies && Array.isArray(company.vendorUserCompanies)) {
+          this.procurementCompanies = company.vendorUserCompanies;
 
-          // Bank Details
-          this.bankList = (company.bankDetails || []).map(b => ({
-            id: b.id,
-            vendorCompanyId: b.vendorCompanyId,
-            bankName: b.bankName,
-            accountHolderName: b.accountHolderName,
-            accountNumber: b.accountNumber,
-            iban: b.iban,
-            swiftCode: b.swifT_BIC_Code,
-            branchName: b.branchName,
-            branchAddress: b.branchAddress,
-            bankCountry: b.country,
-            bankCurrency: b.currency,
-            isPrimary: b.isPrimary || false,
-            createdBy: b.createdBy,
-            createdDate: b.createdDate
-          }));
-
-          // Attachments
-          this.attachedFiles = (company.attachments || []).map(f => ({
-            fileName: f.fileName,
-            format: f.fileFormat,
-            fileContent: f.fileContent,
-            attachedBy: f.attachedBy,
-            remarks: f.remarks,
-            attachedAt: f.attachedAt
-          }));
-
-          // Procurement Companies
-          if (Array.isArray(company.procurementCompanyId)) {
-            this.selectedProcurementCompanyIds = [...company.procurementCompanyId];
-          } else if (company.procurementCompanyId) {
-            this.selectedProcurementCompanyIds = [company.procurementCompanyId];
+          // Auto-select first entity if exists and set form state
+          if (this.procurementCompanies.length > 0) {
+            this.onEntitySelect(this.procurementCompanies[0]);
+          } else {
+            // If no entities, ensure form is enabled
+            this.isReadonlyEntityFields = false;
+            this.bankForm.enable();
+            this.companyForm.enable();
           }
-
-          this.isEditMode = true;
+        } else {
+          // If no vendorUserCompanies, ensure form is enabled
+          this.isReadonlyEntityFields = false;
+          this.bankForm.enable();
+          this.companyForm.enable();
         }
 
-        this.isLoading = false;
-        this.cdr.markForCheck();
-      },
-      error: (err) => {
-        console.error('Error loading company:', err);
-        this.isLoading = false;
+        // Contacts
+        this.contactList = (company.contacts || []).map(c => ({
+          description: c.description,
+          type: c.type,
+          contactNumber: c.contactNumber,
+          extension: c.extension || '',
+          isPrimary: c.isPrimary || false
+        }));
+
+        // Bank Details
+        this.bankList = (company.bankDetails || []).map(b => ({
+          id: b.id,
+          vendorCompanyId: b.vendorCompanyId,
+          bankName: b.bankName,
+          accountHolderName: b.accountHolderName,
+          accountNumber: b.accountNumber,
+          iban: b.iban,
+          swiftCode: b.swifT_BIC_Code,
+          branchName: b.branchName,
+          branchAddress: b.branchAddress,
+          bankCountry: b.country,
+          bankCurrency: b.currency,
+          isPrimary: b.isPrimary || false,
+          createdBy: b.createdBy,
+          createdDate: b.createdDate
+        }));
+
+        // Initialize bank form state based on current readonly status
+        if (this.isReadonlyEntityFields) {
+          this.bankForm.disable();
+        } else {
+          this.bankForm.enable();
+        }
+
+        // Attachments
+        this.attachedFiles = (company.attachments || []).map(f => ({
+          fileName: f.fileName,
+          format: f.fileFormat,
+          fileContent: f.fileContent,
+          attachedBy: f.attachedBy,
+          remarks: f.remarks,
+          attachedAt: f.attachedAt
+        }));
+
+        // Procurement Companies
+        if (Array.isArray(company.procurementCompanyId)) {
+          this.selectedProcurementCompanyIds = [...company.procurementCompanyId];
+        } else if (company.procurementCompanyId) {
+          this.selectedProcurementCompanyIds = [company.procurementCompanyId];
+        }
+
+        this.isEditMode = true;
       }
-    });
+
+      this.isLoading = false;
+      this.cdr.markForCheck();
+    },
+    error: (err) => {
+      console.error('Error loading company:', err);
+      this.isLoading = false;
+      // Ensure form is enabled even on error
+      this.isReadonlyEntityFields = false;
+      this.bankForm.enable();
+      this.companyForm.enable();
+    }
+  });
+}
+
+onEntitySelect(entity: any) {
+  this.selectedEntityId = entity.procurementCompanyId;
+  this.entityDropdownOpen = false;
+
+  // Set readonly fields based on requestStatusId (1 = InProcess, 3 = Approved, etc.)
+  this.isReadonlyEntityFields = entity.requestStatusId === 1 || entity.requestStatusId === 3;
+
+  // Enable or disable forms based on entity status
+  if (this.isReadonlyEntityFields) {
+    this.bankForm.disable();
+    this.companyForm.disable();
+  } else {
+    this.bankForm.enable();
+    this.companyForm.enable();
   }
+
+  console.log('Entity selected:', entity);
+  console.log('Entity Status ID:', entity.requestStatusId);
+  console.log('Form disabled:', this.isReadonlyEntityFields);
+}
+hasInProcessEntities(): boolean {
+  return this.procurementCompanies.some(entity => 
+    entity.requestStatusId === 1 || entity.requestStatus?.toLowerCase() === 'inprocess'
+  );
+}
+getSelectedEntityName(): string {
+  if (!this.selectedEntityId) return 'Select Entity';
+  const entity = this.procurementCompanies.find(e => e.procurementCompanyId === this.selectedEntityId);
+  return entity ? entity.procurementCompany.name : 'Select Entity';
+}
+
 
   toggleCompanySelection(id: number, event: any) {
     if (event.target.checked) {
@@ -269,6 +338,7 @@ export class CompanyRegistrationComponent implements OnInit {
       .map(c => c.name)
       .join(', ');
   }
+
 
 
   generateVendorAccountNumber(): void {

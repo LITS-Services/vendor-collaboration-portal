@@ -1,7 +1,6 @@
 <section>
   <div class="row">
     <div class="col-12">
-      <!-- Header -->
       <div class="row mb-3">
         <div class="col-md-12">
           <h4 class="heading">{{ title }}</h4>
@@ -13,56 +12,180 @@
         [selected]="chkBoxSelected" [swapColumns]="false" [selectionType]="SelectionType.checkbox"
         (sort)="onSort($event)" (select)="customChkboxOnSelect($event)">
 
-        <!-- Checkbox -->
-        <!-- <ngx-datatable-column [width]="50" [sortable]="false" [canAutoResize]="false"
-          [draggable]="false" [resizeable]="false">
-          <ng-template ngx-datatable-header-template>
-            <div class="custom-control">
-              <input type="checkbox" [checked]="isAllSelected" (change)="toggleSelectAll($event)" />
-            </div>
-          </ng-template>
-          <ng-template ngx-datatable-cell-template let-isSelected="isSelected" let-onCheckboxChangeFn="onCheckboxChangeFn">
-            <div class="custom-control custom-checkbox">
-              <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)" />
-            </div>
-          </ng-template>
-        </ngx-datatable-column> -->
-
-        <!-- Company Name (old Name column) -->
-        <ngx-datatable-column name="Company Name" prop="name"></ngx-datatable-column>
-
-        <!-- Status -->
-        <ngx-datatable-column name="Status" prop="status">
+        <!-- Company Name -->
+        <ngx-datatable-column name="Company Name" prop="name">
           <ng-template let-row="row" ngx-datatable-cell-template>
-            <span class="badge" [ngClass]="row.status === 'inprocess' ? 'badge-warning' : 'badge-success'">
-              {{ row.status }}
-            </span>
+            <a href="javascript:void(0)" 
+               (click)="editCompany(row)" 
+               class="text-primary font-weight-bold">
+              {{ row.name }}
+            </a>
           </ng-template>
         </ngx-datatable-column>
 
-        <!-- Entity -->
-        <ngx-datatable-column name="Entity" prop="entity"></ngx-datatable-column>
-
-        <!-- State -->
-        <ngx-datatable-column name="Street" prop="street"></ngx-datatable-column>
-        <ngx-datatable-column name="City" prop="city"></ngx-datatable-column>
-        <ngx-datatable-column name="State" prop="state"></ngx-datatable-column>
-        <ngx-datatable-column name="Contact Number" prop="contactNumber"></ngx-datatable-column>
-
-
-        <!-- Edit Button -->
-        <ngx-datatable-column name="Edit" [sortable]="false">
+        <!-- Created Date -->
+        <ngx-datatable-column name="Create Date" prop="createDate">
           <ng-template let-row="row" ngx-datatable-cell-template>
-            <!-- Hide edit button when status is approve -->
-            <button *ngIf="row.status !== 'completed' && row.status !== 'rejected' && row.status !== 'inprocess'" class="btn btn-sm btn-primary"
-              (click)="editCompany(row)">
-              <i class="ft-edit"></i>
+            {{ row.createDate | date:'dd-MMM-yyyy' }}
+          </ng-template>
+        </ngx-datatable-column>
+
+        <!-- Status (Popup Trigger) -->
+        <ngx-datatable-column name="Status" [sortable]="false">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <button type="button" class="btn btn-sm btn-outline-info" title="View Status"
+              (click)="openStatusPopup(row)">
+              <i class="ft-info"></i> View Status & Level
             </button>
+          </ng-template>
+        </ngx-datatable-column>
 
-
+        <!-- Remarks (Popup Trigger) -->
+        <ngx-datatable-column name="Remarks" [sortable]="false">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <button type="button" class="btn btn-sm btn-outline-secondary" title="View Remarks"
+              (click)="openRemarksPopup(row)">
+              <i class="ft-file-text"></i>
+            </button>
           </ng-template>
         </ngx-datatable-column>
       </ngx-datatable>
     </div>
   </div>
+
+  <!-- STATUS MODAL -->
+ <ng-template #statusModal let-modal>
+    <div class="modal-header bg-light">
+      <h5 class="modal-title text-dark">Company Status & Level Details</h5>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+    </div>
+    <div class="modal-body p-0">
+      <div *ngIf="loadingStatus" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading status details...</span>
+        </div>
+        <p class="mt-2 text-muted">Loading status and level information...</p>
+      </div>
+
+      <div *ngIf="!loadingStatus" class="p-3">
+        <div class="table-responsive">
+          <table class="table table-hover table-borderless">
+            <thead class="table-light">
+              <tr>
+                <th class="border-bottom">Entity</th>
+                <th class="border-bottom">Status</th>
+                <th class="border-bottom">Level</th>
+                <th class="border-bottom">Approver Name</th>
+                <th class="border-bottom">Created Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let e of selectedStatusEntities" class="align-middle">
+                <td class="border-0">{{ e.entity }}</td>
+                <td class="border-0">
+                  <span class="badge rounded-pill" 
+                        [ngClass]="{
+                          'bg-success': e.status?.toLowerCase() === 'completed',
+                          'bg-warning text-dark': e.status?.toLowerCase() === 'sendback',
+                          'bg-danger': e.status?.toLowerCase() === 'rejected',
+                          'bg-info': e.status?.toLowerCase() === 'inprocess',
+                          'bg-secondary': !e.status
+                        }">
+                    {{ e.status || 'Pending' }}
+                  </span>
+                </td>
+                <td class="border-0">
+                  <span class="badge bg-light text-dark border">{{ e.level }}</span>
+                </td>
+                <td class="border-0">{{ e.approverLevelName || '-' }}</td>
+                <td class="border-0 text-muted">{{ e.createdDate | date:'dd-MMM-yyyy' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer ">
+      <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss()">Close</button>
+    </div>
+</ng-template>
+
+  <!-- REMARKS MODAL -->
+  <ng-template #remarksModal let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title">Remarks Details</h5>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+    </div>
+    <div class="modal-body">
+      <div *ngIf="loadingRemarks" class="text-center py-4">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading remarks...</span>
+        </div>
+        <p class="mt-2 text-muted">Loading remarks...</p>
+      </div>
+      
+      <div *ngIf="!loadingRemarks">
+        <!-- Show message when no remarks available -->
+        <div *ngIf="selectedRemarksEntities.length === 0" class="text-center py-4">
+          <div class="text-muted">
+            <i class="ft-file-text display-4 text-muted"></i>
+            <h6 class="mt-2">No Remarks Available</h6>
+            <p class="mb-0">There are no remarks for completed, rejected, or sendback entities.</p>
+          </div>
+        </div>
+
+        <!-- Show remarks for each entity -->
+        <div *ngFor="let entity of selectedRemarksEntities" class="mb-3 p-3 border rounded remarks-card">
+          <!-- Entity Header with Status Badge -->
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <h6 class="fw-bold text-primary mb-0">{{ entity.entity }}</h6>
+            <span class="badge" 
+                  [ngClass]="{
+                    'bg-success': entity.status?.toLowerCase() === 'completed',
+                    'bg-warning': entity.status?.toLowerCase() === 'sendback',
+                    'bg-danger': entity.status?.toLowerCase() === 'rejected'
+                  }">
+              {{ entity.status }}
+            </span>
+          </div>
+
+          <!-- Remarks Content -->
+          <div class="remarks-content">
+            <div class="row g-2">
+              <!-- Remarks -->
+              <div class="col-12">
+                <div class="d-flex">
+                  <strong class="text-muted me-2" style="min-width: 80px;">Remarks:</strong>
+                  <div class="remarks-text" [class.text-muted]="!entity.remark || entity.remark === 'No remarks available from API'">
+                    {{ entity.remark || 'No remarks provided' }}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Approver Name -->
+              <div *ngIf="entity.approverName && entity.approverName !== '—'" class="col-12">
+                <div class="d-flex">
+                  <strong class="text-muted me-2" style="min-width: 80px;">Approver:</strong>
+                  <span>{{ entity.approverName }}</span>
+                </div>
+              </div>
+
+              <!-- Date -->
+              <div *ngIf="entity.createdDate" class="col-12">
+                <div class="d-flex">
+                  <strong class="text-muted me-2" style="min-width: 80px;">Date:</strong>
+                  <span>{{ entity.createdDate | date:'medium' }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">
+        Close
+      </button>
+    </div>
+  </ng-template>
 </section>

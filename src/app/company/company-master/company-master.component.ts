@@ -28,22 +28,22 @@ const data: any = require('../../shared/data/chartist.json');
 
 export type ChartOptions = {
   series: ApexAxisChartSeries | ApexNonAxisChartSeries;
-  colors: string[],
+  colors: string[];
   chart: ApexChart;
   xaxis: ApexXAxis;
-  yaxis: ApexYAxis | ApexYAxis[],
+  yaxis: ApexYAxis | ApexYAxis[];
   title: ApexTitleSubtitle;
-  dataLabels: ApexDataLabels,
-  stroke: ApexStroke,
-  grid: ApexGrid,
-  legend?: ApexLegend,
-  tooltip?: ApexTooltip,
-  plotOptions?: ApexPlotOptions,
-  labels?: string[],
-  fill: ApexFill,
-  markers?: ApexMarkers,
-  theme: ApexTheme,
-  responsive: ApexResponsive[]
+  dataLabels: ApexDataLabels;
+  stroke: ApexStroke;
+  grid: ApexGrid;
+  legend?: ApexLegend;
+  tooltip?: ApexTooltip;
+  plotOptions?: ApexPlotOptions;
+  labels?: string[];
+  fill: ApexFill;
+  markers?: ApexMarkers;
+  theme: ApexTheme;
+  responsive: ApexResponsive[];
 };
 
 var $info = "#249D57",
@@ -95,7 +95,7 @@ export class CompanyMasterComponent implements OnInit {
 
   totalCompaniesCount: number = 0;      // Total companies
   inprogressCount: number = 0;          // Pending companies
-  newlyOnboardedCount: number = 0;      // Companies created recently
+  newlyOnboardedCount: number = 0;      // Companies where ALL entities are completed
   showRegisterButton: boolean = true;   // ✅ Controls button visibility
 
   constructor(
@@ -140,7 +140,7 @@ export class CompanyMasterComponent implements OnInit {
   }
 
   // Load companies and calculate counts
-  loadCompanyStats() {
+  loadCompanyStats(): void {
     const userId = localStorage.getItem('userId');
     console.log('userId =', userId);
 
@@ -173,35 +173,73 @@ export class CompanyMasterComponent implements OnInit {
           (c.vendorId || '').toLowerCase() === userId.toLowerCase()
         );
 
-        // Approved or Completed
-        this.totalCompaniesCount = vendorCompanies.filter(c =>
-          (c.status || '').toLowerCase() === 'approve' || (c.status || '').toLowerCase() === 'completed'
-        ).length;
-        this.cdr.detectChanges();
+        console.log('Vendor companies:', vendorCompanies);
 
-        // Pending Companies: InProcess OR SendBack
-        this.inprogressCount = vendorCompanies.filter(c => {
-          const status = (c.status || '').toLowerCase();
-          return status === 'inprocess' || status === 'sendback';
+        // 1. Total Companies Count - All companies of this vendor
+        this.totalCompaniesCount = vendorCompanies.length;
+        console.log('Total Companies Count:', this.totalCompaniesCount);
+
+        // 2. InProgress Count - Companies with ANY entity InProcess OR SendBack OR any status other than Completed
+        this.inprogressCount = vendorCompanies.filter(company => {
+          const entities = company.vendorUseCompaniesVM || [];
+          
+          // If no entities, count as pending
+          if (entities.length === 0) {
+            console.log(`Company "${company.name}" - No entities, counted as pending`);
+            return true;
+          }
+          
+          // Company is in progress if ANY entity is NOT Completed
+          const hasIncompleteEntities = entities.some((entity: any) => {
+            const status = (entity.status || '').toLowerCase();
+            const isCompleted = status === 'completed';
+            if (!isCompleted) {
+              console.log(`Company "${company.name}" - Entity "${entity.entityName}" status: ${status} (not completed)`);
+            }
+            return !isCompleted;
+          });
+          
+          console.log(`Company "${company.name}" - Has incomplete entities:`, hasIncompleteEntities);
+          return hasIncompleteEntities;
         }).length;
-        this.cdr.detectChanges();
+        console.log('InProgress/Pending Count:', this.inprogressCount);
 
-        // Newly Onboarded: created within last 10 days & approved
-        const now = new Date();
-        this.newlyOnboardedCount = vendorCompanies.filter(c => {
-          if (!c.createdDate) return false;
-
-          const createdDate = new Date(c.createdDate + 'Z'); // treat as UTC
-          const diffInDays = (new Date().getTime() - createdDate.getTime()) / (1000 * 60 * 60 * 24);
-          const status = (c.status || '').toLowerCase();
-
-          return diffInDays <= 10 && status === 'approve';
+        // 3. Onboarded Companies Count - Companies where ALL entities are Completed
+        this.newlyOnboardedCount = vendorCompanies.filter(company => {
+          const entities = company.vendorUseCompaniesVM || [];
+          
+          // If no entities, don't count as onboarded
+          if (entities.length === 0) {
+            console.log(`Company "${company.name}" - No entities, not counted as onboarded`);
+            return false;
+          }
+          
+          // Check if ALL entities have status "Completed"
+          const allCompleted = entities.every((entity: any) => {
+            const status = (entity.status || '').toLowerCase();
+            const isCompleted = status === 'completed';
+            if (!isCompleted) {
+              console.log(`Company "${company.name}" - Entity "${entity.entityName}" status: ${status} (not completed)`);
+            }
+            return isCompleted;
+          });
+          
+          console.log(`Company "${company.name}" - All entities completed:`, allCompleted);
+          return allCompleted;
         }).length;
-        this.cdr.detectChanges();
 
-        console.log('Total Companies:', this.totalCompaniesCount);
-        console.log('Pending Companies:', this.inprogressCount);
-        console.log('Newly Onboarded Companies:', this.newlyOnboardedCount);
+        console.log('Onboarded Companies Count (ALL entities completed):', this.newlyOnboardedCount);
+
+        // Verification - ensure counts add up correctly
+        const calculatedTotal = this.inprogressCount + this.newlyOnboardedCount;
+        console.log('Verification - Total:', this.totalCompaniesCount, 
+                   'InProgress:', this.inprogressCount, 
+                   'Onboarded:', this.newlyOnboardedCount,
+                   'Calculated Sum:', calculatedTotal,
+                   'Matches:', this.totalCompaniesCount === calculatedTotal);
+
+        // Trigger change detection
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error fetching companies:', err);
@@ -209,23 +247,38 @@ export class CompanyMasterComponent implements OnInit {
     });
   }
 
-  onResized(event: any) {
+  onResized(event: any): void {
     setTimeout(() => { this.fireRefreshEventOnWindow(); }, 300);
   }
 
-  newCompany() {
+  newCompany(): void {
     this.router.navigateByUrl("/pages/company-registration");
   }
 
-  companyList(title: string, status?: string) {
+  companyList(title: string, status?: string): void {
     this.router.navigate(['/company/company-list'], {
       queryParams: { title: title, status: status || '' }
     });
   }
 
-  fireRefreshEventOnWindow = function () {
+  // Navigate to onboarded companies list
+  viewOnboardedCompanies(): void {
+    this.companyList('Onboarded Companies', 'completed');
+  }
+
+  // Navigate to pending companies list
+  viewPendingCompanies(): void {
+    this.companyList('Pending Companies', 'inprogress');
+  }
+
+  // Navigate to all companies list
+  viewAllCompanies(): void {
+    this.companyList('All Companies');
+  }
+
+  fireRefreshEventOnWindow(): void {
     const evt = document.createEvent("HTMLEvents");
     evt.initEvent("resize", true, false);
     window.dispatchEvent(evt);
-  };
+  }
 }
