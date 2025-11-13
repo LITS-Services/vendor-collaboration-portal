@@ -132,6 +132,7 @@ a:hover {
   }
 
   select.form-control {
+  padding: 9px 16px;
   appearance: none; /* remove default select styling */
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -296,4 +297,15 @@ datatable-scroller {
     top: 0 !important;
     height: 100% !important;
   }
+}
+
+.btn-primary:disabled{
+    color: #616161;
+    background-color: #dddddd;
+}
+
+
+.btn-outline-primary:disabled{
+    color: #616161;
+    background-color: #dddddd;
 }
