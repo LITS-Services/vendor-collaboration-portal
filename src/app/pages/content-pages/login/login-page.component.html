@@ -1,86 +1,101 @@
+<div class="card">
+  <div class="card-body">
+    <div class="w-100 mb-3">
+      <h2 class="heading mb-0">Welcome Back!</h2>
+      <p>Please enter your username and password</p>
+    </div>
 
-      <div class="card">
-        <div class="card-body">
-          <div class="w-100 mb-3">
-            <h2 class="heading mb-0">Welcome Back!</h2>
-            <p>Please enter your username and password</p>
-          </div>
+    <ngb-alert type="light-danger" class="my-2" *ngIf="isLoginFailed" (close)="isLoginFailed = false">
+      <p class="mb-0">Login failed!</p>
+    </ngb-alert>
 
-          <ngb-alert type="light-danger" class="my-2" *ngIf="isLoginFailed" (close)="isLoginFailed = false">
-            <p class="mb-0">Login failed!</p>
-          </ngb-alert>
+    <!-- ✅ Fixed form with ngSubmit -->
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="form-group mb-3">
+        <input type="text" formControlName="username" class="form-control" placeholder="Enter Username"
+          [ngClass]="{ 'is-invalid': loginFormSubmitted && lf.username.invalid, 'is-valid': loginFormSubmitted && !lf.username.invalid }"
+          required>
+        <div *ngIf="loginFormSubmitted && (lf.username.invalid || lf.username.errors?.required)"
+          class="help-block mt-1 text-danger">
+          <i class="ft-alert-circle align-middle"></i> This is required
+        </div>
+      </div>
 
-          <!-- ✅ Fixed form with ngSubmit -->
-          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-            <div class="form-group mb-3">
-              <input type="text" formControlName="username" class="form-control" placeholder="Enter Username"
-                [ngClass]="{ 'is-invalid': loginFormSubmitted && lf.username.invalid, 'is-valid': loginFormSubmitted && !lf.username.invalid }"
-                required>
-              <div *ngIf="loginFormSubmitted && (lf.username.invalid || lf.username.errors?.required)"
-                class="help-block mt-1 text-danger">
-                <i class="ft-alert-circle align-middle"></i> This is required
-              </div>
-            </div>
-
-            <div class="form-group mb-2">
-              <div class="form-group mb-3">
-                <div class="position-relative">
-                  <input [type]="hidePassword ? 'password' : 'text'" formControlName="password" class="form-control"
-                    placeholder="Enter password" [ngClass]="{
+      <div class="form-group mb-2">
+        <div class="form-group mb-3">
+          <div class="position-relative">
+            <input [type]="hidePassword ? 'password' : 'text'" formControlName="password" class="form-control"
+              placeholder="Enter password" [ngClass]="{
                     'is-invalid': loginFormSubmitted && lf.password.invalid,
                     'is-valid': loginFormSubmitted && lf.password.valid
                   }" required />
-                  <i [ngClass]="hidePassword ? 'ft ft-eye-off eye-icon' : 'ft ft-eye eye-icon'"
-                    (click)="hidePassword = !hidePassword" [title]="hidePassword ? 'Show Password' : 'Hide Password'">
-                  </i>
-                </div>
-                <div *ngIf="loginFormSubmitted && lf.password.invalid" class="invalid-feedback">
-                  <i class="ft-alert-circle me-1"></i> Password is required
-                </div>
-              </div>
-              <div *ngIf="loginFormSubmitted && (lf.password.invalid || lf.password.errors?.required)"
-                class="invalid-feedback"> Please enter the valid password
-              </div>
-            </div>
-
-
-            <div class="row my-3">
-              <div class="col-6">
-                <div class="checkbox">
-                  <input type="checkbox" formControlName="rememberMe" class="form-control" id="rememberMe"
-                    (change)="rememberMe()">
-                  <label for="rememberMe"><span class="mb-3 font-weight-normal">Remember
-                      me</span></label>
-                </div>
-              </div>
-              <div class="col-6 text-end">
-                <a (click)="forgotpassword()" [routerLink]="['/pages/forgotpassword']" [ngClass]="'link'">Forgot
-                  password?</a>
-              </div>
-            </div>
-
-            <div class="d-flex justify-content-between">
-              <!-- ✅ Changed to button type=submit -->
-              <button type="submit" class="btn btn-primary login-btn w-100">Login</button>
-            </div>
-          </form>
-
-
-          <div class="or-divider">
-            <span>OR</span>
+            <i [ngClass]="hidePassword ? 'ft ft-eye-off eye-icon' : 'ft ft-eye eye-icon'"
+              (click)="hidePassword = !hidePassword" [title]="hidePassword ? 'Show Password' : 'Hide Password'">
+            </i>
           </div>
-
-          <div class="d-flex flex-sm-row justify-content-center">
-            <a class="mt-1 ms-btn align-self-center justify-content-center" (click)="loginWithSSO()">
-              <i class="ms-logo me-3"></i>
-              <span for="">Login with Microsoft</span>
-            </a>
-          </div>
-
-          <div class="d-flex flex-sm-row justify-content-center mt-3">
-            <a href="" [routerLink]="['/pages/registeration']">
-              <h6 class="heading register-btn"><u>Register as a Vendor</u></h6>
-            </a>
+          <div *ngIf="loginFormSubmitted && lf.password.invalid" class="invalid-feedback">
+            <i class="ft-alert-circle me-1"></i> Password is required
           </div>
         </div>
+        <div *ngIf="loginFormSubmitted && (lf.password.invalid || lf.password.errors?.required)"
+          class="invalid-feedback"> Please enter the valid password
+        </div>
       </div>
+
+
+      <div class="row my-3">
+        <div class="col-6">
+          <div class="checkbox">
+            <input type="checkbox" formControlName="rememberMe" class="form-control" id="rememberMe"
+              (change)="rememberMe()">
+            <label for="rememberMe"><span class="mb-3 font-weight-normal">Remember
+                me</span></label>
+          </div>
+        </div>
+        <div class="col-6 text-end">
+          <a (click)="forgotpassword()" [routerLink]="['/pages/forgotpassword']" [ngClass]="'link'">Forgot
+            password?</a>
+        </div>
+      </div>
+
+      <div class="mb-2">
+        <ng-hcaptcha formControlName="recaptcha"></ng-hcaptcha>
+
+        <!-- <div class="recaptcha-wrapper">
+          <re-captcha id="recaptcha" formControlName="recaptcha" (resolved)="onCaptchaResolved($event)"
+            [class.is-invalid]="loginFormSubmitted && loginForm.get('recaptcha')?.invalid">
+          </re-captcha>
+        </div> -->
+
+
+        <div *ngIf="loginFormSubmitted && loginForm.get('recaptcha')?.invalid" class="invalid-feedback">
+          Please verify that you are not a robot.
+        </div>
+      </div>
+
+
+      <div class="d-flex justify-content-between">
+        <!-- ✅ Changed to button type=submit -->
+        <button type="submit" class="btn btn-primary login-btn w-100">Login</button>
+      </div>
+    </form>
+
+
+    <div class="or-divider">
+      <span>OR</span>
+    </div>
+
+    <div class="d-flex flex-sm-row justify-content-center">
+      <a class="mt-1 ms-btn align-self-center justify-content-center" (click)="loginWithSSO()">
+        <i class="ms-logo me-3"></i>
+        <span for="">Login with Microsoft</span>
+      </a>
+    </div>
+
+    <div class="d-flex flex-sm-row justify-content-center mt-3">
+      <a href="" [routerLink]="['/pages/registeration']">
+        <h6 class="heading register-btn"><u>Register as a Vendor</u></h6>
+      </a>
+    </div>
+  </div>
+</div>

@@ -1,4 +1,4 @@
-<div class="card">
+<div class="card OTP">
   <div class="card-body">
     <div class="back-btn">
       <button class="back-icon-div" [routerLink]="['/pages/login']"><i class="ft-arrow-left back-icon"></i></button>
@@ -11,9 +11,16 @@
     <!-- OTP Form -->
     <form [formGroup]="otpForm">
       <div class="form-group mb-3">
-        <input type="text" formControlName="otp" maxlength="6" class="form-control text-center" placeholder="Enter OTP"
+        <!-- <input type="text" formControlName="otp" maxlength="6" class="form-control text-center" placeholder="Enter OTP"
           [ngClass]="{ 'is-invalid': otpFormSubmitted && lf.otp.invalid, 'is-valid': otpFormSubmitted && !lf.otp.invalid }"
-          required>
+          required> -->
+
+        <div class="d-flex justify-content-center">
+          <!-- <ng-otp-input formControlName="otp" style="min-height: 0px;" [config]="{length:6}"></ng-otp-input> -->
+          <ng-otp-input (onInputChange)="onOtpChange($event)" [config]="{ length: 6 }"></ng-otp-input>
+
+        </div>
+
         <div *ngIf="otpFormSubmitted && lf.otp.invalid" class="help-block mt-1 text-danger text-center">
           <i class="ft-alert-circle align-middle"></i> OTP is required
         </div>

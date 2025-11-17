@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/fo
 import { ToastrService } from 'ngx-toastr';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from 'app/shared/auth/auth.service';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-verify-forgot-password-otp',
@@ -23,11 +25,12 @@ export class VerifyForgotPasswordOtpComponent implements OnInit {
     private toastr: ToastrService,
     private authService: AuthService,
     private router: Router,
-    private route: ActivatedRoute
-  ) {}
+    private route: ActivatedRoute,
+    private spinner: NgxSpinnerService
+  ) { }
 
   ngOnInit(): void {
-    // ✅ Get email from query params
+    // Get email from query params
     this.route.queryParams.subscribe(params => {
       this.userEmail = params['userEmail'] || null;
     });
@@ -40,7 +43,7 @@ export class VerifyForgotPasswordOtpComponent implements OnInit {
 
     // OTP field kept but no validation (optional)
     this.verifyOtpForm = this.fb.group({
-      otp: [''], 
+      otp: [''],
       password: ['', [
         Validators.required,
         Validators.minLength(6),
@@ -89,20 +92,29 @@ export class VerifyForgotPasswordOtpComponent implements OnInit {
     }
 
     const payload = {
-      email: this.userEmail, // ✅ from query param
+      email: this.userEmail, // from query param
       otp: Number(this.verifyOtpForm.value.otp),
       newPassword: this.verifyOtpForm.value.password
     };
 
-    this.authService.ConfirmForgotOtp(payload).subscribe({
-      next: () => {
-        this.toastr.success('Password reset successfully!');
-        this.router.navigate(['/pages/login']);
-      },
-      error: () => {
-        this.toastr.error('Invalid OTP or something went wrong.');
-      }
-    });
+    this.spinner.show(); //  show spinner before API call
+
+    this.authService
+      .ConfirmForgotOtp(payload)
+      .pipe(
+        finalize(() => {
+          this.spinner.hide(); //  always hide spinner on complete/error
+        })
+      )
+      .subscribe({
+        next: () => {
+          // this.toastr.success('Password reset successfully!');
+          this.router.navigate(['/pages/login']);
+        },
+        error: () => {
+          this.toastr.error('Invalid OTP or something went wrong.');
+        }
+      });
   }
 
 }

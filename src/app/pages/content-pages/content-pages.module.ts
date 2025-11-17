@@ -23,6 +23,10 @@ import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { VerifyForgotPasswordOtpComponent } from './verify-forgot-password-otp/verify-forgot-password-otp.component';
 import { MainLayoutComponent } from './main-layout/main-layout.component';
+import { NgHcaptchaModule } from 'ng-hcaptcha';
+import { NgOtpInputModule } from 'ng-otp-input';
+import { RECAPTCHA_SETTINGS, RecaptchaFormsModule, RecaptchaModule, RecaptchaSettings } from 'ng-recaptcha';
+import { environment } from 'environments/environment';
 
 // import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
 
@@ -37,9 +41,9 @@ export function createTranslateLoader(http: HttpClient) {
     FormsModule,
     ReactiveFormsModule,
     NgbModule,
-    NgSelectModule ,
-     NgxIntlTelInputModule,
-     BsDropdownModule.forRoot(),
+    NgSelectModule,
+    NgxIntlTelInputModule,
+    BsDropdownModule.forRoot(),
     // NgxIntlTelInputModule,
     TranslateModule.forChild({
       loader: {
@@ -48,7 +52,19 @@ export function createTranslateLoader(http: HttpClient) {
         deps: [HttpClient]
       }
     }),
-    NgxSpinnerModule
+    NgxSpinnerModule,
+    NgHcaptchaModule.forRoot({ siteKey: '1b1afe16-c082-4211-accf-2921906c959b' }),
+    NgOtpInputModule,
+    RecaptchaFormsModule,
+    RecaptchaModule,
+  ],
+  providers: [
+    {
+      provide: RECAPTCHA_SETTINGS,
+      useValue: {
+        siteKey: environment.recaptcha.siteKey,
+      } as RecaptchaSettings,
+    },
   ],
   declarations: [
     ComingSoonPageComponent,
