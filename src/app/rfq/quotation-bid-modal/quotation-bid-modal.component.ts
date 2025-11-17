@@ -56,13 +56,15 @@ export class QuotationBidModalComponent implements OnInit {
         "Vendor user ID not found in localStorage. Please login again."
       );
     }
-    const id = Number(this.route.snapshot.paramMap.get("rfqId"));
+   this.route.paramMap.subscribe(params => {
+    const id = Number(params.get("rfqId"));
     if (id) {
       this.loadRfqDetails(id);
     } else {
       console.error("No RFQ ID found in route");
     }
-  }
+  });
+}
 
   loadRfqDetails(rfqId: number) {
     this.rfqService.getRfqById(rfqId, true).subscribe(

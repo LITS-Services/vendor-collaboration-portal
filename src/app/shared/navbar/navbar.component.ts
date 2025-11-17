@@ -12,7 +12,7 @@ import { ToastrService } from 'ngx-toastr';
 import { CompanyService } from 'app/shared/services/company.service'; // ✅ added
 import { HROUTES } from '../horizontal-menu/navigation-routes.config';
 import { FirebaseMessagingService } from 'app/firebase-messaging.service';
-import { NotifcationService } from '../services/notification.service';
+import { NotifcationService, ReferenceType } from '../services/notification.service';
 import { UserServiceService } from '../services/user-service.service';
 
 @Component({
@@ -58,10 +58,9 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
 
   notifOpen = false;
 
-  notifications: any[] = []
+  notifications: any[] = [];
   unreadCount: number = null;
   notificationCount: number = null;
-
 
   constructor(
     public translate: TranslateService,
@@ -75,7 +74,6 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
     private toaster: ToastrService,
     private notificationService: NotifcationService,
     private userService: UserServiceService
-
   ) {
     const browserLang: string = translate.getBrowserLang();
     translate.use(browserLang.match(/en|es|pt|de/) ? browserLang : "en");
@@ -88,11 +86,10 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.sub = this.userService.profilePicture$.subscribe(url => {
-      this.profilePicture = url || 'assets/img/profile/user.png';
+    this.sub = this.userService.profilePicture$.subscribe((url) => {
+      this.profilePicture = url || "assets/img/profile/user.png";
       this.cdr.detectChanges();
     });
-
 
     this.getNotification();
     var userId = localStorage.getItem("userId");
@@ -142,6 +139,60 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
     this.isSmallScreen = this.innerWidth < 1200;
   }
 
+  redirection(referenceType: any, referenceId: any) {
+    switch (referenceType) {
+      case ReferenceType.RFQ:
+        this.router.navigate(["/rfq/submit-bid", referenceId], {
+          skipLocationChange: true,
+        });
+        break;
+
+      // case ReferenceType.PR:
+      //   this.router.navigate(["/purchase-request/new-purchase-request"], {
+      //     queryParams: { id: referenceId, mode: "view" },
+      //     skipLocationChange: true,
+      //   });
+      //   break;
+
+      case ReferenceType.PO:
+        this.router.navigate(
+          ["/purchase-order/purchase-order-details", referenceId],
+          { skipLocationChange: true }
+        );
+          break;
+
+      case ReferenceType.Default:
+        return ReferenceType.Default;
+
+      default:
+        console.warn("Unhandled reference type:", referenceType);
+        break;
+    }
+  }
+
+  onNotifClick(n: any): void {
+    const wasUnread = n.status === 0;
+    n.status = 1;
+    if (wasUnread && this.unreadCount > 0) this.unreadCount--;
+
+    this.notificationService.markAsRead(n.id).subscribe({
+      next: () => {
+        var a = this.redirection(n.referenceType, n.referenceId);
+        if (a == ReferenceType.Default) {
+          this.notifications.filter((m: any) => m.id === n.id)[0].status = 1;
+        }
+
+        this.closePanel();
+      },
+      error: () => {
+        if (wasUnread) {
+          n.status = 0;
+          this.unreadCount++;
+        }
+      },
+    });
+  }
+
   togglePanel(): void {
     this.notifOpen = !this.notifOpen;
   }
@@ -162,12 +213,15 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   getNotification() {
     this.notificationService.getNotification().subscribe((res: any) => {
       this.notifications = res.messages.map((m: any, index: number) => ({
+        id: m.id,
         title: m.title,
         message: m.message,
         timeAgo: this.timeSince(new Date(m.createdOn)),
         read: false,
         status: m.status,
         createdOn: m.createdOn,
+        referenceType: m.referenceType as ReferenceType,
+        referenceId: m.referenceId,
       }));
       this.notificationCount = res.messages?.length;
       this.unreadCount = res.unreadCount;

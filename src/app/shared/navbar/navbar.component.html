@@ -55,7 +55,9 @@
 
             <div class="panel-body">
               <ng-container *ngIf="notifications?.length; else emptyState">
-                <div class="notif-item" [ngClass]="{ 'unread-notif': n.status === 0 }" *ngFor="let n of notifications">
+                <div class="notif-item" [ngClass]="{ 'unread-notif': n.status === 0 }"
+                 *ngFor="let n of notifications"
+                 (click)="onNotifClick(n)">
                   <div class="row-1">
                     <div class="title text-ellipsis d-flex align-items-center">{{ n.title }}
                       <span *ngIf="n.status === 0" class="dot-unread ms-1"></span>
