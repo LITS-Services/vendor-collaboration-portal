@@ -58,14 +58,14 @@ export function createTranslateLoader(http: HttpClient) {
     RecaptchaFormsModule,
     RecaptchaModule,
   ],
-  providers: [
-    {
-      provide: RECAPTCHA_SETTINGS,
-      useValue: {
-        siteKey: environment.recaptcha.siteKey,
-      } as RecaptchaSettings,
-    },
-  ],
+  // providers: [
+  //   {
+  //     provide: RECAPTCHA_SETTINGS,
+  //     useValue: {
+  //       siteKey: environment.recaptcha.siteKey,
+  //     } as RecaptchaSettings,
+  //   },
+  // ],
   declarations: [
     ComingSoonPageComponent,
     ErrorPageComponent,
