@@ -240,8 +240,11 @@ export class AuthService {
     if (username) localStorage.setItem('username', username);
     localStorage.setItem('roles', JSON.stringify(Array.isArray(roles) ? roles : []));
 
-    const companyIds = res.companyIds?.$values ?? res.companyIds ?? null;
+    const companyIds = res.vendorCompanyIds ?? null;
     if (companyIds) localStorage.setItem('companyIds', JSON.stringify(companyIds));
+
+    const firstCompanyId = companyIds?.[0] ?? null;
+    if (firstCompanyId) localStorage.setItem('company', firstCompanyId);
   }
 
   private _applySessionFromRefresh(res: any): void {
@@ -253,8 +256,11 @@ export class AuthService {
     const username = res.username ?? res.user?.username ?? res.user?.email ?? null;
     if (username) localStorage.setItem('username', username);
     if (res.roles) localStorage.setItem('roles', JSON.stringify(res.roles));
-    const companyIds = res.companyIds?.$values ?? res.companyIds ?? null;
+    const companyIds = res.vendorCompanyIds ?? null;
     if (companyIds) localStorage.setItem('companyIds', JSON.stringify(companyIds));
+
+    const firstCompanyId = companyIds?.[0] ?? null;
+    if (firstCompanyId) localStorage.setItem('company', firstCompanyId);
   }
 
 }
