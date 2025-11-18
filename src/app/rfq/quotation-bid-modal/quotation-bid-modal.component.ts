@@ -26,7 +26,7 @@ export class QuotationBidModalComponent implements OnInit {
   bidMap: Map<number, BidSubmissionDetails> = new Map();
   showAttachments: { [key: number]: boolean } = {};
   editingBidItemId: number | null = null;
-
+  companyId: string = "";
   selectedItem: any;
   private activeModal?: NgbModalRef;
 
@@ -51,6 +51,7 @@ export class QuotationBidModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.vendorUserId = localStorage.getItem("userId");
+     this.companyId = localStorage.getItem("company");
     if (!this.vendorUserId) {
       console.error(
         "Vendor user ID not found in localStorage. Please login again."
@@ -104,7 +105,7 @@ export class QuotationBidModalComponent implements OnInit {
       .getRFQComments(
         this.vendorUserId,
         this.rfq.id,
-        "51006267-D9C2-4B2E-BD8F-E5F1B21EA551"
+        this.companyId
       )
       .pipe(finalize(() =>
       {
@@ -148,7 +149,7 @@ export class QuotationBidModalComponent implements OnInit {
     const payload: any = {
       quotationId: this.rfq.id,
       vendorId: this.vendorUserId,
-      vendorCompanyId: "51006267-D9C2-4B2E-BD8F-E5F1B21EA551",
+      vendorCompanyId: this.companyId,
       commentText,
       createdByType: CreatedByType.Vendor,
     };

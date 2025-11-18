@@ -62,6 +62,7 @@ export class LoginPageComponent implements OnInit {
     const username = params.get('username');
     const error = params.get('error');
     const code = params.get('code');
+    const company = params.get('company');
 
     if (token) {
       console.log("✅ Token found in URL:", token);
@@ -70,6 +71,7 @@ export class LoginPageComponent implements OnInit {
       if (email) localStorage.setItem('userEmail', email);
       if (userId) localStorage.setItem('userId', userId);
       if (username) localStorage.setItem('username', username);
+      if (company) localStorage.setItem('company', company);
 
       this.router.navigate(['/dashboard/dashboard1'], { replaceUrl: true });
       return;
