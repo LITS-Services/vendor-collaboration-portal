@@ -17,12 +17,12 @@
             <h1 class="mb-0">Company Profile</h1>
         </div>
         <div class="col-6 d-flex align-items-center justify-content-end">
-            <button class="btn btn-primary" (click)="submitForm()" [disabled]="isReadonlyEntityFields"> 
+            <button class="btn btn-primary" (click)="submitForm()" [disabled]="isReadonlyEntityFields">
                 {{ isEditMode ? 'Update Company' : 'Add Company' }}
             </button>
         </div>
     </div>
- 
+
     <section id="basic-input">
         <div class="row">
             <div class="col-12">
@@ -31,7 +31,8 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-12 d-flex align-items-center justify-content-end mb-2">
-                                    <button class="btn btn-primary" (click)="openAttachmentModal()" [disabled]="isReadonlyEntityFields">Attachment</button>
+                                    <button class="btn btn-primary" (click)="openAttachmentModal()"
+                                        [disabled]="isReadonlyEntityFields">Attachment</button>
                                 </div>
                                 <div class="col-12">
                                     <ngb-accordion class="cstm-accordion" [closeOthers]="false"
@@ -47,19 +48,22 @@
                                                     <div *ngIf="!isEditMode" class="col-md-6">
                                                         <label>Select Procurement Companies</label>
                                                         <div class="dropdown">
-                                                            <button class="btn btn-outline-primary w-100 text-start procurement-btn"
-                                                                    type="button" (click)="dropdownOpen = !dropdownOpen">
+                                                            <button
+                                                                class="btn btn-outline-primary w-100 text-start procurement-btn"
+                                                                type="button" (click)="dropdownOpen = !dropdownOpen">
                                                                 {{ getSelectedCompaniesText() || 'Select Companies' }}
                                                             </button>
-                                                            <div class="dropdown-menu w-100 p-2" [class.show]="dropdownOpen"
-                                                                 style="max-height: 200px; overflow-y: auto;">
+                                                            <div class="dropdown-menu w-100 p-2"
+                                                                [class.show]="dropdownOpen"
+                                                                style="max-height: 200px; overflow-y: auto;">
                                                                 <div *ngFor="let company of procurementCompanies">
                                                                     <div class="form-check">
                                                                         <input class="form-check-input" type="checkbox"
-                                                                               [value]="company.id"
-                                                                               [checked]="selectedProcurementCompanyIds?.includes(company.id)"
-                                                                               (change)="toggleCompanySelection(company.id, $event)">
-                                                                        <label class="form-check-label">{{ company.name }}</label>
+                                                                            [value]="company.id"
+                                                                            [checked]="selectedProcurementCompanyIds?.includes(company.id)"
+                                                                            (change)="toggleCompanySelection(company.id, $event)">
+                                                                        <label class="form-check-label">{{ company.name
+                                                                            }}</label>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -68,43 +72,57 @@
 
                                                     <div *ngIf="isEditMode" class="col-md-6 mb-3">
                                                         <label>Select Entity</label>
+
                                                         <div class="dropdown">
                                                             <button class="btn btn-outline-primary w-100 text-start"
-                                                                    type="button"
-                                                                    (click)="entityDropdownOpen = !entityDropdownOpen">
+                                                                type="button"
+                                                                (click)="entityDropdownOpen = !entityDropdownOpen">
+
                                                                 {{ getSelectedEntityName() || 'Select Entity' }}
                                                             </button>
+
                                                             <div class="dropdown-menu w-100 p-2"
-                                                                 [class.show]="entityDropdownOpen"
-                                                                 style="max-height: 200px; overflow-y: auto;">
-                                                                <div *ngFor="let entity of procurementCompanies">
+                                                                [class.show]="entityDropdownOpen"
+                                                                style="max-height: 200px; overflow-y: auto;">
+
+                                                                <!-- Loop Vendor Entities only -->
+                                                                <div *ngFor="let entity of vendorEntities">
+
                                                                     <div class="form-check">
                                                                         <input class="form-check-input" type="radio"
-                                                                               name="entityRadio"
-                                                                               [id]="'entity-' + entity.procurementCompanyId"
-                                                                               [value]="entity.procurementCompanyId"
-                                                                               [checked]="selectedEntityId === entity.procurementCompanyId"
-                                                                               (change)="onEntitySelect(entity)">
+                                                                            name="entityRadio"
+                                                                            [id]="'entity-' + entity.procurementCompanyId"
+                                                                            [value]="entity.procurementCompanyId"
+                                                                            [checked]="selectedEntityId === entity.procurementCompanyId"
+                                                                            (change)="onEntitySelect(entity)">
+
                                                                         <label class="form-check-label"
-                                                                               [for]="'entity-' + entity.procurementCompanyId">
-                                                                            {{ entity.procurementCompany.name }}
-                                                                            <span class="text-muted" *ngIf="entity.requestStatus">
+                                                                            [for]="'entity-' + entity.procurementCompanyId">
+
+                                                                            <!-- Access procurementCompany.name -->
+                                                                            {{ entity.procurementCompany?.name }}
+
+                                                                            <!-- Access status from requestStatus -->
+                                                                            <span class="text-muted"
+                                                                                *ngIf="entity.requestStatus?.status">
                                                                                 ({{ entity.requestStatus.status }})
                                                                             </span>
                                                                         </label>
                                                                     </div>
+
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
 
+
                                                     <!-- Company Name -->
                                                     <div class="col-md-3">
                                                         <label>Name</label>
                                                         <input type="text" class="form-control"
-                                                               [(ngModel)]="companyName"
-                                                               [disabled]="isReadonlyEntityFields"
-                                                               placeholder="Enter company name">
+                                                            [(ngModel)]="companyName"
+                                                            [disabled]="isReadonlyEntityFields"
+                                                            placeholder="Enter company name">
                                                     </div>
                                                 </div>
                                             </ng-template>
@@ -114,8 +132,7 @@
                                         <ngb-panel id="static-3" title="Addresses">
                                             <ng-template ngbPanelContent>
                                                 <div class="address-table-container">
-                                                    <button class="btn btn-primary mb-3"
-                                                        (click)="openAddressModal()" 
+                                                    <button class="btn btn-primary mb-3" (click)="openAddressModal()"
                                                         [disabled]="isReadonlyEntityFields">Add Address</button>
                                                     <div class="table-responsive">
                                                         <table class="table">
@@ -158,8 +175,7 @@
                                         <!-- Company Contact Details -->
                                         <ngb-panel id="static-4" title="Company Contact Details">
                                             <ng-template ngbPanelContent>
-                                                <button class="btn btn-primary mb-3" 
-                                                    (click)="openContactModal()"
+                                                <button class="btn btn-primary mb-3" (click)="openContactModal()"
                                                     [disabled]="isReadonlyEntityFields">Add Contact</button>
                                                 <div class="table-responsive">
                                                     <table class="table">
@@ -208,8 +224,7 @@
                                                                 ngbTooltip="Select the main currency used for transactions with this company"
                                                                 placement="right"></i>
                                                         </label>
-                                                        <select class="form-control"
-                                                            [(ngModel)]="primaryCurrency"
+                                                        <select class="form-control" [(ngModel)]="primaryCurrency"
                                                             [disabled]="isReadonlyEntityFields">
                                                             <option value="">Select primary currency</option>
                                                             <option>USD</option>
@@ -225,11 +240,11 @@
                                                                 ngbTooltip="Choose the main contact person for this vendor"
                                                                 placement="right"></i>
                                                         </label>
-                                                        <select class="form-control" 
-                                                            [(ngModel)]="employeeResponsible"
+                                                        <select class="form-control" [(ngModel)]="employeeResponsible"
                                                             [disabled]="isReadonlyEntityFields">
                                                             <option value="">Select primary contact</option>
-                                                            <option *ngFor="let c of contactList">{{ c.description }}</option>
+                                                            <option *ngFor="let c of contactList">{{ c.description }}
+                                                            </option>
                                                         </select>
                                                     </div>
 
@@ -240,8 +255,7 @@
                                                                 ngbTooltip="Specify whether this vendor is Local or Foreign"
                                                                 placement="right"></i>
                                                         </label>
-                                                        <select class="form-control" 
-                                                            [(ngModel)]="vendorCategory"
+                                                        <select class="form-control" [(ngModel)]="vendorCategory"
                                                             [disabled]="isReadonlyEntityFields">
                                                             <option>Select vendor type</option>
                                                             <option>Local</option>
@@ -295,8 +309,7 @@
                                                                 ngbTooltip="Enter the business segment this vendor belongs to"
                                                                 placement="right"></i>
                                                         </label>
-                                                        <input type="text" class="form-control" 
-                                                            [(ngModel)]="segment"
+                                                        <input type="text" class="form-control" [(ngModel)]="segment"
                                                             [disabled]="isReadonlyEntityFields"
                                                             placeholder="Enter segment">
                                                     </div>
@@ -308,8 +321,7 @@
                                                                 ngbTooltip="Enter the specific expertise or speciality of this vendor"
                                                                 placement="right"></i>
                                                         </label>
-                                                        <input type="text" class="form-control" 
-                                                            [(ngModel)]="speciality"
+                                                        <input type="text" class="form-control" [(ngModel)]="speciality"
                                                             [disabled]="isReadonlyEntityFields"
                                                             placeholder="Enter speciality">
                                                     </div>
@@ -321,8 +333,7 @@
                                                                 ngbTooltip="Enter the chain or group the company is associated with"
                                                                 placement="right"></i>
                                                         </label>
-                                                        <input type="text" class="form-control" 
-                                                            [(ngModel)]="chain"
+                                                        <input type="text" class="form-control" [(ngModel)]="chain"
                                                             [disabled]="isReadonlyEntityFields"
                                                             placeholder="Enter chain">
                                                     </div>
@@ -334,8 +345,7 @@
                                                                 ngbTooltip="Add any additional notes or remarks about this vendor"
                                                                 placement="right"></i>
                                                         </label>
-                                                        <textarea class="form-control" rows="3" 
-                                                            [(ngModel)]="note"
+                                                        <textarea class="form-control" rows="3" [(ngModel)]="note"
                                                             [disabled]="isReadonlyEntityFields"
                                                             placeholder="Enter note"></textarea>
                                                     </div>
@@ -453,10 +463,11 @@
                                                             prop="bankCountry"></ngx-datatable-column>
                                                         <ngx-datatable-column name="Currency"
                                                             prop="bankCurrency"></ngx-datatable-column>
-                                                        
+
                                                         <!-- Add Actions Column for Bank -->
                                                         <ngx-datatable-column name="Actions">
-                                                            <ng-template let-row="row" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+                                                            <ng-template let-row="row" let-rowIndex="rowIndex"
+                                                                ngx-datatable-cell-template>
                                                                 <button class="ft-edit btn me-2" type="button"
                                                                     [disabled]="isReadonlyEntityFields"></button>
                                                                 <button class="ft-trash btn" type="button"
@@ -545,8 +556,7 @@
 
     <!-- Bank Delete Modal -->
     <ng-container *ngIf="showBankDeletePopup">
-        <div class="modal" tabindex="-1" role="dialog"
-            style="display: block; background: rgba(0,0,0,0.5);">
+        <div class="modal" tabindex="-1" role="dialog" style="display: block; background: rgba(0,0,0,0.5);">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -559,8 +569,7 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger"
                             (click)="removeBank(bankIndexToDelete!)">Delete</button>
-                        <button type="button" class="btn btn-secondary"
-                            (click)="closeBankPopup()">Cancel</button>
+                        <button type="button" class="btn btn-secondary" (click)="closeBankPopup()">Cancel</button>
                     </div>
                 </div>
             </div>

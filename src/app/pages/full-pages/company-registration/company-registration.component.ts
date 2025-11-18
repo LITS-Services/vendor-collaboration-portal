@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import { ChangeDetectorRef, Component, Inject, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, Inject, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CompanyService } from 'app/shared/services/company.service';
@@ -12,6 +12,8 @@ import { CompanyAddressModalComponent } from '../company-address-modal/company-a
 import { CompanyProfileAttachmentComponent } from '../company-profile-attachment/company-profile-attachment.component';
 import { ToastrService } from 'ngx-toastr';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { finalize } from 'rxjs/operators';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-company-registration',
@@ -32,11 +34,13 @@ export class CompanyRegistrationComponent implements OnInit {
   isLoading: boolean = false;
   companyId: number | null = null;
   remarks: string = '';
+  vendorEntities: any[] = []; // For vendorUserCompanies only
+  selectedEntity: any; // instead of just ID
 
-// For entity selection dropdown
-entityDropdownOpen: boolean = false;
-selectedEntityId: number | null = null;
-isReadonlyEntityFields: boolean = false;
+  // For entity selection dropdown
+  entityDropdownOpen: boolean = false;
+  selectedEntityId: number | null = null;
+  isReadonlyEntityFields: boolean = false;
 
 
   procurementCompanies: any[] = [];
@@ -86,7 +90,9 @@ isReadonlyEntityFields: boolean = false;
     private router: Router,
     private route: ActivatedRoute,
     private toastr: ToastrService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private spinner: NgxSpinnerService,
+
   ) {
     this.config = this.configService.templateConf;
   }
@@ -166,159 +172,200 @@ isReadonlyEntityFields: boolean = false;
     this.dropdownOpen = !this.dropdownOpen;
   }
 
-loadCompanyById(companyId: number) {
-  this.isLoading = true;
-  this.companyService.getCompanyById(companyId).subscribe({
-    next: (res: any) => {
-      const company = res?.vendorCompany || res;
-      if (company) {
-        // Basic Info
-        this.companyName = company.name || '';
-        this.companyType = company.companyType || 'Organization';
-        this.aboutCompany = company.aboutCompany || '';
-        this.remarks = company.remarks || '';
-        this.companyForm.patchValue({ remarks: this.remarks });
+  loadCompanyById(companyId: number) {
+    this.isLoading = true;
+    this.spinner.show();
 
-        // Purchasing Demographics
-        const pd = company.purchasingDemographics || {};
-        this.vendorCategory = pd.vendorType || '';
-        this.primaryCurrency = pd.primaryCurrency || '';
-        this.lineOfBusiness = pd.lineOfBusiness || '';
-        this.birthCountry = pd.birthCountry || '';
-        this.employeeResponsible = pd.employeeResponsible || '';
-        this.segment = pd.segment || '';
-        this.speciality = pd.speciality || '';
-        this.chain = pd.chain || '';
-        this.note = pd.note || '';
 
-        // Addresses
-        this.addressList = (company.addresses || []).map(a => ({
-          street: a.street,
-          city: a.city,
-          state: a.state,
-          zip: a.zip,
-          country: a.country,
-          isPrimary: a.isPrimary || false
-        }));
+    this.companyService.getCompanyById(companyId)
+      .pipe(finalize(() => {
+        this.spinner.hide();
+        this.cdr.detectChanges();
+      }))
+      .subscribe({
+        next: (res: any) => {
+          const company = res?.vendorCompany || res;
+          if (company) {
 
-        // Vendor User Companies (Entities)
-        if (company.vendorUserCompanies && Array.isArray(company.vendorUserCompanies)) {
-          this.procurementCompanies = company.vendorUserCompanies;
+            if (company.vendorUserCompanies && Array.isArray(company.vendorUserCompanies)) {
 
-          // Auto-select first entity if exists and set form state
-          if (this.procurementCompanies.length > 0) {
-            this.onEntitySelect(this.procurementCompanies[0]);
-          } else {
-            // If no entities, ensure form is enabled
-            this.isReadonlyEntityFields = false;
-            this.bankForm.enable();
-            this.companyForm.enable();
+              this.vendorEntities = company.vendorUserCompanies;
+
+              // Auto-select first vendor entity
+              if (this.vendorEntities.length > 0) {
+                this.onEntitySelect(this.vendorEntities[0]);
+              }
+
+            } else {
+              this.vendorEntities = [];
+            }
+
+            // Basic Info
+            this.companyName = company.name || '';
+            this.companyType = company.companyType || 'Organization';
+            this.aboutCompany = company.aboutCompany || '';
+            this.remarks = company.remarks || '';
+            this.companyForm.patchValue({ remarks: this.remarks });
+
+            // Purchasing Demographics
+            const pd = company.purchasingDemographics || {};
+            this.vendorCategory = pd.vendorType || '';
+            this.primaryCurrency = pd.primaryCurrency || '';
+            this.lineOfBusiness = pd.lineOfBusiness || '';
+            this.birthCountry = pd.birthCountry || '';
+            this.employeeResponsible = pd.employeeResponsible || '';
+            this.segment = pd.segment || '';
+            this.speciality = pd.speciality || '';
+            this.chain = pd.chain || '';
+            this.note = pd.note || '';
+
+            // Addresses
+            this.addressList = (company.addresses || []).map(a => ({
+              street: a.street,
+              city: a.city,
+              state: a.state,
+              zip: a.zip,
+              country: a.country,
+              isPrimary: a.isPrimary || false
+            }));
+
+            // Vendor User Companies (Entities)
+            if (company.vendorUserCompanies && Array.isArray(company.vendorUserCompanies)) {
+              this.procurementCompanies = company.vendorUserCompanies;
+
+              // Auto-select first entity if exists and set form state
+              if (this.procurementCompanies.length > 0) {
+                this.onEntitySelect(this.procurementCompanies[0]);
+              } else {
+                // If no entities, ensure form is enabled
+                this.isReadonlyEntityFields = false;
+                this.bankForm.enable();
+                this.companyForm.enable();
+              }
+            } else {
+              // If no vendorUserCompanies, ensure form is enabled
+              this.isReadonlyEntityFields = false;
+              this.bankForm.enable();
+              this.companyForm.enable();
+            }
+
+            // Contacts
+            this.contactList = (company.contacts || []).map(c => ({
+              description: c.description,
+              type: c.type,
+              contactNumber: c.contactNumber,
+              extension: c.extension || '',
+              isPrimary: c.isPrimary || false
+            }));
+
+            // Bank Details
+            this.bankList = (company.bankDetails || []).map(b => ({
+              id: b.id,
+              vendorCompanyId: b.vendorCompanyId,
+              bankName: b.bankName,
+              accountHolderName: b.accountHolderName,
+              accountNumber: b.accountNumber,
+              iban: b.iban,
+              swiftCode: b.swifT_BIC_Code,
+              branchName: b.branchName,
+              branchAddress: b.branchAddress,
+              bankCountry: b.country,
+              bankCurrency: b.currency,
+              isPrimary: b.isPrimary || false,
+              createdBy: b.createdBy,
+              createdDate: b.createdDate
+            }));
+
+            // Initialize bank form state based on current readonly status
+            if (this.isReadonlyEntityFields) {
+              this.bankForm.disable();
+            } else {
+              this.bankForm.enable();
+            }
+
+            // Attachments
+            this.attachedFiles = (company.attachments || []).map(f => ({
+              fileName: f.fileName,
+              format: f.fileFormat,
+              fileContent: f.fileContent,
+              attachedBy: f.attachedBy,
+              remarks: f.remarks,
+              attachedAt: f.attachedAt
+            }));
+
+            // Procurement Companies
+            if (Array.isArray(company.procurementCompanyId)) {
+              this.selectedProcurementCompanyIds = [...company.procurementCompanyId];
+            } else if (company.procurementCompanyId) {
+              this.selectedProcurementCompanyIds = [company.procurementCompanyId];
+            }
+
+            this.isEditMode = true;
           }
-        } else {
-          // If no vendorUserCompanies, ensure form is enabled
+
+          this.isLoading = false;
+          this.cdr.markForCheck();
+        },
+        error: (err) => {
+          console.error('Error loading company:', err);
+          this.isLoading = false;
+          // Ensure form is enabled even on error
           this.isReadonlyEntityFields = false;
           this.bankForm.enable();
           this.companyForm.enable();
         }
+      });
+  }
 
-        // Contacts
-        this.contactList = (company.contacts || []).map(c => ({
-          description: c.description,
-          type: c.type,
-          contactNumber: c.contactNumber,
-          extension: c.extension || '',
-          isPrimary: c.isPrimary || false
-        }));
+  onEntitySelect(entity: any) {
+    this.selectedEntityId = entity.procurementCompanyId;
+    this.entityDropdownOpen = false;
 
-        // Bank Details
-        this.bankList = (company.bankDetails || []).map(b => ({
-          id: b.id,
-          vendorCompanyId: b.vendorCompanyId,
-          bankName: b.bankName,
-          accountHolderName: b.accountHolderName,
-          accountNumber: b.accountNumber,
-          iban: b.iban,
-          swiftCode: b.swifT_BIC_Code,
-          branchName: b.branchName,
-          branchAddress: b.branchAddress,
-          bankCountry: b.country,
-          bankCurrency: b.currency,
-          isPrimary: b.isPrimary || false,
-          createdBy: b.createdBy,
-          createdDate: b.createdDate
-        }));
+    this.selectedEntity = entity;
+    this.selectedProcurementCompanyIds = [entity.procurementCompanyId];
 
-        // Initialize bank form state based on current readonly status
-        if (this.isReadonlyEntityFields) {
-          this.bankForm.disable();
-        } else {
-          this.bankForm.enable();
-        }
+    // Set readonly fields based on requestStatusId (1 = InProcess, 3 = Approved, etc.)
+    this.isReadonlyEntityFields = entity.requestStatusId === 1 || entity.requestStatusId === 3;
 
-        // Attachments
-        this.attachedFiles = (company.attachments || []).map(f => ({
-          fileName: f.fileName,
-          format: f.fileFormat,
-          fileContent: f.fileContent,
-          attachedBy: f.attachedBy,
-          remarks: f.remarks,
-          attachedAt: f.attachedAt
-        }));
-
-        // Procurement Companies
-        if (Array.isArray(company.procurementCompanyId)) {
-          this.selectedProcurementCompanyIds = [...company.procurementCompanyId];
-        } else if (company.procurementCompanyId) {
-          this.selectedProcurementCompanyIds = [company.procurementCompanyId];
-        }
-
-        this.isEditMode = true;
-      }
-
-      this.isLoading = false;
-      this.cdr.markForCheck();
-    },
-    error: (err) => {
-      console.error('Error loading company:', err);
-      this.isLoading = false;
-      // Ensure form is enabled even on error
-      this.isReadonlyEntityFields = false;
+    // Enable or disable forms based on entity status
+    if (this.isReadonlyEntityFields) {
+      this.bankForm.disable();
+      this.companyForm.disable();
+    } else {
       this.bankForm.enable();
       this.companyForm.enable();
     }
-  });
-}
 
-onEntitySelect(entity: any) {
-  this.selectedEntityId = entity.procurementCompanyId;
-  this.entityDropdownOpen = false;
+    console.log('Entity selected:', entity);
+    console.log('Entity Status ID:', entity.requestStatusId);
+    console.log('Form disabled:', this.isReadonlyEntityFields);
+  }
+  hasInProcessEntities(): boolean {
+    return this.procurementCompanies.some(entity =>
+      entity.requestStatusId === 1 || entity.requestStatus?.toLowerCase() === 'inprocess'
+    );
+  }
+  // getSelectedEntityName(): string {
+  //   if (!this.selectedEntityId) return 'Select Entity';
+  //   const entity = this.procurementCompanies.find(e => e.procurementCompanyId === this.selectedEntityId);
+  //   return entity ? entity.procurementCompany.name : 'Select Entity';
+  // }
 
-  // Set readonly fields based on requestStatusId (1 = InProcess, 3 = Approved, etc.)
-  this.isReadonlyEntityFields = entity.requestStatusId === 1 || entity.requestStatusId === 3;
+  getSelectedEntityName(): string {
+    if (!this.selectedEntityId) return 'Select Entity';
 
-  // Enable or disable forms based on entity status
-  if (this.isReadonlyEntityFields) {
-    this.bankForm.disable();
-    this.companyForm.disable();
-  } else {
-    this.bankForm.enable();
-    this.companyForm.enable();
+    // Search in vendorEntities (not procurementCompanies)
+    const entity = this.vendorEntities.find(e => e.procurementCompanyId === this.selectedEntityId);
+
+    if (!entity) return 'Select Entity';
+
+    // Return name + optional status
+    const companyName = entity.procurementCompany?.name || '';
+    const status = entity.requestStatus?.status ? ` (${entity.requestStatus.status})` : '';
+
+    return companyName + status;
   }
 
-  console.log('Entity selected:', entity);
-  console.log('Entity Status ID:', entity.requestStatusId);
-  console.log('Form disabled:', this.isReadonlyEntityFields);
-}
-hasInProcessEntities(): boolean {
-  return this.procurementCompanies.some(entity => 
-    entity.requestStatusId === 1 || entity.requestStatus?.toLowerCase() === 'inprocess'
-  );
-}
-getSelectedEntityName(): string {
-  if (!this.selectedEntityId) return 'Select Entity';
-  const entity = this.procurementCompanies.find(e => e.procurementCompanyId === this.selectedEntityId);
-  return entity ? entity.procurementCompany.name : 'Select Entity';
-}
 
 
   toggleCompanySelection(id: number, event: any) {
@@ -349,26 +396,39 @@ getSelectedEntityName(): string {
     localStorage.setItem('vendorSequence', sequenceNumber.toString());
   }
 
+  // loadProcurementCompanies() {
+  //   this.companyService.getProcurementCompanies().subscribe({
+  //     next: (res: any) => {
+  //       if (res && Array.isArray(res.result)) {
+  //         this.procurementCompanies = res.result;
+  //       } else if (Array.isArray(res)) {
+  //         this.procurementCompanies = res;
+  //       } else if (res?.$values) {
+  //         this.procurementCompanies = res.$values;
+  //       } else {
+  //         this.procurementCompanies = [];
+  //       }
+  //       this.cdr.detectChanges();
+  //     },
+  //     error: (err) => {
+  //       console.error('Error fetching procurement companies:', err);
+  //       this.procurementCompanies = [];
+  //     }
+  //   });
+  // }
+
   loadProcurementCompanies() {
     this.companyService.getProcurementCompanies().subscribe({
       next: (res: any) => {
-        if (res && Array.isArray(res.result)) {
-          this.procurementCompanies = res.result;
-        } else if (Array.isArray(res)) {
-          this.procurementCompanies = res;
-        } else if (res?.$values) {
-          this.procurementCompanies = res.$values;
-        } else {
-          this.procurementCompanies = [];
-        }
+        if (res?.result) this.procurementCompanies = res.result;
+        else if (Array.isArray(res)) this.procurementCompanies = res;
+        else this.procurementCompanies = [];
+
         this.cdr.detectChanges();
-      },
-      error: (err) => {
-        console.error('Error fetching procurement companies:', err);
-        this.procurementCompanies = [];
       }
     });
   }
+
 
   // ==================== Address Methods ====================
   openAddressModal() {
@@ -605,11 +665,21 @@ getSelectedEntityName(): string {
       modifiedBy: this.isEditMode ? this.modifiedBy : undefined
     };
 
+    // const payload = {
+    //   vendorCompany: vendorCompanyPayload,
+    //   SubmitterId: this.userId,
+    //   procurementCompanyId: [...this.selectedProcurementCompanyIds]
+    // };
+
     const payload = {
-      vendorCompany: vendorCompanyPayload,
+      vendorCompany: {
+        ...vendorCompanyPayload,
+        procurementCompanyId: [...this.selectedProcurementCompanyIds] // latest IDs
+      },
       SubmitterId: this.userId,
-      procurementCompanyId: [...this.selectedProcurementCompanyIds]
+      procurementCompanyId: [...this.selectedProcurementCompanyIds] // same here
     };
+
 
     this.isLoading = true;
 
@@ -643,6 +713,14 @@ getSelectedEntityName(): string {
     } else {
       console.warn('Please fill in all required fields.');
       this.bankForm.markAllAsTouched();
+    }
+  }
+
+  @HostListener('document:click', ['$event.target'])
+  onClickOutside(targetElement: HTMLElement) {
+    const clickedInside = targetElement.closest('.dropdown');
+    if (!clickedInside) {
+      this.entityDropdownOpen = false;
     }
   }
 
