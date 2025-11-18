@@ -268,3 +268,27 @@ p {
 .or-divider:not(:empty)::after {
   margin-left: 0.75em;
 }
+
+.rc-anchor-normal {
+    height: 74px;
+    width: unset;
+}
+
+
+
+.rc-anchor-logo-portrait{
+    margin: 10px 0 0 110px;
+
+
+}
+
+/* ✅ Force reCAPTCHA container full width */
+::ng-deep .recaptcha-wrapper re-captcha > div {
+  width: 100% !important;
+}
+
+/* ✅ Optional: tweak anchor size */
+.recaptcha-wrapper ::ng-deep .rc-anchor-normal {
+  width: 100% !important;
+  max-width: 100% !important;
+}

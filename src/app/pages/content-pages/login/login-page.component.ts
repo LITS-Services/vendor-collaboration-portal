@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from "@angular/router";
 import { AuthService } from 'app/shared/auth/auth.service';
 import { NgxSpinnerService } from "ngx-spinner";
 import { ToastrService } from 'ngx-toastr';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-login-page',
@@ -11,7 +12,7 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./login-page.component.scss']
 })
 export class LoginPageComponent implements OnInit {
-  
+  token: string | undefined;
   public hidePassword: boolean = true;
   loginFormSubmitted = false;
   isLoginFailed = false;
@@ -21,7 +22,9 @@ export class LoginPageComponent implements OnInit {
   loginForm = new UntypedFormGroup({
     username: new UntypedFormControl("", [Validators.required]),
     password: new UntypedFormControl("", [Validators.required]),
-    rememberMe: new UntypedFormControl(true)
+    rememberMe: new UntypedFormControl(true),
+    // recaptcha: new UntypedFormControl('', Validators.required)
+    recaptcha: new UntypedFormControl('', [Validators.required])
   });
 
   constructor(
@@ -29,9 +32,9 @@ export class LoginPageComponent implements OnInit {
     private authService: AuthService,
     private spinner: NgxSpinnerService,
     private route: ActivatedRoute,
-    private cdr: ChangeDetectorRef,   // 👈 Added ChangeDetectorRef
-    private toastr: ToastrService       
-  ) {}
+    private cdr: ChangeDetectorRef,   //  Added ChangeDetectorRef
+    private toastr: ToastrService
+  ) { }
 
   get lf() {
     return this.loginForm.controls;
@@ -43,20 +46,20 @@ export class LoginPageComponent implements OnInit {
 
   // 🔹 Initialization
   ngOnInit() {
-          const msg = sessionStorage.getItem('authFlash');
-            if (msg) {
-                sessionStorage.removeItem('authFlash');
-                this.toastr.warning(msg, 'Session expired', { timeOut: 10000 });
-            }
+    const msg = sessionStorage.getItem('authFlash');
+    if (msg) {
+      sessionStorage.removeItem('authFlash');
+      this.toastr.warning(msg, 'Session expired', { timeOut: 10000 });
+    }
     console.log("Full URL:", window.location.href);
 
-    // 👇 Handle SSO redirect callback
+    //  Handle SSO redirect callback
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
     let refreshToken = params.get("refreshToken") ?? undefined;
-      if (refreshToken) {
-        refreshToken = refreshToken.replace(/ /g, "+");
-      }
+    if (refreshToken) {
+      refreshToken = refreshToken.replace(/ /g, "+");
+    }
     const email = params.get('email');
     const userId = params.get('id');
     const username = params.get('username');
@@ -65,7 +68,7 @@ export class LoginPageComponent implements OnInit {
     const company = params.get('company');
 
     if (token) {
-      console.log("✅ Token found in URL:", token);
+      console.log("Token found in URL:", token);
       localStorage.setItem('token', token);
       if (refreshToken) localStorage.setItem('refreshToken', refreshToken);
       if (email) localStorage.setItem('userEmail', email);
@@ -81,14 +84,20 @@ export class LoginPageComponent implements OnInit {
       this.isLoginFailed = true;
       this.errorMessage = error;
       console.error('❌ Error from URL:', error);
-      this.cdr.detectChanges(); // 👈 update UI after error
+      this.cdr.detectChanges(); //  update UI after error
       return;
     }
   }
 
   // 🔹 Normal login
-  onSubmit() {
+  onSubmit() {  
     this.loginFormSubmitted = true;
+    //  Check CAPTCHA
+    if (this.loginForm.controls['recaptcha'].invalid) {
+      this.toastr.warning('Please verify the CAPTCHA to proceed.');
+      return;
+    }
+
     if (this.loginForm.invalid) return;
 
     // Show Spinner
@@ -100,68 +109,84 @@ export class LoginPageComponent implements OnInit {
       fullScreen: true
     });
 
-    this.authService.sgninUser(
-      this.loginForm.value.username!,
-      this.loginForm.value.password!
-    ).subscribe({
-      next: (res) => {
-        this.spinner.hide();
+    const { username, password } = this.loginForm.value;
 
-        if (res && res.token) {
-          localStorage.setItem('token', res.token);
+    this.authService
+      .sgninUser(username, password)
+      .pipe(finalize(() => this.spinner.hide())) // Spinner always hides
+      .subscribe({
+        next: (res: any) => {
+          if (res?.token) {
+            localStorage.setItem('token', res.token);
+          }
+          if (res?.userId) {
+            localStorage.setItem('userId', res.userId);
+          }
+
+          // Save username for dashboard/navbar
+          localStorage.setItem('username', username);
+
+          console.log('Login successful');
+          this.router.navigate(['/dashboard/dashboard1']);
+          this.cdr.detectChanges(); // ensure UI update
+        },
+        error: (err) => {
+          this.isLoginFailed = true;
+          this.errorMessage =
+            err?.error?.message || 'Login failed. Check your credentials.';
+          this.toastr.error(this.errorMessage);
+          console.error('❌ Login failed:', err);
+          this.cdr.detectChanges();
         }
-        if (res && res.userId) {
-          localStorage.setItem('userId', res.userId);
-        }
-
-        // Save username for dashboard/navbar
-        localStorage.setItem('username', this.loginForm.value.username!);
-
-        console.log("✅ Login successful");
-        this.router.navigate(['/dashboard/dashboard1']);
-
-        this.cdr.detectChanges();  // 👈 Force UI update after login
-      },
-      error: (err) => {
-        this.spinner.hide();
-        this.isLoginFailed = true;
-        this.errorMessage = err?.error?.message || 'Login failed. Check your credentials.';
-        console.error('❌ Login failed:', err);
-
-        this.cdr.detectChanges();  
-      }
-    });
+      });
   }
 
-  rememberMe() {}
+  rememberMe() { }
 
-  forgotpassword() {}
+  forgotpassword() { }
 
   loginWithSSO() {
     this.isSSOLoading = true;
 
-    this.authService.initiateSSOLogin('').subscribe({
-      next: (response: any) => {
-        this.isSSOLoading = false;
-        if (response.loginUrl) {
-          console.log("🔗 Redirecting to SSO:", response.loginUrl);
-          window.location.href = response.loginUrl;
-        }
-        this.cdr.detectChanges();  
-      },
-      error: () => {
-        this.isSSOLoading = false;
-        this.errorMessage = 'Failed to connect to SSO service.';
-        this.isLoginFailed = true;
-        console.error('❌ SSO connection failed');
+    // 🔹 Show spinner before the API call
+    this.spinner.show(); // show spinner before API call
 
-        this.cdr.detectChanges();  
-      }
-    });
+
+    this.authService
+      .initiateSSOLogin('')
+      .pipe(
+        finalize(() => {
+          //  Always hide spinner, success or error
+          this.isSSOLoading = false;
+          this.spinner.hide();
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe({
+        next: (response: any) => {
+          if (response?.loginUrl) {
+            console.log("🔗 Redirecting to SSO:", response.loginUrl);
+            window.location.href = response.loginUrl;
+          } else {
+            this.toastr.warning('SSO URL not received. Please try again later.');
+          }
+        },
+        error: () => {
+          this.errorMessage = 'Failed to connect to SSO service.';
+          this.isLoginFailed = true;
+          this.toastr.error(this.errorMessage);
+          console.error('❌ SSO connection failed');
+        }
+      });
   }
 
   SSO(event: Event) {
     event.preventDefault();
     this.loginWithSSO();
+  }
+
+  onCaptchaResolved(token: string) {
+    this.token = token;
+    this.loginForm.get('recaptcha')?.setValue(token);
   }
 }

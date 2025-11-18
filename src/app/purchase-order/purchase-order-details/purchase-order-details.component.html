@@ -2,7 +2,7 @@
   <div class="container-fluid">
 
     <!-- Tab Navigation -->
-    <div class="po-tabs mb-3">
+    <!-- <div class="po-tabs mb-3">
       <button (click)="selectTab('po-details')" [ngClass]="{ 'active': selectedTab === 'po-details' }" class="po-tab">
         PURCHASE ORDER
       </button>
@@ -20,6 +20,31 @@
         class="po-tab">
         INVOICING
       </button>
+    </div> -->
+
+
+    <div class="po-tabs mt-3">
+      <nav>
+        <button (click)="selectTab('po-details')" [ngClass]="{ 'tab-current': selectedTab === 'po-details' }"
+          class="po-style-tab">
+          <span>PURCHASE ORDER</span>
+        </button>
+
+        <button (click)="selectTab('shipment-details')"
+          [ngClass]="{ 'tab-current': selectedTab === 'shipment-details' }" class="po-style-tab">
+          <span>SHIPMENT DETAILS</span>
+        </button>
+
+        <button (click)="selectTab('grn-details')" [ngClass]="{ 'tab-current': selectedTab === 'grn-details' }"
+          class="po-style-tab">
+          <span>GRN</span>
+        </button>
+
+        <button (click)="selectTab('invoice-details')" [ngClass]="{ 'tab-current': selectedTab === 'invoice-details' }"
+          class="po-style-tab">
+          <span>INVOICING</span>
+        </button>
+      </nav>
     </div>
 
 
