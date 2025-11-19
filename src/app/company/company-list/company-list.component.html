@@ -23,6 +23,20 @@
           </ng-template>
         </ngx-datatable-column>
 
+        <!-- Main Status Column (NEW) -->
+        <ngx-datatable-column name="Main Status" prop="mainStatus">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <span class="badge" 
+                  [ngClass]="{
+                    'bg-success': row.mainStatus?.toLowerCase() === 'onboarded',
+                    'bg-warning text-light': row.mainStatus?.toLowerCase() === 'inprocess',
+                    'bg-secondary': !row.mainStatus
+                  }">
+              {{ row.mainStatus || 'InProcess' }}
+            </span>
+          </ng-template>
+        </ngx-datatable-column>
+
         <!-- Created Date -->
         <ngx-datatable-column name="Create Date" prop="createDate">
           <ng-template let-row="row" ngx-datatable-cell-template>
@@ -54,7 +68,7 @@
   </div>
 
   <!-- STATUS MODAL -->
- <ng-template #statusModal let-modal>
+  <ng-template #statusModal let-modal>
     <div class="modal-header bg-light">
       <h5 class="modal-title text-dark">Company Status & Level Details</h5>
       <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
@@ -83,7 +97,7 @@
               <tr *ngFor="let e of selectedStatusEntities" class="align-middle">
                 <td class="border-0">{{ e.entity }}</td>
                 <td class="border-0">
-                  <span class="badge rounded-pill" 
+                  <span class="badge" 
                         [ngClass]="{
                           'bg-success': e.status?.toLowerCase() === 'completed',
                           'bg-warning text-dark': e.status?.toLowerCase() === 'sendback',
@@ -105,10 +119,10 @@
         </div>
       </div>
     </div>
-    <div class="modal-footer ">
+    <div class="modal-footer">
       <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss()">Close</button>
     </div>
-</ng-template>
+  </ng-template>
 
   <!-- REMARKS MODAL -->
   <ng-template #remarksModal let-modal>
@@ -126,56 +140,39 @@
       
       <div *ngIf="!loadingRemarks">
         <!-- Show message when no remarks available -->
-        <div *ngIf="selectedRemarksEntities.length === 0" class="text-center py-4">
+        <div *ngIf="showNoRemarksMessage" class="text-center py-4">
           <div class="text-muted">
             <i class="ft-file-text display-4 text-muted"></i>
             <h6 class="mt-2">No Remarks Available</h6>
-            <p class="mb-0">There are no remarks for completed, rejected, or sendback entities.</p>
+            <p class="mb-0">There are no remarks available for any entities.</p>
           </div>
         </div>
 
-        <!-- Show remarks for each entity -->
-        <div *ngFor="let entity of selectedRemarksEntities" class="mb-3 p-3 border rounded remarks-card">
-          <!-- Entity Header with Status Badge -->
-          <div class="d-flex justify-content-between align-items-start mb-2">
-            <h6 class="fw-bold text-primary mb-0">{{ entity.entity }}</h6>
-            <span class="badge" 
-                  [ngClass]="{
-                    'bg-success': entity.status?.toLowerCase() === 'completed',
-                    'bg-warning': entity.status?.toLowerCase() === 'sendback',
-                    'bg-danger': entity.status?.toLowerCase() === 'rejected'
-                  }">
-              {{ entity.status }}
-            </span>
-          </div>
-
-          <!-- Remarks Content -->
-          <div class="remarks-content">
-            <div class="row g-2">
-              <!-- Remarks -->
-              <div class="col-12">
-                <div class="d-flex">
-                  <strong class="text-muted me-2" style="min-width: 80px;">Remarks:</strong>
-                  <div class="remarks-text" [class.text-muted]="!entity.remark || entity.remark === 'No remarks available from API'">
-                    {{ entity.remark || 'No remarks provided' }}
-                  </div>
-                </div>
-              </div>
-
-              <!-- Approver Name -->
-              <div *ngIf="entity.approverName && entity.approverName !== '—'" class="col-12">
-                <div class="d-flex">
-                  <strong class="text-muted me-2" style="min-width: 80px;">Approver:</strong>
-                  <span>{{ entity.approverName }}</span>
-                </div>
-              </div>
-
-              <!-- Date -->
-              <div *ngIf="entity.createdDate" class="col-12">
-                <div class="d-flex">
-                  <strong class="text-muted me-2" style="min-width: 80px;">Date:</strong>
-                  <span>{{ entity.createdDate | date:'medium' }}</span>
-                </div>
+        <!-- Show remarks tables for each entity -->
+        <div *ngIf="!showNoRemarksMessage">
+          <div *ngFor="let entity of selectedRemarksEntities" class="mb-4">
+            <!-- Only show entity if it has remarks -->
+            <div *ngIf="entity.remarks && entity.remarks.length > 0">
+              <!-- Entity Header -->
+<h6 class="fw-bold mb-3 entity-header">{{ entity.entity }}</h6>              
+              <!-- Remarks Table -->
+              <div class="table-responsive">
+                <table class="table table-hover table-bordered">
+                  <thead class="table-light">
+                    <tr>
+                      <th>User</th>
+                      <th>Date</th>
+                      <th>Remarks</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let remark of entity.remarks" class="align-middle">
+                      <td>{{ remark.approverName || '-' }}</td>
+                      <td>{{ remark.createdDate | date:'dd-MMM-yyyy HH:mm' }}</td>
+                      <td>{{ remark.remarks || 'No remarks provided' }}</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
@@ -183,9 +180,7 @@
       </div>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">
-        Close
-      </button>
+      <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Close</button>
     </div>
   </ng-template>
 </section>
