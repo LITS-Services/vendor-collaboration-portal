@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import { ChangeDetectorRef, Component, HostListener, Inject, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, Inject, OnInit, Renderer2, TemplateRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CompanyService } from 'app/shared/services/company.service';
@@ -21,6 +21,9 @@ import { NgxSpinnerService } from 'ngx-spinner';
   styleUrls: ['./company-registration.component.scss']
 })
 export class CompanyRegistrationComponent implements OnInit {
+
+  @ViewChild('remarksModal') remarksModal!: TemplateRef<any>;
+  selectedVendorEntityAssociationId: number | null = null;
   public config: any = {};
   layoutSub: Subscription;
   isEditMode: boolean = false;
@@ -323,6 +326,9 @@ export class CompanyRegistrationComponent implements OnInit {
 
     this.selectedEntity = entity;
     this.selectedProcurementCompanyIds = [entity.procurementCompanyId];
+
+    this.selectedVendorEntityAssociationId = entity.id;
+
 
     // Set readonly fields based on requestStatusId (1 = InProcess, 3 = Approved, etc.)
     this.isReadonlyEntityFields = entity.requestStatusId === 1 || entity.requestStatusId === 3;
@@ -628,7 +634,131 @@ export class CompanyRegistrationComponent implements OnInit {
   }
 
   // ==================== Submit ====================
+  // async submitForm() {
+  //   if (!this.userId) {
+  //     this.toastr.error('Vendor ID missing! Please login again.', 'Error');
+  //     this.router.navigate(['/auth/login']);
+  //     return;
+  //   }
+
+  //   // Convert attachments to base64
+  //   this.attachedFiles = await Promise.all(this.attachedFiles.map(async f => {
+  //     if (f.file && !f.fileContent) {
+  //       f.fileContent = await this.convertFileToBase64(f.file);
+  //     }
+  //     return f;
+  //   }));
+
+  //   const vendorCompanyPayload = {
+  //     name: this.companyName,
+  //     logo: '',
+  //     requestStatusId: 1,
+  //     procurementCompanyId: [...this.selectedProcurementCompanyIds],
+  //     addresses: this.getAddressesForPayload(),
+  //     contacts: this.getContactsForPayload(),
+  //     bankDetails: this.getBankForPayload(),
+  //     purchasingDemographics: this.getPurchasingDemographicsPayload(),
+  //     attachments: this.attachedFiles.map(f => ({
+  //       fileName: f.fileName,
+  //       fileFormat: f.format?.split('/').pop() || f.format || 'unknown',
+  //       fileContent: f.fileContent || '',
+  //       attachedBy: f.attachedBy,
+  //       remarks: f.remarks,
+  //       attachedAt: f.attachedAt ? new Date(f.attachedAt).toISOString() : new Date().toISOString()
+  //     })),
+  //     remarks: this.companyForm?.get('remarks')?.value || this.remarks, // <-- User remarks
+  //     createdBy: this.isEditMode ? undefined : this.createdBy,
+  //     modifiedBy: this.isEditMode ? this.modifiedBy : undefined
+  //   };
+
+  //   // const payload = {
+  //   //   vendorCompany: vendorCompanyPayload,
+  //   //   SubmitterId: this.userId,
+  //   //   procurementCompanyId: [...this.selectedProcurementCompanyIds]
+  //   // };
+
+  //   const payload = {
+  //     vendorCompany: {
+  //       ...vendorCompanyPayload,
+  //       procurementCompanyId: [...this.selectedProcurementCompanyIds] // latest IDs
+  //     },
+  //     SubmitterId: this.userId,
+  //     procurementCompanyId: [...this.selectedProcurementCompanyIds] // same here
+  //   };
+
+
+  //   this.isLoading = true;
+
+  //   const apiCall = this.isEditMode
+  //     ? this.companyService.updateCompany(this.companyId!, payload)
+  //     : this.companyService.registerCompany(payload);
+
+  //   apiCall.subscribe({
+  //     next: () => {
+  //       this.toastr.success(`Company ${this.isEditMode ? 'Updated' : 'Registered'} Successfully!`);
+  //       this.isLoading = false;
+  //       this.router.navigate(['/company/company-master']);
+  //     },
+  //     error: (err) => {
+  //       console.error('Error saving company:', err);
+  //       this.isLoading = false;
+  //       this.toastr.error('Error saving company!');
+  //     }
+  //   });
+  // }
+
+
   async submitForm() {
+    if (!this.userId) {
+      this.toastr.error('Vendor ID missing! Please login again.', 'Error');
+      this.router.navigate(['/auth/login']);
+      return;
+    }
+
+    if (this.isEditMode) {
+      this.openRemarksModal();
+      return; // Stop here, wait for modal
+    }
+
+    // Add mode → direct submit
+    this.submitCompanyPayload();
+  }
+
+
+  openRemarksModal() {
+    // Reset remarks before opening
+    this.remarks = '';
+
+    const modalRef = this.modalService.open(this.remarksModal, { centered: true, size: 'lg' });
+
+    modalRef.result.then(
+      (result) => {
+        // Modal closed normally
+        if (result === 'submit') {
+          this.submitCompanyPayload(); // remarks already in this.remarks
+        }
+      },
+      () => {
+        // Modal dismissed (e.g., Cancel button or clicking outside)
+        this.remarks = ''; // Reset remarks here as well
+      }
+    );
+  }
+
+
+
+  submitRemarks(modal: any) {
+    if (!this.remarks || this.remarks.trim() === '') {
+      this.toastr.error('Please enter remarks before submitting.');
+      return;
+    }
+
+    // Close modal and trigger submit
+    modal.close('submit');
+  }
+
+
+  async submitCompanyPayload() {
     if (!this.userId) {
       this.toastr.error('Vendor ID missing! Please login again.', 'Error');
       this.router.navigate(['/auth/login']);
@@ -660,13 +790,17 @@ export class CompanyRegistrationComponent implements OnInit {
         remarks: f.remarks,
         attachedAt: f.attachedAt ? new Date(f.attachedAt).toISOString() : new Date().toISOString()
       })),
-      remarks: this.companyForm?.get('remarks')?.value || this.remarks, // <-- User remarks
+      // remarks: this.companyForm?.get('remarks')?.value || this.remarks,
+      remarks: this.isEditMode ? this.remarks : (this.companyForm?.get('remarks')?.value || this.remarks),
       createdBy: this.isEditMode ? undefined : this.createdBy,
       modifiedBy: this.isEditMode ? this.modifiedBy : undefined
     };
 
     // const payload = {
-    //   vendorCompany: vendorCompanyPayload,
+    //   vendorCompany: {
+    //     ...vendorCompanyPayload,
+    //     procurementCompanyId: [...this.selectedProcurementCompanyIds]
+    //   },
     //   SubmitterId: this.userId,
     //   procurementCompanyId: [...this.selectedProcurementCompanyIds]
     // };
@@ -674,17 +808,18 @@ export class CompanyRegistrationComponent implements OnInit {
     const payload = {
       vendorCompany: {
         ...vendorCompanyPayload,
-        procurementCompanyId: [...this.selectedProcurementCompanyIds] // latest IDs
+        procurementCompanyId: [...this.selectedProcurementCompanyIds]
       },
       SubmitterId: this.userId,
-      procurementCompanyId: [...this.selectedProcurementCompanyIds] // same here
+      procurementCompanyId: [...this.selectedProcurementCompanyIds],
+      VendorEntityAssociationId: this.selectedVendorEntityAssociationId   // <-- ADD
     };
 
 
     this.isLoading = true;
 
     const apiCall = this.isEditMode
-      ? this.companyService.updateCompany(this.companyId!, payload)
+      ? this.companyService.updateCompany(this.companyId, payload)
       : this.companyService.registerCompany(payload);
 
     apiCall.subscribe({
@@ -693,13 +828,14 @@ export class CompanyRegistrationComponent implements OnInit {
         this.isLoading = false;
         this.router.navigate(['/company/company-master']);
       },
-      error: (err) => {
-        console.error('Error saving company:', err);
+      error: () => {
         this.isLoading = false;
         this.toastr.error('Error saving company!');
       }
     });
   }
+
+
 
   goBack() {
     this.router.navigate(['/company/company-master']);

@@ -576,3 +576,22 @@
         </div>
     </ng-container>
 </div>
+
+
+
+<ng-template #remarksModal let-modal>
+    <div class="modal-header bg-primary text-white">
+        <h4 class="modal-title">Remarks Details - {{ action }}</h4>
+        <button type="button" style="background: transparent;border: unset;font-size: 2em;" class="close text-white"
+            (click)="modal.dismiss()">X</button>
+    </div>
+
+    <div class="modal-body">
+        <textarea [(ngModel)]="remarks" class="form-control" placeholder="Enter remarks..."></textarea>
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="modal.dismiss()">Cancel</button>
+        <button class="btn btn-primary" (click)="submitRemarks(modal)">Submit</button>
+    </div>
+</ng-template>
