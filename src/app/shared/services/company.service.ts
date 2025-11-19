@@ -86,7 +86,9 @@ getCompanyById(id: number): Observable<Company> {
   return this.http.get<Company>(`${this.apiUrl}/${id}`);
 }
 
-
+getsetuphistory(associationId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/SetupHistory?vendorEntityAssociationId=${associationId}`);
+  }
 
 
 updateCompany(id: number, payload: any) {
