@@ -72,33 +72,34 @@ export class CompanyListComponent implements OnInit {
         console.log('Processed companies array:', rawCompanies);
 
         // Base company mapping - IGNORE remarks from getCompanyByVendorId
-        this.companyData = rawCompanies.map(c => ({
-          id: c.id,
-          companyGUID: c.companyGUID,
-          name: c.name,
-          logo: c.logo,
-          createDate: c.createdDate,
-          status: this.getOverallStatus(c.vendorUseCompaniesVM),
-          vendorId: c.vendorId,
-          street: c.addressesVM?.[0]?.street || '',
-          city: c.addressesVM?.[0]?.city || '',
-          state: c.addressesVM?.[0]?.state || '',
-          country: c.addressesVM?.[0]?.country || '',
-          contactNumber: c.contactsVM?.[0]?.contactNumber || '',
-          contactType: c.contactsVM?.[0]?.type || '',
-          entity: c.vendorUseCompaniesVM?.map(vuc => vuc.procurementCompany).join(', ') || '',
-          procurementCompanyId: c.vendorUseCompaniesVM?.[0]?.procurementCompanyId || null,
-          entityDetails: c.vendorUseCompaniesVM?.map(vuc => ({
-            id: vuc.id, // Added: Use this as associationId for getsetuphistory
-            entity: vuc.procurementCompany,
-            status: vuc.status,
-            createdDate: vuc.createdDate,
-            approverName: vuc.createdBy || '',
-            procurementCompanyId: vuc.procurementCompanyId,
-            level: 'Loading...', // Initialize level as loading
-            approverLevelName: '' // Initialize approver name
-          })) || []
-        }));
+     this.companyData = rawCompanies.map(c => ({
+  id: c.id,
+  companyGUID: c.companyGUID,
+  name: c.name,
+  logo: c.logo,
+  createDate: c.createdDate,
+  status: this.getOverallStatus(c.vendorUseCompaniesVM),
+  mainStatus: this.getMainStatus(c.vendorUseCompaniesVM), // ADD THIS LINE
+  vendorId: c.vendorId,
+  street: c.addressesVM?.[0]?.street || '',
+  city: c.addressesVM?.[0]?.city || '',
+  state: c.addressesVM?.[0]?.state || '',
+  country: c.addressesVM?.[0]?.country || '',
+  contactNumber: c.contactsVM?.[0]?.contactNumber || '',
+  contactType: c.contactsVM?.[0]?.type || '',
+  entity: c.vendorUseCompaniesVM?.map(vuc => vuc.procurementCompany).join(', ') || '',
+  procurementCompanyId: c.vendorUseCompaniesVM?.[0]?.procurementCompanyId || null,
+  entityDetails: c.vendorUseCompaniesVM?.map(vuc => ({
+    id: vuc.id, // Added: Use this as associationId for getsetuphistory
+    entity: vuc.procurementCompany,
+    status: vuc.status,
+    createdDate: vuc.createdDate,
+    approverName: vuc.createdBy || '',
+    procurementCompanyId: vuc.procurementCompanyId,
+    level: 'Loading...', // Initialize level as loading
+    approverLevelName: '' // Initialize approver name
+  })) || []
+}));
 
         console.log('Mapped companyData:', this.companyData);
 
@@ -390,6 +391,34 @@ openRemarksPopup(row: any): void {
       this.modalService.open(this.remarksModal, { size: 'lg', backdrop: 'static' });
     }
   });
+}
+
+
+getMainStatus(vendorUseCompaniesVM: any[]): string {
+  if (!vendorUseCompaniesVM || vendorUseCompaniesVM.length === 0) {
+    return 'InProcess'; // Default status if no entities
+  }
+
+  // Check if ALL entities have status 'Completed'
+  const allCompleted = vendorUseCompaniesVM.every(
+    entity => entity.status?.toLowerCase() === 'completed'
+  );
+
+  // Check if ANY entity has status 'InProcess' or 'SendBack'
+  const hasInProcessOrSendBack = vendorUseCompaniesVM.some(
+    entity => 
+      entity.status?.toLowerCase() === 'inprocess' || 
+      entity.status?.toLowerCase() === 'sendback'
+  );
+
+  if (allCompleted) {
+    return 'Onboarded';
+  } else if (hasInProcessOrSendBack) {
+    return 'InProcess';
+  } else {
+    // If there are other statuses (like Rejected) but no InProcess/SendBack
+    return 'InProcess'; // Default fallback
+  }
 }
   shouldShowRemarks(entity: any): boolean {
     const status = entity.status?.toLowerCase();

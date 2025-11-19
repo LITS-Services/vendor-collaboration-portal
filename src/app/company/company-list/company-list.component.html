@@ -23,6 +23,20 @@
           </ng-template>
         </ngx-datatable-column>
 
+        <!-- Main Status Column (NEW) -->
+        <ngx-datatable-column name="Main Status" prop="mainStatus">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <span class="badge" 
+                  [ngClass]="{
+                    'bg-success': row.mainStatus?.toLowerCase() === 'onboarded',
+                    'bg-warning text-light': row.mainStatus?.toLowerCase() === 'inprocess',
+                    'bg-secondary': !row.mainStatus
+                  }">
+              {{ row.mainStatus || 'InProcess' }}
+            </span>
+          </ng-template>
+        </ngx-datatable-column>
+
         <!-- Created Date -->
         <ngx-datatable-column name="Create Date" prop="createDate">
           <ng-template let-row="row" ngx-datatable-cell-template>
@@ -54,7 +68,7 @@
   </div>
 
   <!-- STATUS MODAL -->
- <ng-template #statusModal let-modal>
+  <ng-template #statusModal let-modal>
     <div class="modal-header bg-light">
       <h5 class="modal-title text-dark">Company Status & Level Details</h5>
       <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
@@ -83,7 +97,7 @@
               <tr *ngFor="let e of selectedStatusEntities" class="align-middle">
                 <td class="border-0">{{ e.entity }}</td>
                 <td class="border-0">
-                  <span class="badge rounded-pill" 
+                  <span class="badge" 
                         [ngClass]="{
                           'bg-success': e.status?.toLowerCase() === 'completed',
                           'bg-warning text-dark': e.status?.toLowerCase() === 'sendback',
@@ -105,70 +119,68 @@
         </div>
       </div>
     </div>
-    <div class="modal-footer ">
+    <div class="modal-footer">
       <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss()">Close</button>
     </div>
-</ng-template>
+  </ng-template>
 
   <!-- REMARKS MODAL -->
- <!-- REMARKS MODAL -->
-<ng-template #remarksModal let-modal>
-  <div class="modal-header">
-    <h5 class="modal-title">Remarks Details</h5>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
-  </div>
-  <div class="modal-body">
-    <div *ngIf="loadingRemarks" class="text-center py-4">
-      <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Loading remarks...</span>
-      </div>
-      <p class="mt-2 text-muted">Loading remarks...</p>
+  <ng-template #remarksModal let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title">Remarks Details</h5>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
     </div>
-    
-    <div *ngIf="!loadingRemarks">
-      <!-- Show message when no remarks available -->
-      <div *ngIf="showNoRemarksMessage" class="text-center py-4">
-        <div class="text-muted">
-          <i class="ft-file-text display-4 text-muted"></i>
-          <h6 class="mt-2">No Remarks Available</h6>
-          <p class="mb-0">There are no remarks available for any entities.</p>
+    <div class="modal-body">
+      <div *ngIf="loadingRemarks" class="text-center py-4">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading remarks...</span>
         </div>
+        <p class="mt-2 text-muted">Loading remarks...</p>
       </div>
+      
+      <div *ngIf="!loadingRemarks">
+        <!-- Show message when no remarks available -->
+        <div *ngIf="showNoRemarksMessage" class="text-center py-4">
+          <div class="text-muted">
+            <i class="ft-file-text display-4 text-muted"></i>
+            <h6 class="mt-2">No Remarks Available</h6>
+            <p class="mb-0">There are no remarks available for any entities.</p>
+          </div>
+        </div>
 
-      <!-- Show remarks tables for each entity -->
-      <div *ngIf="!showNoRemarksMessage">
-        <div *ngFor="let entity of selectedRemarksEntities" class="mb-4">
-          <!-- Only show entity if it has remarks -->
-          <div *ngIf="entity.remarks && entity.remarks.length > 0">
-            <!-- Entity Header -->
-            <h6 class="fw-bold text-primary mb-3">{{ entity.entity }}</h6>
-            
-            <!-- Remarks Table -->
-            <div class="table-responsive">
-              <table class="table table-hover table-bordered">
-                <thead class="table-light">
-                  <tr>
-                    <th>Approver</th>
-                    <th>Created Date</th>
-                    <th>Remarks</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let remark of entity.remarks" class="align-middle">
-                    <td>{{ remark.approverName || '-' }}</td>
-                    <td>{{ remark.createdDate | date:'dd-MMM-yyyy HH:mm' }}</td>
-                    <td>{{ remark.remarks || 'No remarks provided' }}</td>
-                  </tr>
-                </tbody>
-              </table>
+        <!-- Show remarks tables for each entity -->
+        <div *ngIf="!showNoRemarksMessage">
+          <div *ngFor="let entity of selectedRemarksEntities" class="mb-4">
+            <!-- Only show entity if it has remarks -->
+            <div *ngIf="entity.remarks && entity.remarks.length > 0">
+              <!-- Entity Header -->
+<h6 class="fw-bold mb-3 entity-header">{{ entity.entity }}</h6>              
+              <!-- Remarks Table -->
+              <div class="table-responsive">
+                <table class="table table-hover table-bordered">
+                  <thead class="table-light">
+                    <tr>
+                      <th>User</th>
+                      <th>Date</th>
+                      <th>Remarks</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let remark of entity.remarks" class="align-middle">
+                      <td>{{ remark.approverName || '-' }}</td>
+                      <td>{{ remark.createdDate | date:'dd-MMM-yyyy HH:mm' }}</td>
+                      <td>{{ remark.remarks || 'No remarks provided' }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Close</button>
-  </div>
-</ng-template>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Close</button>
+    </div>
+  </ng-template>
 </section>
