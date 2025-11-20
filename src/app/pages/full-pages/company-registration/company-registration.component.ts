@@ -791,7 +791,6 @@ export class CompanyRegistrationComponent implements OnInit {
         attachedAt: f.attachedAt ? new Date(f.attachedAt).toISOString() : new Date().toISOString()
       })),
       // remarks: this.companyForm?.get('remarks')?.value || this.remarks,
-      remarks: this.isEditMode ? this.remarks : (this.companyForm?.get('remarks')?.value || this.remarks),
       createdBy: this.isEditMode ? undefined : this.createdBy,
       modifiedBy: this.isEditMode ? this.modifiedBy : undefined
     };
@@ -812,7 +811,9 @@ export class CompanyRegistrationComponent implements OnInit {
       },
       SubmitterId: this.userId,
       procurementCompanyId: [...this.selectedProcurementCompanyIds],
-      VendorEntityAssociationId: this.selectedVendorEntityAssociationId   // <-- ADD
+      VendorEntityAssociationId: this.selectedVendorEntityAssociationId ,
+      remarks: this.isEditMode ? this.remarks : (this.companyForm?.get('remarks')?.value || this.remarks),
+  // <-- ADD
     };
 
 

@@ -15,9 +15,7 @@
         <!-- Company Name -->
         <ngx-datatable-column name="Company Name" prop="name">
           <ng-template let-row="row" ngx-datatable-cell-template>
-            <a href="javascript:void(0)" 
-               (click)="editCompany(row)" 
-               class="text-primary font-weight-bold">
+            <a href="javascript:void(0)" (click)="editCompany(row)" class="text-primary font-weight-bold">
               {{ row.name }}
             </a>
           </ng-template>
@@ -26,8 +24,7 @@
         <!-- Main Status Column (NEW) -->
         <ngx-datatable-column name="Main Status" prop="mainStatus">
           <ng-template let-row="row" ngx-datatable-cell-template>
-            <span class="badge" 
-                  [ngClass]="{
+            <span class="badge" [ngClass]="{
                     'bg-success': row.mainStatus?.toLowerCase() === 'onboarded',
                     'bg-warning text-light': row.mainStatus?.toLowerCase() === 'inprocess',
                     'bg-secondary': !row.mainStatus
@@ -97,8 +94,7 @@
               <tr *ngFor="let e of selectedStatusEntities" class="align-middle">
                 <td class="border-0">{{ e.entity }}</td>
                 <td class="border-0">
-                  <span class="badge" 
-                        [ngClass]="{
+                  <span class="badge" [ngClass]="{
                           'bg-success': e.status?.toLowerCase() === 'completed',
                           'bg-warning text-dark': e.status?.toLowerCase() === 'sendback',
                           'bg-danger': e.status?.toLowerCase() === 'rejected',
@@ -137,7 +133,7 @@
         </div>
         <p class="mt-2 text-muted">Loading remarks...</p>
       </div>
-      
+
       <div *ngIf="!loadingRemarks">
         <!-- Show message when no remarks available -->
         <div *ngIf="showNoRemarksMessage" class="text-center py-4">
@@ -154,7 +150,7 @@
             <!-- Only show entity if it has remarks -->
             <div *ngIf="entity.remarks && entity.remarks.length > 0">
               <!-- Entity Header -->
-<h6 class="fw-bold mb-3 entity-header">{{ entity.entity }}</h6>              
+              <h6 class="fw-bold mb-3 entity-header">{{ entity.entity }}</h6>
               <!-- Remarks Table -->
               <div class="table-responsive">
                 <table class="table table-hover table-bordered">
