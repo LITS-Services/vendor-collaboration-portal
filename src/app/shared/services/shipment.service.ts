@@ -14,7 +14,15 @@ export class ShipmentService {
     return this.http.post(`${this.baseUrl}/create-shipment-detail`, data);
   }
 
+  updateShipment(data: any) {
+    return this.http.post(`${this.baseUrl}/update-shipment-detail`, data);
+  }
+
   getShipmentDetailById(id: number) {
     return this.http.get<any>(`${this.baseUrl}/shipment-detail-by-purchase-order?purchaseOrderId=${id}`);
+  }
+
+    deleteShipment(shipmentDetailId: number) {
+    return this.http.post(`${this.baseUrl}/delete-shipment-detail?id=${shipmentDetailId}`, null);
   }
 }

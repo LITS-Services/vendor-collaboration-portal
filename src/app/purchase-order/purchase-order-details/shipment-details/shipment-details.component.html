@@ -1,80 +1,140 @@
-
-
-        <!-- Action Bar -->
-        <div class="card cstm-ui-card mb-3 py-2 px-3 d-flex justify-content-between flex-wrap">
+<!-- Action Bar -->
+<!-- <div class="card cstm-ui-card mb-3 py-2 px-3 d-flex justify-content-between flex-wrap">
             <div class="d-flex align-items-center">
                 <button class="btn btn-lg position-relative me-2" type="button" (click)="goBack()">
                     <i class="ft-arrow-left"></i>
                 </button>
-                <h5 class="mt-2 fw-bold">Shipment Details</h5>
-                <!-- <h5 class="mt-2 fw-bold">
+                <h5 class="mt-2 fw-bold">Shipment Details</h5> 
+                <h5 class="mt-2 fw-bold">
                     {{ isEdit ? 'Update Shipment Details' : 'Add Shipment Details' }}
-                </h5> -->
+                </h5> 
 
+            </div>
+        </div>  -->
+
+<!-- Shipment Form (MAIN CARD) -->
+<div class="card shadow-sm p-3 border border-success rounded mb-3" [formGroup]="form">
+
+    <!-- HEADER ROW: Title + Top-right buttons -->
+    <div class="d-flex justify-content-between align-items-start mb-3">
+
+        <h5 class="mt-2 fw-bold">
+            {{ isEdit ? 'Update Shipment Details' : 'Add Shipment Details' }}
+        </h5>
+
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+            <!-- DELETE button only on update -->
+            <button *ngIf="isEdit" class="btn btn-danger btn-sm" (click)="deleteShipment()">
+                Delete
+            </button>
+
+            <!-- SAVE / UPDATE button -->
+            <button class="btn btn-primary btn-sm" (click)="save()">
+                {{ isEdit ? 'Update' : 'Save' }}
+            </button>
+        </div>
+    </div>
+
+    <!-- SHIPMENT FORM FIELDS -->
+    <div class="row">
+
+        <!-- Show PO + Vendor only in edit -->
+        <div *ngIf="isEdit" class="row mt-2 mb-3">
+            <div class="col-md-4">
+                <label class="form-label small">Purchase Order No</label>
+                <input class="form-control form-control-sm" [value]="purchaseOrderNo" disabled>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label small">Vendor Name</label>
+                <input class="form-control form-control-sm" [value]="vendorName" disabled>
             </div>
         </div>
 
-        <!-- Shipment Form -->
-        <div class="card shadow-sm p-3 border border-success rounded" [formGroup]="form">
+        <div class="col-md-4 mb-3">
+            <label class="form-label small">Ship To Name</label>
+            <input class="form-control form-control-sm" formControlName="shipToName">
+        </div>
 
-            <!-- <h6 class="fw-bold mb-3">Add Shipment</h6> -->
-            <h5 class="mt-2 fw-bold">
-                {{ isEdit ? 'Update Shipment Details' : 'Add Shipment Details' }}
-            </h5>
-            <div class="row">
-                <div *ngIf="isEdit" class="row mt-2 mb-3">
-                    <div class="col-md-4">
-                        <label class="form-label small">Purchase Order No</label>
-                        <input class="form-control form-control-sm" [value]="purchaseOrderNo" disabled>
-                    </div>
+        <div class="col-md-4 mb-3">
+            <label class="form-label small">Country</label>
+            <input class="form-control form-control-sm" formControlName="country">
+        </div>
 
-                    <div class="col-md-4">
-                        <label class="form-label small">Vendor Name</label>
-                        <input class="form-control form-control-sm" [value]="vendorName" disabled>
-                    </div>
-                </div>
+        <div class="col-md-4 mb-3">
+            <label class="form-label small">City</label>
+            <input class="form-control form-control-sm" formControlName="city">
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label class="form-label small">Region</label>
+            <input class="form-control form-control-sm" formControlName="region">
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label class="form-label small">Ship To Address</label>
+            <input class="form-control form-control-sm" formControlName="shipToAddress">
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label class="form-label small">Ship To Address 2</label>
+            <input class="form-control form-control-sm" formControlName="shipToAddress2">
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label class="form-label small">Post Code</label>
+            <input class="form-control form-control-sm" formControlName="postalCode">
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label class="form-label small">Shipment Date</label>
+            <input type="date" class="form-control form-control-sm" formControlName="shipmentDate">
+        </div>
+
+        <div class="col-md-8 mb-3">
+            <label class="form-label small">Notes</label>
+            <textarea class="form-control form-control-sm" rows="2" formControlName="notes"></textarea>
+        </div>
+    </div>
 
 
-                <div class="col-md-4 mb-3">
-                    <label class="form-label small">Country</label>
-                    <input class="form-control form-control-sm" formControlName="country">
-                </div>
+    <!-- ITEMS SECTION (NOW INSIDE THE SAME CARD) -->
+    <div class="mt-3">
 
-                <div class="col-md-4 mb-3">
-                    <label class="form-label small">City</label>
-                    <input class="form-control form-control-sm" formControlName="city">
-                </div>
+        <!-- Expand/Collapse Header -->
+        <div class="d-flex justify-content-between align-items-center mb-2 cursor-pointer" (click)="toggleItems()">
+            <h5 class="section-title m-0">Items</h5>
+            <i class="ft-chevron-down transition-icon" [ngClass]="{ 'rotate-icon': itemsExpanded }"></i>
+        </div>
 
-                <div class="col-md-4 mb-3">
-                    <label class="form-label small">Shipping Address</label>
-                    <input class="form-control form-control-sm" formControlName="shippingAddress">
-                </div>
+        <!-- Expandable Content -->
+        <div class="expand-wrapper" [ngClass]="{ 'expanded': itemsExpanded }" [formGroup]="form">
 
-                <div class="col-md-4 mb-3">
-                    <label class="form-label small">Shipment Date</label>
-                    <input type="date" class="form-control form-control-sm" formControlName="shipmentDate">
-                </div>
+            <div class="table-responsive">
+                <table class="table custom-modern-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th class="text-center">Qty</th>
+                            <th class="text-center">Delivery Date</th>
+                        </tr>
+                    </thead>
 
-                <div class="col-md-4 mb-3">
-                    <label class="form-label small">Delivery Date</label>
-                    <input type="date" class="form-control form-control-sm" formControlName="deliveryDate">
-                </div>
-
-                <div class="col-md-12 mb-3">
-                    <label class="form-label small">Notes</label>
-                    <textarea class="form-control form-control-sm" rows="2" formControlName="notes"></textarea>
-                </div>
-            </div>
-
-            <!-- <div>
-                <button class="btn btn-secondary btn-sm" (click)="goBack()">Cancel</button>
-                <button class="btn btn-primary btn-sm" (click)="save()">Save Shipment</button>
-            </div> -->
-            <div class="d-flex justify-content-between mt-3">
-                <!-- <button class="btn btn-primary btn-sm" (click)="save()">Save Shipment</button> -->
-                <button class="btn btn-primary btn-sm" (click)="save()">
-                    {{ isEdit ? 'Update Shipment' : 'Save Shipment' }}
-                </button>
-                <button class="btn btn-secondary btn-sm" (click)="goBack()">Cancel</button>
+                    <tbody formArrayName="items">
+                        <tr *ngFor="let item of itemsForm.controls; let i = index" [formGroupName]="i">
+                            <td>
+                                <span class="item-title">{{ item.get('itemName')?.value }}</span>
+                            </td>
+                            <td class="text-center">
+                                {{ item.get('orderedQty')?.value }}
+                            </td>
+                            <td class="text-center">
+                                <input type="date" class="form-control form-control-sm" formControlName="deliveryDate">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
+    </div>
+</div>

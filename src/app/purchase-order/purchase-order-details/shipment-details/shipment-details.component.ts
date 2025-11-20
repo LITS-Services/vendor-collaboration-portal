@@ -1,8 +1,10 @@
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ShipmentService } from 'app/shared/services/shipment.service';
+import { da } from 'date-fns/locale';
 import { ToastrService } from 'ngx-toastr';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-shipment-details',
@@ -10,15 +12,14 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./shipment-details.component.scss']
 })
 export class ShipmentDetailsComponent implements OnInit {
-@Input() poId: number;
-  //poId!: number;
+  @Input() poId: number;
   form!: FormGroup;
-
+  itemsForm!: FormArray;
   isEdit = false;
   shipmentId?: number;
-
   purchaseOrderNo?: string;
   vendorName?: string;
+  itemsExpanded: boolean = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -36,68 +37,161 @@ export class ShipmentDetailsComponent implements OnInit {
     this.form = this.fb.group({
       country: [''],
       city: [''],
-      shippingAddress: [''],
+      primaryShippingAddress: [''],
+      secondaryShippingAddress: [''],
+      postalCode: [''],
       shipmentDate: [null],
-      deliveryDate: [null],
-      notes: ['']
+      notes: [''],
+      items: this.fb.array([])
     });
 
+    this.itemsForm = this.form.get('items') as FormArray;
     this.checkIfShipmentExists();
+    this.cdr.detectChanges();
   }
 
   checkIfShipmentExists() {
     this.shipmentService.getShipmentDetailById(this.poId).subscribe({
       next: (res) => {
-        if (res) {
+        const data = res;
+        if (data && data.id) {
           this.isEdit = true;
-          const d = res;
 
-          this.shipmentId = d.id;
-          this.purchaseOrderNo = d.purchaseOrderNo;
-          this.vendorName = d.vendorName;
+
+          this.shipmentId = data.id;
+          this.purchaseOrderNo = data.purchaseOrderNo;
+          this.vendorName = data.vendorName;
 
           // Patch form values
           this.form.patchValue({
-            country: d.country,
-            city: d.city,
-            shippingAddress: d.shippingAddress,
-            shipmentDate: d.shipmentDate ? d.shipmentDate.split('T')[0] : null,
-            deliveryDate: d.deliveryDate ? d.deliveryDate.split('T')[0] : null,
-            notes: d.notes
+            shipToName: data.shipToName,
+            country: data.country,
+            city: data.city,
+            region: data.region,
+            shipToAddress: data.shipToAddress,
+            shipToAddress2: data.shipToAddress2,
+            postCode: data.postCode,
+            shipmentDate: data.shipmentDate ? data.shipmentDate.split('T')[0] : null,
+            notes: data.notes
           });
-          this.cdr.detectChanges();
         }
+        this.itemsForm.clear();
+        data.items?.forEach(item => {
+          this.itemsForm.push(this.fb.group({
+            purchaseOrderLineId: [item.purchaseOrderLineId],
+            itemName: [item.itemName],
+            orderedQty: [item.orderedQty],
+            deliveryDate: [item.deliveryDate ? item.deliveryDate.split('T')[0] : null]
+          }));
+        });
+
+        this.cdr.detectChanges();
       },
       error: () => console.log("No existing shipment - Add mode"),
     });
   }
+
   save() {
     if (this.form.invalid) {
       this.toastr.warning("Fill required fields.");
       return;
     }
 
-    const payload = {
-      purchaseOrderId: this.poId,
-      shipmentDetail: {
-        purchaseOrderId: this.poId,
-        ...this.form.value
-      }
+    // Map items to send only necessary fields
+    const itemsPayload = this.itemsForm.controls.map(ctrl => ({
+      purchaseOrderLineId: ctrl.get('purchaseOrderLineId')?.value,
+      deliveryDate: ctrl.get('deliveryDate')?.value
+        ? new Date(ctrl.get('deliveryDate')?.value)
+        : null
+    }));
+
+    // Prepare the common shipment payload
+    const shipmentDetailPayload = {
+      shipToName: this.form.get('shipToName')?.value,
+      country: this.form.get('country')?.value,
+      city: this.form.get('city')?.value,
+      region: this.form.get('region')?.value,
+      shipToAddress: this.form.get('shipToAddress')?.value,
+      shipToAddress2: this.form.get('shipToAddress2')?.value,
+      postCode: this.form.get('postCode')?.value,
+      shipmentDate: this.form.get('shipmentDate')?.value
+        ? new Date(this.form.get('shipmentDate')?.value)
+        : null,
+      notes: this.form.get('notes')?.value,
+      items: itemsPayload
     };
 
-    // If editing call update API
-    // if (this.isEdit && this.shipmentId) {
-    //   this.shipmentService.updateShipment(this.shipmentId, payload).subscribe({
-    //     next: () => {
-    //       this.router.navigate([`/purchase-order/purchase-order-details/${this.poId}`]);
-    //     }
-    //   });
-    //   return;
-    // }
+    if (this.isEdit && this.shipmentId) {
 
-    this.shipmentService.createShipment(payload).subscribe({
+      const updatePayload = {
+        shipmentDetailId: this.shipmentId,
+        shipmentDetail: shipmentDetailPayload
+      };
+
+      this.shipmentService.updateShipment(updatePayload).subscribe({
+        next: () => {
+          this.router.navigate([`/purchase-order/purchase-order-details/${this.poId}`], { skipLocationChange: true });
+          this.cdr.detectChanges();
+        }
+      });
+      return;
+    }
+
+    const createPayload = {
+      purchaseOrderId: this.poId,
+      shipmentDetail: shipmentDetailPayload
+    };
+
+    this.shipmentService.createShipment(createPayload).subscribe({
       next: () => {
         this.router.navigate([`/purchase-order/purchase-order-details/${this.poId}`], { skipLocationChange: true });
+        window.location.reload();
+      }
+    });
+  }
+
+  deleteShipment() {
+    if (!this.shipmentId) {
+      this.toastr.warning('No shipment to delete.');
+      return;
+    }
+
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'This will delete the shipment and clear all delivery dates for the PO lines!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.shipmentService.deleteShipment(this.shipmentId).subscribe({
+          next: () => {
+            Swal.fire('Deleted!', 'Shipment has been deleted.', 'success');
+            this.form.patchValue({
+              shipToName: '',
+              country: '',
+              city: '',
+              region: '',
+              shipToAddress: '',
+              shipToAddress2: '',
+              postCode: '',
+              shipmentDate: null,
+              notes: ''
+            });
+
+            this.itemsForm.controls.forEach(ctrl => {
+              ctrl.get('deliveryDate')?.setValue(null);
+            });
+
+            this.isEdit = false;
+            this.shipmentId = undefined;
+            this.cdr.detectChanges();
+          },
+          error: () => {
+            Swal.fire('Error!', 'Failed to delete shipment.', 'error');
+          }
+        });
       }
     });
   }
@@ -105,5 +199,9 @@ export class ShipmentDetailsComponent implements OnInit {
   goBack() {
     const id = this.route.snapshot.paramMap.get('id');
     this.router.navigate([`/purchase-order/purchase-order-details/${id}`], { skipLocationChange: true });
+  }
+
+  toggleItems() {
+    this.itemsExpanded = !this.itemsExpanded;
   }
 }
