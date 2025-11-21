@@ -14,6 +14,7 @@ import { HROUTES } from '../horizontal-menu/navigation-routes.config';
 import { FirebaseMessagingService } from 'app/firebase-messaging.service';
 import { NotifcationService, ReferenceType } from '../services/notification.service';
 import { UserServiceService } from '../services/user-service.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: "app-navbar",
@@ -139,11 +140,16 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
     this.isSmallScreen = this.innerWidth < 1200;
   }
 
-  redirection(referenceType: any, referenceId: any) {
+  redirection(referenceType: any, referenceId: any, title?:string) {
+
+      const isCommentNotif =
+    !!title && title.toLowerCase().includes('comment');
+
     switch (referenceType) {
       case ReferenceType.RFQ:
         this.router.navigate(["/rfq/submit-bid", referenceId], {
           skipLocationChange: true,
+          queryParams: isCommentNotif ? { focus: 'comments' } : undefined,
         });
         break;
 
@@ -177,7 +183,7 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.notificationService.markAsRead(n.id).subscribe({
       next: () => {
-        var a = this.redirection(n.referenceType, n.referenceId);
+        var a = this.redirection(n.referenceType, n.referenceId, n.title);
         if (a == ReferenceType.Default) {
           this.notifications.filter((m: any) => m.id === n.id)[0].status = 1;
         }
@@ -191,6 +197,54 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       },
     });
+  }
+
+    clearAllNotification() {
+       Swal.fire({
+          title: 'Clear all notifications?',
+          text: 'This will delete all the notifications',
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonText: 'Yes, Delete',
+          cancelButtonText: 'Cancel',
+          confirmButtonColor: '#dc3741',
+          scrollbarPadding: false,
+        }).then((result) => {
+          if (result.isConfirmed) {  
+             this.notificationService.clearAllNotification().subscribe({
+              next: () => {
+                this.getNotification();
+              },
+              error: () => {
+                this.toaster.error('Something went wrong while creating PO.');
+              }
+            });
+          }
+        });
+  }
+
+
+  markAllAsRead() {
+      Swal.fire({
+          title: 'Mark all as read?',
+          text: 'This will mark all notifications as read',
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonText: 'Yes, Mark all as read',
+          cancelButtonText: 'Cancel',
+          confirmButtonColor:'#249d57',
+        }).then((result) => {
+          if (result.isConfirmed) {
+             this.notificationService.markAllAsRead().subscribe({
+              next: () => {
+                this.getNotification();
+              },
+              error: () => {
+                this.toaster.error('Something went wrong while creating PO.');
+              }
+            });
+          }
+        });
   }
 
   togglePanel(): void {

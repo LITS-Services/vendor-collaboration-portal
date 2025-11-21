@@ -352,4 +352,17 @@
   border: 1px solid #c7ffdf;
 }
 
+.last-message-div{
+    color: #574d4d;
+    border: 1px solid #efefef;
+    font-size: 12px;
+    padding: 2px 12px;
+    border-radius: 999px;
+    background: #f8f8f8;
+  .last-message-time{
+    color: black;
+  }
+}
+
+
 /* keep your existing spinner classes */

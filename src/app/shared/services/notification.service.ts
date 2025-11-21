@@ -25,4 +25,12 @@ export class NotifcationService {
     markAsRead(id: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/System/mark-notification-as-read/${id}`);
   }
+
+      markAllAsRead(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/System/mark-all-notifications-as-read`);
+  }
+
+    clearAllNotification(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/System/clear-all-notifications`);
+  }
 }

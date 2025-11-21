@@ -15,7 +15,7 @@
       <!-- Center: Rounded Tabs (scrollable if overflow) -->
       <div class="vp-pill">
         <ul class="vp-tabs" (clickOutside)="toggleSearchOpenClass(false)">
-          <li *ngFor="let item of menuItems" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+          <li *ngFor="let item of menuItems" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }">
 
             <!-- internal route -->
             <a *ngIf="!item.isExternalLink" [routerLink]="[item.path]">
@@ -74,9 +74,10 @@
               </ng-template>
             </div>
 
-            <!-- <div class="panel-footer">
-                                    <a class="view-all" [routerLink]="['/notifications']">View all</a>
-                                  </div> -->
+            <div class="panel-footer">
+                              <button class="btn btn-markasread" (click)="markAllAsRead()"><i class="ft ft-check ml-2"></i>Mark all as read</button>
+                              <button class="btn btn-clearall" (click)="clearAllNotification()"><i class="ft ft-trash-2 ml-2"></i>Clear All</button>
+            </div>
           </div>
         </div>
         <!-- User dropdown (kept from your code) -->

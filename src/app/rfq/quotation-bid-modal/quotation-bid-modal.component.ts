@@ -33,7 +33,9 @@ export class QuotationBidModalComponent implements OnInit {
   dataComments: any[] = [];
   loading = false;
   CreatedByType = CreatedByType;
-  activeIds = ["static-1", "static-2", "static-3"];
+  activeIds = ["static-1", "static-2"];
+
+  private focusComments = false;
 
   form = this.fb.group({
     comment: ["", [Validators.required, Validators.maxLength(1000)]],
@@ -57,6 +59,10 @@ export class QuotationBidModalComponent implements OnInit {
         "Vendor user ID not found in localStorage. Please login again."
       );
     }
+    this.route.queryParamMap.subscribe(qp => {
+    this.focusComments = qp.get('focus') === 'comments';
+  });
+
    this.route.paramMap.subscribe(params => {
     const id = Number(params.get("rfqId"));
     if (id) {
@@ -130,6 +136,7 @@ export class QuotationBidModalComponent implements OnInit {
           }));
             this.cdr.markForCheck();
           this.scrollToBottom();
+          this.scrollToCommentsOnNotif();
         },
         error: (err: any) => {
           console.error("Error loading RFQ comments", err);
@@ -179,6 +186,30 @@ export class QuotationBidModalComponent implements OnInit {
       if (el) el.scrollTop = el.scrollHeight;
     }, 0);
   }
+
+  private scrollToCommentsOnNotif(): void {
+  if (!this.focusComments) return;
+
+  // Open Comments panel
+  this.activeIds = ['static-3']; // or ['static-1','static-3'] if you want items also open
+  this.cdr.detectChanges();
+
+    setTimeout(() => {
+    const anchor = document.getElementById('commentsSectionAnchor');
+    if (anchor) {
+      anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      // fallback: scroll to bottom of page
+      window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
+
+    // don’t repeat on later opens
+    this.focusComments = false;
+  }, 0);
+}
 
   getBid(itemId: number): BidSubmissionDetails {
     if (!this.bidMap.has(itemId)) {
@@ -334,5 +365,51 @@ export class QuotationBidModalComponent implements OnInit {
       backdrop: "static",
       keyboard: true,
     });
+  }
+
+    timeSince(date: Date): string {
+    const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
+
+    if (seconds < 30) return 'just now';
+
+    const units = [
+      { label: 'y', secs: 31536000 },
+      { label: 'mo', secs: 2592000 },
+      { label: 'w', secs: 604800 },
+      { label: 'd', secs: 86400 },
+      { label: 'h', secs: 3600 },
+      { label: 'm', secs: 60 },
+    ];
+
+    for (const u of units) {
+      const v = Math.floor(seconds / u.secs);
+      if (v >= 1) return `${v}${u.label} ago`;
+    }
+
+    return '1m ago';
+  }
+
+   get lastMessageAgo(): string | null {
+    if (!this.dataComments || this.dataComments.length === 0) {
+      return null;
+    }
+
+    const latest = this.dataComments.reduce((latest, current) => {
+      if (!latest) return current;
+      const latestDate = new Date(latest.createdOn);
+      const currentDate = new Date(current.createdOn);
+      return currentDate > latestDate ? current : latest;
+    }, null as any);
+
+    if (!latest?.createdOn) {
+      return null;
+    }
+
+    const createdOn = new Date(latest.createdOn);
+    if (isNaN(createdOn.getTime())) {
+      return null;
+    }
+
+    return this.timeSince(createdOn);
   }
 }

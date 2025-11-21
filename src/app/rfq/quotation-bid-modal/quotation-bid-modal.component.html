@@ -256,8 +256,23 @@
 
                     </ng-template>
                   </ngb-panel> -->
-
-                  <ngb-panel id="static-3" title="Comments New">
+                <div id="commentsSectionAnchor">
+                </div>
+              
+                <ngb-panel id="static-3">
+                  <ng-template ngbPanelTitle>
+                    <div class="d-flex align-items-baseline gap-2">
+                      <span>Comments</span>
+                      <div class="last-message-div" *ngIf="lastMessageAgo; else noLastMsg">
+                        Last message: <span class="last-message-time">{{ lastMessageAgo }}</span>
+                      </div>
+                      <ng-template #noLastMsg>
+                        <small class="text-muted">
+                          No messages yet
+                        </small>
+                      </ng-template>
+                    </div>
+                  </ng-template>
                   <ng-template ngbPanelContent>
 
                     <div class="col-12"> 
@@ -315,7 +330,8 @@
                     </div>  
 
                   </ng-template>
-                  </ngb-panel>
+                </ngb-panel>
+                  
           </ngb-accordion>
       
       </div>
