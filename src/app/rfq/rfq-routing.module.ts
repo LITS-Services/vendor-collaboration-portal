@@ -78,7 +78,7 @@ const routes: Routes = [
       },
       {
         path: '',
-        redirectTo: 'rfq-list',
+        redirectTo: 'rfq-master',
         pathMatch: 'full'
       }
     ]

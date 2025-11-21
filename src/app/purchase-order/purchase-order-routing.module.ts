@@ -40,6 +40,15 @@ const routes: Routes = [
       //   component: ShipmentDetailsComponent
       // }
 
+      {
+        path: "",
+        redirectTo: "purchase-order-master",
+        pathMatch: "full",
+      },
+      {
+        path: "**",
+        redirectTo: "purchase-order-master",
+      },
 
 
     ]

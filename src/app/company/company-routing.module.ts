@@ -5,32 +5,42 @@ import { CompanyListComponent } from './company-list/company-list.component';
 import { CompanyMasterComponent } from './company-master/company-master.component';
 
 const routes: Routes = [
-   {
-      path: '',
-        children: [
-           {
-             path: 'company-master',
-             component: CompanyMasterComponent,
-             data: {
-               title: 'Company Dashboard'
-             }
-           },
-           {
-             path: 'new-company',
-             component: NewCompanyComponent,
-             data: {
-               title: 'Add New Company'
-             }
-           },
-           {
-            path: 'company-list',
-            component: CompanyListComponent,
-            data: {
-              title: 'Company List'
-            }
-          },
-         ]
-    },
+  {
+    path: "",
+    children: [
+      {
+        path: "company-master",
+        component: CompanyMasterComponent,
+        data: {
+          title: "Company Dashboard",
+        },
+      },
+
+      {
+        path: "new-company",
+        component: NewCompanyComponent,
+        data: {
+          title: "Add New Company",
+        },
+      },
+      {
+        path: "company-list",
+        component: CompanyListComponent,
+        data: {
+          title: "Company List",
+        },
+      },
+      {
+        path: "",
+        redirectTo: "company-master",
+        pathMatch: "full",
+      },
+      {
+        path: "**",
+        redirectTo: "company-master",
+      },
+    ],
+  },
 ];
 
 @NgModule({

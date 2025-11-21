@@ -13,6 +13,16 @@ const routes: Routes = [
                  title: 'Tender Master'
                }
              },
+
+                   {
+        path: "",
+        redirectTo: "reports-master",
+        pathMatch: "full",
+      },
+      {
+        path: "**",
+        redirectTo: "reports-master",
+      },
            ]
       },
 ];

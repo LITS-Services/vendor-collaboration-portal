@@ -7,16 +7,16 @@ export const HROUTES: RouteInfo[] = [
   //   submenu: [  
   //   ]
   // },
-  { path: '/company/company-master', title: 'Companies', icon: 'ft-briefcase',class: '', isExternalLink: false, submenu: [
+  { path: '/company', title: 'Companies', icon: 'ft-briefcase',class: '', isExternalLink: false, submenu: [
   ] },
-  { path: '/rfq/rfq-master', title: 'RFQ', icon: 'fa fa-handshake-o',class: '', isExternalLink: false, submenu: [
+  { path: '/rfq', title: 'RFQ', icon: 'fa fa-handshake-o',class: '', isExternalLink: false, submenu: [
   ] },
-  { path: '/purchase-order/purchase-order-master', title: 'POs/SOs', icon: 'ft-shopping-cart', class: '', badge: '', badgeClass: '', isExternalLink: false, submenu: [] },
+  { path: '/purchase-order', title: 'POs/SOs', icon: 'ft-shopping-cart', class: '', badge: '', badgeClass: '', isExternalLink: false, submenu: [] },
   // { path: '/tendering/tender-master', title: 'Tendering', icon: 'ft-dollar-sign',class: '', isExternalLink: false, submenu: [
   // ] },
-  { path: '/reports/reports-master', title: 'Reports', icon: 'ft-file-text',class: '', isExternalLink: false, submenu: [
+  { path: '/reports', title: 'Reports', icon: 'ft-file-text',class: '', isExternalLink: false, submenu: [
   ] },
-  { path: '/history/history-master', title: 'History', icon: 'ft-file-text',class: '', isExternalLink: false, submenu: [
+  { path: '/history', title: 'History', icon: 'ft-file-text',class: '', isExternalLink: false, submenu: [
   ] },
   
 ];

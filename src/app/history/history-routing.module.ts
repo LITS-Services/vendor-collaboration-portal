@@ -9,60 +9,70 @@ import { InvoiceDetailsListComponent } from './invoice-details-list/invoice-deta
 import { PaymentDetailsListComponent } from './payment-details-list/payment-details-list.component';
 
 const routes: Routes = [
-    {
-        path: '',
-          children: [
-             {
-               path: 'history-master',
-               component: HistoryMasterComponent,
-               data: {
-                 title: 'History Master'
-               }
-             },
-             {
-               path: 'PR-Request',
-               component: PrRequestListComponent,
-               data: {
-                 title: 'PR-Request'
-               }
-             },
-             {
-              path: 'RFQ-Request',
-              component: RfqRequestListComponent,
-              data: {
-                title: 'RFQ-Request'
-              }
-            },
-             {
-              path: 'PO-Details',
-              component: PoDetailsListComponent,
-              data: {
-                title: 'PO-Details'
-              }
-            },
-            {
-              path: 'Recieving-Details',
-              component: RecievingDetailsListComponent,
-              data: {
-                title: 'Recieving-Details'
-              }
-            },
-            {
-              path: 'Invoice-Details',
-              component: InvoiceDetailsListComponent,
-              data: {
-                title: 'Invoice-Details'
-              }
-            },
-            {
-              path: 'Payment-Details',
-              component: PaymentDetailsListComponent,
-              data: {
-                title: 'Payment-Details'
-              }
-            },
-           ]
+  {
+    path: "",
+    children: [
+      {
+        path: "history-master",
+        component: HistoryMasterComponent,
+        data: {
+          title: "History Master",
+        },
       },
+      {
+        path: "PR-Request",
+        component: PrRequestListComponent,
+        data: {
+          title: "PR-Request",
+        },
+      },
+      {
+        path: "RFQ-Request",
+        component: RfqRequestListComponent,
+        data: {
+          title: "RFQ-Request",
+        },
+      },
+      {
+        path: "PO-Details",
+        component: PoDetailsListComponent,
+        data: {
+          title: "PO-Details",
+        },
+      },
+      {
+        path: "Recieving-Details",
+        component: RecievingDetailsListComponent,
+        data: {
+          title: "Recieving-Details",
+        },
+      },
+      {
+        path: "Invoice-Details",
+        component: InvoiceDetailsListComponent,
+        data: {
+          title: "Invoice-Details",
+        },
+      },
+      {
+        path: "Payment-Details",
+        component: PaymentDetailsListComponent,
+        data: {
+          title: "Payment-Details",
+        },
+      },
+
+      {
+        path: "",
+        redirectTo: "history-master",
+        pathMatch: "full",
+      },
+      {
+        path: "**",
+        redirectTo: "history-master",
+      },
+    ],
+  },
 ];
 
 @NgModule({
