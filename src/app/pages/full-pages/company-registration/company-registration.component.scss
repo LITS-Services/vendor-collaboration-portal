@@ -82,3 +82,7 @@ table {
 table > :not(:first-child) {
     border-top: none !important;
 }
+
+.cstm-vertical-gap{
+  gap: 12px 0px !important;
+}
