@@ -41,10 +41,14 @@ export class RfqService {
     return this.http.put(`${environment.apiUrl}/Quotation/update-bid`, { bids });
   }
 
-  getRfqById(rfqId: number, isVendor: boolean): Observable<QuotationRequestWithDetailsResponse> {
-    const params = new HttpParams()
+  getRfqById(rfqId: number, isVendor: boolean, vendorId?: string): Observable<QuotationRequestWithDetailsResponse> {
+    let params = new HttpParams()
       .set('id', rfqId)
       .set('isVendor', isVendor);
+
+    if (vendorId) {
+      params = params.set('vendorId', vendorId);
+    }
 
     return this.http.get<QuotationRequestWithDetailsResponse>(
       `${environment.apiUrl}/Quotation/get-quotation-by-id`,

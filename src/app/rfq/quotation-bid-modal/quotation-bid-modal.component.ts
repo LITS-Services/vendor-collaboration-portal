@@ -74,7 +74,8 @@ export class QuotationBidModalComponent implements OnInit {
 }
 
   loadRfqDetails(rfqId: number) {
-    this.rfqService.getRfqById(rfqId, true).subscribe(
+    const vendorUserId = localStorage.getItem("userId");
+    this.rfqService.getRfqById(rfqId, true, vendorUserId).subscribe(
       (res) => {
         console.log("RFQ API response:", res);
         this.rfq = res;
