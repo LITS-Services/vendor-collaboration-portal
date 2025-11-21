@@ -1,0 +1,79 @@
+.po-tabs nav {
+  display: flex;
+  justify-content: flex-start;
+ gap: 0.5em;
+}
+
+
+.po-tabs .po-style-tab {
+  flex: 1;
+
+  position: relative;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: #249d57;
+  font-weight: 500;
+  font-size: 0.75em;
+  padding: 1em 3.5em 1em 1em;
+  border-radius: 10px 10px 0 0;
+  transition: color 0.2s ease;
+  -webkit-backface-visibility: hidden;
+   backface-visibility: hidden;
+}
+
+
+.po-tabs .po-style-tab span {
+  position: relative;
+  z-index: 2;
+}
+
+.po-tabs .po-style-tab::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  content: '';
+  border-radius: 10px 10px 0 0;
+  background: #fff;
+  outline: 1px solid #d1d1d1;
+  transform: perspective(5px) rotateX(0.93deg) translateZ(-1px);
+  transform-origin: 0 0;
+  backface-visibility: hidden;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+
+.po-tabs .po-style-tab:hover::after,
+.po-tabs .po-style-tab:focus::after {
+  background: #249d57;
+  box-shadow: none;
+}
+
+.po-tabs .po-style-tab.tab-current {
+  color: #fff;
+  font-weight: 600;
+}
+
+.po-tabs .po-style-tab.tab-current::after {
+  background: #249d57;
+  box-shadow: none;
+}
+
+.po-tabs .po-style-tab,
+.po-tabs .po-style-tab::after {
+  transition: all 0.3s ease;
+}
+
+
+.po-tabs .po-style-tab:hover::after {
+  background: #deffec;
+}
+
+.po-tabs .po-style-tab.tab-current:hover::after,
+.po-tabs .po-style-tab.tab-current:focus::after {
+  background: #249d57 !important; /* keep blue background */
+  box-shadow: none !important;
+}

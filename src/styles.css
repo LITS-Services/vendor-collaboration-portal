@@ -1,4 +1,4 @@
-/* You can add global styles to this file, and also import other style files */
+@import './app/shared/custom-style/custom-tab.css';
 .modal-title {
   color: white !important;
 }
@@ -309,3 +309,8 @@ datatable-scroller {
     color: #616161;
     background-color: #dddddd;
 }
+
+/* html.swal2-shown,
+body.swal2-shown {
+  overflow-y: hidden !important;
+} */

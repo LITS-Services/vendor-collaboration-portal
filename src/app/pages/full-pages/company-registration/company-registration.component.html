@@ -1,14 +1,15 @@
-<!-- Header Starts -->
 <div class="px-2 pb-1">
 
-    <!-- Add warning message for readonly state -->
+
     <div *ngIf="isReadonlyEntityFields" class="alert alert-warning mt-3 mb-3">
         <i class="fa fa-exclamation-triangle me-2"></i>
         This company profile cannot be edited because the selected entity has "InProcess" status.
         Please select a different entity to enable editing.
     </div>
 
+
     <div class="row">
+
         <div class="col-6 gap-2 d-flex align-items-center">
             <button class="btn btn-outline-secondary rounded-circle" (click)="goBack()"
                 style="position: sticky; width: 40px; height: 40px; display: flex ; align-items: center; justify-content: center;">
@@ -16,12 +17,44 @@
             </button>
             <h1 class="mb-0">Company Profile</h1>
         </div>
-        <div class="col-6 d-flex align-items-center justify-content-end">
-            <button class="btn btn-primary" (click)="submitForm()" [disabled]="isReadonlyEntityFields">
-                {{ isEditMode ? 'Update Company' : 'Add Company' }}
-            </button>
-        </div>
+
     </div>
+
+
+    <div class="po-tabs mt-3">
+        <nav>
+            <button (click)="selectTab('general')" [ngClass]="{ 'tab-current': selectedTab === 'general' }"
+                class="po-style-tab">
+                <span>IDENTIFICATION</span>
+            </button>
+
+            <button (click)="selectTab('addresses')" [ngClass]="{ 'tab-current': selectedTab === 'addresses' }"
+                class="po-style-tab">
+                <span>ADDRESSES</span>
+            </button>
+
+            <button (click)="selectTab('contacts')" [ngClass]="{ 'tab-current': selectedTab === 'contacts' }"
+                class="po-style-tab">
+                <span>COMPANY CONTACTS</span>
+            </button>
+
+            <button (click)="selectTab('purchasing')" [ngClass]="{ 'tab-current': selectedTab === 'purchasing' }"
+                class="po-style-tab">
+                <span>PURCHASING DEMOGRAPHICS</span>
+            </button>
+
+            <button (click)="selectTab('bank')" [ngClass]="{ 'tab-current': selectedTab === 'bank' }"
+                class="po-style-tab">
+                <span>BANK DETAILS</span>
+            </button>
+
+                 <button (click)="selectTab('attachments')" [ngClass]="{ 'tab-current': selectedTab === 'attachments' }"
+                class="po-style-tab">
+                <span>ATTACHMENTS</span>
+            </button>
+        </nav>
+    </div>
+
 
     <section id="basic-input">
         <div class="row">
@@ -30,477 +63,481 @@
                     <div class="card-content">
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-12 d-flex align-items-center justify-content-end mb-2">
-                                    <button class="btn btn-primary" (click)="openAttachmentModal()"
-                                        [disabled]="isReadonlyEntityFields">Attachment</button>
+                                <div class="d-flex align-items-center justify-content-end mb-2">
+                                    <ng-container *ngIf="isEditMode; else newCompanyNav">
+                                        <button class="btn btn-primary" (click)="submitForm()"
+                                            [disabled]="isReadonlyEntityFields">
+                                            Update Company
+                                        </button>
+                                    </ng-container>
+
+
+                                    <ng-template #newCompanyNav>
+                                        <div class="d-flex gap-2">
+                                            <button *ngIf="!isFirstTab()" type="button"
+                                                class="btn btn-outline-secondary" (click)="goToPrevTab()"
+                                                [disabled]="isFirstTab()">
+                                                Back
+                                            </button>
+
+
+                                            <button type="button" class="btn btn-primary" *ngIf="!isLastTab()"
+                                                (click)="goToNextTab()" [disabled]="isReadonlyEntityFields">
+                                                Next
+                                            </button>
+
+
+                                            <button type="button" class="btn btn-primary" *ngIf="isLastTab()"
+                                                (click)="submitForm()" [disabled]="isReadonlyEntityFields">
+                                                Submit Company
+                                            </button>
+                                        </div>
+                                    </ng-template>
                                 </div>
+                                <!-- <div class="col-12 d-flex align-items-center justify-content-end mb-2">
+                                    <button class="btn btn-outline-primary" (click)="openAttachmentModal()"
+                                        [disabled]="isReadonlyEntityFields">Attachment</button>
+                                </div> -->
                                 <div class="col-12">
-                                    <ngb-accordion class="cstm-accordion" [closeOthers]="false"
-                                        [activeIds]="'static-2'">
+                                    <div class="col-12">
 
-                                        <ngb-panel id="static-2" title="General Information">
-                                            <ng-template ngbPanelContent>
-                                                <div class="row">
+                                        <div *ngIf="selectedTab === 'general'">
 
-                                                    <p class="desc">Identification</p>
+                                            <div class="d-flex align-items-center gap-2">
 
-                                                    <!-- Procurement Companies Selection -->
-                                                    <div *ngIf="!isEditMode" class="col-md-6">
-                                                        <label>Select Procurement Companies</label>
-                                                        <div class="dropdown">
-                                                            <button
-                                                                class="btn btn-outline-primary w-100 text-start procurement-btn"
-                                                                type="button" (click)="dropdownOpen = !dropdownOpen">
-                                                                {{ getSelectedCompaniesText() || 'Select Companies' }}
-                                                            </button>
-                                                            <div class="dropdown-menu w-100 p-2"
-                                                                [class.show]="dropdownOpen"
-                                                                style="max-height: 200px; overflow-y: auto;">
-                                                                <div *ngFor="let company of procurementCompanies">
-                                                                    <div class="form-check">
-                                                                        <input class="form-check-input" type="checkbox"
-                                                                            [value]="company.id"
-                                                                            [checked]="selectedProcurementCompanyIds?.includes(company.id)"
-                                                                            (change)="toggleCompanySelection(company.id, $event)">
-                                                                        <label class="form-check-label">{{ company.name
-                                                                            }}</label>
-                                                                    </div>
+
+
+                                                <div *ngIf="!isEditMode" class="col-md-6">
+                                                    <label>Select Procurement Companies</label>
+                                                    <div class="dropdown">
+                                                        <button
+                                                            class="btn btn-outline-primary w-100 text-start procurement-btn"
+                                                            type="button" (click)="dropdownOpen = !dropdownOpen">
+                                                            {{ getSelectedCompaniesText() || 'Select Companies' }}
+                                                        </button>
+                                                        <div class="dropdown-menu w-100 p-2" [class.show]="dropdownOpen"
+                                                            style="max-height: 200px; overflow-y: auto;">
+                                                            <div *ngFor="let company of procurementCompanies">
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="checkbox"
+                                                                        [value]="company.id"
+                                                                        [checked]="selectedProcurementCompanyIds?.includes(company.id)"
+                                                                        (change)="toggleCompanySelection(company.id, $event)">
+                                                                    <label class="form-check-label">{{ company.name
+                                                                        }}</label>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
+                                                </div>
 
-                                                    <div *ngIf="isEditMode" class="col-md-6 mb-3">
-                                                        <label>Select Entity</label>
+                                                <div *ngIf="isEditMode" class="col-md-6 mb-3 form-group">
+                                                    <label>Select Entity</label>
+                                                    <div class="dropdown">
+                                                        <button class="btn btn-outline-primary w-100 text-start"
+                                                            type="button"
+                                                            (click)="entityDropdownOpen = !entityDropdownOpen">
+                                                            {{ getSelectedEntityName() || 'Select Entity' }}
+                                                        </button>
 
-                                                        <div class="dropdown">
-                                                            <button class="btn btn-outline-primary w-100 text-start"
-                                                                type="button"
-                                                                (click)="entityDropdownOpen = !entityDropdownOpen">
-
-                                                                {{ getSelectedEntityName() || 'Select Entity' }}
-                                                            </button>
-
-                                                            <div class="dropdown-menu w-100 p-2"
-                                                                [class.show]="entityDropdownOpen"
-                                                                style="max-height: 200px; overflow-y: auto;">
-
-                                                                <!-- Loop Vendor Entities only -->
-                                                                <div *ngFor="let entity of vendorEntities">
-
-                                                                    <div class="form-check">
-                                                                        <input class="form-check-input" type="radio"
-                                                                            name="entityRadio"
-                                                                            [id]="'entity-' + entity.procurementCompanyId"
-                                                                            [value]="entity.procurementCompanyId"
-                                                                            [checked]="selectedEntityId === entity.procurementCompanyId"
-                                                                            (change)="onEntitySelect(entity)">
-
-                                                                        <label class="form-check-label"
-                                                                            [for]="'entity-' + entity.procurementCompanyId">
-
-                                                                            <!-- Access procurementCompany.name -->
-                                                                            {{ entity.procurementCompany?.name }}
-
-                                                                            <!-- Access status from requestStatus -->
-                                                                            <span class="text-muted"
-                                                                                *ngIf="entity.requestStatus?.status">
-                                                                                ({{ entity.requestStatus.status }})
-                                                                            </span>
-                                                                        </label>
-                                                                    </div>
-
+                                                        <div class="dropdown-menu w-100 p-2"
+                                                            [class.show]="entityDropdownOpen"
+                                                            style="max-height: 200px; overflow-y: auto;">
+                                                            <div *ngFor="let entity of vendorEntities">
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="radio"
+                                                                        name="entityRadio"
+                                                                        [id]="'entity-' + entity.procurementCompanyId"
+                                                                        [value]="entity.procurementCompanyId"
+                                                                        [checked]="selectedEntityId === entity.procurementCompanyId"
+                                                                        (change)="onEntitySelect(entity)">
+                                                                    <label class="form-check-label"
+                                                                        [for]="'entity-' + entity.procurementCompanyId">
+                                                                        {{ entity.procurementCompany?.name }}
+                                                                        <span class="text-muted"
+                                                                            *ngIf="entity.requestStatus?.status">
+                                                                            ({{ entity.requestStatus.status }})
+                                                                        </span>
+                                                                    </label>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
-
-
-                                                    <!-- Company Name -->
-                                                    <div class="col-md-3">
-                                                        <label>Name</label>
-                                                        <input type="text" class="form-control"
-                                                            [(ngModel)]="companyName"
-                                                            [disabled]="isReadonlyEntityFields"
-                                                            placeholder="Enter company name">
-                                                    </div>
                                                 </div>
-                                            </ng-template>
-                                        </ngb-panel>
 
-                                        <!-- Addresses -->
-                                        <ngb-panel id="static-3" title="Addresses">
-                                            <ng-template ngbPanelContent>
-                                                <div class="address-table-container">
-                                                    <button class="btn btn-primary mb-3" (click)="openAddressModal()"
-                                                        [disabled]="isReadonlyEntityFields">Add Address</button>
-                                                    <div class="table-responsive">
-                                                        <table class="table">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>Street</th>
-                                                                    <th>City</th>
-                                                                    <th>State</th>
-                                                                    <th>Zip Code</th>
-                                                                    <th>Country</th>
-                                                                    <th>Primary</th>
-                                                                    <th>Actions</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <tr *ngFor="let address of addressList; let i = index">
-                                                                    <td>{{ address.street }}</td>
-                                                                    <td>{{ address.city }}</td>
-                                                                    <td>{{ address.state }}</td>
-                                                                    <td>{{ address.zip }}</td>
-                                                                    <td>{{ address.country }}</td>
-                                                                    <td>{{ address.primary ? 'Yes' : 'No' }}
-                                                                    </td>
-                                                                    <td>
-                                                                        <button class="ft-edit btn" type="button"
-                                                                            (click)="editAddress(i)"
-                                                                            [disabled]="isReadonlyEntityFields"></button>
-                                                                        <button class="ft-trash btn"
-                                                                            (click)="confirmAddressDeletion(i)"
-                                                                            [disabled]="isReadonlyEntityFields"></button>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
+                                                <div class="col-md-6 form-group">
+                                                    <label>Name</label>
+                                                    <input type="text" class="form-control" [(ngModel)]="companyName"
+                                                        [disabled]="isReadonlyEntityFields"
+                                                        placeholder="Enter company name">
                                                 </div>
-                                            </ng-template>
-                                        </ngb-panel>
 
-                                        <!-- Company Contact Details -->
-                                        <ngb-panel id="static-4" title="Company Contact Details">
-                                            <ng-template ngbPanelContent>
-                                                <button class="btn btn-primary mb-3" (click)="openContactModal()"
-                                                    [disabled]="isReadonlyEntityFields">Add Contact</button>
-                                                <div class="table-responsive">
+                                            </div>
+                                        </div>
+
+
+                                        <div *ngIf="selectedTab === 'addresses'">
+                                            <div class="address-table-container">
+                                              
+                                                <app-company-address-modal  [address]="editingAddress"
+                                                    [isEditAddressMode]="editingAddressIndex !== null" 
+                                                    (submit)="onAddressSubmit($event)">
+                                                </app-company-address-modal>
+
+                                                <div class="table-responsive mt-2">
                                                     <table class="table">
                                                         <thead>
                                                             <tr>
-                                                                <th>Description</th>
-                                                                <th>Type</th>
-                                                                <th>Contact Number</th>
-                                                                <th>Extension</th>
+                                                                <th>Street</th>
+                                                                <th>City</th>
+                                                                <th>State</th>
+                                                                <th>Zip Code</th>
+                                                                <th>Country</th>
                                                                 <th>Primary</th>
                                                                 <th>Actions</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <tr *ngFor="let contact of contactList; let i = index">
-                                                                <td>{{ contact.description }}</td>
-                                                                <td>{{ contact.type }}</td>
-                                                                <td>{{ contact.contactNumber }}</td>
-                                                                <td>{{ contact.extension }}</td>
-                                                                <td>{{ contact.primary ? 'Yes' : 'No' }}
-                                                                </td>
+                                                            <tr *ngFor="let address of addressList; let i = index">
+                                                                <td>{{ address.street }}</td>
+                                                                <td>{{ address.city }}</td>
+                                                                <td>{{ address.state }}</td>
+                                                                <td>{{ address.zip }}</td>
+                                                                <td>{{ address.country }}</td>
+                                                                <td>{{ address.primary ? 'Yes' : 'No' }}</td>
                                                                 <td>
                                                                     <button class="ft-edit btn" type="button"
-                                                                        (click)="editContact(i)"
+                                                                        (click)="openAddressEditor(i)"
                                                                         [disabled]="isReadonlyEntityFields"></button>
                                                                     <button class="ft-trash btn" type="button"
-                                                                        (click)="confirmContactDeletion(i)"
+                                                                        (click)="confirmAddressDeletion(i)"
                                                                         [disabled]="isReadonlyEntityFields"></button>
                                                                 </td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
                                                 </div>
-                                            </ng-template>
-                                        </ngb-panel>
+                                            </div>
+                                        </div>
 
-                                        <!-- Purchasing Demographics -->
-                                        <ngb-panel id="static-5" title="Purchasing Demographics">
-                                            <ng-template ngbPanelContent>
-                                                <div class="row">
 
-                                                    <div class="col-md-3 mt-1">
-                                                        <label>
-                                                            Primary currency
-                                                            <i class="fa fa-info-circle text-muted ms-1"
-                                                                ngbTooltip="Select the main currency used for transactions with this company"
-                                                                placement="right"></i>
-                                                        </label>
-                                                        <select class="form-control" [(ngModel)]="primaryCurrency"
-                                                            [disabled]="isReadonlyEntityFields">
-                                                            <option value="">Select primary currency</option>
-                                                            <option>USD</option>
-                                                            <option>GBP</option>
-                                                            <option>AED</option>
-                                                        </select>
-                                                    </div>
+                                        <div *ngIf="selectedTab === 'contacts'">
+                                
+                                        <app-company-contact-modal
+                                     
+                                         [contact]="editingContact"
+                                        [isEditMode]="editingContactIndex !== null" 
+                                        (submit)="onContactSubmit($event)">
+                                        </app-company-contact-modal>
 
-                                                    <div class="col-md-3 mt-1">
-                                                        <label>
-                                                            Primary contact
-                                                            <i class="fa fa-info-circle text-muted ms-1"
-                                                                ngbTooltip="Choose the main contact person for this vendor"
-                                                                placement="right"></i>
-                                                        </label>
-                                                        <select class="form-control" [(ngModel)]="employeeResponsible"
-                                                            [disabled]="isReadonlyEntityFields">
-                                                            <option value="">Select primary contact</option>
-                                                            <option *ngFor="let c of contactList">{{ c.description }}
-                                                            </option>
-                                                        </select>
-                                                    </div>
-
-                                                    <div class="col-md-3 mt-1">
-                                                        <label>
-                                                            Vendor type
-                                                            <i class="fa fa-info-circle text-muted ms-1"
-                                                                ngbTooltip="Specify whether this vendor is Local or Foreign"
-                                                                placement="right"></i>
-                                                        </label>
-                                                        <select class="form-control" [(ngModel)]="vendorCategory"
-                                                            [disabled]="isReadonlyEntityFields">
-                                                            <option>Select vendor type</option>
-                                                            <option>Local</option>
-                                                            <option>Foreign</option>
-                                                        </select>
-                                                    </div>
-
-                                                    <div class="col-md-3 mt-1">
-                                                        <label>
-                                                            Line of business
-                                                            <i class="fa fa-info-circle text-muted ms-1"
-                                                                ngbTooltip="Enter the industry or line of business this company operates in"
-                                                                placement="right"></i>
-                                                        </label>
-                                                        <input type="text" class="form-control"
-                                                            [(ngModel)]="lineOfBusiness"
-                                                            [disabled]="isReadonlyEntityFields"
-                                                            placeholder="Enter line of business">
-                                                    </div>
-
-                                                    <div class="col-md-3 mt-1">
-                                                        <label>
-                                                            Birth country
-                                                            <i class="fa fa-info-circle text-muted ms-1"
-                                                                ngbTooltip="Enter the country where the vendor or company was originally established"
-                                                                placement="right"></i>
-                                                        </label>
-                                                        <input type="text" class="form-control"
-                                                            [(ngModel)]="birthCountry"
-                                                            [disabled]="isReadonlyEntityFields"
-                                                            placeholder="Enter birth country">
-                                                    </div>
-
-                                                    <div class="col-md-3 mt-1">
-                                                        <label>
-                                                            Employee responsible
-                                                            <i class="fa fa-info-circle text-muted ms-1"
-                                                                ngbTooltip="Enter the employee responsible for managing this vendor relationship"
-                                                                placement="right"></i>
-                                                        </label>
-                                                        <input type="text" class="form-control"
-                                                            [(ngModel)]="employeeResponsible"
-                                                            [disabled]="isReadonlyEntityFields"
-                                                            placeholder="Enter employee responsible">
-                                                    </div>
-
-                                                    <div class="col-md-3 mt-1">
-                                                        <label>
-                                                            Segment
-                                                            <i class="fa fa-info-circle text-muted ms-1"
-                                                                ngbTooltip="Enter the business segment this vendor belongs to"
-                                                                placement="right"></i>
-                                                        </label>
-                                                        <input type="text" class="form-control" [(ngModel)]="segment"
-                                                            [disabled]="isReadonlyEntityFields"
-                                                            placeholder="Enter segment">
-                                                    </div>
-
-                                                    <div class="col-md-3 mt-1">
-                                                        <label>
-                                                            Speciality
-                                                            <i class="fa fa-info-circle text-muted ms-1"
-                                                                ngbTooltip="Enter the specific expertise or speciality of this vendor"
-                                                                placement="right"></i>
-                                                        </label>
-                                                        <input type="text" class="form-control" [(ngModel)]="speciality"
-                                                            [disabled]="isReadonlyEntityFields"
-                                                            placeholder="Enter speciality">
-                                                    </div>
-
-                                                    <div class="col-md-3 mt-1">
-                                                        <label>
-                                                            Chain
-                                                            <i class="fa fa-info-circle text-muted ms-1"
-                                                                ngbTooltip="Enter the chain or group the company is associated with"
-                                                                placement="right"></i>
-                                                        </label>
-                                                        <input type="text" class="form-control" [(ngModel)]="chain"
-                                                            [disabled]="isReadonlyEntityFields"
-                                                            placeholder="Enter chain">
-                                                    </div>
-
-                                                    <div class="col-12 mt-1">
-                                                        <label>
-                                                            Note
-                                                            <i class="fa fa-info-circle text-muted ms-1"
-                                                                ngbTooltip="Add any additional notes or remarks about this vendor"
-                                                                placement="right"></i>
-                                                        </label>
-                                                        <textarea class="form-control" rows="3" [(ngModel)]="note"
-                                                            [disabled]="isReadonlyEntityFields"
-                                                            placeholder="Enter note"></textarea>
-                                                    </div>
-
-                                                </div>
-                                            </ng-template>
-                                        </ngb-panel>
-
-                                        <!-- Bank Details -->
-                                        <ngb-panel id="static-6" title="Bank Details">
-                                            <ng-template ngbPanelContent>
-                                                <form [formGroup]="bankForm">
-                                                    <div class="row mb-3">
-                                                        <div class="col-md-3 mt-1">
-                                                            <label>Bank Name</label>
-                                                            <input type="text" class="form-control"
-                                                                formControlName="bankName"
-                                                                placeholder="Enter bank name">
-                                                        </div>
-
-                                                        <div class="col-md-3 mt-1">
-                                                            <label>Account Holder Name</label>
-                                                            <input type="text" class="form-control"
-                                                                formControlName="accountHolderName"
-                                                                placeholder="Enter account holder name">
-                                                        </div>
-
-                                                        <div class="col-md-3 mt-1">
-                                                            <label>Account Number</label>
-                                                            <input type="text" class="form-control"
-                                                                formControlName="accountNumber"
-                                                                placeholder="Enter account number">
-                                                        </div>
-
-                                                        <div class="col-md-3 mt-1">
-                                                            <label>IBAN</label>
-                                                            <input type="text" class="form-control"
-                                                                formControlName="iban" placeholder="Enter IBAN">
-                                                        </div>
-
-                                                        <div class="col-md-3 mt-1">
-                                                            <label>SWIFT / BIC Code</label>
-                                                            <input type="text" class="form-control"
-                                                                formControlName="swiftCode"
-                                                                placeholder="Enter SWIFT / BIC code">
-                                                        </div>
-
-                                                        <div class="col-md-3 mt-1">
-                                                            <label>Branch Name</label>
-                                                            <input type="text" class="form-control"
-                                                                formControlName="branchName"
-                                                                placeholder="Enter branch name">
-                                                        </div>
-
-                                                        <div class="col-md-3 mt-1">
-                                                            <label>Branch Address</label>
-                                                            <input type="text" class="form-control"
-                                                                formControlName="branchAddress"
-                                                                placeholder="Enter branch address">
-                                                        </div>
-
-                                                        <div class="col-md-3 mt-1">
-                                                            <label>Country</label>
-                                                            <select class="form-control" formControlName="bankCountry">
-                                                                <option value="">Select country</option>
-                                                                <option>Pakistan</option>
-                                                                <option>United Arab Emirates</option>
-                                                                <option>United Kingdom</option>
-                                                                <option>United States</option>
-                                                                <option>Saudi Arabia</option>
-                                                            </select>
-                                                        </div>
-
-                                                        <div class="col-md-3 mt-1">
-                                                            <label>Currency</label>
-                                                            <select class="form-control" formControlName="bankCurrency">
-                                                                <option value="">Select currency</option>
-                                                                <option>PKR</option>
-                                                                <option>AED</option>
-                                                                <option>USD</option>
-                                                                <option>GBP</option>
-                                                                <option>EUR</option>
-                                                            </select>
-                                                        </div>
-
-                                                        <div class="col-12 mt-3">
-                                                            <button type="button" class="btn btn-primary"
-                                                                (click)="addBank()"
-                                                                [disabled]="isReadonlyEntityFields">Add Bank</button>
-                                                        </div>
-                                                    </div>
-                                                </form>
-
-                                                <!-- ngx-datatable -->
-                                                <div class="mt-4">
-                                                    <ngx-datatable *ngIf="bankList.length > 0" class="bootstrap"
-                                                        [rows]="bankList" [headerHeight]="50" [footerHeight]="50"
-                                                        [rowHeight]="'auto'" [limit]="5">
-
-                                                        <ngx-datatable-column name="Bank Name"
-                                                            prop="bankName"></ngx-datatable-column>
-                                                        <ngx-datatable-column name="Account Holder"
-                                                            prop="accountHolderName"></ngx-datatable-column>
-                                                        <ngx-datatable-column name="Account Number"
-                                                            prop="accountNumber"></ngx-datatable-column>
-                                                        <ngx-datatable-column name="IBAN"
-                                                            prop="iban"></ngx-datatable-column>
-                                                        <ngx-datatable-column name="SWIFT Code"
-                                                            prop="swiftCode"></ngx-datatable-column>
-                                                        <ngx-datatable-column name="Branch Name"
-                                                            prop="branchName"></ngx-datatable-column>
-                                                        <ngx-datatable-column name="Branch Address"
-                                                            prop="branchAddress"></ngx-datatable-column>
-                                                        <ngx-datatable-column name="Country"
-                                                            prop="bankCountry"></ngx-datatable-column>
-                                                        <ngx-datatable-column name="Currency"
-                                                            prop="bankCurrency"></ngx-datatable-column>
-
-                                                        <!-- Add Actions Column for Bank -->
-                                                        <ngx-datatable-column name="Actions">
-                                                            <ng-template let-row="row" let-rowIndex="rowIndex"
-                                                                ngx-datatable-cell-template>
-                                                                <button class="ft-edit btn me-2" type="button"
+                                            <div class="table-responsive mt-2">
+                                                <table class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Description</th>
+                                                            <th>Type</th>
+                                                            <th>Contact Number</th>
+                                                            <th>Extension</th>
+                                                            <th>Primary</th>
+                                                            <th>Actions</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr *ngFor="let contact of contactList; let i = index">
+                                                            <td>{{ contact.description }}</td>
+                                                            <td>{{ contact.type }}</td>
+                                                            <td>{{ contact.contactNumber }}</td>
+                                                            <td>{{ contact.extension }}</td>
+                                                            <td>{{ contact.primary ? 'Yes' : 'No' }}</td>
+                                                            <td>
+                                                                <button class="ft-edit btn" type="button"
+                                                                    (click)="openContactEditor(i)"
                                                                     [disabled]="isReadonlyEntityFields"></button>
                                                                 <button class="ft-trash btn" type="button"
-                                                                    (click)="confirmBankDeletion(rowIndex)"
+                                                                    (click)="confirmContactDeletion(i)"
                                                                     [disabled]="isReadonlyEntityFields"></button>
-                                                            </ng-template>
-                                                        </ngx-datatable-column>
-                                                    </ngx-datatable>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
+
+                                        <div *ngIf="selectedTab === 'purchasing'">
+                                            <div class="row cstm-vertical-gap">
+                                                <div class="col-md-3 mt-1 form-group">
+                                                    <label>
+                                                        Primary currency
+                                                        <i class="fa fa-info-circle text-muted ms-1"
+                                                            ngbTooltip="Select the main currency used for transactions with this company"
+                                                            placement="right"></i>
+                                                    </label>
+                                                    <select class="form-control" [(ngModel)]="primaryCurrency"
+                                                        [disabled]="isReadonlyEntityFields">
+                                                        <option value="">Select primary currency</option>
+                                                        <option>USD</option>
+                                                        <option>GBP</option>
+                                                        <option>AED</option>
+                                                    </select>
                                                 </div>
-                                            </ng-template>
-                                        </ngb-panel>
 
-                                    </ngb-accordion>
+                                                <div class="col-md-3 mt-1 form-group">
+                                                    <label>
+                                                        Primary contact
+                                                        <i class="fa fa-info-circle text-muted ms-1"
+                                                            ngbTooltip="Choose the main contact person for this vendor"
+                                                            placement="right"></i>
+                                                    </label>
+                                                    <select class="form-control" [(ngModel)]="employeeResponsible"
+                                                        [disabled]="isReadonlyEntityFields">
+                                                        <option value="">Select primary contact</option>
+                                                        <option *ngFor="let c of contactList">{{ c.description }}
+                                                        </option>
+                                                    </select>
+                                                </div>
 
-                                    <!-- Remarks Section (commented but kept for reference) -->
-                                    <!-- <div class="card mt-3" *ngIf="isEditMode">
-                                        <div class="card-header">
-                                            <h5 class="mb-0">Remarks</h5>
-                                        </div>
-                                        <div class="card-body">
-                                            <textarea class="form-control" rows="4" [(ngModel)]="remarks"
-                                                placeholder="Enter remarks" readonly></textarea>
-                                        </div>
-                                    </div> -->
+                                                <div class="col-md-3 mt-1 form-group">
+                                                    <label>
+                                                        Vendor type
+                                                        <i class="fa fa-info-circle text-muted ms-1"
+                                                            ngbTooltip="Specify whether this vendor is Local or Foreign"
+                                                            placement="right"></i>
+                                                    </label>
+                                                    <select class="form-control" [(ngModel)]="vendorCategory"
+                                                        [disabled]="isReadonlyEntityFields">
+                                                        <option>Select vendor type</option>
+                                                        <option>Local</option>
+                                                        <option>Foreign</option>
+                                                    </select>
+                                                </div>
 
-                                    <!-- <form [formGroup]="companyForm" *ngIf="isEditMode">
-                                        <div class="mb-3 mt-3">
-                                            <label for="remarks" class="form-label">User Remarks</label>
-                                            <textarea id="remarks" class="form-control" formControlName="remarks"
-                                                rows="3" placeholder="Enter remarks here">
-                                            </textarea>
+                                                <div class="col-md-3 mt-1 form-group">
+                                                    <label>
+                                                        Line of business
+                                                        <i class="fa fa-info-circle text-muted ms-1"
+                                                            ngbTooltip="Enter the industry or line of business this company operates in"
+                                                            placement="right"></i>
+                                                    </label>
+                                                    <input type="text" class="form-control" [(ngModel)]="lineOfBusiness"
+                                                        [disabled]="isReadonlyEntityFields"
+                                                        placeholder="Enter line of business">
+                                                </div>
+
+                                                <div class="col-md-3 mt-1 form-group">
+                                                    <label>
+                                                        Birth country
+                                                        <i class="fa fa-info-circle text-muted ms-1"
+                                                            ngbTooltip="Enter the country where the vendor or company was originally established"
+                                                            placement="right"></i>
+                                                    </label>
+                                                    <input type="text" class="form-control" [(ngModel)]="birthCountry"
+                                                        [disabled]="isReadonlyEntityFields"
+                                                        placeholder="Enter birth country">
+                                                </div>
+
+                                                <div class="col-md-3 mt-1 form-group">
+                                                    <label>
+                                                        Employee responsible
+                                                        <i class="fa fa-info-circle text-muted ms-1"
+                                                            ngbTooltip="Enter the employee responsible for managing this vendor relationship"
+                                                            placement="right"></i>
+                                                    </label>
+                                                    <input type="text" class="form-control"
+                                                        [(ngModel)]="employeeResponsible"
+                                                        [disabled]="isReadonlyEntityFields"
+                                                        placeholder="Enter employee responsible">
+                                                </div>
+
+                                                <div class="col-md-3 mt-1 form-group">
+                                                    <label>
+                                                        Segment
+                                                        <i class="fa fa-info-circle text-muted ms-1"
+                                                            ngbTooltip="Enter the business segment this vendor belongs to"
+                                                            placement="right"></i>
+                                                    </label>
+                                                    <input type="text" class="form-control" [(ngModel)]="segment"
+                                                        [disabled]="isReadonlyEntityFields" placeholder="Enter segment">
+                                                </div>
+
+                                                <div class="col-md-3 mt-1 form-group">
+                                                    <label>
+                                                        Speciality
+                                                        <i class="fa fa-info-circle text-muted ms-1"
+                                                            ngbTooltip="Enter the specific expertise or speciality of this vendor"
+                                                            placement="right"></i>
+                                                    </label>
+                                                    <input type="text" class="form-control" [(ngModel)]="speciality"
+                                                        [disabled]="isReadonlyEntityFields"
+                                                        placeholder="Enter speciality">
+                                                </div>
+
+                                                <div class="col-md-3 mt-1 form-group">
+                                                    <label>
+                                                        Chain
+                                                        <i class="fa fa-info-circle text-muted ms-1"
+                                                            ngbTooltip="Enter the chain or group the company is associated with"
+                                                            placement="right"></i>
+                                                    </label>
+                                                    <input type="text" class="form-control" [(ngModel)]="chain"
+                                                        [disabled]="isReadonlyEntityFields" placeholder="Enter chain">
+                                                </div>
+
+                                                <div class="col-12 mt-1 form-group">
+                                                    <label>
+                                                        Note
+                                                        <i class="fa fa-info-circle text-muted ms-1"
+                                                            ngbTooltip="Add any additional notes or remarks about this vendor"
+                                                            placement="right"></i>
+                                                    </label>
+                                                    <textarea class="form-control" rows="3" [(ngModel)]="note"
+                                                        [disabled]="isReadonlyEntityFields"
+                                                        placeholder="Enter note"></textarea>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </form> -->
+
+
+                                        <div *ngIf="selectedTab === 'bank'">
+                                            <form [formGroup]="bankForm">
+                                                <div class="row mb-3 cstm-vertical-gap">
+                                                    <div class="col-md-3 mt-1 form-group">
+                                                        <label>Bank Name</label>
+                                                        <input type="text" class="form-control"
+                                                            formControlName="bankName" placeholder="Enter bank name">
+                                                    </div>
+
+                                                    <div class="col-md-3 mt-1 form-group">
+                                                        <label>Account Holder Name</label>
+                                                        <input type="text" class="form-control"
+                                                            formControlName="accountHolderName"
+                                                            placeholder="Enter account holder name">
+                                                    </div>
+
+                                                    <div class="col-md-3 mt-1 form-group">
+                                                        <label>Account Number</label>
+                                                        <input type="text" class="form-control"
+                                                            formControlName="accountNumber"
+                                                            placeholder="Enter account number">
+                                                    </div>
+
+                                                    <div class="col-md-3 mt-1 form-group">
+                                                        <label>IBAN</label>
+                                                        <input type="text" class="form-control" formControlName="iban"
+                                                            placeholder="Enter IBAN">
+                                                    </div>
+
+                                                    <div class="col-md-3 mt-1 form-group">
+                                                        <label>SWIFT / BIC Code</label>
+                                                        <input type="text" class="form-control"
+                                                            formControlName="swiftCode"
+                                                            placeholder="Enter SWIFT / BIC code">
+                                                    </div>
+
+                                                    <div class="col-md-3 mt-1 form-group">
+                                                        <label>Branch Name</label>
+                                                        <input type="text" class="form-control"
+                                                            formControlName="branchName"
+                                                            placeholder="Enter branch name">
+                                                    </div>
+
+                                                    <div class="col-md-3 mt-1 form-group">
+                                                        <label>Branch Address</label>
+                                                        <input type="text" class="form-control"
+                                                            formControlName="branchAddress"
+                                                            placeholder="Enter branch address">
+                                                    </div>
+
+                                                    <div class="col-md-3 mt-1 form-group">
+                                                        <label>Country</label>
+                                                        <select class="form-control" formControlName="bankCountry">
+                                                            <option value="">Select country</option>
+                                                            <option>Pakistan</option>
+                                                            <option>United Arab Emirates</option>
+                                                            <option>United Kingdom</option>
+                                                            <option>United States</option>
+                                                            <option>Saudi Arabia</option>
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="col-md-3 mt-1 form-group">
+                                                        <label>Currency</label>
+                                                        <select class="form-control" formControlName="bankCurrency">
+                                                            <option value="">Select currency</option>
+                                                            <option>PKR</option>
+                                                            <option>AED</option>
+                                                            <option>USD</option>
+                                                            <option>GBP</option>
+                                                            <option>EUR</option>
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="d-flex justify-content-end mt-3">
+                                                        <button type="button" class="btn btn-primary"
+                                                            (click)="addBank()" [disabled]="isReadonlyEntityFields">
+                                                            Add Bank
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </form>
+
+
+                                            <div class="mt-4">
+                                                <div class="table-responsive mt-2">
+                                                    <table class="table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Bank Name</th>
+                                                                <th>Account Holder</th>
+                                                                <th>Account Number</th>
+                                                                <th>IBAN</th>
+                                                                <th>SWIFT Code</th>
+                                                                <th>Branch Name</th>
+                                                                <th>Branch Address</th>
+                                                                <th>Country</th>
+                                                                <th>Currency</th>
+                                                                <th>Actions</th>
+                                                            </tr>
+                                                        </thead>
+                                                
+                                                        <tbody>
+                                                            <tr *ngFor="let bank of bankList; let i = index">
+                                                                <td>{{ bank.bankName }}</td>
+                                                                <td>{{ bank.accountHolderName }}</td>
+                                                                <td>{{ bank.accountNumber }}</td>
+                                                                <td>{{ bank.iban }}</td>
+                                                                <td>{{ bank.swiftCode }}</td>
+                                                                <td>{{ bank.branchName }}</td>
+                                                                <td>{{ bank.branchAddress }}</td>
+                                                                <td>{{ bank.bankCountry }}</td>
+                                                                <td>{{ bank.bankCurrency }}</td>
+                                                
+                                                                <td>
+                                                                    <button class="ft-edit btn" type="button" (click)="editBank(i)"
+                                                                        [disabled]="isReadonlyEntityFields"></button>
+                                                
+                                                                    <button class="ft-trash btn" type="button" (click)="confirmBankDeletion(i)"
+                                                                        [disabled]="isReadonlyEntityFields"></button>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div *ngIf="selectedTab === 'attachments'">
+                                        <app-company-profile-attachment
+                                        [attachedFiles]="attachedFiles"
+                                        [readonly]="isReadonlyEntityFields"
+                                        (saveAttachment)="onAttachmentsUpdated($event)">
+                                        </app-company-profile-attachment>
+                                        </div>
+
+                                    </div>
+
+
+
 
                                 </div>
                             </div>
@@ -511,7 +548,7 @@
         </div>
     </section>
 
-    <!-- Delete Modals -->
+
     <ng-container *ngIf="showAddressDeletePopup">
         <div class="modal" tabindex="-1" role="dialog" style="display: block; background: rgba(0,0,0,0.5);">
             <div class="modal-dialog modal-dialog-centered">
@@ -554,7 +591,7 @@
         </div>
     </ng-container>
 
-    <!-- Bank Delete Modal -->
+
     <ng-container *ngIf="showBankDeletePopup">
         <div class="modal" tabindex="-1" role="dialog" style="display: block; background: rgba(0,0,0,0.5);">
             <div class="modal-dialog modal-dialog-centered">

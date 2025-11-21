@@ -80,6 +80,49 @@ export class CompanyRegistrationComponent implements OnInit {
     spaceBetween: 15
   };
 
+editingContactIndex: number | null = null;
+editingContact: any = this.createEmptyContact();
+
+editingAddressIndex: number | null = null;
+editingAddress: any = this.createEmptyAddress();
+editingBankIndex: number | null = null;
+private createEmptyContact() {
+  return {
+    description: '',
+    type: 'Mobile',
+    contactNumber: '',
+    extension: '',
+    primary: false
+  };
+}
+
+
+private createEmptyAddress() {
+  return {
+    street: '',
+    city: '',
+    state: '',
+    zip: '',
+    country: '',
+    primary: false
+  };
+}
+
+  companyTabs: Array<'general' | 'addresses' | 'contacts' | 'purchasing' | 'bank' | 'attachments'> = [
+  'general',
+  'addresses',
+  'contacts',
+  'purchasing',
+  'bank',
+  'attachments'
+];
+
+// default: first tab
+selectedTab: 'general' | 'addresses' | 'contacts' | 'purchasing' | 'bank' | 'attachments' = 'general';
+
+selectTab(tab: 'general' | 'addresses' | 'contacts' | 'purchasing' | 'bank' | 'attachments'): void {
+  this.selectedTab = tab;
+}
   @ViewChild(SwiperDirective, { static: false }) directiveRef?: SwiperDirective;
 
   constructor(
@@ -171,9 +214,103 @@ export class CompanyRegistrationComponent implements OnInit {
     if (this.layoutSub) this.layoutSub.unsubscribe();
   }
 
+  
+private get currentTabIndex(): number {
+  return this.companyTabs.indexOf(this.selectedTab);
+}
+
+isFirstTab(): boolean {
+  return this.currentTabIndex === 0;
+}
+
+isLastTab(): boolean {
+  return this.currentTabIndex === this.companyTabs.length - 1;
+}
+
+goToNextTab(): void {
+  const idx = this.currentTabIndex;
+  if (idx < this.companyTabs.length - 1) {
+    this.selectedTab = this.companyTabs[idx + 1];
+  }
+}
+
+goToPrevTab(): void {
+  const idx = this.currentTabIndex;
+  if (idx > 0) {
+    this.selectedTab = this.companyTabs[idx - 1];
+  }
+}
   toggleDropdown() {
     this.dropdownOpen = !this.dropdownOpen;
   }
+
+  openContactEditor(index?: number) {
+  if (index !== undefined && index !== null) {
+    // Edit existing
+    this.editingContactIndex = index;
+    this.editingContact = { ...this.contactList[index] };
+  } else {
+    // Add new
+    this.editingContactIndex = null;
+    this.editingContact = this.createEmptyContact();
+  }
+
+}
+
+
+onContactSubmit(contact: any) {
+  if (this.editingContactIndex === null) {
+    this.contactList = [...this.contactList, { ...contact }];
+    this.editingContact = this.createEmptyContact();
+  } else {
+    //EDIT
+    this.contactList = this.contactList.map((c, i) =>
+      i === this.editingContactIndex ? { ...contact } : c
+    );
+
+    // Clear edit state + model and close editor
+    this.editingContactIndex = null;
+    this.editingContact = this.createEmptyContact();
+  }
+
+  this.cdr.markForCheck();
+}
+
+openAddressEditor(index?: number) {
+  if (index !== undefined && index !== null) {
+    // EDIT MODE – clone so changes don't touch the grid until submit
+    this.editingAddressIndex = index;
+    this.editingAddress = { ...this.addressList[index] };
+  } else {
+    // ADD MODE
+    this.editingAddressIndex = null;
+    this.editingAddress = this.createEmptyAddress();
+  }
+
+
+}
+
+onAddressSubmit(address: any) {
+  if (this.editingAddressIndex === null) {
+    // ===== ADD MODE =====
+    this.addressList = [...this.addressList, { ...address }];
+
+    // Reset form for next add, keep editor open
+    this.editingAddress = this.createEmptyAddress();
+
+  } else {
+    // ===== EDIT MODE =====
+    this.addressList = this.addressList.map((a, i) =>
+      i === this.editingAddressIndex ? { ...address } : a
+    );
+
+    // Reset and close
+    this.editingAddressIndex = null;
+    this.editingAddress = this.createEmptyAddress();
+  }
+
+  this.cdr.markForCheck();
+}
 
   loadCompanyById(companyId: number) {
     this.isLoading = true;
@@ -436,23 +573,8 @@ export class CompanyRegistrationComponent implements OnInit {
   }
 
 
-  // ==================== Address Methods ====================
-  openAddressModal() {
-    const modalRef = this.modalService.open(CompanyAddressModalComponent, { centered: true });
-    modalRef.componentInstance.addAddress.subscribe((address) => this.addAddress(address));
-  }
-
-  editAddress(index: number) {
-    const modalRef = this.modalService.open(CompanyAddressModalComponent, { centered: true });
-    modalRef.componentInstance.address = { ...this.addressList[index] };
-    modalRef.componentInstance.isEditAddressMode = true;
-    modalRef.componentInstance.saveAddress.subscribe((updatedAddress: any) => {
-      this.addressList[index] = updatedAddress;
-      this.cdr.markForCheck();
-    });
-  }
-
   confirmAddressDeletion(index: number) {
+
     this.showAddressDeletePopup = true;
     this.addressIndexToDelete = index;
   }
@@ -463,12 +585,9 @@ export class CompanyRegistrationComponent implements OnInit {
   }
 
   removeAddress(index: number) {
+        this.editingAddress = this.createEmptyAddress();
     this.addressList.splice(index, 1);
     this.closeAddressPopup();
-  }
-
-  addAddress(address: any) {
-    this.addressList.push(address);
   }
 
   getAddressesForPayload() {
@@ -478,33 +597,15 @@ export class CompanyRegistrationComponent implements OnInit {
       state: a.state,
       zip: a.zip,
       country: a.country,
-      isPrimary: a.isPrimary || false
+      isPrimary: (a.isPrimary !== undefined ? a.isPrimary : a.primary) || false
     }));
   }
 
-  // ==================== Contact Methods ====================
-  openContactModal() {
-    const modalRef = this.modalService.open(CompanyContactModalComponent, { centered: true });
-    modalRef.componentInstance.addContact.subscribe((contact) => this.addContact(contact));
-  }
-
-  editContact(index: number) {
-    const modalRef = this.modalService.open(CompanyContactModalComponent, { centered: true });
-    modalRef.componentInstance.contact = { ...this.contactList[index] };
-    modalRef.componentInstance.isEditMode = true;
-    modalRef.componentInstance.saveContact.subscribe((updatedContact: any) => {
-      this.contactList[index] = updatedContact;
-      this.cdr.markForCheck();
-    });
-  }
-
-  addContact(contact: any) {
-    this.contactList.push(contact);
-  }
 
   confirmContactDeletion(index: number) {
     this.showContactDeletePopup = true;
     this.contactIndexToDelete = index;
+
   }
 
   closeContactPopup() {
@@ -513,6 +614,7 @@ export class CompanyRegistrationComponent implements OnInit {
   }
 
   removeContact(index: number) {
+    this.editingContact = this.createEmptyContact();
     this.contactList.splice(index, 1);
     this.closeContactPopup();
   }
@@ -556,10 +658,7 @@ export class CompanyRegistrationComponent implements OnInit {
     this.bankIndexToDelete = null;
   }
 
-  removeBank(index: number) {
-    this.bankList.splice(index, 1);
-    this.closeBankPopup();
-  }
+
 
   getBankForPayload() {
     const now = new Date().toISOString();
@@ -599,6 +698,11 @@ export class CompanyRegistrationComponent implements OnInit {
       this.cdr.markForCheck();
     });
   }
+
+  onAttachmentsUpdated(files: any[]) {
+  this.attachedFiles = files;
+  this.cdr.markForCheck();
+}
 
   convertFileToBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -842,16 +946,44 @@ export class CompanyRegistrationComponent implements OnInit {
     this.router.navigate(['/company/company-master']);
   }
 
-  addBank(): void {
-    if (this.bankForm.valid) {
+addBank(): void {
+  if (this.bankForm.valid) {
+    if (this.editingBankIndex === null) {
+      // ADD NEW
       this.bankList = [...this.bankList, this.bankForm.value];
-      console.log('Bank List:', this.bankList);
-      this.bankForm.reset();
     } else {
-      console.warn('Please fill in all required fields.');
-      this.bankForm.markAllAsTouched();
+      // EDIT EXISTING
+      this.bankList = this.bankList.map((b, i) =>
+        i === this.editingBankIndex ? { ...this.bankForm.value } : b
+      );
+
+      // reset edit state
+      this.editingBankIndex = null;
     }
+
+    console.log('Bank List:', this.bankList);
+    this.bankForm.reset();
+  } else {
+    console.warn('Please fill in all required fields.');
+    this.bankForm.markAllAsTouched();
   }
+}
+
+removeBank(index: number) {
+  // if deleting the row currently being edited, reset form + state
+  if (this.editingBankIndex === index) {
+    this.editingBankIndex = null;
+    this.bankForm.reset();
+  }
+
+  this.bankList.splice(index, 1);
+  this.closeBankPopup();
+}
+
+editBank(index: number): void {
+  this.editingBankIndex = index;
+  this.bankForm.patchValue(this.bankList[index]);
+}
 
   @HostListener('document:click', ['$event.target'])
   onClickOutside(targetElement: HTMLElement) {

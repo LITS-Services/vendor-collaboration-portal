@@ -8,31 +8,27 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class CompanyAddressModalComponent implements OnInit {
   @Output() addAddress = new EventEmitter<any>();
- address = {
+
+    @Input() address: any = {
     street: '',
     city: '',
     state: '',
     zip: '',
     country: '',
-    primary: false,
-  }; // Default values in case address is not passed
-  @Input() isEditAddressMode: boolean = false;
-  @Output() saveAddress = new EventEmitter<any>();
+    primary: false
+  };
 
-  constructor(public activeModal: NgbActiveModal) { }
+  @Input() isEditAddressMode: boolean = false;
+  @Output() submit = new EventEmitter<any>();
+
+
+  constructor() { }
 
   ngOnInit(): void {
 
   }
   submitAddress() {
-    if (this.isEditAddressMode) {
-      // Emit the edited address
-      this.saveAddress.emit(this.address);
-    } else {
-      // Emit a new address for addition
-      this.addAddress.emit(this.address);
-    }
-    this.activeModal.close(this.address);
+    this.submit.emit(this.address);
   }
   
 }

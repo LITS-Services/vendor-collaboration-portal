@@ -8,6 +8,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class CompanyProfileAttachmentComponent implements OnInit {
   @Input() attachedFiles: any[] = [];
+   @Input() readonly = false;  
   @Output() saveAttachment = new EventEmitter<any[]>();
   @ViewChild('fileInput') fileInput: ElementRef | undefined;
 
@@ -24,7 +25,7 @@ export class CompanyProfileAttachmentComponent implements OnInit {
   deleteIndex: number | null = null;
   showAttachmentDeletePopup: boolean = false;
 
-  constructor(public activeModal: NgbActiveModal) {}
+  constructor() {}
 
   ngOnInit(): void {
     console.log('Initial Attached Files in Modal:', this.attachedFiles);
@@ -40,6 +41,8 @@ export class CompanyProfileAttachmentComponent implements OnInit {
   }
 
   attachDocument(): void {
+    if (this.readonly) return;
+
     if (!this.attachment.file || !this.attachment.fileName || !this.attachment.attachedBy || !this.attachment.remarks) {
       alert('Please select a file and fill out all fields before attaching.');
       return;
@@ -59,20 +62,14 @@ export class CompanyProfileAttachmentComponent implements OnInit {
       this.attachedFiles.push(newAttachment);
     }
   
-    // Reset form
-    this.attachment = {
-      file: null,
-      fileName: '',
-      format: '',
-      attachedBy: '',
-      remarks: '',
-      attachedAt: ''
-    };
-  
-    if (this.fileInput) {
-      this.fileInput.nativeElement.value = '';
-    }
+    this.resetAttachmentForm();
+      this.emitChange();
   }
+
+    private emitChange(): void {
+    this.saveAttachment.emit([...this.attachedFiles]);
+  }
+
   
   editFile(index: number): void {
     this.attachment = { ...this.attachedFiles[index] };
@@ -89,14 +86,29 @@ export class CompanyProfileAttachmentComponent implements OnInit {
     this.deleteIndex = null;
   }
 
-  deleteFile(index: number): void {
-    this.attachedFiles.splice(index, 1);
+
+    deleteFile(): void {
+    if (this.deleteIndex === null || this.readonly) return;
+
+    this.attachedFiles.splice(this.deleteIndex, 1);
     this.closeAttachmentDeletePopup();
+    this.emitChange();
   }
 
-  saveAttachments(): void {
-    // ✅ Send raw file objects back to parent
-    this.saveAttachment.emit([...this.attachedFiles]);
-    this.activeModal.close();
+    private resetAttachmentForm(): void {
+    this.attachment = {
+      file: null,
+      fileName: '',
+      format: '',
+      attachedBy: '',
+      remarks: '',
+      attachedAt: '',
+    };
+
+    if (this.fileInput) {
+      this.fileInput.nativeElement.value = '';
+    }
   }
+
+
 }

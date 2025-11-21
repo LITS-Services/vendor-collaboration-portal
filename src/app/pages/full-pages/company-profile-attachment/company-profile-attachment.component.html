@@ -1,12 +1,9 @@
-<div class="modal-header">
-    <h4 class="modal-title">Attach Document</h4>
-    <button class="btn-close" (click)="activeModal.dismiss()"></button>
-</div>
+
 
 <div class="modal-body">
     <div class="row">
         <!-- Attach File -->
-        <div class="col-12 mb-3">
+        <div class="col-6 mb-3">
             <label for="fileInput" class="form-label">Attach File</label>
             <!-- <input
           type="file"
@@ -14,14 +11,14 @@
           class="form-control"
           (change)="onFileChange($event)"
         /> -->
-            <input type="file" id="fileInput" class="form-control" (change)="onFileChange($event)" #fileInput />
+            <input type="file" id="fileInput" class="form-control file-div" (change)="onFileChange($event)" #fileInput />
             <div *ngIf="attachment.fileName && editIndex !== null" class="mt-1">
                 <small class="text-muted">Current File: {{ attachment.fileName }}</small>
               </div>
         </div>
 
         <!-- Attached By -->
-        <div class="col-12 mb-3">
+        <div class="col-6 mb-3">
             <label for="attachedBy" class="form-label">Attached By</label>
             <input type="text" id="attachedBy" class="form-control" [(ngModel)]="attachment.attachedBy"
                 placeholder="Enter your name" />
@@ -35,8 +32,8 @@
         </div>
 
         <!-- Attach Button -->
-        <div class="col-12 d-flex justify-content-end">
-            <button class="btn btn-primary" (click)="attachDocument()">Add<i class="ft-chevrons-down"></i></button>
+        <div class="col-12 d-flex justify-content-end mb-2">
+            <button class="btn btn-primary" (click)="attachDocument()"><i class="ft-chevrons-down me-1"></i> Add</button>
         </div>
 
         <!-- Table of Attached Files -->
@@ -72,10 +69,6 @@
               </div>
         </div>
     </div>
-</div>
-<div class="modal-footer">
-    <!-- <button class="btn btn-secondary" (click)="activeModal.dismiss()">Close</button> -->
-    <button class="btn btn-primary" (click)="saveAttachments()">Save</button>
 </div>
 
 
