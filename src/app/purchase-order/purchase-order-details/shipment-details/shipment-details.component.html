@@ -30,7 +30,7 @@
 
             <!-- SAVE / UPDATE button -->
             <button class="btn btn-primary btn-sm" (click)="save()">
-                {{ isEdit ? 'Update' : 'Save' }}
+                {{ isEdit ? 'Update Shipment Details' : 'Submit Shipment Details' }}
             </button>
         </div>
     </div>
@@ -53,7 +53,7 @@
 
         <div class="col-md-4 mb-3">
             <label class="form-label small">Ship To Name</label>
-            <input class="form-control form-control-sm" formControlName="shipToName">
+            <input class="form-control form-control-sm" formControlName="shipToName" disabled>
         </div>
 
         <div class="col-md-4 mb-3">
@@ -115,7 +115,8 @@
                     <thead>
                         <tr>
                             <th>Item</th>
-                            <th class="text-center">Qty</th>
+                            <th class="text-center">Ordered Qty</th>
+                            <th class="text-center">Shipping Qty</th>
                             <th class="text-center">Delivery Date</th>
                         </tr>
                     </thead>
@@ -127,6 +128,9 @@
                             </td>
                             <td class="text-center">
                                 {{ item.get('orderedQty')?.value }}
+                            </td>
+                            <td class="text-center">
+                                <input type="number" class="form-control form-control-sm" formControlName="shippingQuantity">
                             </td>
                             <td class="text-center">
                                 <input type="date" class="form-control form-control-sm" formControlName="deliveryDate">

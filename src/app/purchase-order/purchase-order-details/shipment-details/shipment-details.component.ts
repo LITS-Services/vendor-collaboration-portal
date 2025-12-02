@@ -1,8 +1,8 @@
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { PurchaseOrderService } from 'app/shared/services/purchase-order.service';
 import { ShipmentService } from 'app/shared/services/shipment.service';
-import { da } from 'date-fns/locale';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 
@@ -21,24 +21,28 @@ export class ShipmentDetailsComponent implements OnInit {
   vendorName?: string;
   itemsExpanded: boolean = true;
 
+  addressList: any[] = []; // for primary dropdown
+  address2List: any[] = []; // for secondary dropdown
+
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private fb: FormBuilder,
     private shipmentService: ShipmentService,
     private toastr: ToastrService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private purchaseOrderService: PurchaseOrderService
   ) { }
 
   ngOnInit(): void {
     // this.poId = Number(this.route.snapshot.paramMap.get('id'));
-    console.log('PO ID:', this.poId);
-
     this.form = this.fb.group({
+      shipToName: [{ value: '', disabled: true }],
       country: [''],
       city: [''],
-      primaryShippingAddress: [''],
-      secondaryShippingAddress: [''],
+      shipToAddress: [{ value: '', disabled: true }],
+      shipToAddress2: [{ value: '', disabled: true }],
       postalCode: [''],
       shipmentDate: [null],
       notes: [''],
@@ -46,8 +50,34 @@ export class ShipmentDetailsComponent implements OnInit {
     });
 
     this.itemsForm = this.form.get('items') as FormArray;
+    this.loadPurchaseOrder();
     this.checkIfShipmentExists();
     this.cdr.detectChanges();
+    
+  }
+
+  loadPurchaseOrder() {
+    this.purchaseOrderService.getPurchaseOrderById(this.poId).subscribe({
+      next: (po) => {
+        if (po) {
+          const receiverName = po.receiverName;
+          const address = po.address;
+          const address2 = po.address2;
+
+          if (receiverName) {
+            this.form.patchValue({ shipToName: receiverName });
+          }
+
+          if (address) {
+            this.form.patchValue({ shipToAddress: address });
+          }
+
+          if (address2) {
+            this.form.patchValue({ shipToAddress2: address2 });
+          }
+        }
+      }
+    });
   }
 
   checkIfShipmentExists() {
@@ -81,7 +111,8 @@ export class ShipmentDetailsComponent implements OnInit {
             purchaseOrderLineId: [item.purchaseOrderLineId],
             itemName: [item.itemName],
             orderedQty: [item.orderedQty],
-            deliveryDate: [item.deliveryDate ? item.deliveryDate.split('T')[0] : null]
+            deliveryDate: [item.deliveryDate ? item.deliveryDate.split('T')[0] : null],
+            shippingQuantity: [item.shippingQuantity]
           }));
         });
 
@@ -102,7 +133,8 @@ export class ShipmentDetailsComponent implements OnInit {
       purchaseOrderLineId: ctrl.get('purchaseOrderLineId')?.value,
       deliveryDate: ctrl.get('deliveryDate')?.value
         ? new Date(ctrl.get('deliveryDate')?.value)
-        : null
+        : null,
+      shippingQuantity: ctrl.get('shippingQuantity')?.value
     }));
 
     // Prepare the common shipment payload
@@ -131,7 +163,7 @@ export class ShipmentDetailsComponent implements OnInit {
       this.shipmentService.updateShipment(updatePayload).subscribe({
         next: () => {
           this.router.navigate([`/purchase-order/purchase-order-details/${this.poId}`], { skipLocationChange: true });
-          this.cdr.detectChanges();
+          this.checkIfShipmentExists();
         }
       });
       return;
@@ -145,7 +177,7 @@ export class ShipmentDetailsComponent implements OnInit {
     this.shipmentService.createShipment(createPayload).subscribe({
       next: () => {
         this.router.navigate([`/purchase-order/purchase-order-details/${this.poId}`], { skipLocationChange: true });
-        window.location.reload();
+        this.checkIfShipmentExists();
       }
     });
   }
@@ -169,12 +201,9 @@ export class ShipmentDetailsComponent implements OnInit {
           next: () => {
             Swal.fire('Deleted!', 'Shipment has been deleted.', 'success');
             this.form.patchValue({
-              shipToName: '',
               country: '',
               city: '',
               region: '',
-              shipToAddress: '',
-              shipToAddress2: '',
               postCode: '',
               shipmentDate: null,
               notes: ''
@@ -182,6 +211,10 @@ export class ShipmentDetailsComponent implements OnInit {
 
             this.itemsForm.controls.forEach(ctrl => {
               ctrl.get('deliveryDate')?.setValue(null);
+            });
+
+            this.itemsForm.controls.forEach(ctrl => {
+              ctrl.get('shippingQuantity')?.setValue(null);
             });
 
             this.isEdit = false;
