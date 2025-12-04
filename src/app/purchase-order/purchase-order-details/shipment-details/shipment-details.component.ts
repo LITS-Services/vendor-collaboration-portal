@@ -39,11 +39,12 @@ export class ShipmentDetailsComponent implements OnInit {
     // this.poId = Number(this.route.snapshot.paramMap.get('id'));
     this.form = this.fb.group({
       shipToName: [{ value: '', disabled: true }],
-      country: [''],
-      city: [''],
+      country: [{ value: '', disabled: true }],
+      city: [{ value: '', disabled: true }],
       shipToAddress: [{ value: '', disabled: true }],
       shipToAddress2: [{ value: '', disabled: true }],
-      postalCode: [''],
+      region: [{ value: '', disabled: true }],
+      postCode: [{ value: '', disabled: true }],
       shipmentDate: [null],
       notes: [''],
       items: this.fb.array([])
@@ -63,7 +64,11 @@ export class ShipmentDetailsComponent implements OnInit {
           const receiverName = po.receiverName;
           const address = po.address;
           const address2 = po.address2;
-
+          const country = po.country;
+          const city = po.city;
+          const region = po.region;
+          const postCode = po.postCode;
+          
           if (receiverName) {
             this.form.patchValue({ shipToName: receiverName });
           }
@@ -75,6 +80,22 @@ export class ShipmentDetailsComponent implements OnInit {
           if (address2) {
             this.form.patchValue({ shipToAddress2: address2 });
           }
+
+          if (country) {
+            this.form.patchValue({ country: country });
+          }
+
+          if (city) {
+            this.form.patchValue({ city: city });
+          }
+
+          if (region) {
+            this.form.patchValue({ region: region });
+          }
+
+          if (postCode) {
+            this.form.patchValue({ postCode: postCode });
+          }
         }
       }
     });
@@ -84,15 +105,14 @@ export class ShipmentDetailsComponent implements OnInit {
     this.shipmentService.getShipmentDetailById(this.poId).subscribe({
       next: (res) => {
         const data = res;
+
         if (data && data.id) {
           this.isEdit = true;
-
 
           this.shipmentId = data.id;
           this.purchaseOrderNo = data.purchaseOrderNo;
           this.vendorName = data.vendorName;
 
-          // Patch form values
           this.form.patchValue({
             shipToName: data.shipToName,
             country: data.country,
@@ -105,20 +125,39 @@ export class ShipmentDetailsComponent implements OnInit {
             notes: data.notes
           });
         }
+
         this.itemsForm.clear();
+
         data.items?.forEach(item => {
-          this.itemsForm.push(this.fb.group({
+          const row = this.fb.group({
             purchaseOrderLineId: [item.purchaseOrderLineId],
             itemName: [item.itemName],
             orderedQty: [item.orderedQty],
             deliveryDate: [item.deliveryDate ? item.deliveryDate.split('T')[0] : null],
             shippingQuantity: [item.shippingQuantity]
-          }));
+          });
+
+          row.get('shippingQuantity')?.valueChanges.subscribe(value => {
+            const orderedQty = row.get('orderedQty')?.value;
+
+            if (value > orderedQty) {
+              this.toastr.error(
+                `Shipping Quantity (${value}) cannot be greater than Ordered Quantity (${orderedQty})`,
+                'Invalid Quantity'
+              );
+
+              row.get('shippingQuantity')?.setValue(orderedQty, { emitEvent: false });
+            }
+          });
+
+          this.itemsForm.push(row);
         });
 
         this.cdr.detectChanges();
       },
-      error: () => console.log("No existing shipment - Add mode"),
+      error: () => {
+        console.log("No existing shipment - Add mode");
+      }
     });
   }
 
@@ -128,7 +167,6 @@ export class ShipmentDetailsComponent implements OnInit {
       return;
     }
 
-    // Map items to send only necessary fields
     const itemsPayload = this.itemsForm.controls.map(ctrl => ({
       purchaseOrderLineId: ctrl.get('purchaseOrderLineId')?.value,
       deliveryDate: ctrl.get('deliveryDate')?.value
@@ -137,7 +175,6 @@ export class ShipmentDetailsComponent implements OnInit {
       shippingQuantity: ctrl.get('shippingQuantity')?.value
     }));
 
-    // Prepare the common shipment payload
     const shipmentDetailPayload = {
       shipToName: this.form.get('shipToName')?.value,
       country: this.form.get('country')?.value,
@@ -201,10 +238,6 @@ export class ShipmentDetailsComponent implements OnInit {
           next: () => {
             Swal.fire('Deleted!', 'Shipment has been deleted.', 'success');
             this.form.patchValue({
-              country: '',
-              city: '',
-              region: '',
-              postCode: '',
               shipmentDate: null,
               notes: ''
             });
