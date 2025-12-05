@@ -1,6 +1,8 @@
 <section class="submit-bid-page">
   <div class="container-fluid">
 
+
+
     <!-- Tab Navigation -->
     <!-- <div class="po-tabs mb-3">
       <button (click)="selectTab('po-details')" [ngClass]="{ 'active': selectedTab === 'po-details' }" class="po-tab">
@@ -23,7 +25,7 @@
     </div> -->
 
 
-    <div class="po-tabs mt-3">
+    <div class="po-tabs mb-3 mt-3">
       <nav>
         <button (click)="selectTab('po-details')" [ngClass]="{ 'tab-current': selectedTab === 'po-details' }"
           class="po-style-tab">
@@ -59,9 +61,35 @@
         </div>
       </div> -->
 
+          <!-- Reject Button Above PO Info Card -->
+    <!-- <div class="mb-2 d-flex justify-content-end">
+      <button class="btn btn-danger" (click)="rejectPurchaseOrder()">
+        Reject Purchase Order
+      </button>
+    </div> -->
+
       <!-- PO Info -->
       <div class="card shadow-sm mb-3">
         <div class="card-body" style="border: 0.5px solid #53bd53; padding: 1rem; border-radius: 8px;">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+
+        <h5 class="mt-2 fw-bold">
+            Purchase Order Details
+        </h5>
+
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+            <!-- DELETE button only on update -->
+            <button class="btn btn-danger" (click)="rejectPurchaseOrder()">
+              <i class="ft-x-circle me-1"></i>
+        Reject PO
+      </button>
+
+            <!-- SAVE / UPDATE button -->
+            <!-- <button class="btn btn-primary btn-sm" (click)="save()">
+                {{ isEdit ? 'Update Shipment Details' : 'Submit Shipment Details' }}
+            </button> -->
+        </div>
+    </div>
 
           <div class="row">
             <div class="col-lg-4 col-md-6 mb-3">

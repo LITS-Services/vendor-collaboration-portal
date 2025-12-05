@@ -58,7 +58,7 @@ export interface Chart {
 export interface PurchaseOrdersCountVM {
   totalPurchaseOrders: number;
   awardedPurchaseOrders: number;
-  inProcessPurchaseOrders: number;
+  rejectedPurchaseOrders: number;
   deliveredPurchaseOrders: number;
 }
 

@@ -1,7 +1,10 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PurchaseOrderService } from 'app/shared/services/purchase-order.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
+import { finalize } from 'rxjs/operators';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-vendor-purchase-order-details',
@@ -20,7 +23,8 @@ export class PurchaseOrderDetailsComponent implements OnInit {
     private purchaseOrderService: PurchaseOrderService,
     private toastr: ToastrService,
     private router: Router,
-    public cdr: ChangeDetectorRef
+    public cdr: ChangeDetectorRef,
+    private spinner: NgxSpinnerService
   ) { }
 
   ngOnInit(): void {
@@ -53,5 +57,38 @@ export class PurchaseOrderDetailsComponent implements OnInit {
 
   selectTab(tab: any) {
     this.selectedTab = tab;
+  }
+
+  rejectPurchaseOrder() {
+    if (!this.poId) {
+      return;
+    }
+
+    Swal.fire({
+      title: 'Reject Purchase Order?',
+      text: 'This action cannot be undone!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, Reject',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.loading = true;
+        this.spinner.show();
+        this.purchaseOrderService.rejectPurchaseOrder(this.poId)
+        .pipe(finalize(() => { this.spinner.hide(); }))
+        .subscribe({
+          next: () => {
+            this.loadPurchaseOrder();
+          },
+          error: () => {
+            this.loading = false;
+            this.toastr.error('Failed to reject Purchase Order');
+          }
+        });
+      }
+    });
   }
 }

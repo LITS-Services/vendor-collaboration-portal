@@ -30,4 +30,11 @@ export class PurchaseOrderService {
       .set('status', status)
     return this.http.get<any>(`${this.baseUrl}/get-purchase-orders-by-vendor`, { params });
   }
+
+  rejectPurchaseOrder(purchaseOrderId: number) {
+    const payload = {
+      purchaseOrderId: purchaseOrderId
+    };
+    return this.http.post<any>(`${this.baseUrl}/reject-purchase-order`, payload);
+  }
 }

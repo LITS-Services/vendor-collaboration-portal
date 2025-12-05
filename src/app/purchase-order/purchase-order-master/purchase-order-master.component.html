@@ -44,9 +44,9 @@
   </div>
   <div class="col-xl-4 col-lg-6 col-md-6 col-12">
     <div class="card card-info">
-      <h4 class="card-title">In-Process POs/SOs</h4>
+      <h4 class="card-title">Rejected POs/SOs</h4>
       <div class="curve-button">
-        <button class="circle-button" (click)="navigateToStatus('InProcess')">
+        <button class="circle-button" (click)="navigateToStatus('Rejected')">
           <i class="ft-arrow-up-right"></i>
         </button>
       </div>
@@ -54,7 +54,7 @@
         <div class="card-body py-0">
           <div class="media pb-1">
             <div class="media-body">
-              <h1>{{poCounts?.inProcessPurchaseOrders}}</h1>
+              <h1>{{poCounts?.rejectedPurchaseOrders}}</h1>
               <div class="row align-items-center">
                 <div class="col-2 d-flex justify-content-center">
                   <div class="cube">
