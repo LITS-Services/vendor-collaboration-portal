@@ -23,7 +23,6 @@ export class LoginPageComponent implements OnInit {
     username: new UntypedFormControl("", [Validators.required]),
     password: new UntypedFormControl("", [Validators.required]),
     rememberMe: new UntypedFormControl(true),
-    // recaptcha: new UntypedFormControl('', Validators.required)
     recaptcha: new UntypedFormControl('', [Validators.required])
   });
 
@@ -32,7 +31,7 @@ export class LoginPageComponent implements OnInit {
     private authService: AuthService,
     private spinner: NgxSpinnerService,
     private route: ActivatedRoute,
-    private cdr: ChangeDetectorRef,   //  Added ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
     private toastr: ToastrService
   ) { }
 
@@ -44,7 +43,6 @@ export class LoginPageComponent implements OnInit {
     return this.loginFormSubmitted && this.lf.password.invalid;
   }
 
-  // 🔹 Initialization
   ngOnInit() {
     const msg = sessionStorage.getItem('authFlash');
     if (msg) {
@@ -53,7 +51,6 @@ export class LoginPageComponent implements OnInit {
     }
     console.log("Full URL:", window.location.href);
 
-    //  Handle SSO redirect callback
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
     let refreshToken = params.get("refreshToken") ?? undefined;
@@ -84,15 +81,13 @@ export class LoginPageComponent implements OnInit {
       this.isLoginFailed = true;
       this.errorMessage = error;
       console.error('❌ Error from URL:', error);
-      this.cdr.detectChanges(); //  update UI after error
+      this.cdr.detectChanges();
       return;
     }
   }
 
-  // 🔹 Normal login
   onSubmit() {  
     this.loginFormSubmitted = true;
-    //  Check CAPTCHA
     if (this.loginForm.controls['recaptcha'].invalid) {
       this.toastr.warning('Please verify the CAPTCHA to proceed.');
       return;
@@ -100,7 +95,6 @@ export class LoginPageComponent implements OnInit {
 
     if (this.loginForm.invalid) return;
 
-    // Show Spinner
     this.spinner.show(undefined, {
       type: 'ball-triangle-path',
       size: 'medium',
@@ -113,7 +107,7 @@ export class LoginPageComponent implements OnInit {
 
     this.authService
       .sgninUser(username, password)
-      .pipe(finalize(() => this.spinner.hide())) // Spinner always hides
+      .pipe(finalize(() => this.spinner.hide()))
       .subscribe({
         next: (res: any) => {
           if (res?.token) {
@@ -123,19 +117,18 @@ export class LoginPageComponent implements OnInit {
             localStorage.setItem('userId', res.userId);
           }
 
-          // Save username for dashboard/navbar
           localStorage.setItem('username', username);
 
           console.log('Login successful');
           this.router.navigate(['/dashboard/dashboard1']);
-          this.cdr.detectChanges(); // ensure UI update
+          this.cdr.detectChanges();
         },
         error: (err) => {
           this.isLoginFailed = true;
           this.errorMessage =
             err?.error?.message || 'Login failed. Check your credentials.';
           this.toastr.error(this.errorMessage);
-          console.error('❌ Login failed:', err);
+          console.error(' Login failed:', err);
           this.cdr.detectChanges();
         }
       });
@@ -145,18 +138,15 @@ export class LoginPageComponent implements OnInit {
 
   forgotpassword() { }
 
-  loginWithSSO() {
+  // Microsoft SSO
+  loginWithMicrosoft() {
     this.isSSOLoading = true;
-
-    // 🔹 Show spinner before the API call
-    this.spinner.show(); // show spinner before API call
-
+    this.spinner.show();
 
     this.authService
-      .initiateSSOLogin('')
+      .initiateSSOLogin('microsoft')
       .pipe(
         finalize(() => {
-          //  Always hide spinner, success or error
           this.isSSOLoading = false;
           this.spinner.hide();
           this.cdr.detectChanges();
@@ -164,25 +154,103 @@ export class LoginPageComponent implements OnInit {
       )
       .subscribe({
         next: (response: any) => {
-          if (response?.loginUrl) {
-            console.log("🔗 Redirecting to SSO:", response.loginUrl);
-            window.location.href = response.loginUrl;
+          const loginUrl = response?.loginUrl ?? response;
+
+          if (loginUrl) {
+            window.location.href = loginUrl;
           } else {
-            this.toastr.warning('SSO URL not received. Please try again later.');
+            this.toastr.warning('Microsoft SSO URL not received.');
           }
         },
         error: () => {
-          this.errorMessage = 'Failed to connect to SSO service.';
+          this.errorMessage = 'Failed to connect to Microsoft SSO service.';
           this.isLoginFailed = true;
           this.toastr.error(this.errorMessage);
-          console.error('❌ SSO connection failed');
+          console.error(' Microsoft SSO connection failed');
         }
       });
   }
 
-  SSO(event: Event) {
+  // Google SSO
+  loginWithGoogle() {
+    this.isSSOLoading = true;
+    this.spinner.show();
+
+    this.authService
+      .GoogleSSOLogin() // Specific Google SSO API call
+      .pipe(
+        finalize(() => {
+          this.isSSOLoading = false;
+          this.spinner.hide();
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe({
+        next: (response: any) => {
+          const loginUrl = response?.loginUrl ?? response?.url ?? response;
+
+          if (loginUrl) {
+            window.location.href = loginUrl;
+          } else {
+            this.toastr.warning('Google SSO URL not received.');
+          }
+        },
+        error: (error) => {
+          this.errorMessage = error?.error?.message || 'Failed to connect to Google SSO service.';
+          this.isLoginFailed = true;
+          this.toastr.error(this.errorMessage);
+          console.error(' Google SSO connection failed:', error);
+        }
+      });
+  }
+
+  // Facebook SSO
+  loginWithFacebook() {
+    this.isSSOLoading = true;
+    this.spinner.show();
+
+    this.authService
+      .FacebookSSOLogin() // Specific Facebook SSO API call
+      .pipe(
+        finalize(() => {
+          this.isSSOLoading = false;
+          this.spinner.hide();
+          this.cdr.detectChanges();
+        })
+      )
+      .subscribe({
+        next: (response: any) => {
+          const loginUrl = response?.loginUrl ?? response?.url ?? response;
+
+          if (loginUrl) {
+            window.location.href = loginUrl;
+          } else {
+            this.toastr.warning('Facebook SSO URL not received.');
+          }
+        },
+        error: (error) => {
+          this.errorMessage = error?.error?.message || 'Failed to connect to Facebook SSO service.';
+          this.isLoginFailed = true;
+          this.toastr.error(this.errorMessage);
+          console.error('❌ Facebook SSO connection failed:', error);
+        }
+      });
+  }
+
+  // Generic SSO method for backward compatibility
+  loginWithSSO(provider: string = 'microsoft') {
+    if (provider === 'google') {
+      this.loginWithGoogle();
+    } else if (provider === 'facebook') {
+      this.loginWithFacebook();
+    } else {
+      this.loginWithMicrosoft();
+    }
+  }
+
+  SSO(event: Event, provider: string = 'microsoft') {
     event.preventDefault();
-    this.loginWithSSO();
+    this.loginWithSSO(provider);
   }
 
   onCaptchaResolved(token: string) {

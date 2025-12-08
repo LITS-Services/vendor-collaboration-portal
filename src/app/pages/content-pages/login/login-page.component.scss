@@ -6,16 +6,14 @@
 
 .ms-logo {
   background-image: url('/assets/img/icons/ms-icon.png');
-  height: 30px;
-  width: 30px;
-  // top: -0.25rem;
-  // margin-top: 1rem;
-  // margin-bottom: -0.85rem;
-  // margin-left: 40px;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center center;
-  display: inline-block;
+}
+
+.google-logo {
+  background-image: url('/assets/img/icons/Google.png');
+}
+
+.facebook-logo {
+  background-image: url('/assets/img/icons/facebook.png');
 }
 
 .or-wrapper {
@@ -36,38 +34,78 @@
   height: 100%;
 }
 
-// .full-height-vh {
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-// }
-
 .card {
   width: 100%;
   padding: 25px;
   width: 600px;
-  /* Adjust this width as needed */
   margin: 0 auto;
   background: transparent;
-  /* Slight transparency to show the background */
   border-radius: 15px;
   box-shadow: none;
 }
 
-.ms-btn {
-  color: #249D57 !important;
-  width: 100%;
-  font-weight: 400 !important;
+// Round SSO Buttons in same line
+.sso-buttons-container {
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 15px;
+  width: 100%;
+  margin: 1rem 0;
+}
+
+.social-round-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 15px;
+  border: 2px solid;
   background: #ffffff;
-  border: 1.5px solid #249D57;
-  padding: 8px 0px !important;
-  border-radius: 10px;
-  font-weight: 500;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.3s ease;
+  text-decoration: none;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+  }
+}
+
+// Individual button colors
+.ms-round-btn {
+  border-color: #249D57;
+
+  &:hover {
+    background: #f0f9f4;
+    border-color: #1e8a4a;
+  }
+}
+
+.google-round-btn {
+  border-color: #DB4437;
+
+  &:hover {
+    background: #fef2f1;
+    border-color: #c33a2e;
+  }
+}
+
+.facebook-round-btn {
+  border-color: #1877F2;
+
+  &:hover {
+    background: #f0f5ff;
+    border-color: #166fe5;
+  }
+}
+
+// Remove old button styles
+.ms-btn,
+.google-btn,
+.facebook-btn {
+  display: none;
 }
 
 .heading {
@@ -77,7 +115,6 @@
 .register-btn {
   font-weight: 500 !important;
   color: #249D57 !important;
-
 }
 
 .text-justify {
@@ -108,7 +145,6 @@ p {
   height: 36px;
 }
 
-/* Ensure full viewport height for both halves */
 .full-height-vh {
   min-height: 100vh;
 }
@@ -126,14 +162,12 @@ p {
   background-color: white;
 }
 
-/* Left half background image */
 .bg-image {
   background-image: url('/assets/img/Background.png');
   background-size: cover;
   background-position: center;
 }
 
-/* Icon at the top-left corner */
 .icon-container {
   top: 30px;
   left: 30px;
@@ -169,23 +203,15 @@ p {
   padding: 16px 0px;
   border-radius: 10px;
   font-weight: 500;
+  border: none;
+  color: white;
 }
 
-// .form-control {
-//   display: block;
-//   width: 100%;
-//   height: calc(1.5em + 0.75rem + 3px);
-//   padding: 0.375rem 0.75rem;
-//   font-size: 1rem;
-//   font-weight: 400;
-//   line-height: 1.5;
-//   color: #75787d;
-//   background-color: transparent;
-//   background-clip: padding-box;
-//   border: 1px solid #a7a4a4;
-//   border-radius: 0.35rem;
-//   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-// }
+.login-btn:hover {
+  background: linear-gradient(180deg, #1e8a4a 0%, #136630 100%);
+  transform: translateY(-1px);
+}
+
 .checkbox label:before {
   content: "";
   height: 20px;
@@ -208,7 +234,6 @@ p {
   border: 1px solid #8f8f8f;
 }
 
-/* Hide left half on small screens and center card */
 @media screen and (max-width: 1024px) {
   .bg-image {
     display: none;
@@ -222,10 +247,6 @@ p {
     display: none;
   }
 
-  // .icon-container{
-  //   display: none;
-  // }
-
   .col-md-6 {
     flex: 0 0 100%;
     max-width: 100%;
@@ -235,13 +256,20 @@ p {
 }
 
 @media screen and (max-width: 425px) {
-  .ms-btn {
-    width: 100%;
+  .sso-buttons-container {
+    gap: 10px;
   }
 
-  .fp {}
-}
+  .social-round-btn {
+    width: 50px;
+    height: 50px;
+  }
 
+  .card {
+    padding: 20px;
+    width: 95%;
+  }
+}
 
 .or-divider {
   display: flex;
@@ -270,25 +298,48 @@ p {
 }
 
 .rc-anchor-normal {
-    height: 74px;
-    width: unset;
+  height: 74px;
+  width: unset;
 }
 
-
-
-.rc-anchor-logo-portrait{
-    margin: 10px 0 0 110px;
-
-
+.rc-anchor-logo-portrait {
+  margin: 10px 0 0 110px;
 }
 
-/* ✅ Force reCAPTCHA container full width */
-::ng-deep .recaptcha-wrapper re-captcha > div {
+::ng-deep .recaptcha-wrapper re-captcha>div {
   width: 100% !important;
 }
 
-/* ✅ Optional: tweak anchor size */
 .recaptcha-wrapper ::ng-deep .rc-anchor-normal {
   width: 100% !important;
   max-width: 100% !important;
+}
+
+// Tooltip for button labels
+.sso-tooltip {
+  position: relative;
+
+  &:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 1000;
+  }
+}
+
+.cstm-icons{
+    width: 30px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    height: 30px;
+    display: grid;
 }

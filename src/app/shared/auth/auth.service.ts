@@ -98,6 +98,12 @@ export class AuthService {
     return this.http.get(`${this.baseUrl}/Auth/sso/login-url?returnUrl=${encodeURIComponent(returnUrl)}`);
   }
 
+   GoogleSSOLogin(returnUrl: string = '/dashboard/dashboard1'): Observable<any> {
+    return this.http.get(`${this.baseUrl}/Auth/google/login?returnUrl=${encodeURIComponent(returnUrl)}`);
+  }
+   FacebookSSOLogin(returnUrl: string = '/dashboard/dashboard1'): Observable<any> {
+    return this.http.get(`${this.baseUrl}/Auth/facebook/login?returnUrl=${encodeURIComponent(returnUrl)}`);
+  }
 
 
   // 🔹 Vendor Login API

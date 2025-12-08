@@ -94,8 +94,9 @@ export class CompanyMasterComponent implements OnInit {
   };
 
   totalCompaniesCount: number = 0;      // Total companies
-  inprogressCount: number = 0;          // Pending companies
-  newlyOnboardedCount: number = 0;      // Companies where ALL entities are completed
+  inprogressCount: number = 0;          // Pending companies (requestStatusId 0 or null)
+  newlyOnboardedCount: number = 0;      // Newly onboarded companies (requestStatusId 12 and createdDate < 5 min)
+  onboardedCount: number = 0;           // All onboarded companies (requestStatusId 12)
   showRegisterButton: boolean = true;   // ✅ Controls button visibility
 
   constructor(
@@ -139,7 +140,7 @@ export class CompanyMasterComponent implements OnInit {
     this.loadCompanyStats();
   }
 
-  // Load companies and calculate counts
+  // Load companies and calculate counts based on requestStatusId
   loadCompanyStats(): void {
     const userId = localStorage.getItem('userId');
     console.log('userId =', userId);
@@ -179,62 +180,37 @@ export class CompanyMasterComponent implements OnInit {
         this.totalCompaniesCount = vendorCompanies.length;
         console.log('Total Companies Count:', this.totalCompaniesCount);
 
-        // 2. InProgress Count - Companies with ANY entity InProcess OR SendBack OR any status other than Completed
+        // 2. InProgress Count - Companies with requestStatusId 0 or null (pending)
         this.inprogressCount = vendorCompanies.filter(company => {
-          const entities = company.vendorUseCompaniesVM || [];
-          
-          // If no entities, count as pending
-          if (entities.length === 0) {
-            console.log(`Company "${company.name}" - No entities, counted as pending`);
-            return true;
-          }
-          
-          // Company is in progress if ANY entity is NOT Completed
-          const hasIncompleteEntities = entities.some((entity: any) => {
-            const status = (entity.status || '').toLowerCase();
-            const isCompleted = status === 'completed';
-            if (!isCompleted) {
-              console.log(`Company "${company.name}" - Entity "${entity.entityName}" status: ${status} (not completed)`);
-            }
-            return !isCompleted;
-          });
-          
-          console.log(`Company "${company.name}" - Has incomplete entities:`, hasIncompleteEntities);
-          return hasIncompleteEntities;
+          const statusId = company.requestStatusId;
+          return statusId === 0 || statusId == null;
         }).length;
         console.log('InProgress/Pending Count:', this.inprogressCount);
 
-        // 3. Onboarded Companies Count - Companies where ALL entities are Completed
-        this.newlyOnboardedCount = vendorCompanies.filter(company => {
-          const entities = company.vendorUseCompaniesVM || [];
-          
-          // If no entities, don't count as onboarded
-          if (entities.length === 0) {
-            console.log(`Company "${company.name}" - No entities, not counted as onboarded`);
-            return false;
-          }
-          
-          // Check if ALL entities have status "Completed"
-          const allCompleted = entities.every((entity: any) => {
-            const status = (entity.status || '').toLowerCase();
-            const isCompleted = status === 'completed';
-            if (!isCompleted) {
-              console.log(`Company "${company.name}" - Entity "${entity.entityName}" status: ${status} (not completed)`);
-            }
-            return isCompleted;
-          });
-          
-          console.log(`Company "${company.name}" - All entities completed:`, allCompleted);
-          return allCompleted;
+        // 3. Onboarded Count - Companies with requestStatusId 12
+        this.onboardedCount = vendorCompanies.filter(company => {
+          return company.requestStatusId === 12;
         }).length;
+        console.log('Onboarded Companies Count:', this.onboardedCount);
 
-        console.log('Onboarded Companies Count (ALL entities completed):', this.newlyOnboardedCount);
+        // 4. Newly Onboarded Count - Companies with requestStatusId 12 and createdDate < 5 minutes ago
+        this.newlyOnboardedCount = vendorCompanies.filter(company => {
+          if (company.requestStatusId !== 12) return false;
+          
+          const createdDate = new Date(company.createdDate);
+          const now = new Date();
+          const diffMs = now.getTime() - createdDate.getTime();
+          const diffMin = diffMs / (1000 * 60);
+          
+          return diffMin < 5;
+        }).length;
+        console.log('Newly Onboarded Companies Count:', this.newlyOnboardedCount);
 
-        // Verification - ensure counts add up correctly
-        const calculatedTotal = this.inprogressCount + this.newlyOnboardedCount;
+        // Verification - ensure counts add up correctly (total = inprogress + onboarded)
+        const calculatedTotal = this.inprogressCount + this.onboardedCount;
         console.log('Verification - Total:', this.totalCompaniesCount, 
                    'InProgress:', this.inprogressCount, 
-                   'Onboarded:', this.newlyOnboardedCount,
+                   'Onboarded:', this.onboardedCount,
                    'Calculated Sum:', calculatedTotal,
                    'Matches:', this.totalCompaniesCount === calculatedTotal);
 
@@ -261,14 +237,14 @@ export class CompanyMasterComponent implements OnInit {
     });
   }
 
-  // Navigate to onboarded companies list
+  // Navigate to onboarded companies list (all with requestStatusId 12)
   viewOnboardedCompanies(): void {
-    this.companyList('Onboarded Companies', 'completed');
+    this.companyList('Onboarded Companies', 'onboarded');  // Assuming 'onboarded' status for filtering in company-list
   }
 
-  // Navigate to pending companies list
+  // Navigate to pending companies list (requestStatusId 0 or null)
   viewPendingCompanies(): void {
-    this.companyList('Pending Companies', 'inprogress');
+    this.companyList('Pending Companies', 'pending');  // Assuming 'pending' status for filtering in company-list
   }
 
   // Navigate to all companies list
