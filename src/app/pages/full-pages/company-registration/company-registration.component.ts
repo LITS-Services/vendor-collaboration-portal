@@ -28,7 +28,7 @@ export class CompanyRegistrationComponent implements OnInit {
   layoutSub: Subscription;
   isEditMode: boolean = false;
   bankForm!: FormGroup;
-  companyForm!: FormGroup; // <-- FormGroup for user remarks
+  companyForm!: FormGroup;
   bankList: any[] = [];
   addressList: any[] = [];
   contactList: any[] = [];
@@ -37,14 +37,16 @@ export class CompanyRegistrationComponent implements OnInit {
   isLoading: boolean = false;
   companyId: number | null = null;
   remarks: string = '';
-  vendorEntities: any[] = []; // For vendorUserCompanies only
-  selectedEntity: any; // instead of just ID
+  vendorEntities: any[] = [];
+  selectedEntity: any;
 
   // For entity selection dropdown
   entityDropdownOpen: boolean = false;
   selectedEntityId: number | null = null;
   isReadonlyEntityFields: boolean = false;
-
+  
+  // New property to track if all entities have status 7 (Completed)
+  allEntitiesCompleted: boolean = false;
 
   procurementCompanies: any[] = [];
   selectedProcurementCompanyIds: number[] = [];
@@ -80,49 +82,49 @@ export class CompanyRegistrationComponent implements OnInit {
     spaceBetween: 15
   };
 
-editingContactIndex: number | null = null;
-editingContact: any = this.createEmptyContact();
+  editingContactIndex: number | null = null;
+  editingContact: any = this.createEmptyContact();
 
-editingAddressIndex: number | null = null;
-editingAddress: any = this.createEmptyAddress();
-editingBankIndex: number | null = null;
-private createEmptyContact() {
-  return {
-    description: '',
-    type: 'Mobile',
-    contactNumber: '',
-    extension: '',
-    primary: false
-  };
-}
+  editingAddressIndex: number | null = null;
+  editingAddress: any = this.createEmptyAddress();
+  editingBankIndex: number | null = null;
 
+  private createEmptyContact() {
+    return {
+      description: '',
+      type: 'Mobile',
+      contactNumber: '',
+      extension: '',
+      primary: false
+    };
+  }
 
-private createEmptyAddress() {
-  return {
-    street: '',
-    city: '',
-    state: '',
-    zip: '',
-    country: '',
-    primary: false
-  };
-}
+  private createEmptyAddress() {
+    return {
+      street: '',
+      city: '',
+      state: '',
+      zip: '',
+      country: '',
+      primary: false
+    };
+  }
 
   companyTabs: Array<'general' | 'addresses' | 'contacts' | 'purchasing' | 'bank' | 'attachments'> = [
-  'general',
-  'addresses',
-  'contacts',
-  'purchasing',
-  'bank',
-  'attachments'
-];
+    'general',
+    'addresses',
+    'contacts',
+    'purchasing',
+    'bank',
+    'attachments'
+  ];
 
-// default: first tab
-selectedTab: 'general' | 'addresses' | 'contacts' | 'purchasing' | 'bank' | 'attachments' = 'general';
+  selectedTab: 'general' | 'addresses' | 'contacts' | 'purchasing' | 'bank' | 'attachments' = 'general';
 
-selectTab(tab: 'general' | 'addresses' | 'contacts' | 'purchasing' | 'bank' | 'attachments'): void {
-  this.selectedTab = tab;
-}
+  selectTab(tab: 'general' | 'addresses' | 'contacts' | 'purchasing' | 'bank' | 'attachments'): void {
+    this.selectedTab = tab;
+  }
+  
   @ViewChild(SwiperDirective, { static: false }) directiveRef?: SwiperDirective;
 
   constructor(
@@ -138,13 +140,11 @@ selectTab(tab: 'general' | 'addresses' | 'contacts' | 'purchasing' | 'bank' | 'a
     private toastr: ToastrService,
     private fb: FormBuilder,
     private spinner: NgxSpinnerService,
-
   ) {
     this.config = this.configService.templateConf;
   }
 
   ngOnInit() {
-    // ==================== Bank Form ====================
     this.bankForm = this.fb.group({
       bankName: ['', Validators.required],
       accountHolderName: ['', Validators.required],
@@ -157,7 +157,6 @@ selectTab(tab: 'general' | 'addresses' | 'contacts' | 'purchasing' | 'bank' | 'a
       bankCurrency: ['', Validators.required]
     });
 
-    // ==================== Company Form (User Remarks) ====================
     this.companyForm = this.fb.group({
       remarks: ['']
     });
@@ -190,7 +189,6 @@ selectTab(tab: 'general' | 'addresses' | 'contacts' | 'purchasing' | 'bank' | 'a
       }
     });
 
-
     this.generateVendorAccountNumber();
 
     this.layoutSub = this.configService.templateConf$.subscribe((templateConf) => {
@@ -214,108 +212,87 @@ selectTab(tab: 'general' | 'addresses' | 'contacts' | 'purchasing' | 'bank' | 'a
     if (this.layoutSub) this.layoutSub.unsubscribe();
   }
 
-  
-private get currentTabIndex(): number {
-  return this.companyTabs.indexOf(this.selectedTab);
-}
-
-isFirstTab(): boolean {
-  return this.currentTabIndex === 0;
-}
-
-isLastTab(): boolean {
-  return this.currentTabIndex === this.companyTabs.length - 1;
-}
-
-goToNextTab(): void {
-  const idx = this.currentTabIndex;
-  if (idx < this.companyTabs.length - 1) {
-    this.selectedTab = this.companyTabs[idx + 1];
+  private get currentTabIndex(): number {
+    return this.companyTabs.indexOf(this.selectedTab);
   }
-}
 
-goToPrevTab(): void {
-  const idx = this.currentTabIndex;
-  if (idx > 0) {
-    this.selectedTab = this.companyTabs[idx - 1];
+  isFirstTab(): boolean {
+    return this.currentTabIndex === 0;
   }
-}
+
+  isLastTab(): boolean {
+    return this.currentTabIndex === this.companyTabs.length - 1;
+  }
+
+  goToNextTab(): void {
+    const idx = this.currentTabIndex;
+    if (idx < this.companyTabs.length - 1) {
+      this.selectedTab = this.companyTabs[idx + 1];
+    }
+  }
+
+  goToPrevTab(): void {
+    const idx = this.currentTabIndex;
+    if (idx > 0) {
+      this.selectedTab = this.companyTabs[idx - 1];
+    }
+  }
+
   toggleDropdown() {
     this.dropdownOpen = !this.dropdownOpen;
   }
 
   openContactEditor(index?: number) {
-  if (index !== undefined && index !== null) {
-    // Edit existing
-    this.editingContactIndex = index;
-    this.editingContact = { ...this.contactList[index] };
-  } else {
-    // Add new
-    this.editingContactIndex = null;
-    this.editingContact = this.createEmptyContact();
+    if (index !== undefined && index !== null) {
+      this.editingContactIndex = index;
+      this.editingContact = { ...this.contactList[index] };
+    } else {
+      this.editingContactIndex = null;
+      this.editingContact = this.createEmptyContact();
+    }
   }
 
-}
-
-
-onContactSubmit(contact: any) {
-  if (this.editingContactIndex === null) {
-    this.contactList = [...this.contactList, { ...contact }];
-    this.editingContact = this.createEmptyContact();
-  } else {
-    //EDIT
-    this.contactList = this.contactList.map((c, i) =>
-      i === this.editingContactIndex ? { ...contact } : c
-    );
-
-    // Clear edit state + model and close editor
-    this.editingContactIndex = null;
-    this.editingContact = this.createEmptyContact();
+  onContactSubmit(contact: any) {
+    if (this.editingContactIndex === null) {
+      this.contactList = [...this.contactList, { ...contact }];
+      this.editingContact = this.createEmptyContact();
+    } else {
+      this.contactList = this.contactList.map((c, i) =>
+        i === this.editingContactIndex ? { ...contact } : c
+      );
+      this.editingContactIndex = null;
+      this.editingContact = this.createEmptyContact();
+    }
+    this.cdr.markForCheck();
   }
 
-  this.cdr.markForCheck();
-}
-
-openAddressEditor(index?: number) {
-  if (index !== undefined && index !== null) {
-    // EDIT MODE – clone so changes don't touch the grid until submit
-    this.editingAddressIndex = index;
-    this.editingAddress = { ...this.addressList[index] };
-  } else {
-    // ADD MODE
-    this.editingAddressIndex = null;
-    this.editingAddress = this.createEmptyAddress();
+  openAddressEditor(index?: number) {
+    if (index !== undefined && index !== null) {
+      this.editingAddressIndex = index;
+      this.editingAddress = { ...this.addressList[index] };
+    } else {
+      this.editingAddressIndex = null;
+      this.editingAddress = this.createEmptyAddress();
+    }
   }
 
-
-}
-
-onAddressSubmit(address: any) {
-  if (this.editingAddressIndex === null) {
-    // ===== ADD MODE =====
-    this.addressList = [...this.addressList, { ...address }];
-
-    // Reset form for next add, keep editor open
-    this.editingAddress = this.createEmptyAddress();
-
-  } else {
-    // ===== EDIT MODE =====
-    this.addressList = this.addressList.map((a, i) =>
-      i === this.editingAddressIndex ? { ...address } : a
-    );
-
-    // Reset and close
-    this.editingAddressIndex = null;
-    this.editingAddress = this.createEmptyAddress();
+  onAddressSubmit(address: any) {
+    if (this.editingAddressIndex === null) {
+      this.addressList = [...this.addressList, { ...address }];
+      this.editingAddress = this.createEmptyAddress();
+    } else {
+      this.addressList = this.addressList.map((a, i) =>
+        i === this.editingAddressIndex ? { ...address } : a
+      );
+      this.editingAddressIndex = null;
+      this.editingAddress = this.createEmptyAddress();
+    }
+    this.cdr.markForCheck();
   }
-
-  this.cdr.markForCheck();
-}
 
   loadCompanyById(companyId: number) {
     this.isLoading = true;
     this.spinner.show();
-
 
     this.companyService.getCompanyById(companyId)
       .pipe(finalize(() => {
@@ -326,18 +303,19 @@ onAddressSubmit(address: any) {
         next: (res: any) => {
           const company = res?.vendorCompany || res;
           if (company) {
-
             if (company.vendorUserCompanies && Array.isArray(company.vendorUserCompanies)) {
-
               this.vendorEntities = company.vendorUserCompanies;
-
+              
+              // Check if all entities have status 7 (Completed)
+              this.checkAllEntitiesCompleted();
+              
               // Auto-select first vendor entity
               if (this.vendorEntities.length > 0) {
                 this.onEntitySelect(this.vendorEntities[0]);
               }
-
             } else {
               this.vendorEntities = [];
+              this.allEntitiesCompleted = false;
             }
 
             // Basic Info
@@ -372,18 +350,15 @@ onAddressSubmit(address: any) {
             // Vendor User Companies (Entities)
             if (company.vendorUserCompanies && Array.isArray(company.vendorUserCompanies)) {
               this.procurementCompanies = company.vendorUserCompanies;
-
-              // Auto-select first entity if exists and set form state
+              
               if (this.procurementCompanies.length > 0) {
                 this.onEntitySelect(this.procurementCompanies[0]);
               } else {
-                // If no entities, ensure form is enabled
                 this.isReadonlyEntityFields = false;
                 this.bankForm.enable();
                 this.companyForm.enable();
               }
             } else {
-              // If no vendorUserCompanies, ensure form is enabled
               this.isReadonlyEntityFields = false;
               this.bankForm.enable();
               this.companyForm.enable();
@@ -449,26 +424,44 @@ onAddressSubmit(address: any) {
         error: (err) => {
           console.error('Error loading company:', err);
           this.isLoading = false;
-          // Ensure form is enabled even on error
           this.isReadonlyEntityFields = false;
           this.bankForm.enable();
           this.companyForm.enable();
+          this.allEntitiesCompleted = false;
         }
       });
+  }
+
+  // New method to check if all entities have status 7 (Completed)
+  private checkAllEntitiesCompleted(): void {
+    if (!this.vendorEntities || this.vendorEntities.length === 0) {
+      this.allEntitiesCompleted = false;
+      return;
+    }
+    
+    // Check if ALL entities have requestStatusId === 7
+    this.allEntitiesCompleted = this.vendorEntities.every(entity => 
+      entity.requestStatusId === 7
+    );
+    
+    console.log('All entities completed status:', this.allEntitiesCompleted);
   }
 
   onEntitySelect(entity: any) {
     this.selectedEntityId = entity.procurementCompanyId;
     this.entityDropdownOpen = false;
-
     this.selectedEntity = entity;
     this.selectedProcurementCompanyIds = [entity.procurementCompanyId];
-
     this.selectedVendorEntityAssociationId = entity.id;
 
-
-    // Set readonly fields based on requestStatusId (1 = InProcess, 3 = Approved, etc.)
+    // Original logic for readonly fields based on InProcess (1) or Approved (3)
     this.isReadonlyEntityFields = entity.requestStatusId === 1 || entity.requestStatusId === 3;
+
+    // NEW LOGIC: If entity status is Completed (7), check if ALL entities are completed
+    if (entity.requestStatusId === 7) {
+      // Enable fields only if ALL entities have status 7
+      this.isReadonlyEntityFields = !this.allEntitiesCompleted;
+    }
 
     // Enable or disable forms based on entity status
     if (this.isReadonlyEntityFields) {
@@ -481,35 +474,24 @@ onAddressSubmit(address: any) {
 
     console.log('Entity selected:', entity);
     console.log('Entity Status ID:', entity.requestStatusId);
+    console.log('All entities completed:', this.allEntitiesCompleted);
     console.log('Form disabled:', this.isReadonlyEntityFields);
   }
+
   hasInProcessEntities(): boolean {
     return this.procurementCompanies.some(entity =>
       entity.requestStatusId === 1 || entity.requestStatus?.toLowerCase() === 'inprocess'
     );
   }
-  // getSelectedEntityName(): string {
-  //   if (!this.selectedEntityId) return 'Select Entity';
-  //   const entity = this.procurementCompanies.find(e => e.procurementCompanyId === this.selectedEntityId);
-  //   return entity ? entity.procurementCompany.name : 'Select Entity';
-  // }
 
   getSelectedEntityName(): string {
     if (!this.selectedEntityId) return 'Select Entity';
-
-    // Search in vendorEntities (not procurementCompanies)
     const entity = this.vendorEntities.find(e => e.procurementCompanyId === this.selectedEntityId);
-
     if (!entity) return 'Select Entity';
-
-    // Return name + optional status
     const companyName = entity.procurementCompany?.name || '';
     const status = entity.requestStatus?.status ? ` (${entity.requestStatus.status})` : '';
-
     return companyName + status;
   }
-
-
 
   toggleCompanySelection(id: number, event: any) {
     if (event.target.checked) {
@@ -529,8 +511,6 @@ onAddressSubmit(address: any) {
       .join(', ');
   }
 
-
-
   generateVendorAccountNumber(): void {
     const storedSequence = localStorage.getItem('vendorSequence');
     let sequenceNumber = storedSequence ? parseInt(storedSequence, 10) : 0;
@@ -539,42 +519,18 @@ onAddressSubmit(address: any) {
     localStorage.setItem('vendorSequence', sequenceNumber.toString());
   }
 
-  // loadProcurementCompanies() {
-  //   this.companyService.getProcurementCompanies().subscribe({
-  //     next: (res: any) => {
-  //       if (res && Array.isArray(res.result)) {
-  //         this.procurementCompanies = res.result;
-  //       } else if (Array.isArray(res)) {
-  //         this.procurementCompanies = res;
-  //       } else if (res?.$values) {
-  //         this.procurementCompanies = res.$values;
-  //       } else {
-  //         this.procurementCompanies = [];
-  //       }
-  //       this.cdr.detectChanges();
-  //     },
-  //     error: (err) => {
-  //       console.error('Error fetching procurement companies:', err);
-  //       this.procurementCompanies = [];
-  //     }
-  //   });
-  // }
-
   loadProcurementCompanies() {
     this.companyService.getProcurementCompanies().subscribe({
       next: (res: any) => {
         if (res?.result) this.procurementCompanies = res.result;
         else if (Array.isArray(res)) this.procurementCompanies = res;
         else this.procurementCompanies = [];
-
         this.cdr.detectChanges();
       }
     });
   }
 
-
   confirmAddressDeletion(index: number) {
-
     this.showAddressDeletePopup = true;
     this.addressIndexToDelete = index;
   }
@@ -585,7 +541,7 @@ onAddressSubmit(address: any) {
   }
 
   removeAddress(index: number) {
-        this.editingAddress = this.createEmptyAddress();
+    this.editingAddress = this.createEmptyAddress();
     this.addressList.splice(index, 1);
     this.closeAddressPopup();
   }
@@ -601,11 +557,9 @@ onAddressSubmit(address: any) {
     }));
   }
 
-
   confirmContactDeletion(index: number) {
     this.showContactDeletePopup = true;
     this.contactIndexToDelete = index;
-
   }
 
   closeContactPopup() {
@@ -629,7 +583,6 @@ onAddressSubmit(address: any) {
     }));
   }
 
-  // ==================== Bank Methods ====================
   openBankModal(bank?: any, index?: number) {
     const modalRef = this.modalService.open(CompanyContactModalComponent, { centered: true });
 
@@ -658,8 +611,6 @@ onAddressSubmit(address: any) {
     this.bankIndexToDelete = null;
   }
 
-
-
   getBankForPayload() {
     const now = new Date().toISOString();
     return this.bankList.map(b => ({
@@ -682,8 +633,6 @@ onAddressSubmit(address: any) {
     }));
   }
 
-
-  // ==================== Attachments ====================
   openAttachmentModal() {
     const modalRef = this.modalService.open(CompanyProfileAttachmentComponent, { centered: true });
     modalRef.componentInstance.attachedFiles = [...this.attachedFiles];
@@ -700,9 +649,9 @@ onAddressSubmit(address: any) {
   }
 
   onAttachmentsUpdated(files: any[]) {
-  this.attachedFiles = files;
-  this.cdr.markForCheck();
-}
+    this.attachedFiles = files;
+    this.cdr.markForCheck();
+  }
 
   convertFileToBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -722,7 +671,6 @@ onAddressSubmit(address: any) {
     });
   }
 
-  // ==================== Payload Helpers ====================
   getPurchasingDemographicsPayload() {
     return {
       primaryCurrency: this.primaryCurrency,
@@ -737,81 +685,6 @@ onAddressSubmit(address: any) {
     };
   }
 
-  // ==================== Submit ====================
-  // async submitForm() {
-  //   if (!this.userId) {
-  //     this.toastr.error('Vendor ID missing! Please login again.', 'Error');
-  //     this.router.navigate(['/auth/login']);
-  //     return;
-  //   }
-
-  //   // Convert attachments to base64
-  //   this.attachedFiles = await Promise.all(this.attachedFiles.map(async f => {
-  //     if (f.file && !f.fileContent) {
-  //       f.fileContent = await this.convertFileToBase64(f.file);
-  //     }
-  //     return f;
-  //   }));
-
-  //   const vendorCompanyPayload = {
-  //     name: this.companyName,
-  //     logo: '',
-  //     requestStatusId: 1,
-  //     procurementCompanyId: [...this.selectedProcurementCompanyIds],
-  //     addresses: this.getAddressesForPayload(),
-  //     contacts: this.getContactsForPayload(),
-  //     bankDetails: this.getBankForPayload(),
-  //     purchasingDemographics: this.getPurchasingDemographicsPayload(),
-  //     attachments: this.attachedFiles.map(f => ({
-  //       fileName: f.fileName,
-  //       fileFormat: f.format?.split('/').pop() || f.format || 'unknown',
-  //       fileContent: f.fileContent || '',
-  //       attachedBy: f.attachedBy,
-  //       remarks: f.remarks,
-  //       attachedAt: f.attachedAt ? new Date(f.attachedAt).toISOString() : new Date().toISOString()
-  //     })),
-  //     remarks: this.companyForm?.get('remarks')?.value || this.remarks, // <-- User remarks
-  //     createdBy: this.isEditMode ? undefined : this.createdBy,
-  //     modifiedBy: this.isEditMode ? this.modifiedBy : undefined
-  //   };
-
-  //   // const payload = {
-  //   //   vendorCompany: vendorCompanyPayload,
-  //   //   SubmitterId: this.userId,
-  //   //   procurementCompanyId: [...this.selectedProcurementCompanyIds]
-  //   // };
-
-  //   const payload = {
-  //     vendorCompany: {
-  //       ...vendorCompanyPayload,
-  //       procurementCompanyId: [...this.selectedProcurementCompanyIds] // latest IDs
-  //     },
-  //     SubmitterId: this.userId,
-  //     procurementCompanyId: [...this.selectedProcurementCompanyIds] // same here
-  //   };
-
-
-  //   this.isLoading = true;
-
-  //   const apiCall = this.isEditMode
-  //     ? this.companyService.updateCompany(this.companyId!, payload)
-  //     : this.companyService.registerCompany(payload);
-
-  //   apiCall.subscribe({
-  //     next: () => {
-  //       this.toastr.success(`Company ${this.isEditMode ? 'Updated' : 'Registered'} Successfully!`);
-  //       this.isLoading = false;
-  //       this.router.navigate(['/company/company-master']);
-  //     },
-  //     error: (err) => {
-  //       console.error('Error saving company:', err);
-  //       this.isLoading = false;
-  //       this.toastr.error('Error saving company!');
-  //     }
-  //   });
-  // }
-
-
   async submitForm() {
     if (!this.userId) {
       this.toastr.error('Vendor ID missing! Please login again.', 'Error');
@@ -821,46 +694,35 @@ onAddressSubmit(address: any) {
 
     if (this.isEditMode) {
       this.openRemarksModal();
-      return; // Stop here, wait for modal
+      return;
     }
 
-    // Add mode → direct submit
     this.submitCompanyPayload();
   }
 
-
   openRemarksModal() {
-    // Reset remarks before opening
     this.remarks = '';
-
     const modalRef = this.modalService.open(this.remarksModal, { centered: true, size: 'lg' });
 
     modalRef.result.then(
       (result) => {
-        // Modal closed normally
         if (result === 'submit') {
-          this.submitCompanyPayload(); // remarks already in this.remarks
+          this.submitCompanyPayload();
         }
       },
       () => {
-        // Modal dismissed (e.g., Cancel button or clicking outside)
-        this.remarks = ''; // Reset remarks here as well
+        this.remarks = '';
       }
     );
   }
-
-
 
   submitRemarks(modal: any) {
     if (!this.remarks || this.remarks.trim() === '') {
       this.toastr.error('Please enter remarks before submitting.');
       return;
     }
-
-    // Close modal and trigger submit
     modal.close('submit');
   }
-
 
   async submitCompanyPayload() {
     if (!this.userId) {
@@ -869,7 +731,6 @@ onAddressSubmit(address: any) {
       return;
     }
 
-    // Convert attachments to base64
     this.attachedFiles = await Promise.all(this.attachedFiles.map(async f => {
       if (f.file && !f.fileContent) {
         f.fileContent = await this.convertFileToBase64(f.file);
@@ -894,19 +755,9 @@ onAddressSubmit(address: any) {
         remarks: f.remarks,
         attachedAt: f.attachedAt ? new Date(f.attachedAt).toISOString() : new Date().toISOString()
       })),
-      // remarks: this.companyForm?.get('remarks')?.value || this.remarks,
       createdBy: this.isEditMode ? undefined : this.createdBy,
       modifiedBy: this.isEditMode ? this.modifiedBy : undefined
     };
-
-    // const payload = {
-    //   vendorCompany: {
-    //     ...vendorCompanyPayload,
-    //     procurementCompanyId: [...this.selectedProcurementCompanyIds]
-    //   },
-    //   SubmitterId: this.userId,
-    //   procurementCompanyId: [...this.selectedProcurementCompanyIds]
-    // };
 
     const payload = {
       vendorCompany: {
@@ -915,11 +766,9 @@ onAddressSubmit(address: any) {
       },
       SubmitterId: this.userId,
       procurementCompanyId: [...this.selectedProcurementCompanyIds],
-      VendorEntityAssociationId: this.selectedVendorEntityAssociationId ,
+      VendorEntityAssociationId: this.selectedVendorEntityAssociationId,
       remarks: this.isEditMode ? this.remarks : (this.companyForm?.get('remarks')?.value || this.remarks),
-  // <-- ADD
     };
-
 
     this.isLoading = true;
 
@@ -940,50 +789,46 @@ onAddressSubmit(address: any) {
     });
   }
 
-
-
-  goBack() {
+goBack() {
+  if (window.history.length > 1) {
+    // Go back to previous page
+    window.history.back();
+  } else {
+    // If no history, navigate to default page
     this.router.navigate(['/company/company-master']);
   }
-
-addBank(): void {
-  if (this.bankForm.valid) {
-    if (this.editingBankIndex === null) {
-      // ADD NEW
-      this.bankList = [...this.bankList, this.bankForm.value];
+}
+  addBank(): void {
+    if (this.bankForm.valid) {
+      if (this.editingBankIndex === null) {
+        this.bankList = [...this.bankList, this.bankForm.value];
+      } else {
+        this.bankList = this.bankList.map((b, i) =>
+          i === this.editingBankIndex ? { ...this.bankForm.value } : b
+        );
+        this.editingBankIndex = null;
+      }
+      console.log('Bank List:', this.bankList);
+      this.bankForm.reset();
     } else {
-      // EDIT EXISTING
-      this.bankList = this.bankList.map((b, i) =>
-        i === this.editingBankIndex ? { ...this.bankForm.value } : b
-      );
-
-      // reset edit state
-      this.editingBankIndex = null;
+      console.warn('Please fill in all required fields.');
+      this.bankForm.markAllAsTouched();
     }
-
-    console.log('Bank List:', this.bankList);
-    this.bankForm.reset();
-  } else {
-    console.warn('Please fill in all required fields.');
-    this.bankForm.markAllAsTouched();
-  }
-}
-
-removeBank(index: number) {
-  // if deleting the row currently being edited, reset form + state
-  if (this.editingBankIndex === index) {
-    this.editingBankIndex = null;
-    this.bankForm.reset();
   }
 
-  this.bankList.splice(index, 1);
-  this.closeBankPopup();
-}
+  removeBank(index: number) {
+    if (this.editingBankIndex === index) {
+      this.editingBankIndex = null;
+      this.bankForm.reset();
+    }
+    this.bankList.splice(index, 1);
+    this.closeBankPopup();
+  }
 
-editBank(index: number): void {
-  this.editingBankIndex = index;
-  this.bankForm.patchValue(this.bankList[index]);
-}
+  editBank(index: number): void {
+    this.editingBankIndex = index;
+    this.bankForm.patchValue(this.bankList[index]);
+  }
 
   @HostListener('document:click', ['$event.target'])
   onClickOutside(targetElement: HTMLElement) {
@@ -992,5 +837,4 @@ editBank(index: number): void {
       this.entityDropdownOpen = false;
     }
   }
-
 }

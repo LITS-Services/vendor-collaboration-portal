@@ -86,7 +86,6 @@
                 <th class="border-bottom">Entity</th>
                 <th class="border-bottom">Status</th>
                 <th class="border-bottom">Level</th>
-                <th class="border-bottom">Approver Name</th>
                 <th class="border-bottom">Created Date</th>
               </tr>
             </thead>
@@ -107,7 +106,6 @@
                 <td class="border-0">
                   <span class="badge bg-light text-dark border">{{ e.level }}</span>
                 </td>
-                <td class="border-0">{{ e.approverLevelName || '-' }}</td>
                 <td class="border-0 text-muted">{{ e.createdDate | date:'dd-MMM-yyyy' }}</td>
               </tr>
             </tbody>
