@@ -4,6 +4,8 @@ import { Component } from '@angular/core';
     selector: 'app-media-objects',
     templateUrl: './media-objects.component.html',
     styleUrls: ['./media-objects.component.scss']
+
+
 })
 
 export class MediaObjectsComponent {

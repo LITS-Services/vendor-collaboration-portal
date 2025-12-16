@@ -1,24 +1,24 @@
 import { Router } from '@angular/router';
 import { Injectable } from '@angular/core';
-import { AngularFireAuth } from "@angular/fire/auth";
-import firebase from 'firebase/app'
+import { AngularFireAuth } from "@angular/fire/compat/auth";
+import firebase from 'firebase/compat/app'
 import { Observable, of, ReplaySubject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'environments/environment';
-import { catchError, finalize, map, tap } from 'rxjs/operators';
+import { catchError, finalize, map, tap } from 'rxjs';
 import { AuthUtils } from './auth.util';
 
 @Injectable()
 export class AuthService {
-  private user: Observable<firebase.User>;
-  private userDetails: firebase.User = null;
+  private user: Observable<firebase.User | null>;
+  private userDetails: firebase.User | null = null;
   private baseUrl = environment.apiUrl;
 
   private _refreshInProgress = false;
   private _refreshSubject = new ReplaySubject<string | null>(1);
 
   constructor(public _firebaseAuth: AngularFireAuth, public router: Router, private http: HttpClient,) {
-    this.user = _firebaseAuth.authState;
+    this.user = _firebaseAuth.authState as unknown as Observable<firebase.User | null>;
     this.user.subscribe(
       (user) => {
         if (user) {

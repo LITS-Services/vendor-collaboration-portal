@@ -52,7 +52,7 @@ var themeColors = [$info, $info_light];
 
 export interface Chart {
   type: ChartType;
-  data: Chartist.IChartistData;
+  data: any;
   options?: any;
   responsiveOptions?: any;
   events?: ChartEvent;
@@ -61,7 +61,8 @@ export interface Chart {
 @Component({
   selector: 'app-company-master',
   templateUrl: './company-master.component.html',
-  styleUrls: ['./company-master.component.scss']
+  styleUrls: ['./company-master.component.scss'],
+  standalone: false
 })
 export class CompanyMasterComponent implements OnInit {
   columnChartOptions: Partial<ChartOptions>;
@@ -116,7 +117,6 @@ export class CompanyMasterComponent implements OnInit {
       plotOptions: {
         bar: {
           horizontal: false,
-          endingShape: 'rounded',
           columnWidth: '25%',
         },
       },

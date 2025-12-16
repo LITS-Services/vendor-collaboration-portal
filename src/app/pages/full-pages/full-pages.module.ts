@@ -1,13 +1,13 @@
-import { NgModule } from "@angular/core";
+import { NgModule, NO_ERRORS_SCHEMA } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 import { FullPagesRoutingModule } from "./full-pages-routing.module";
-import { ChartistModule } from "ng-chartist";
-import { AgmCoreModule } from "@agm/core";
+// import { ChartistModule } from "ng-chartist"; // Not compatible with Angular Ivy
+import { GoogleMapsModule } from "@angular/google-maps";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { NgSelectModule } from "@ng-select/ng-select";
-import { SwiperModule } from "ngx-swiper-wrapper";
+// import { SwiperModule } from "ngx-swiper-wrapper"; // Not compatible with Angular Ivy
 import { PipeModule } from "app/shared/pipes/pipe.module";
 
 import { GalleryPageComponent } from "./gallery/gallery-page.component";
@@ -32,16 +32,17 @@ import { CompanyProfileContactModalComponent } from './company-profile-contact-m
 import { CompanyRegistrationComponent } from './company-registration/company-registration.component';
 import { NgxSpinnerModule } from "ngx-spinner";
 @NgModule({
+  schemas: [NO_ERRORS_SCHEMA], // Allow Chartist and Swiper components
   imports: [
     CommonModule,
     FullPagesRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    ChartistModule,
-    AgmCoreModule,
+    // ChartistModule, // Not compatible with Angular Ivy
+    GoogleMapsModule,
     NgSelectModule,
     NgbModule,
-    SwiperModule,
+    // SwiperModule, // Not compatible with Angular Ivy
     PipeModule,
     NgxDatatableModule,
     NgxSpinnerModule

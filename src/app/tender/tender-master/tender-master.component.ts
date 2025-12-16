@@ -49,7 +49,7 @@ $info_light = "#BDE2CD"
 var themeColors = [$info, $info_light];
 export interface Chart {
   type: ChartType;
-  data: Chartist.IChartistData;
+  data: any;
   options?: any;
   responsiveOptions?: any;
   events?: ChartEvent;
@@ -58,7 +58,8 @@ export interface Chart {
 @Component({
   selector: 'app-tender-master',
   templateUrl: './tender-master.component.html',
-  styleUrls: ['./tender-master.component.scss']
+  styleUrls: ['./tender-master.component.scss'],
+  standalone: false
 })
 export class TenderMasterComponent implements OnInit {
   columnChartOptions : Partial<ChartOptions>;
@@ -108,7 +109,7 @@ export class TenderMasterComponent implements OnInit {
             plotOptions: {
               bar: {
                 horizontal: false,
-                endingShape: 'rounded',
+                borderRadius: 4,
                 columnWidth: '25%',
               },
             },

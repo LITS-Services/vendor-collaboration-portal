@@ -9,7 +9,8 @@ import { skip } from 'rxjs/operators';
 @Component({
   selector: 'app-rfq-list',
   templateUrl: './rfq-list.component.html',
-  styleUrls: ['./rfq-list.component.scss']
+  styleUrls: ['./rfq-list.component.scss'],
+  standalone: false
 })
 export class RfqListComponent implements OnInit {
   quotations: QuotationRequest[] = [];

@@ -4,7 +4,8 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 @Component({
   selector: 'app-company-address-modal',
   templateUrl: './company-address-modal.component.html',
-  styleUrls: ['./company-address-modal.component.scss']
+  styleUrls: ['./company-address-modal.component.scss'],
+  standalone: false
 })
 export class CompanyAddressModalComponent implements OnInit {
   @Output() addAddress = new EventEmitter<any>();

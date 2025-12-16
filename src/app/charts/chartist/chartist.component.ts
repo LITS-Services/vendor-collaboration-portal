@@ -9,7 +9,7 @@ const data: any = require('../../shared/data/chartist.json');
 //Interface
 export interface Chart {
     type: ChartType;
-    data: Chartist.IChartistData;
+    data: any;
     options?: any;
     responsiveOptions?: any;
     events?: ChartEvent;
@@ -19,6 +19,7 @@ export interface Chart {
     selector: 'app-chartist',
     templateUrl: './chartist.component.html',
     styleUrls: ['./chartist.component.scss'],
+    standalone: false
 })
 
 export class ChartistComponent {

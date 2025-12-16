@@ -50,7 +50,8 @@ var themeColors = [$primary, $warning, $success, $danger, $info];
 @Component({
   selector: 'app-apex',
   templateUrl: './apex.component.html',
-  styleUrls: ['./apex.component.scss']
+  styleUrls: ['./apex.component.scss'],
+  standalone: false
 })
 export class ApexComponent implements OnInit {
 
@@ -152,7 +153,6 @@ export class ApexComponent implements OnInit {
       plotOptions: {
         bar: {
           horizontal: false,
-          endingShape: 'rounded',
           columnWidth: '55%',
         },
       },

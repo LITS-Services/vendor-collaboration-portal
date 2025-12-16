@@ -284,19 +284,19 @@ export function AutoClose() {
       confirmButton: 'btn btn-primary'
     },
     buttonsStyling: false,
-    onBeforeOpen: () => {
+    didOpen: () => {
       swal.showLoading()
       timerInterval = setInterval(() => {
-        const content = swal.getContent()
+        const content = swal.getHtmlContainer()
         if (content) {
           const b = content.querySelector('b')
           if (b) {
-            b.textContent = swal.getTimerLeft().toString()
+            b.textContent = swal.getTimerLeft()?.toString() || '0'
           }
         }
       }, 100)
     },
-    onClose: () => {
+    willClose: () => {
       clearInterval(timerInterval)
     }
   }).then((result) => {
@@ -322,30 +322,65 @@ export function OutsideClick() {
 
 // Prompt Function
 export function PromptFunction() {
-  swal.mixin({
+  const steps = ['1', '2', '3']
+  const answers: string[] = []
+  
+  swal.fire({
     input: 'text',
+    title: 'Question 1',
+    text: 'Chaining swal2 modals is easy',
     confirmButtonText: 'Next &rarr;',
     showCancelButton: true,
-    progressSteps: ['1', '2', '3'],
+    progressSteps: steps,
+    currentProgressStep: 0,
     customClass: {
       confirmButton: 'btn btn-primary',
       cancelButton: 'btn btn-danger ml-1'
     },
     buttonsStyling: false,
-  }).queue([{
-    title: 'Question 1',
-    text: 'Chaining swal2 modals is easy'
-  },
-    'Question 2',
-    'Question 3'
-  ]).then(function (result: any) {
-    if (result.value) {
-      swal.fire({
-        title: 'All done!',
-        html: 'Your answers: <pre><code>' +
-          JSON.stringify(result.value) +
-          '</code></pre>',
-        confirmButtonText: 'Lovely!'
+  }).then((result) => {
+    if (result.isConfirmed && result.value) {
+      const answers = [result.value]
+      return swal.fire({
+        input: 'text',
+        title: 'Question 2',
+        confirmButtonText: 'Next &rarr;',
+        showCancelButton: true,
+        progressSteps: ['1', '2', '3'],
+        currentProgressStep: 1,
+        customClass: {
+          confirmButton: 'btn btn-primary',
+          cancelButton: 'btn btn-danger ml-1'
+        },
+        buttonsStyling: false,
+      }).then((result2) => {
+        if (result2 && result2.isConfirmed && result2.value) {
+          answers.push(result2.value)
+          return swal.fire({
+            input: 'text',
+            title: 'Question 3',
+            confirmButtonText: 'Finish',
+            showCancelButton: true,
+            progressSteps: ['1', '2', '3'],
+            currentProgressStep: 2,
+            customClass: {
+              confirmButton: 'btn btn-primary',
+              cancelButton: 'btn btn-danger ml-1'
+            },
+            buttonsStyling: false,
+          }).then((result3) => {
+            if (result3 && result3.isConfirmed && result3.value) {
+              answers.push(result3.value)
+              swal.fire({
+                title: 'All done!',
+                html: 'Your answers: <pre><code>' +
+                  JSON.stringify(answers) +
+                  '</code></pre>',
+                confirmButtonText: 'Lovely!'
+              })
+            }
+          })
+        }
       })
     }
   });

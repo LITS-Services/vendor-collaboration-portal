@@ -4,7 +4,8 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 @Component({
   selector: 'app-company-profile-attachment',
   templateUrl: './company-profile-attachment.component.html',
-  styleUrls: ['./company-profile-attachment.component.scss']
+  styleUrls: ['./company-profile-attachment.component.scss'],
+  standalone: false
 })
 export class CompanyProfileAttachmentComponent implements OnInit {
   @Input() attachedFiles: any[] = [];

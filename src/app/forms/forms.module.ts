@@ -1,15 +1,15 @@
-import { NgModule } from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
 import { FormsRoutingModule } from "./forms-routing.module";
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { CustomFormsModule } from 'ngx-custom-validators';
-import { ArchwizardModule } from 'angular-archwizard';
-import { UiSwitchModule } from 'ngx-ui-switch';
+// import { CustomFormsModule } from 'ngx-custom-validators'; // Not compatible with Angular Ivy
+// import { ArchwizardModule } from 'angular-archwizard'; // Not compatible with Angular Ivy
+// import { UiSwitchModule } from 'ngx-ui-switch'; // Not compatible with Angular Ivy
 import { NgSelectModule } from '@ng-select/ng-select';
-import { TagInputModule } from 'ngx-chips';
+// import { TagInputModule } from 'ngx-chips'; // Not compatible with Angular Ivy
 import { QuillModule } from 'ngx-quill'
 import { MatchHeightModule } from "../shared/directives/match-height.directive";
 
@@ -28,20 +28,21 @@ import { TagsInputComponent } from './elements/tags-input/tags-input.component';
 import { EditorComponent } from './elements/editor/editor.component';
 import { SelectComponent } from './elements/select/select.component';
 @NgModule({
+    schemas: [NO_ERRORS_SCHEMA], // Allow incompatible modules
     imports: [
         CommonModule,
         FormsRoutingModule,
         ReactiveFormsModule,
         FormsModule,
         HttpClientModule,
-        ArchwizardModule,
-        CustomFormsModule,
+        // ArchwizardModule, // Not compatible with Angular Ivy
+        // CustomFormsModule, // Not compatible with Angular Ivy
         MatchHeightModule,
         NgbModule,
-        UiSwitchModule,
+        // UiSwitchModule, // Not compatible with Angular Ivy
         QuillModule.forRoot(),
         NgSelectModule,
-        TagInputModule
+        // TagInputModule // Not compatible with Angular Ivy
     ],
     declarations: [
         ValidationFormsComponent,

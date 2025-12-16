@@ -48,7 +48,7 @@ var $info = "#249D57",
 var themeColors = [$info, $info_light];
 export interface Chart {
   type: ChartType;
-  data: Chartist.IChartistData;
+  data: any;
   options?: any;
   responsiveOptions?: any;
   events?: ChartEvent;
@@ -65,7 +65,8 @@ export interface PurchaseOrdersCountVM {
 @Component({
   selector: 'app-purchase-order-master',
   templateUrl: './purchase-order-master.component.html',
-  styleUrls: ['./purchase-order-master.component.scss']
+  styleUrls: ['./purchase-order-master.component.scss'],
+  standalone: false
 })
 export class PurchaseOrderMasterComponent implements OnInit {
 
@@ -121,7 +122,7 @@ export class PurchaseOrderMasterComponent implements OnInit {
       plotOptions: {
         bar: {
           horizontal: false,
-          endingShape: 'rounded',
+          borderRadius: 4,
           columnWidth: '25%',
         },
       },

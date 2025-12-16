@@ -11,7 +11,7 @@ describe('ApexComponent', () => {
       declarations: [ ApexComponent ]
     })
     .compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ApexComponent);

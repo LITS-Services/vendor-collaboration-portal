@@ -11,12 +11,14 @@ import { NgbModal, ModalDismissReasons, NgbActiveModal } from '@ng-bootstrap/ng-
       </button>
     </div>
     <div class="modal-body">
-      <p>Hello, {{name}}!</p>
+      <p>Hello, {{name
+})}!</p>
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-secondary" (click)="activeModal.close('Close click')">Close</button>
     </div>
   `
+
 })
 
 export class NgbdModalContent {
@@ -30,6 +32,8 @@ export class NgbdModalContent {
     templateUrl: './modals.component.html',
     styleUrls: ['./modals.component.scss'],
     encapsulation: ViewEncapsulation.None,
+
+
 })
 
 export class ModalsComponent {
@@ -69,4 +73,3 @@ export class ModalsComponent {
         modalRef.componentInstance.name = 'World';
     }
 }
-

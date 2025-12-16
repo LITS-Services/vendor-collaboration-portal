@@ -6,7 +6,8 @@ import { ColumnMode, DatatableComponent, SelectionType } from '@swimlane/ngx-dat
 @Component({
   selector: 'app-rfq-request-list',
   templateUrl: './rfq-request-list.component.html',
-  styleUrls: ['./rfq-request-list.component.scss']
+  styleUrls: ['./rfq-request-list.component.scss'],
+  standalone: false
 })
 export class RfqRequestListComponent implements OnInit {
 

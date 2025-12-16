@@ -6,7 +6,8 @@ import { ColumnMode, DatatableComponent, SelectionType } from '@swimlane/ngx-dat
 @Component({
   selector: 'app-pr-request-list',
   templateUrl: './pr-request-list.component.html',
-  styleUrls: ['./pr-request-list.component.scss']
+  styleUrls: ['./pr-request-list.component.scss'],
+  standalone: false
 })
 export class PrRequestListComponent implements OnInit {
  public SelectionType = SelectionType;

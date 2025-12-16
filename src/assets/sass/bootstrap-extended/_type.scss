@@ -23,7 +23,9 @@ h2.title{
 .description,
 .card-description,
 .footer-big p{
-  color: color("gray");
+  // Temporarily commented - color() function issue
+  // color: color("gray");
+  color: gray;
 }
 
 .text-warning {

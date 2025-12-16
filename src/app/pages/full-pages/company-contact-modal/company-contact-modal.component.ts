@@ -4,7 +4,8 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 @Component({
   selector: 'app-company-contact-modal',
   templateUrl: './company-contact-modal.component.html',
-  styleUrls: ['./company-contact-modal.component.scss']
+  styleUrls: ['./company-contact-modal.component.scss'],
+  standalone: false
 })
 export class CompanyContactModalComponent implements OnInit {
   @Input() contact: any = {

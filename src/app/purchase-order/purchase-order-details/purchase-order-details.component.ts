@@ -9,7 +9,8 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-vendor-purchase-order-details',
   templateUrl: './purchase-order-details.component.html',
-  styleUrls: ['./purchase-order-details.component.scss']
+  styleUrls: ['./purchase-order-details.component.scss'],
+  standalone: false
 })
 export class PurchaseOrderDetailsComponent implements OnInit {
   poDetails: any;

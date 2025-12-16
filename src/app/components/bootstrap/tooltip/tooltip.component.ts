@@ -5,6 +5,8 @@ import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
   selector: 'app-tooltip',
   templateUrl: './tooltip.component.html',
   styleUrls: ['./tooltip.component.scss']
+
+
 })
 export class TooltipComponent {
   // Variable Declaration

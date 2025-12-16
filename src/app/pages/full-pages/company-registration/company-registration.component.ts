@@ -18,7 +18,8 @@ import { NgxSpinnerService } from 'ngx-spinner';
 @Component({
   selector: 'app-company-registration',
   templateUrl: './company-registration.component.html',
-  styleUrls: ['./company-registration.component.scss']
+  styleUrls: ['./company-registration.component.scss'],
+  standalone: false
 })
 export class CompanyRegistrationComponent implements OnInit {
 
@@ -28,7 +29,7 @@ export class CompanyRegistrationComponent implements OnInit {
   layoutSub: Subscription;
   isEditMode: boolean = false;
   bankForm!: FormGroup;
-  companyForm!: FormGroup;
+  companyForm!: FormGroup; // <-- FormGroup for user remarks
   bankList: any[] = [];
   addressList: any[] = [];
   contactList: any[] = [];
@@ -37,16 +38,14 @@ export class CompanyRegistrationComponent implements OnInit {
   isLoading: boolean = false;
   companyId: number | null = null;
   remarks: string = '';
-  vendorEntities: any[] = [];
-  selectedEntity: any;
+  vendorEntities: any[] = []; // For vendorUserCompanies only
+  selectedEntity: any; // instead of just ID
 
   // For entity selection dropdown
   entityDropdownOpen: boolean = false;
   selectedEntityId: number | null = null;
   isReadonlyEntityFields: boolean = false;
-  
-  // New property to track if all entities have status 7 (Completed)
-  allEntitiesCompleted: boolean = false;
+
 
   procurementCompanies: any[] = [];
   selectedProcurementCompanyIds: number[] = [];
@@ -82,49 +81,49 @@ export class CompanyRegistrationComponent implements OnInit {
     spaceBetween: 15
   };
 
-  editingContactIndex: number | null = null;
-  editingContact: any = this.createEmptyContact();
+editingContactIndex: number | null = null;
+editingContact: any = this.createEmptyContact();
 
-  editingAddressIndex: number | null = null;
-  editingAddress: any = this.createEmptyAddress();
-  editingBankIndex: number | null = null;
+editingAddressIndex: number | null = null;
+editingAddress: any = this.createEmptyAddress();
+editingBankIndex: number | null = null;
+private createEmptyContact() {
+  return {
+    description: '',
+    type: 'Mobile',
+    contactNumber: '',
+    extension: '',
+    primary: false
+  };
+}
 
-  private createEmptyContact() {
-    return {
-      description: '',
-      type: 'Mobile',
-      contactNumber: '',
-      extension: '',
-      primary: false
-    };
-  }
 
-  private createEmptyAddress() {
-    return {
-      street: '',
-      city: '',
-      state: '',
-      zip: '',
-      country: '',
-      primary: false
-    };
-  }
+private createEmptyAddress() {
+  return {
+    street: '',
+    city: '',
+    state: '',
+    zip: '',
+    country: '',
+    primary: false
+  };
+}
 
   companyTabs: Array<'general' | 'addresses' | 'contacts' | 'purchasing' | 'bank' | 'attachments'> = [
-    'general',
-    'addresses',
-    'contacts',
-    'purchasing',
-    'bank',
-    'attachments'
-  ];
+  'general',
+  'addresses',
+  'contacts',
+  'purchasing',
+  'bank',
+  'attachments'
+];
 
-  selectedTab: 'general' | 'addresses' | 'contacts' | 'purchasing' | 'bank' | 'attachments' = 'general';
+// default: first tab
+selectedTab: 'general' | 'addresses' | 'contacts' | 'purchasing' | 'bank' | 'attachments' = 'general';
 
-  selectTab(tab: 'general' | 'addresses' | 'contacts' | 'purchasing' | 'bank' | 'attachments'): void {
-    this.selectedTab = tab;
-  }
-  
+selectTab(tab: 'general' | 'addresses' | 'contacts' | 'purchasing' | 'bank' | 'attachments'): void {
+  this.selectedTab = tab;
+}
   @ViewChild(SwiperDirective, { static: false }) directiveRef?: SwiperDirective;
 
   constructor(
@@ -140,11 +139,13 @@ export class CompanyRegistrationComponent implements OnInit {
     private toastr: ToastrService,
     private fb: FormBuilder,
     private spinner: NgxSpinnerService,
+
   ) {
     this.config = this.configService.templateConf;
   }
 
   ngOnInit() {
+    // ==================== Bank Form ====================
     this.bankForm = this.fb.group({
       bankName: ['', Validators.required],
       accountHolderName: ['', Validators.required],
@@ -157,6 +158,7 @@ export class CompanyRegistrationComponent implements OnInit {
       bankCurrency: ['', Validators.required]
     });
 
+    // ==================== Company Form (User Remarks) ====================
     this.companyForm = this.fb.group({
       remarks: ['']
     });
@@ -189,6 +191,7 @@ export class CompanyRegistrationComponent implements OnInit {
       }
     });
 
+
     this.generateVendorAccountNumber();
 
     this.layoutSub = this.configService.templateConf$.subscribe((templateConf) => {
@@ -212,87 +215,108 @@ export class CompanyRegistrationComponent implements OnInit {
     if (this.layoutSub) this.layoutSub.unsubscribe();
   }
 
-  private get currentTabIndex(): number {
-    return this.companyTabs.indexOf(this.selectedTab);
-  }
+  
+private get currentTabIndex(): number {
+  return this.companyTabs.indexOf(this.selectedTab);
+}
 
-  isFirstTab(): boolean {
-    return this.currentTabIndex === 0;
-  }
+isFirstTab(): boolean {
+  return this.currentTabIndex === 0;
+}
 
-  isLastTab(): boolean {
-    return this.currentTabIndex === this.companyTabs.length - 1;
-  }
+isLastTab(): boolean {
+  return this.currentTabIndex === this.companyTabs.length - 1;
+}
 
-  goToNextTab(): void {
-    const idx = this.currentTabIndex;
-    if (idx < this.companyTabs.length - 1) {
-      this.selectedTab = this.companyTabs[idx + 1];
-    }
+goToNextTab(): void {
+  const idx = this.currentTabIndex;
+  if (idx < this.companyTabs.length - 1) {
+    this.selectedTab = this.companyTabs[idx + 1];
   }
+}
 
-  goToPrevTab(): void {
-    const idx = this.currentTabIndex;
-    if (idx > 0) {
-      this.selectedTab = this.companyTabs[idx - 1];
-    }
+goToPrevTab(): void {
+  const idx = this.currentTabIndex;
+  if (idx > 0) {
+    this.selectedTab = this.companyTabs[idx - 1];
   }
-
+}
   toggleDropdown() {
     this.dropdownOpen = !this.dropdownOpen;
   }
 
   openContactEditor(index?: number) {
-    if (index !== undefined && index !== null) {
-      this.editingContactIndex = index;
-      this.editingContact = { ...this.contactList[index] };
-    } else {
-      this.editingContactIndex = null;
-      this.editingContact = this.createEmptyContact();
-    }
+  if (index !== undefined && index !== null) {
+    // Edit existing
+    this.editingContactIndex = index;
+    this.editingContact = { ...this.contactList[index] };
+  } else {
+    // Add new
+    this.editingContactIndex = null;
+    this.editingContact = this.createEmptyContact();
   }
 
-  onContactSubmit(contact: any) {
-    if (this.editingContactIndex === null) {
-      this.contactList = [...this.contactList, { ...contact }];
-      this.editingContact = this.createEmptyContact();
-    } else {
-      this.contactList = this.contactList.map((c, i) =>
-        i === this.editingContactIndex ? { ...contact } : c
-      );
-      this.editingContactIndex = null;
-      this.editingContact = this.createEmptyContact();
-    }
-    this.cdr.markForCheck();
+}
+
+
+onContactSubmit(contact: any) {
+  if (this.editingContactIndex === null) {
+    this.contactList = [...this.contactList, { ...contact }];
+    this.editingContact = this.createEmptyContact();
+  } else {
+    //EDIT
+    this.contactList = this.contactList.map((c, i) =>
+      i === this.editingContactIndex ? { ...contact } : c
+    );
+
+    // Clear edit state + model and close editor
+    this.editingContactIndex = null;
+    this.editingContact = this.createEmptyContact();
   }
 
-  openAddressEditor(index?: number) {
-    if (index !== undefined && index !== null) {
-      this.editingAddressIndex = index;
-      this.editingAddress = { ...this.addressList[index] };
-    } else {
-      this.editingAddressIndex = null;
-      this.editingAddress = this.createEmptyAddress();
-    }
+  this.cdr.markForCheck();
+}
+
+openAddressEditor(index?: number) {
+  if (index !== undefined && index !== null) {
+    // EDIT MODE – clone so changes don't touch the grid until submit
+    this.editingAddressIndex = index;
+    this.editingAddress = { ...this.addressList[index] };
+  } else {
+    // ADD MODE
+    this.editingAddressIndex = null;
+    this.editingAddress = this.createEmptyAddress();
   }
 
-  onAddressSubmit(address: any) {
-    if (this.editingAddressIndex === null) {
-      this.addressList = [...this.addressList, { ...address }];
-      this.editingAddress = this.createEmptyAddress();
-    } else {
-      this.addressList = this.addressList.map((a, i) =>
-        i === this.editingAddressIndex ? { ...address } : a
-      );
-      this.editingAddressIndex = null;
-      this.editingAddress = this.createEmptyAddress();
-    }
-    this.cdr.markForCheck();
+
+}
+
+onAddressSubmit(address: any) {
+  if (this.editingAddressIndex === null) {
+    // ===== ADD MODE =====
+    this.addressList = [...this.addressList, { ...address }];
+
+    // Reset form for next add, keep editor open
+    this.editingAddress = this.createEmptyAddress();
+
+  } else {
+    // ===== EDIT MODE =====
+    this.addressList = this.addressList.map((a, i) =>
+      i === this.editingAddressIndex ? { ...address } : a
+    );
+
+    // Reset and close
+    this.editingAddressIndex = null;
+    this.editingAddress = this.createEmptyAddress();
   }
+
+  this.cdr.markForCheck();
+}
 
   loadCompanyById(companyId: number) {
     this.isLoading = true;
     this.spinner.show();
+
 
     this.companyService.getCompanyById(companyId)
       .pipe(finalize(() => {
@@ -303,19 +327,18 @@ export class CompanyRegistrationComponent implements OnInit {
         next: (res: any) => {
           const company = res?.vendorCompany || res;
           if (company) {
+
             if (company.vendorUserCompanies && Array.isArray(company.vendorUserCompanies)) {
+
               this.vendorEntities = company.vendorUserCompanies;
-              
-              // Check if all entities have status 7 (Completed)
-              this.checkAllEntitiesCompleted();
-              
+
               // Auto-select first vendor entity
               if (this.vendorEntities.length > 0) {
                 this.onEntitySelect(this.vendorEntities[0]);
               }
+
             } else {
               this.vendorEntities = [];
-              this.allEntitiesCompleted = false;
             }
 
             // Basic Info
@@ -350,15 +373,18 @@ export class CompanyRegistrationComponent implements OnInit {
             // Vendor User Companies (Entities)
             if (company.vendorUserCompanies && Array.isArray(company.vendorUserCompanies)) {
               this.procurementCompanies = company.vendorUserCompanies;
-              
+
+              // Auto-select first entity if exists and set form state
               if (this.procurementCompanies.length > 0) {
                 this.onEntitySelect(this.procurementCompanies[0]);
               } else {
+                // If no entities, ensure form is enabled
                 this.isReadonlyEntityFields = false;
                 this.bankForm.enable();
                 this.companyForm.enable();
               }
             } else {
+              // If no vendorUserCompanies, ensure form is enabled
               this.isReadonlyEntityFields = false;
               this.bankForm.enable();
               this.companyForm.enable();
@@ -424,44 +450,26 @@ export class CompanyRegistrationComponent implements OnInit {
         error: (err) => {
           console.error('Error loading company:', err);
           this.isLoading = false;
+          // Ensure form is enabled even on error
           this.isReadonlyEntityFields = false;
           this.bankForm.enable();
           this.companyForm.enable();
-          this.allEntitiesCompleted = false;
         }
       });
-  }
-
-  // New method to check if all entities have status 7 (Completed)
-  private checkAllEntitiesCompleted(): void {
-    if (!this.vendorEntities || this.vendorEntities.length === 0) {
-      this.allEntitiesCompleted = false;
-      return;
-    }
-    
-    // Check if ALL entities have requestStatusId === 7
-    this.allEntitiesCompleted = this.vendorEntities.every(entity => 
-      entity.requestStatusId === 7
-    );
-    
-    console.log('All entities completed status:', this.allEntitiesCompleted);
   }
 
   onEntitySelect(entity: any) {
     this.selectedEntityId = entity.procurementCompanyId;
     this.entityDropdownOpen = false;
+
     this.selectedEntity = entity;
     this.selectedProcurementCompanyIds = [entity.procurementCompanyId];
+
     this.selectedVendorEntityAssociationId = entity.id;
 
-    // Original logic for readonly fields based on InProcess (1) or Approved (3)
-    this.isReadonlyEntityFields = entity.requestStatusId === 1 || entity.requestStatusId === 3;
 
-    // NEW LOGIC: If entity status is Completed (7), check if ALL entities are completed
-    if (entity.requestStatusId === 7) {
-      // Enable fields only if ALL entities have status 7
-      this.isReadonlyEntityFields = !this.allEntitiesCompleted;
-    }
+    // Set readonly fields based on requestStatusId (1 = InProcess, 3 = Approved, etc.)
+    this.isReadonlyEntityFields = entity.requestStatusId === 1 || entity.requestStatusId === 3;
 
     // Enable or disable forms based on entity status
     if (this.isReadonlyEntityFields) {
@@ -474,24 +482,35 @@ export class CompanyRegistrationComponent implements OnInit {
 
     console.log('Entity selected:', entity);
     console.log('Entity Status ID:', entity.requestStatusId);
-    console.log('All entities completed:', this.allEntitiesCompleted);
     console.log('Form disabled:', this.isReadonlyEntityFields);
   }
-
   hasInProcessEntities(): boolean {
     return this.procurementCompanies.some(entity =>
       entity.requestStatusId === 1 || entity.requestStatus?.toLowerCase() === 'inprocess'
     );
   }
+  // getSelectedEntityName(): string {
+  //   if (!this.selectedEntityId) return 'Select Entity';
+  //   const entity = this.procurementCompanies.find(e => e.procurementCompanyId === this.selectedEntityId);
+  //   return entity ? entity.procurementCompany.name : 'Select Entity';
+  // }
 
   getSelectedEntityName(): string {
     if (!this.selectedEntityId) return 'Select Entity';
+
+    // Search in vendorEntities (not procurementCompanies)
     const entity = this.vendorEntities.find(e => e.procurementCompanyId === this.selectedEntityId);
+
     if (!entity) return 'Select Entity';
+
+    // Return name + optional status
     const companyName = entity.procurementCompany?.name || '';
     const status = entity.requestStatus?.status ? ` (${entity.requestStatus.status})` : '';
+
     return companyName + status;
   }
+
+
 
   toggleCompanySelection(id: number, event: any) {
     if (event.target.checked) {
@@ -511,6 +530,8 @@ export class CompanyRegistrationComponent implements OnInit {
       .join(', ');
   }
 
+
+
   generateVendorAccountNumber(): void {
     const storedSequence = localStorage.getItem('vendorSequence');
     let sequenceNumber = storedSequence ? parseInt(storedSequence, 10) : 0;
@@ -519,18 +540,42 @@ export class CompanyRegistrationComponent implements OnInit {
     localStorage.setItem('vendorSequence', sequenceNumber.toString());
   }
 
+  // loadProcurementCompanies() {
+  //   this.companyService.getProcurementCompanies().subscribe({
+  //     next: (res: any) => {
+  //       if (res && Array.isArray(res.result)) {
+  //         this.procurementCompanies = res.result;
+  //       } else if (Array.isArray(res)) {
+  //         this.procurementCompanies = res;
+  //       } else if (res?.$values) {
+  //         this.procurementCompanies = res.$values;
+  //       } else {
+  //         this.procurementCompanies = [];
+  //       }
+  //       this.cdr.detectChanges();
+  //     },
+  //     error: (err) => {
+  //       console.error('Error fetching procurement companies:', err);
+  //       this.procurementCompanies = [];
+  //     }
+  //   });
+  // }
+
   loadProcurementCompanies() {
     this.companyService.getProcurementCompanies().subscribe({
       next: (res: any) => {
         if (res?.result) this.procurementCompanies = res.result;
         else if (Array.isArray(res)) this.procurementCompanies = res;
         else this.procurementCompanies = [];
+
         this.cdr.detectChanges();
       }
     });
   }
 
+
   confirmAddressDeletion(index: number) {
+
     this.showAddressDeletePopup = true;
     this.addressIndexToDelete = index;
   }
@@ -541,7 +586,7 @@ export class CompanyRegistrationComponent implements OnInit {
   }
 
   removeAddress(index: number) {
-    this.editingAddress = this.createEmptyAddress();
+        this.editingAddress = this.createEmptyAddress();
     this.addressList.splice(index, 1);
     this.closeAddressPopup();
   }
@@ -557,9 +602,11 @@ export class CompanyRegistrationComponent implements OnInit {
     }));
   }
 
+
   confirmContactDeletion(index: number) {
     this.showContactDeletePopup = true;
     this.contactIndexToDelete = index;
+
   }
 
   closeContactPopup() {
@@ -583,6 +630,7 @@ export class CompanyRegistrationComponent implements OnInit {
     }));
   }
 
+  // ==================== Bank Methods ====================
   openBankModal(bank?: any, index?: number) {
     const modalRef = this.modalService.open(CompanyContactModalComponent, { centered: true });
 
@@ -611,6 +659,8 @@ export class CompanyRegistrationComponent implements OnInit {
     this.bankIndexToDelete = null;
   }
 
+
+
   getBankForPayload() {
     const now = new Date().toISOString();
     return this.bankList.map(b => ({
@@ -633,6 +683,8 @@ export class CompanyRegistrationComponent implements OnInit {
     }));
   }
 
+
+  // ==================== Attachments ====================
   openAttachmentModal() {
     const modalRef = this.modalService.open(CompanyProfileAttachmentComponent, { centered: true });
     modalRef.componentInstance.attachedFiles = [...this.attachedFiles];
@@ -649,9 +701,9 @@ export class CompanyRegistrationComponent implements OnInit {
   }
 
   onAttachmentsUpdated(files: any[]) {
-    this.attachedFiles = files;
-    this.cdr.markForCheck();
-  }
+  this.attachedFiles = files;
+  this.cdr.markForCheck();
+}
 
   convertFileToBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -671,6 +723,7 @@ export class CompanyRegistrationComponent implements OnInit {
     });
   }
 
+  // ==================== Payload Helpers ====================
   getPurchasingDemographicsPayload() {
     return {
       primaryCurrency: this.primaryCurrency,
@@ -685,6 +738,81 @@ export class CompanyRegistrationComponent implements OnInit {
     };
   }
 
+  // ==================== Submit ====================
+  // async submitForm() {
+  //   if (!this.userId) {
+  //     this.toastr.error('Vendor ID missing! Please login again.', 'Error');
+  //     this.router.navigate(['/auth/login']);
+  //     return;
+  //   }
+
+  //   // Convert attachments to base64
+  //   this.attachedFiles = await Promise.all(this.attachedFiles.map(async f => {
+  //     if (f.file && !f.fileContent) {
+  //       f.fileContent = await this.convertFileToBase64(f.file);
+  //     }
+  //     return f;
+  //   });
+
+  //   const vendorCompanyPayload = {
+  //     name: this.companyName,
+  //     logo: '',
+  //     requestStatusId: 1,
+  //     procurementCompanyId: [...this.selectedProcurementCompanyIds],
+  //     addresses: this.getAddressesForPayload(),
+  //     contacts: this.getContactsForPayload(),
+  //     bankDetails: this.getBankForPayload(),
+  //     purchasingDemographics: this.getPurchasingDemographicsPayload(),
+  //     attachments: this.attachedFiles.map(f => ({
+  //       fileName: f.fileName,
+  //       fileFormat: f.format?.split('/').pop() || f.format || 'unknown',
+  //       fileContent: f.fileContent || '',
+  //       attachedBy: f.attachedBy,
+  //       remarks: f.remarks,
+  //       attachedAt: f.attachedAt ? new Date(f.attachedAt).toISOString() : new Date().toISOString()
+  //     }),
+  //     remarks: this.companyForm?.get('remarks')?.value || this.remarks, // <-- User remarks
+  //     createdBy: this.isEditMode ? undefined : this.createdBy,
+  //     modifiedBy: this.isEditMode ? this.modifiedBy : undefined
+  //   };
+
+  //   // const payload = {
+  //   //   vendorCompany: vendorCompanyPayload,
+  //   //   SubmitterId: this.userId,
+  //   //   procurementCompanyId: [...this.selectedProcurementCompanyIds]
+  //   // };
+
+  //   const payload = {
+  //     vendorCompany: {
+  //       ...vendorCompanyPayload,
+  //       procurementCompanyId: [...this.selectedProcurementCompanyIds] // latest IDs
+  //     },
+  //     SubmitterId: this.userId,
+  //     procurementCompanyId: [...this.selectedProcurementCompanyIds] // same here
+  //   };
+
+
+  //   this.isLoading = true;
+
+  //   const apiCall = this.isEditMode
+  //     ? this.companyService.updateCompany(this.companyId!, payload)
+  //     : this.companyService.registerCompany(payload);
+
+  //   apiCall.subscribe({
+  //     next: () => {
+  //       this.toastr.success(`Company ${this.isEditMode ? 'Updated' : 'Registered'} Successfully!`);
+  //       this.isLoading = false;
+  //       this.router.navigate(['/company/company-master']);
+  //     },
+  //     error: (err) => {
+  //       console.error('Error saving company:', err);
+  //       this.isLoading = false;
+  //       this.toastr.error('Error saving company!');
+  //     }
+  //   });
+  // }
+
+
   async submitForm() {
     if (!this.userId) {
       this.toastr.error('Vendor ID missing! Please login again.', 'Error');
@@ -694,35 +822,46 @@ export class CompanyRegistrationComponent implements OnInit {
 
     if (this.isEditMode) {
       this.openRemarksModal();
-      return;
+      return; // Stop here, wait for modal
     }
 
+    // Add mode → direct submit
     this.submitCompanyPayload();
   }
 
+
   openRemarksModal() {
+    // Reset remarks before opening
     this.remarks = '';
+
     const modalRef = this.modalService.open(this.remarksModal, { centered: true, size: 'lg' });
 
     modalRef.result.then(
       (result) => {
+        // Modal closed normally
         if (result === 'submit') {
-          this.submitCompanyPayload();
+          this.submitCompanyPayload(); // remarks already in this.remarks
         }
       },
       () => {
-        this.remarks = '';
+        // Modal dismissed (e.g., Cancel button or clicking outside)
+        this.remarks = ''; // Reset remarks here as well
       }
     );
   }
+
+
 
   submitRemarks(modal: any) {
     if (!this.remarks || this.remarks.trim() === '') {
       this.toastr.error('Please enter remarks before submitting.');
       return;
     }
+
+    // Close modal and trigger submit
     modal.close('submit');
   }
+
 
   async submitCompanyPayload() {
     if (!this.userId) {
@@ -731,6 +870,7 @@ export class CompanyRegistrationComponent implements OnInit {
       return;
     }
 
+    // Convert attachments to base64
     this.attachedFiles = await Promise.all(this.attachedFiles.map(async f => {
       if (f.file && !f.fileContent) {
         f.fileContent = await this.convertFileToBase64(f.file);
@@ -755,9 +895,19 @@ export class CompanyRegistrationComponent implements OnInit {
         remarks: f.remarks,
         attachedAt: f.attachedAt ? new Date(f.attachedAt).toISOString() : new Date().toISOString()
       })),
+      // remarks: this.companyForm?.get('remarks')?.value || this.remarks,
       createdBy: this.isEditMode ? undefined : this.createdBy,
       modifiedBy: this.isEditMode ? this.modifiedBy : undefined
     };
+
+    // const payload = {
+    //   vendorCompany: {
+    //     ...vendorCompanyPayload,
+    //     procurementCompanyId: [...this.selectedProcurementCompanyIds]
+    //   },
+    //   SubmitterId: this.userId,
+    //   procurementCompanyId: [...this.selectedProcurementCompanyIds]
+    // };
 
     const payload = {
       vendorCompany: {
@@ -766,9 +916,11 @@ export class CompanyRegistrationComponent implements OnInit {
       },
       SubmitterId: this.userId,
       procurementCompanyId: [...this.selectedProcurementCompanyIds],
-      VendorEntityAssociationId: this.selectedVendorEntityAssociationId,
+      VendorEntityAssociationId: this.selectedVendorEntityAssociationId ,
       remarks: this.isEditMode ? this.remarks : (this.companyForm?.get('remarks')?.value || this.remarks),
+  // <-- ADD
     };
+
 
     this.isLoading = true;
 
@@ -789,46 +941,50 @@ export class CompanyRegistrationComponent implements OnInit {
     });
   }
 
-goBack() {
-  if (window.history.length > 1) {
-    // Go back to previous page
-    window.history.back();
-  } else {
-    // If no history, navigate to default page
+
+
+  goBack() {
     this.router.navigate(['/company/company-master']);
   }
-}
-  addBank(): void {
-    if (this.bankForm.valid) {
-      if (this.editingBankIndex === null) {
-        this.bankList = [...this.bankList, this.bankForm.value];
-      } else {
-        this.bankList = this.bankList.map((b, i) =>
-          i === this.editingBankIndex ? { ...this.bankForm.value } : b
-        );
-        this.editingBankIndex = null;
-      }
-      console.log('Bank List:', this.bankList);
-      this.bankForm.reset();
+
+addBank(): void {
+  if (this.bankForm.valid) {
+    if (this.editingBankIndex === null) {
+      // ADD NEW
+      this.bankList = [...this.bankList, this.bankForm.value];
     } else {
-      console.warn('Please fill in all required fields.');
-      this.bankForm.markAllAsTouched();
-    }
-  }
+      // EDIT EXISTING
+      this.bankList = this.bankList.map((b, i) =>
+        i === this.editingBankIndex ? { ...this.bankForm.value } : b
+      );
 
-  removeBank(index: number) {
-    if (this.editingBankIndex === index) {
+      // reset edit state
       this.editingBankIndex = null;
-      this.bankForm.reset();
     }
-    this.bankList.splice(index, 1);
-    this.closeBankPopup();
+
+    console.log('Bank List:', this.bankList);
+    this.bankForm.reset();
+  } else {
+    console.warn('Please fill in all required fields.');
+    this.bankForm.markAllAsTouched();
+  }
+}
+
+removeBank(index: number) {
+  // if deleting the row currently being edited, reset form + state
+  if (this.editingBankIndex === index) {
+    this.editingBankIndex = null;
+    this.bankForm.reset();
   }
 
-  editBank(index: number): void {
-    this.editingBankIndex = index;
-    this.bankForm.patchValue(this.bankList[index]);
-  }
+  this.bankList.splice(index, 1);
+  this.closeBankPopup();
+}
+
+editBank(index: number): void {
+  this.editingBankIndex = index;
+  this.bankForm.patchValue(this.bankList[index]);
+}
 
   @HostListener('document:click', ['$event.target'])
   onClickOutside(targetElement: HTMLElement) {
@@ -837,4 +993,5 @@ goBack() {
       this.entityDropdownOpen = false;
     }
   }
+
 }

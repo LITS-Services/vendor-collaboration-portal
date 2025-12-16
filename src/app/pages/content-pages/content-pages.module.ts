@@ -14,8 +14,7 @@ import { LoginPageComponent } from "./login/login-page.component";
 import { MaintenancePageComponent } from "./maintenance/maintenance-page.component";
 import { RegisterPageComponent } from "./register/register-page.component";
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { HttpClient } from '@angular/common/http';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { TranslateHttpLoader, TRANSLATE_HTTP_LOADER_CONFIG } from '@ngx-translate/http-loader';
 import { RegisterVendorComponent } from './register-vendor/register-vendor.component';
 import { OtpComponent } from './otp/otp.component';
 import { NgSelectModule } from '@ng-select/ng-select'; // <-- Import this
@@ -30,11 +29,14 @@ import { environment } from 'environments/environment';
 
 // import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
 
-export function createTranslateLoader(http: HttpClient) {
-  return new TranslateHttpLoader(http, "./assets/i18n/", ".json");
-}
 
 @NgModule({
+  providers: [
+    {
+      provide: TRANSLATE_HTTP_LOADER_CONFIG,
+      useValue: { prefix: './assets/i18n/', suffix: '.json' }
+    }
+  ],
   imports: [
     CommonModule,
     ContentPagesRoutingModule,
@@ -48,8 +50,7 @@ export function createTranslateLoader(http: HttpClient) {
     TranslateModule.forChild({
       loader: {
         provide: TranslateLoader,
-        useFactory: createTranslateLoader,
-        deps: [HttpClient]
+        useClass: TranslateHttpLoader
       }
     }),
     NgxSpinnerModule,

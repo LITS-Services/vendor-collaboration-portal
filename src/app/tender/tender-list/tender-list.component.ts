@@ -7,7 +7,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 @Component({
   selector: 'app-tender-list',
   templateUrl: './tender-list.component.html',
-  styleUrls: ['./tender-list.component.scss']
+  styleUrls: ['./tender-list.component.scss'],
+  standalone: false
 })
 export class TenderListComponent implements OnInit {
  public SelectionType = SelectionType;

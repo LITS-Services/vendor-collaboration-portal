@@ -6,7 +6,8 @@ import { DatatableComponent } from '@swimlane/ngx-datatable';
 @Component({
   selector: 'app-rfq-bid-attachment',
   templateUrl: './rfq-bid-attachment.component.html',
-  styleUrls: ['./rfq-bid-attachment.component.scss']
+  styleUrls: ['./rfq-bid-attachment.component.scss'],
+  standalone: false
 })
 export class RfqBidAttachmentComponent implements OnInit {
 

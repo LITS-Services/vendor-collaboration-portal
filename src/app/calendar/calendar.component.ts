@@ -41,7 +41,10 @@ const colors: any = {
   selector: 'app-calendar',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './calendar.component.html',
-  styleUrls: ['./calendar.component.scss']
+  styleUrls: ['./calendar.component.scss'],
+  standalone: false
+
+
 })
 
 export class CalendarsComponent {
@@ -136,7 +139,7 @@ export class CalendarsComponent {
     event.start = newStart;
     event.end = newEnd;
     this.handleEvent('Dropped or resized', event);
-    this.refresh.next();
+    this.refresh.next(null);
   }
 
   handleEvent(action: string, event: CalendarEvent): void {
@@ -161,7 +164,7 @@ export class CalendarsComponent {
 
     // this.refresh.next();
     this.handleEvent('Add new event', this.newEvent);
-     this.refresh.next();
+     this.refresh.next(null);
   }
 }
 //Calendar event handler ends

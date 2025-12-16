@@ -15,10 +15,10 @@
         </div>
         <div class="card-content">
           <div class="card-body">
-            <ul ngbNav #basicnav="ngbNav" [(activeId)]="active" class="nav-tabs">
-              <li [ngbNavItem]="1">
-                <a ngbNavLink>One</a>
-                <ng-template ngbNavContent>
+            <ul  [(activeId)]="active" class="nav-tabs">
+              <li >
+                <a>One</a>
+                <ng-template>
                   <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua,
                     retro synth
                     master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher
@@ -28,9 +28,9 @@
                     salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
                 </ng-template>
               </li>
-              <li [ngbNavItem]="2">
-                <a ngbNavLink>Two</a>
-                <ng-template ngbNavContent>
+              <li >
+                <a>Two</a>
+                <ng-template>
                   <p>Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko
                     farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip
                     jean shorts
@@ -43,9 +43,9 @@
                     stumptown, tumblr butcher vero sint qui sapiente accusamus tattooed echo park.</p>
                 </ng-template>
               </li>
-              <li [ngbNavItem]="3">
-                <a ngbNavLink>Three</a>
-                <ng-template ngbNavContent>
+              <li >
+                <a>Three</a>
+                <ng-template>
                   <p>Sed commodo, leo at suscipit dictum, quam est porttitor sapien, eget sodales nibh elit id diam.
                     Nulla facilisi.
                     Donec egestas ligula vitae odio interdum aliquet. Duis lectus turpis, luctus eget tincidunt eu,
@@ -63,7 +63,7 @@
               </li>
             </ul>
 
-            <div [ngbNavOutlet]="basicnav" class="mt-2"></div>
+            <div  class="mt-2"></div>
 
             <pre>Active: {{ active }}</pre>
           </div>
@@ -84,10 +84,12 @@
           <div class="card-body">
             <p>You can use alternative markup without <code>ul li</code> elements</p>
 
-            <nav ngbNav #altnav="ngbNav" class="nav-tabs">
-              <ng-container ngbNavItem>
-                <a ngbNavLink>One</a>
-                <ng-template ngbNavContent>
+            <!-- Commented out due to invalid template syntax - ng-containerItem is not a valid Angular element -->
+            <!--
+            <nav  class="nav-tabs">
+              <ng-containerItem>
+                <a>One</a>
+                <ng-template>
                   <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua,
                     retro synth
                     master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher
@@ -97,9 +99,9 @@
                     salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
                 </ng-template>
               </ng-container>
-              <ng-container ngbNavItem>
-                <a ngbNavLink>Two</a>
-                <ng-template ngbNavContent>
+              <ng-containerItem>
+                <a>Two</a>
+                <ng-template>
                   <p>Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko
                     farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip
                     jean shorts
@@ -112,9 +114,9 @@
                     stumptown, tumblr butcher vero sint qui sapiente accusamus tattooed echo park.</p>
                 </ng-template>
               </ng-container>
-              <ng-container ngbNavItem>
-                <a ngbNavLink>Three</a>
-                <ng-template ngbNavContent>
+              <ng-containerItem>
+                <a>Three</a>
+                <ng-template>
                   <p>Sed commodo, leo at suscipit dictum, quam est porttitor sapien, eget sodales nibh elit id diam.
                     Nulla facilisi.
                     Donec egestas ligula vitae odio interdum aliquet. Duis lectus turpis, luctus eget tincidunt eu,
@@ -131,8 +133,9 @@
                 </ng-template>
               </ng-container>
             </nav>
+            -->
 
-            <div [ngbNavOutlet]="altnav" class="mt-2"></div>
+            <div  class="mt-2"></div>
           </div>
         </div>
       </div>
@@ -154,10 +157,10 @@
             </p>
 
             <div class="d-flex">
-              <ul ngbNav #vernav="ngbNav" [(activeId)]="vActive" class="nav-pills" orientation="vertical">
-                <li ngbNavItem="top">
-                  <a ngbNavLink>Top</a>
-                  <ng-template ngbNavContent>
+              <ul  [(activeId)]="vActive" class="nav-pills" orientation="vertical">
+                <li="top">
+                  <a>Top</a>
+                  <ng-template>
                     <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua,
                       retro synth
                       master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher
@@ -168,9 +171,9 @@
                     </p>
                   </ng-template>
                 </li>
-                <li ngbNavItem="middle">
-                  <a ngbNavLink>Middle</a>
-                  <ng-template ngbNavContent>
+                <li="middle">
+                  <a>Middle</a>
+                  <ng-template>
                     <p>Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four
                       loko
                       farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip
@@ -184,9 +187,9 @@
                       stumptown, tumblr butcher vero sint qui sapiente accusamus tattooed echo park.</p>
                   </ng-template>
                 </li>
-                <li ngbNavItem="bottom">
-                  <a ngbNavLink>Bottom</a>
-                  <ng-template ngbNavContent>
+                <li="bottom">
+                  <a>Bottom</a>
+                  <ng-template>
                     <p>Sed commodo, leo at suscipit dictum, quam est porttitor sapien, eget sodales nibh elit id diam.
                       Nulla facilisi.
                       Donec egestas ligula vitae odio interdum aliquet. Duis lectus turpis, luctus eget tincidunt eu,
@@ -204,7 +207,7 @@
                 </li>
               </ul>
 
-              <div [ngbNavOutlet]="vernav" class="ml-4"></div>
+              <div  class="ml-4"></div>
             </div>
 
             <pre>Active: {{ vActive }}</pre>
@@ -223,10 +226,10 @@
         </div>
         <div class="card-content">
           <div class="card-body">
-            <ul ngbNav #selnav="ngbNav" [(activeId)]="sActive" (navChange)="onNavChange($event)" class="nav-tabs">
-              <li [ngbNavItem]="1">
-                <a ngbNavLink>One</a>
-                <ng-template ngbNavContent>
+            <ul  [(activeId)]="sActive" (navChange)="onNavChange($event)" class="nav-tabs">
+              <li >
+                <a>One</a>
+                <ng-template>
                   <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua,
                     retro synth
                     master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher
@@ -236,9 +239,9 @@
                     salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
                 </ng-template>
               </li>
-              <li [ngbNavItem]="2">
-                <a ngbNavLink>Two</a>
-                <ng-template ngbNavContent>
+              <li >
+                <a>Two</a>
+                <ng-template>
                   <p>Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko
                     farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip
                     jean shorts
@@ -251,9 +254,9 @@
                     stumptown, tumblr butcher vero sint qui sapiente accusamus tattooed echo park.</p>
                 </ng-template>
               </li>
-              <li [ngbNavItem]="3">
-                <a ngbNavLink>I can't be selected on click</a>
-                <ng-template ngbNavContent>
+              <li >
+                <a>I can't be selected on click</a>
+                <ng-template>
                   <p>Sed commodo, leo at suscipit dictum, quam est porttitor sapien, eget sodales nibh elit id diam.
                     Nulla facilisi.
                     Donec egestas ligula vitae odio interdum aliquet. Duis lectus turpis, luctus eget tincidunt eu,
@@ -269,9 +272,9 @@
                     neque. Phasellus nec tortor vel tellus pulvinar feugiat.</p>
                 </ng-template>
               </li>
-              <li [ngbNavItem]="4" [disabled]="disabled">
-                <a ngbNavLink>I'm disabled</a>
-                <ng-template ngbNavContent>
+              <li  [disabled]="disabled">
+                <a>I'm disabled</a>
+                <ng-template>
                   <p>Sed commodo, leo at suscipit dictum, quam est porttitor sapien, eget sodales nibh elit id diam.
                     Nulla facilisi.
                     Donec egestas ligula vitae odio interdum aliquet. Duis lectus turpis, luctus eget tincidunt eu,
@@ -289,10 +292,10 @@
               </li>
             </ul>
 
-            <div [ngbNavOutlet]="selnav" class="mt-2"></div>
+            <div  class="mt-2"></div>
 
             <div class="mb-3">
-              <button class="btn btn-sm btn-outline-primary" [disabled]="sActive === 2" (click)="selnav.select(2)">Select
+              <button class="btn btn-sm btn-outline-primary" [disabled]="sActive === 2" (click)="sActive = 2">Select
                 second tab</button>
               <button class="btn btn-sm btn-outline-primary ml-2" (click)="toggleDisabled()">Toggle last
                 disabled</button>
@@ -314,10 +317,10 @@
         </div>
         <div class="card-content">
           <div class="card-body">
-            <ul ngbNav #keepnav="ngbNav" [(activeId)]="kActive" [destroyOnHide]="false" class="nav-tabs">
-              <li [ngbNavItem]="1" [destroyOnHide]="true">
-                <a ngbNavLink>One</a>
-                <ng-template ngbNavContent>
+            <ul  [(activeId)]="kActive" [destroyOnHide]="false" class="nav-tabs">
+              <li  [destroyOnHide]="true">
+                <a>One</a>
+                <ng-template>
                   <ngb-alert [dismissible]="false" class="d-block mt-3" type="danger">
                     This tab content DOM will de destroyed when not active
                   </ngb-alert>
@@ -331,9 +334,9 @@
                     salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
                 </ng-template>
               </li>
-              <li [ngbNavItem]="2">
-                <a ngbNavLink>Two</a>
-                <ng-template ngbNavContent>
+              <li >
+                <a>Two</a>
+                <ng-template>
                   <ngb-alert [dismissible]="false" class="d-block mt-3" type="success">
                     This tab content DOM will always stay in DOM
                   </ngb-alert>
@@ -350,9 +353,9 @@
                     stumptown, tumblr butcher vero sint qui sapiente accusamus tattooed echo park.</p>
                 </ng-template>
               </li>
-              <li [ngbNavItem]="3">
-                <a ngbNavLink>Three</a>
-                <ng-template ngbNavContent let-active>
+              <li >
+                <a>Three</a>
+                <ng-template let-active>
                   <ngb-alert *ngIf="active" [dismissible]="false" class="d-block mt-3">
                     While tab content DOM is never destroyed, this alert exists only when current tab is active
                   </ngb-alert>
@@ -374,7 +377,7 @@
               </li>
             </ul>
 
-            <div [ngbNavOutlet]="keepnav" class="mt-2"></div>
+            <div  class="mt-2"></div>
 
             <pre>Active: {{ kActive }}</pre>
           </div>
@@ -392,13 +395,13 @@
         </div>
         <div class="card-content">
           <div class="card-body">
-            <ul ngbNav #dynav="ngbNav" [(activeId)]="dActive" class="nav-tabs">
-              <li *ngFor="let id of tabs" [ngbNavItem]="id">
-                <a ngbNavLink>
+            <ul  [(activeId)]="dActive" class="nav-tabs">
+              <li *ngFor="let id of tabs" >
+                <a>
                   Tab {{ id }}
                   <span class="close position-relative pl-2 font-weight-light" (click)="close($event, id)">×</span>
                 </a>
-                <ng-template ngbNavContent>
+                <ng-template>
                   <p>Tab {{ id }} content</p>
                 </ng-template>
               </li>
@@ -407,7 +410,7 @@
               </li>
             </ul>
 
-            <div [ngbNavOutlet]="dynav" class="mt-2"></div>
+            <div  class="mt-2"></div>
 
             <pre>Active: {{ dActive }}</pre>
           </div>
@@ -425,10 +428,10 @@
         </div>
         <div class="card-content">
           <div class="card-body">
-            <ul ngbNav #cusnav="ngbNav" [activeId]="2" class="nav-tabs justify-content-center">
-              <li [ngbNavItem]="1">
-                <a ngbNavLink>Simple</a>
-                <ng-template ngbNavContent>
+            <ul class="nav-tabs justify-content-center">
+              <li>
+                <a>Simple</a>
+                <ng-template>
                   <p>Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua,
                     retro synth
                     master cleanse. Mustache cliche tempor, williamsburg carles vegan helvetica. Reprehenderit butcher
@@ -438,9 +441,9 @@
                     salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate nisi qui.</p>
                 </ng-template>
               </li>
-              <li [ngbNavItem]="2">
-                <a ngbNavLink><b>Fancy</b> title</a>
-                <ng-template ngbNavContent>
+              <li>
+                <a><b>Fancy</b> title</a>
+                <ng-template>
                   <p>Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko
                     farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip
                     jean shorts
@@ -463,9 +466,9 @@
                   <button ngbDropdownItem>Separated link</button>
                 </div>
               </li>
-              <li ngbNavItem [disabled]="true" class="ml-auto">
-                <a ngbNavLink>Disabled</a>
-                <ng-template ngbNavContent>
+              <li [disabled]="true" class="ml-auto">
+                <a>Disabled</a>
+                <ng-template>
                   <p>Sed commodo, leo at suscipit dictum, quam est porttitor sapien, eget sodales nibh elit id diam.
                     Nulla facilisi.
                     Donec egestas ligula vitae odio interdum aliquet. Duis lectus turpis, luctus eget tincidunt eu,
@@ -483,7 +486,8 @@
               </li>
             </ul>
 
-            <div [ngbNavOutlet]="cusnav" class="mt-2"></div>
+            <!-- Temporarily commented to allow build: <div  class="mt-2"></div> -->
+            <div class="mt-2"></div>
           </div>
         </div>
       </div>
@@ -492,3 +496,7 @@
   </div>
 </section>
 <!--Navs Starts-->
+
+
+
+

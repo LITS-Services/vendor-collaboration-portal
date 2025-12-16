@@ -4,7 +4,8 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-grn-details',
   templateUrl: './grn-details.component.html',
-  styleUrls: ['./grn-details.component.scss']
+  styleUrls: ['./grn-details.component.scss'],
+  standalone: false
 })
 export class GrnDetailsComponent implements OnInit {
   grnDetails: any;

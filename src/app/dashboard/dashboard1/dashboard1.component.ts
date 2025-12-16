@@ -71,7 +71,7 @@ var themeColors = [$info, $info_light];
 
 export interface Chart {
   type: ChartType;
-  data: Chartist.IChartistData;
+  data: any;
   options?: any;
   responsiveOptions?: any;
   events?: ChartEvent;
@@ -81,7 +81,8 @@ export interface Chart {
 @Component({
   selector: 'app-dashboard1',
   templateUrl: './dashboard1.component.html',
-  styleUrls: ['./dashboard1.component.scss']
+  styleUrls: ['./dashboard1.component.scss'],
+  standalone: false
 })
 
 export class Dashboard1Component implements OnInit {
@@ -112,8 +113,8 @@ export class Dashboard1Component implements OnInit {
       plotOptions: {
         bar: {
           horizontal: false,
-          endingShape: 'rounded',
           columnWidth: '25%',
+          borderRadius: 4,
         },
       },
       grid: { borderColor: "#BDBDBD44" },

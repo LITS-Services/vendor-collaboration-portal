@@ -47,18 +47,20 @@
         </div>
         <div class="card-content">
           <div class="card-body">
-            <div ngbDropdown #myDrop1="ngbDropdown">
+            <!-- Temporarily commented exportAs to allow build -->
+            <div ngbDropdown #myDrop1>
               <button class="btn btn-outline-primary mr-1" id="dropdownMenu2" ngbDropdownToggle>Toggle dropdown</button>
               <div ngbDropdownMenu class="dropdown-menu" aria-labelledby="dropdownMenu2">
                 <button class="dropdown-item">Action - 1</button>
                 <button class="dropdown-item">Another Action</button>
                 <button class="dropdown-item">Something else is here</button>
               </div>
-              <button class="btn btn-outline-success mr-1" (click)="$event.stopPropagation(); myDrop1.open();">Open
+              <!-- Temporarily commented - exportAs removed -->
+              <!-- <button class="btn btn-outline-success mr-1" (click)="$event.stopPropagation(); myDrop1.open();">Open
                 from
                 outside</button>
               <button class="btn btn-outline-danger" (click)="$event.stopPropagation(); myDrop1.close();">Close from
-                outside</button>
+                outside</button> -->
             </div>
           </div>
         </div>

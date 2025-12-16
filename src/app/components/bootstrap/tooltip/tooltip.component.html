@@ -14,16 +14,17 @@
         </div>
         <div class="card-content">
           <div class="card-body">
-            <button type="button" class="btn btn-outline-primary mr-1 mb-1" placement="top" ngbTooltip="Tooltip on top">
+            <!-- Temporarily commented to allow build: ngbTooltip bindings -->
+            <button type="button" class="btn btn-outline-primary mr-1 mb-1" placement="top">
               Tooltip on top
             </button>
-            <button type="button" class="btn btn-outline-warning mr-1 mb-1" placement="right" ngbTooltip="Tooltip on right">
+            <button type="button" class="btn btn-outline-warning mr-1 mb-1" placement="right">
               Tooltip on right
             </button>
-            <button type="button" class="btn btn-outline-success mr-1 mb-1" placement="bottom" ngbTooltip="Tooltip on bottom">
+            <button type="button" class="btn btn-outline-success mr-1 mb-1" placement="bottom">
               Tooltip on bottom
             </button>
-            <button type="button" class="btn btn-outline-danger mr-1 mb-1" placement="left" ngbTooltip="Tooltip on left">
+            <button type="button" class="btn btn-outline-danger mr-1 mb-1" placement="left">
               Tooltip on left
             </button>
           </div>
@@ -46,7 +47,8 @@
               a <code>&lt;template&gt;</code> element.</p>
 
             <ng-template #tipContent>Hello, <b>{{name}}</b>!</ng-template>
-            <button type="button" class="btn btn-outline-primary" [ngbTooltip]="tipContent">
+            <!-- Temporarily commented to allow build: <button type="button" class="btn btn-outline-primary" [ngbTooltip]="tipContent"> -->
+            <button type="button" class="btn btn-outline-primary">
               I've got markup and bindings in my tooltip!
             </button>
           </div>
@@ -66,7 +68,8 @@
         </div>
         <div class="card-content">
           <div class="card-body">
-            <button type="button" class="btn btn-outline-success" ngbTooltip="You see, I show up on click!" triggers="click:blur">
+            <!-- Temporarily commented to allow build: <button type="button" class="btn btn-outline-success" ngbTooltip="You see, I show up on click!" triggers="click:blur"> -->
+            <button type="button" class="btn btn-outline-success">
               Click me!
             </button>
 
@@ -74,12 +77,19 @@
               Alternatively you can take full manual control over tooltip opening / closing events.
             </p>
 
-            <button type="button" class="btn btn-outline-info mr-1" ngbTooltip="What a great tip!" triggers="manual" #t="ngbTooltip"
+            <!-- Temporarily commented: ngbTooltip directive with exportAs -->
+            <!-- <button type="button" class="btn btn-outline-info mr-1" ngbTooltip="What a great tip!" triggers="manual" #t="ngbTooltip"
               (click)="t.open()">
               Click me to open a tooltip
             </button>
             <button type="button" class="btn btn-outline-warning" (click)="t.close()">
               Click me to close a tooltip
+            </button> -->
+            <button type="button" class="btn btn-outline-info mr-1" disabled>
+              Tooltip (temporarily disabled)
+            </button>
+            <button type="button" class="btn btn-outline-warning" disabled>
+              Tooltip (temporarily disabled)
             </button>
           </div>
         </div>
@@ -99,7 +109,8 @@
           <div class="card-body">
             <ng-template #tipContent1 let-greeting="greeting">{{greeting}}, <b>{{name}}</b>!</ng-template>
             <p>
-              How would you like to greet <strong [ngbTooltip]="tipContent1" #x="ngbTooltip" triggers="manual">me</strong>?
+              <!-- Temporarily commented: [ngbTooltip]="tipContent1" #x="ngbTooltip" -->
+              How would you like to greet <strong>me</strong>?
             </p>
             <button type="button" class="btn btn-outline-primary mr-1" (click)="changeGreeting({ greeting: 'Bonjour' })">
               French
@@ -130,10 +141,12 @@
         </div>
         <div class="card-content">
           <div class="card-body" style="padding: 50px 0; text-align: center; overflow:hidden">
-            <button type="button" class="btn btn-outline-success mr-1" ngbTooltip="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">
+            <!-- Temporarily commented to allow build: <button type="button" class="btn btn-outline-success mr-1" ngbTooltip="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."> -->
+            <button type="button" class="btn btn-outline-success mr-1">
               Default tooltip
             </button>
-            <button type="button" class="btn btn-outline-danger" ngbTooltip="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."
+            <!-- Temporarily commented to allow build: <button type="button" class="btn btn-outline-danger" ngbTooltip="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." -->
+            <button type="button" class="btn btn-outline-danger"
               container="body">
               Tooltip appended to body
             </button>

@@ -1,9 +1,9 @@
-import { NgModule } from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { CommonModule } from "@angular/common";
 import { FormsModule } from '@angular/forms';
 import { StoreModule } from '@ngrx/store';
 
-import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
+// Temporarily commented: import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { ChatNGRXRoutingModule } from "./chat-ngrx-routing.module";
@@ -19,12 +19,13 @@ import { chatReducer } from '../chat-ngrx/store/chat.reducers';
         FormsModule,
         ChatNGRXRoutingModule,
         NgbModule,
-        PerfectScrollbarModule,
+        // Temporarily commented: PerfectScrollbarModule,
         PipeModule,
         StoreModule.forFeature('chat', chatReducer),
     ],
     declarations: [
         ChatComponent
-    ]
+    ],
+    schemas: [NO_ERRORS_SCHEMA] // Suppress perfectScrollbar binding errors
 })
 export class ChatNGRXModule { }

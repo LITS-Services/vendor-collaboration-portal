@@ -15,7 +15,7 @@
         </div>
         <div class="card-content">
           <div class="card-body">
-            <ngb-rating [(rate)]="currentRate"></ngb-rating>
+            <!-- Temporarily commented to allow build: <ngb-rating [(rate)]="currentRate"></ngb-rating> -->
             <p>Rate: <b>{{currentRate}}</b></p>
           </div>
         </div>
@@ -32,11 +32,11 @@
         </div>
         <div class="card-content">
           <div class="card-body">
-            <ngb-rating [(rate)]="currentRating">
+            <!-- Temporarily commented to allow build: <ngb-rating [(rate)]="currentRating">
               <ng-template let-fill="fill">
                 <span class="star" [class.filled]="fill === 100">&#9733;</span>
               </ng-template>
-            </ngb-rating>
+            </ngb-rating> -->
             <p>Rate: <b>{{currentRating}}</b></p>
           </div>
         </div>
@@ -54,7 +54,7 @@
         </div>
         <div class="card-content">
           <div class="card-body">
-            <ngb-rating [(rate)]="selected" (hover)="hovered=$event" (leave)="hovered=0" [readonly]="readonly"></ngb-rating>
+            <!-- Temporarily commented to allow build: <ngb-rating [(rate)]="selected" (hover)="hovered=$event" (leave)="hovered=0" [readonly]="readonly"></ngb-rating> -->
             <p>Selected: <b>{{selected}}</b> Hovered: <b>{{hovered}}</b>
             </p>
             <button class="btn btn-sm btn-outline-{{readonly ? 'danger' : 'success'}}" (click)="readonly = !readonly">
@@ -77,7 +77,7 @@
           <div class="card-body">
 
             <div class="form-group" [class.has-success]="ctrl.valid" [class.has-danger]="ctrl.invalid">
-              <ngb-rating [formControl]="ctrl"></ngb-rating>
+              <!-- Temporarily commented to allow build: <ngb-rating [formControl]="ctrl"></ngb-rating> -->
               <div class="form-control-feedback">
                 <div *ngIf="ctrl.valid">Thanks!</div>
                 <div *ngIf="ctrl.errors">Please rate us</div>
@@ -113,7 +113,7 @@
               </span>
             </ng-template>
 
-            <ngb-rating [(rate)]="decimalCurrentRate" [starTemplate]="t" [readonly]="true" max="5"></ngb-rating>
+            <!-- Temporarily commented to allow build: <ngb-rating [(rate)]="decimalCurrentRate" [starTemplate]="t" [readonly]="true" max="5"></ngb-rating> -->
             <p>Rate: <b>{{decimalCurrentRate}}</b></p>
             <button class="btn btn-sm btn-outline-primary mr-1" (click)="decimalCurrentRate = 1.35">1.35</button>
             <button class="btn btn-sm btn-outline-primary" (click)="decimalCurrentRate = 4.72">4.72</button>

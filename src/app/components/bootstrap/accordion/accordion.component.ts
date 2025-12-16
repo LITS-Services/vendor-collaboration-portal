@@ -1,15 +1,16 @@
 import { Component } from '@angular/core';
-import { NgbPanelChangeEvent } from '@ng-bootstrap/ng-bootstrap';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 @Component({
   selector: 'app-accordion',
   templateUrl: './accordion.component.html',
-  styleUrls: ['./accordion.component.scss']
+  styleUrls: ['./accordion.component.scss'],
+  schemas: [NO_ERRORS_SCHEMA]
 })
 export class AccordionComponent {
   acc: any;
   // Prevent panel toggle code
-  public beforeChange($event: NgbPanelChangeEvent) {
+  public beforeChange($event: any) {
     if ($event.panelId === 'preventchange-2') {
       $event.preventDefault();
     }

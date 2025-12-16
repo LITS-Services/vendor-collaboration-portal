@@ -9,7 +9,8 @@ import { finalize } from 'rxjs/operators';
 @Component({
   selector: 'app-otp',
   templateUrl: './otp.component.html',
-  styleUrls: ['./otp.component.scss']
+  styleUrls: ['./otp.component.scss'],
+  standalone: false
 })
 export class OtpComponent implements OnInit {
   otpForm!: FormGroup;

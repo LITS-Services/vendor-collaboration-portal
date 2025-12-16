@@ -49,7 +49,7 @@ var $info = "#249D57",
 var themeColors = [$info, $info_light];
 export interface Chart {
   type: ChartType;
-  data: Chartist.IChartistData;
+  data: any;
   options?: any;
   responsiveOptions?: any;
   events?: ChartEvent;
@@ -66,7 +66,8 @@ export interface QuotationRequestsCountVM {
 @Component({
   selector: 'app-rfq-master',
   templateUrl: './rfq-master.component.html',
-  styleUrls: ['./rfq-master.component.scss']
+  styleUrls: ['./rfq-master.component.scss'],
+  standalone: false
 })
 export class RfqMasterComponent implements OnInit {
   rfqCounts!: QuotationRequestsCountVM;
@@ -120,7 +121,7 @@ export class RfqMasterComponent implements OnInit {
       plotOptions: {
         bar: {
           horizontal: false,
-          endingShape: 'rounded',
+          borderRadius: 4,
           columnWidth: '25%',
         },
       },

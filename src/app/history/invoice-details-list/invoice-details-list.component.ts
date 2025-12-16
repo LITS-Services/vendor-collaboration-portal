@@ -6,7 +6,8 @@ import { ColumnMode, DatatableComponent, SelectionType } from '@swimlane/ngx-dat
 @Component({
   selector: 'app-invoice-details-list',
   templateUrl: './invoice-details-list.component.html',
-  styleUrls: ['./invoice-details-list.component.scss']
+  styleUrls: ['./invoice-details-list.component.scss'],
+  standalone: false
 })
 export class InvoiceDetailsListComponent implements OnInit {
 

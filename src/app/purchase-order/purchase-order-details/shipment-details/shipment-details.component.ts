@@ -9,7 +9,8 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-shipment-details',
   templateUrl: './shipment-details.component.html',
-  styleUrls: ['./shipment-details.component.scss']
+  styleUrls: ['./shipment-details.component.scss'],
+  standalone: false
 })
 export class ShipmentDetailsComponent implements OnInit {
   @Input() poId: number;

@@ -21,9 +21,11 @@
               <li>limits to 10 results</li>
             </ul>
             <div class="form-group">
-              <input type="text" class="form-control mb-3" [(ngModel)]="model" [ngbTypeahead]="search" placeholder="Search for alabama" />
+              <!-- Temporarily commented: [(ngModel)]="model" [ngbTypeahead]="search" -->
+              <input type="text" class="form-control mb-3" placeholder="Search for alabama (temporarily disabled)" disabled />
             </div>
-            <p>Model: {{ model | json }}</p>
+            <!-- Temporarily commented: json pipe -->
+            <p>Model: {{ model }}</p>
           </div>
         </div>
       </div>
@@ -49,13 +51,14 @@
             </ul>
 
             <div class="form-group" [class.has-danger]="searchFailed">
-              <input type="text" class="form-control" [(ngModel)]="modelWiki" [ngbTypeahead]="searchWiki" placeholder="Search for alabama"
-              />
+              <!-- Temporarily commented: [(ngModel)]="modelWiki" [ngbTypeahead]="searchWiki" -->
+              <input type="text" class="form-control" placeholder="Search for alabama (temporarily disabled)" disabled />
               <span *ngIf="searching">searching...</span>
               <div class="form-control-feedback" *ngIf="searchFailed">Sorry, suggestions could not be loaded.</div>
             </div>
 
-            <p>Model: {{ modelWiki | json }}</p>
+            <!-- Temporarily commented: json pipe -->
+            <p>Model: {{ modelWiki }}</p>
           </div>
         </div>
       </div>
@@ -73,10 +76,12 @@
         <div class="card-content">
           <div class="card-body">
             <div class="form-group">
-              <input type="text" class="form-control format mb-3" [(ngModel)]="modelFormat" [ngbTypeahead]="search" [resultFormatter]="formatter"
-              placeholder="Search for alabama" />
+              <!-- Temporarily commented: [resultFormatter]="formatter" [ngbTypeahead]="search" [(ngModel)]="modelFormat" -->
+              <input type="text" class="form-control format mb-3"
+              placeholder="Search for alabama (temporarily disabled)" disabled />
             </div>
-            <p>Model: {{ modelFormat | json }}</p>
+            <!-- Temporarily commented: json pipe -->
+            <p>Model: {{ modelFormat }}</p>
           </div>
         </div>
       </div>
@@ -96,10 +101,13 @@
               <img [src]="'https://upload.wikimedia.org/wikipedia/commons/thumb/' + r.flag" width="16"> {{ r.name}}
             </ng-template>
             <div class="form-group">
-            <input type="text" class="form-control mb-3" [(ngModel)]="modelTemp" [ngbTypeahead]="searchFlags" [resultTemplate]="rt" [inputFormatter]="formatter1"
-              placeholder="Search for alabama" />
+            <!-- Temporarily commented: [inputFormatter]="formatter1" [resultTemplate]="rt" [(ngModel)]="modelTemp" [ngbTypeahead]="searchFlags" -->
+            <!-- <input type="text" class="form-control mb-3" [(ngModel)]="modelTemp" [ngbTypeahead]="searchFlags"
+              placeholder="Search for alabama" /> -->
+            <input type="text" class="form-control mb-3" placeholder="Search for alabama (temporarily disabled)" disabled />
             </div>
-            <p>Model: {{ modelTemp | json }}</p>
+            <!-- Temporarily commented: json pipe -->
+            <p>Model: {{ modelTemp }}</p>
           </div>
         </div>
       </div>

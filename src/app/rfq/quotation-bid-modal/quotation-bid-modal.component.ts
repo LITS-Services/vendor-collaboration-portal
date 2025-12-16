@@ -17,6 +17,7 @@ enum CreatedByType {
   selector: "app-quotation-bid-modal",
   templateUrl: "./quotation-bid-modal.component.html",
   styleUrls: ["./quotation-bid-modal.component.scss"],
+  standalone: false
 })
 export class QuotationBidModalComponent implements OnInit {
   @Input() rfqId!: number;
@@ -114,8 +115,7 @@ export class QuotationBidModalComponent implements OnInit {
         this.rfq.id,
         this.companyId
       )
-      .pipe(finalize(() =>
-      {
+      .pipe(finalize(() => {
         setTimeout(() => {
           this.loading = false
           this.cdr.detectChanges()  

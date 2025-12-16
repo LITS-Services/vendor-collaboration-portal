@@ -6,7 +6,8 @@ import { ColumnMode, DatatableComponent, SelectionType } from '@swimlane/ngx-dat
 @Component({
   selector: 'app-po-details-list',
   templateUrl: './po-details-list.component.html',
-  styleUrls: ['./po-details-list.component.scss']
+  styleUrls: ['./po-details-list.component.scss'],
+  standalone: false
 })
 export class PoDetailsListComponent implements OnInit {
 

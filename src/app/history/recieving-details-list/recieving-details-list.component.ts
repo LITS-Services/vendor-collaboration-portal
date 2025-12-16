@@ -6,7 +6,8 @@ import { ColumnMode, DatatableComponent, SelectionType } from '@swimlane/ngx-dat
 @Component({
   selector: 'app-recieving-details-list',
   templateUrl: './recieving-details-list.component.html',
-  styleUrls: ['./recieving-details-list.component.scss']
+  styleUrls: ['./recieving-details-list.component.scss'],
+  standalone: false
 })
 export class RecievingDetailsListComponent implements OnInit {
  public SelectionType = SelectionType;

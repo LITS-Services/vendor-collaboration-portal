@@ -9,7 +9,8 @@ import { finalize } from 'rxjs/operators';
 @Component({
   selector: 'app-verify-forgot-password-otp',
   templateUrl: './verify-forgot-password-otp.component.html',
-  styleUrls: ['./verify-forgot-password-otp.component.scss']
+  styleUrls: ['./verify-forgot-password-otp.component.scss'],
+  standalone: false
 })
 export class VerifyForgotPasswordOtpComponent implements OnInit {
 

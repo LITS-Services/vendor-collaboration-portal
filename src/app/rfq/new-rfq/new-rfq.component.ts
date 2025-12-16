@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { NgbAccordion, NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbAccordionItem, NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ColumnMode, DatatableComponent, SelectionType } from '@swimlane/ngx-datatable';
 import { ChatService } from 'app/chat/chat.service';
 import { DatatableData } from 'app/data-tables/data/datatables.data';
@@ -16,7 +16,8 @@ import Swal from 'sweetalert2';
   templateUrl: './new-rfq.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./new-rfq.component.scss'],
-  providers: [ChatService]
+  providers: [ChatService],
+  standalone: false
 })
 export class NewRfqComponent implements OnInit {
 
@@ -35,7 +36,7 @@ export class NewRfqComponent implements OnInit {
   public ColumnMode = ColumnMode;
   newRfqForm: FormGroup;
 
-  @ViewChild('accordion') accordion: NgbAccordion;
+  @ViewChild('accordion') accordion: NgbAccordionItem;
   @ViewChild(DatatableComponent) table: DatatableComponent;
   @ViewChild('tableRowDetails') tableRowDetails: any;
   @ViewChild('tableResponsive') tableResponsive: any;
@@ -73,8 +74,8 @@ export class NewRfqComponent implements OnInit {
       //     content: a.content,
       //     fromForm: a.fromForm,
       //     isNew: false
-      //   })) || []
-      // }));
+      //   }) || []
+      // });
       this.newRfqData = itemList.map(item => {
   const hasSubmittedBid = item.bidSubmissionDetails && item.bidSubmissionDetails.length > 0;
 
@@ -134,9 +135,9 @@ export class NewRfqComponent implements OnInit {
     //     createdBy: att.createdBy || '',
     //     isDeleted: false,
     //     bidSubmissionDetailsId: att.bidSubmissionDetailsId || 0,
-    //   }))
+    //   })
 
-    // }));
+    // });
     const submissionList = this.newRfqData
   // 1️⃣ Only items that are NOT already submitted
   .filter(item => !item.hasSubmittedBid)
@@ -164,7 +165,7 @@ export class NewRfqComponent implements OnInit {
         createdBy: att.createdBy || '',
         isDeleted: false,
         bidSubmissionDetailsId: att.bidSubmissionDetailsId || 0,
-      })) ?? []
+      })) || []
   }));
 
     console.log('📤 Submitting payload:', submissionList); // helpful debug log

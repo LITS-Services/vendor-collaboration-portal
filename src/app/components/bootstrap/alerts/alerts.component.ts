@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
@@ -14,6 +15,7 @@ export interface IAlert {
   selector: 'app-alerts',
   templateUrl: './alerts.component.html',
   styleUrls: ['./alerts.component.scss'],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 
 export class AlertsComponent implements OnInit {

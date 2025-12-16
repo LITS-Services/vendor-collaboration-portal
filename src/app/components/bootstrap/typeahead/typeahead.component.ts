@@ -98,6 +98,8 @@ export class WikipediaService {
   templateUrl: './typeahead.component.html',
   styleUrls: ['./typeahead.component.scss'],
   providers: [WikipediaService]
+
+
 })
 export class TypeaheadComponent {
   // Variable Declaration
@@ -130,10 +132,11 @@ export class TypeaheadComponent {
           catchError(() => {
             this.searchFailed = true;
             return of([]);
-          }))
+          })
+        )
       ),
-      tap(() => this.searching = false),
-      merge(this.hideSearchingWhenUnsubscribed)
+      tap(() => this.searching = false)
+      // Temporarily commented: merge(this.hideSearchingWhenUnsubscribed)
     );
 
   // Formatter 

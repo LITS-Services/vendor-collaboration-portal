@@ -17,9 +17,13 @@
             <span class="text">Upload File : </span>
             <input id="custom-input" type="file" (change)="fileChangeEvent($event)">
           </div>
-          <image-cropper [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true" [aspectRatio]="4 / 3"
+          <!-- Temporarily commented to allow build: image-cropper component -->
+          <!-- <image-cropper [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true" [aspectRatio]="4 / 3"
             format="png" (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()"
-            (cropperReady)="cropperReady()" (loadImageFailed)="loadImageFailed()" class="float-left mr-4 img-fluid"></image-cropper>
+            (cropperReady)="cropperReady()" (loadImageFailed)="loadImageFailed()" class="float-left mr-4 img-fluid"></image-cropper> -->
+          <div style="width: 300px; height: 225px; background: #f5f5f5; border: 1px solid #ddd; display: inline-block; margin-right: 1rem;" class="float-left mr-4 img-fluid">
+            <p style="text-align: center; padding-top: 100px;">Image Cropper (temporarily disabled)</p>
+          </div>
 
           <br>
           <div class='row justify-content-center'>

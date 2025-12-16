@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { CommonModule } from "@angular/common";
 import { RouterModule } from "@angular/router";
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -6,8 +6,8 @@ import { OverlayModule } from '@angular/cdk/overlay';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateModule } from '@ngx-translate/core';
-import { PerfectScrollbarModule } from "ngx-perfect-scrollbar";
-import { ClickOutsideModule } from 'ng-click-outside';
+// import { PerfectScrollbarModule } from "ngx-perfect-scrollbar"; // Not compatible with Angular Ivy
+// import { ClickOutsideModule } from 'ng-click-outside'; // Not compatible with Angular Ivy
 
 import { AutocompleteModule } from './components/autocomplete/autocomplete.module';
 import { PipeModule } from 'app/shared/pipes/pipe.module';
@@ -33,6 +33,7 @@ import { TopMenuAnchorToggleDirective } from './directives/topmenu-anchor-toggle
 
 
 @NgModule({
+    schemas: [NO_ERRORS_SCHEMA], // Allow PerfectScrollbar and other directives
     exports: [
         CommonModule,
         FooterComponent,
@@ -42,10 +43,18 @@ import { TopMenuAnchorToggleDirective } from './directives/topmenu-anchor-toggle
         CustomizerComponent,
         NotificationSidebarComponent,
         ToggleFullscreenDirective,
+        SidebarLinkDirective,
+        SidebarDropdownDirective,
+        SidebarAnchorToggleDirective,
         SidebarDirective,
+        TopMenuLinkDirective,
+        TopMenuDropdownDirective,
+        TopMenuAnchorToggleDirective,
         TopMenuDirective,
         NgbModule,
         TranslateModule,
+        FormsModule,
+        ReactiveFormsModule,
     ],
     imports: [
         RouterModule,
@@ -55,8 +64,8 @@ import { TopMenuAnchorToggleDirective } from './directives/topmenu-anchor-toggle
         FormsModule,
         OverlayModule,
         ReactiveFormsModule ,
-        PerfectScrollbarModule,
-        ClickOutsideModule,
+        // PerfectScrollbarModule, // Not compatible with Angular Ivy
+        // ClickOutsideModule, // Not compatible with Angular Ivy
         AutocompleteModule,
         PipeModule
     ],

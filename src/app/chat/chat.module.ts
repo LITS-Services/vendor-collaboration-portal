@@ -1,8 +1,8 @@
-import { NgModule } from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { CommonModule } from "@angular/common";
 import { FormsModule } from '@angular/forms';
 
-import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
+// import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar'; // Not compatible with Angular Ivy
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { ChatRoutingModule } from "./chat-routing.module";
@@ -12,12 +12,13 @@ import { ChatComponent } from "./chat.component";
 
 
 @NgModule({
+    schemas: [NO_ERRORS_SCHEMA], // Allow PerfectScrollbar
     imports: [
         CommonModule,
         ChatRoutingModule,
         NgbModule,
         FormsModule,
-        PerfectScrollbarModule,
+        // PerfectScrollbarModule, // Not compatible with Angular Ivy
         PipeModule
     ],
     declarations: [

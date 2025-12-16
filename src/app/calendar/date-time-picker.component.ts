@@ -58,7 +58,8 @@ export const DATE_TIME_PICKER_CONTROL_VALUE_ACCESSOR: any = {
     }
   `
   ],
-  providers: [DATE_TIME_PICKER_CONTROL_VALUE_ACCESSOR]
+  providers: [DATE_TIME_PICKER_CONTROL_VALUE_ACCESSOR],
+  standalone: false
 })
 export class DateTimePickerComponent implements ControlValueAccessor {
   @Input() placeholder: string;

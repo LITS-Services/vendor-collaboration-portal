@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { PurchaseOrderRoutingModule } from './purchase-order-routing.module';
@@ -8,27 +8,28 @@ import { PurchaseOrderListComponent } from './purchase-order-list/purchase-order
 import { NgbAccordionModule, NgbDatepickerModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { CustomFormsModule } from 'ngx-custom-validators';
+// import { CustomFormsModule } from 'ngx-custom-validators'; // Not compatible with Angular Ivy
 import { MatchHeightModule } from 'app/shared/directives/match-height.directive';
-import { UiSwitchModule } from 'ngx-ui-switch';
+// import { UiSwitchModule } from 'ngx-ui-switch'; // Not compatible with Angular Ivy
 import { PipeModule } from 'app/shared/pipes/pipe.module';
 import { QuillModule } from 'ngx-quill';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { TagInputModule } from 'ngx-chips';
+// import { TagInputModule } from 'ngx-chips'; // Not compatible with Angular Ivy
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ToastrModule } from 'ngx-toastr';
 import { NgxSpinnerModule } from 'ngx-spinner';
-import { AngularResizedEventModule } from 'angular-resize-event';
+// import { AngularResizedEventModule } from 'angular-resize-event'; // Not compatible with Angular Ivy
 import { NgApexchartsModule } from 'ng-apexcharts';
-import { ChartistModule } from 'ng-chartist';
+// import { ChartistModule } from 'ng-chartist'; // Not compatible with Angular Ivy
 import { PurchaseOrderDetailsComponent } from './purchase-order-details/purchase-order-details.component';
-import { AgmCoreModule } from "@agm/core";
+import { GoogleMapsModule } from "@angular/google-maps";
 import { ShipmentDetailsComponent } from './purchase-order-details/shipment-details/shipment-details.component';
 import { GrnDetailsComponent } from './purchase-order-details/grn-details/grn-details.component';
 import { InvoiceComponent } from './purchase-order-details/invoice/invoice.component';
 
 
 @NgModule({
+  schemas: [NO_ERRORS_SCHEMA], // Allow Chartist and other incompatible components
   declarations: [
     PurchaseOrderMasterComponent,
     NewPurchaseOrderComponent,
@@ -45,23 +46,24 @@ import { InvoiceComponent } from './purchase-order-details/invoice/invoice.compo
     ReactiveFormsModule,
     FormsModule,
     HttpClientModule,
-    CustomFormsModule,
+    // CustomFormsModule, // Not compatible with Angular Ivy
     MatchHeightModule,
     NgbModule,
-    UiSwitchModule,
+    // UiSwitchModule, // Not compatible with Angular Ivy
     PipeModule,
     QuillModule.forRoot(),
     NgSelectModule,
-    TagInputModule,
+    // TagInputModule, // Not compatible with Angular Ivy
     NgxDatatableModule,
     NgbAccordionModule,
     NgbDatepickerModule,
     ToastrModule.forRoot(),
     NgxSpinnerModule,
-    AngularResizedEventModule,
+    // AngularResizedEventModule, // Not compatible with Angular Ivy
     NgApexchartsModule,
-    ChartistModule, MatchHeightModule,
-    AgmCoreModule
+    // ChartistModule, // Not compatible with Angular Ivy
+    MatchHeightModule,
+    GoogleMapsModule
   ]
 })
 export class PurchaseOrderModule { }

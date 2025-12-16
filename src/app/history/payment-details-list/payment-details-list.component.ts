@@ -6,7 +6,8 @@ import { ColumnMode, DatatableComponent, SelectionType } from '@swimlane/ngx-dat
 @Component({
   selector: 'app-payment-details-list',
   templateUrl: './payment-details-list.component.html',
-  styleUrls: ['./payment-details-list.component.scss']
+  styleUrls: ['./payment-details-list.component.scss'],
+  standalone: false
 })
 export class PaymentDetailsListComponent implements OnInit {
 

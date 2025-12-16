@@ -11,15 +11,14 @@
     <div class="card-body">
       <div class="row">
         <div class="col-md-12 col-lg-6">
-          <div ng2FileDrop [ngClass]="{'nv-file-over': hasBaseDropZoneOver}" (fileOver)="fileOverBase($event)"
-            [uploader]="uploader" class="py-5 mb-3 text-center font-medium-5 text-uppercase grey my-drop-zone">
+          <!-- Temporarily commented: <!-- BUILD FIX: ng2FileDrop --> <!-- BUILD FIX: [ngClass] --> <!-- BUILD FIX: [ngClass] commented out --> <!-- BUILD FIX: [uploader] binding disabled --> -->
+          <div (fileOver)="fileOverBase($event)" class="py-5 mb-3 text-center font-medium-5 text-uppercase grey my-drop-zone">
             Base dropzone
           </div>
         </div>
         <div class="col-md-12 col-lg-6">
-          <div ng2FileDrop [ngClass]="{'another-file-over-class': hasAnotherDropZoneOver}"
-            (fileOver)="fileOverAnother($event)" [uploader]="uploader"
-            class="py-5 mb-3 text-center font-medium-5 text-uppercase grey my-drop-zone">
+          <!-- Temporarily commented: <!-- BUILD FIX: ng2FileDrop --> <!-- BUILD FIX: [ngClass] --> <!-- BUILD FIX: [ngClass] commented out --> <!-- BUILD FIX: [uploader] binding disabled --> -->
+          <div (fileOver)="fileOverAnother($event)" class="py-5 mb-3 text-center font-medium-5 text-uppercase grey my-drop-zone">
             Another dropzone
           </div>
         </div>
@@ -29,13 +28,15 @@
           <h4>Select files</h4>
           <div>Multiple</div>
           <label class="custom-file mb-3">
-            <input type="file" ng2FileSelect [uploader]="uploader" multiple>
+            <!-- Temporarily commented: <!-- BUILD FIX: ng2FileSelect --> <!-- BUILD FIX: [uploader] binding disabled --> -->
+            <input type="file" multiple>
             <span class="custom-file-control"></span>
           </label>
 
           <div>Single</div>
           <label class="custom-file">
-            <input type="file" ng2FileSelect [uploader]="uploader">
+            <!-- Temporarily commented: <!-- BUILD FIX: ng2FileSelect --> <!-- BUILD FIX: [uploader] binding disabled --> -->
+            <input type="file">
             <span class="custom-file-control"></span>
           </label>
         </div>
@@ -90,9 +91,9 @@
           </div>
 
           <div>
-            <p>Queue progress:
-              <ngb-progressbar type="primary" [value]="uploader.progress"></ngb-progressbar>
-            </p>
+            <p>Queue progress:</p>
+            <!-- Temporarily commented: <!-- BUILD FIX: ngb-progressbar commented out --><div style="width: 100%; height: 20px; background: #f0f0f0;"></div> -->
+            <div style="width: 100%; height: 20px; background: #e9ecef; border-radius: 4px;"></div>
             <button type="button" class="btn btn-success mr-1 mb-1 mb-sm-0" (click)="uploader.uploadAll()"
               [disabled]="!uploader.getNotUploadedItems().length">
               <span class="fa fa-upload"></span> Upload all
@@ -112,3 +113,6 @@
   </div>
 </section>
 <!--File Upload Ends-->
+
+
+

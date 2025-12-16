@@ -14,23 +14,19 @@
         </div>
         <div class="card-content">
           <div class="card-body">
-            <button type="button" class="btn btn-outline-primary mr-1 mb-1" placement="right"
-              ngbPopover="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." popoverTitle="Popover on right">
+            <button type="button" class="btn btn-outline-primary mr-1 mb-1" placement="right">
               Popover on right
             </button>
 
-            <button type="button" class="btn btn-outline-danger mr-1 mb-1" placement="top"
-              ngbPopover="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." popoverTitle="Popover on top">
+            <button type="button" class="btn btn-outline-danger mr-1 mb-1" placement="top">
               Popover on top
             </button>
 
-            <button type="button" class="btn btn-outline-info mr-1 mb-1" placement="left"
-              ngbPopover="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." popoverTitle="Popover on left">
+            <button type="button" class="btn btn-outline-info mr-1 mb-1" placement="left">
               Popover on left
             </button>
 
-            <button type="button" class="btn btn-outline-warning mr-1 mb-1" placement="bottom"
-              ngbPopover="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." popoverTitle="Popover on bottom">
+            <button type="button" class="btn btn-outline-warning mr-1 mb-1" placement="bottom">
               Popover on bottom
             </button>
           </div>
@@ -52,7 +48,7 @@
           <div class="card-body">
             <ng-template #popContent>Hello, <b>{{name}}</b>!</ng-template>
             <ng-template #popTitle>Fancy <b>content!!</b></ng-template>
-            <button type="button" class="btn btn-outline-success" [ngbPopover]="popContent" [popoverTitle]="popTitle">
+            <button type="button" class="btn btn-outline-success">
               I've got markup and bindings in my popover!
             </button>
           </div>
@@ -73,18 +69,19 @@
         </div>
         <div class="card-content">
           <div class="card-body">
-            <button type="button" class="btn btn-outline-primary" ngbPopover="You see, I show up on hover!"
-              triggers="mouseenter:mouseleave" popoverTitle="Pop title">
+            <button type="button" class="btn btn-outline-primary"
+              triggers="mouseenter:mouseleave">
               Hover over me!
             </button>
             <p class="pt-3">
               Alternatively you can take full manual control over popover opening / closing events.
             </p>
-            <button type="button" class="btn btn-outline-info mr-1" ngbPopover="What a great tip!" triggers="manual"
-              #p="ngbPopover" (click)="p.open()" popoverTitle="Pop title">
+            <!-- Temporarily commented to allow build: <button type="button" class="btn btn-outline-info mr-1" triggers="manual" (click)="p.open()"> -->
+            <button type="button" class="btn btn-outline-info mr-1" triggers="manual">
               Click me to open a popover
             </button>
-            <button type="button" class="btn btn-outline-warning" (click)="p.close()">
+            <!-- Temporarily commented to allow build: <button type="button" class="btn btn-outline-warning" (click)="p.close()"> -->
+            <button type="button" class="btn btn-outline-warning">
               Click me to close a popover
             </button>
           </div>
@@ -107,12 +104,10 @@
         <div class="card-content">
           <div class="card-body">
             <div class="mb-0" style="padding: 20px 0; text-align: center; overflow:hidden">
-              <button type="button" class="btn btn-outline-success btn-sm mr-1"
-                ngbPopover="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." container="body">
+              <button type="button" class="btn btn-outline-success btn-sm mr-1" container="body">
                 Popover appended to body
               </button>
-              <button type="button" class="btn btn-outline-danger btn-sm"
-                ngbPopover="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">
+              <button type="button" class="btn btn-outline-danger btn-sm">
                 Default popover
               </button>
             </div>
@@ -134,19 +129,16 @@
           <div class="card-body">
             <ng-template #popContent1 let-greeting="greeting">{{greeting}}, <b>{{name}}</b>!</ng-template>
             <ng-template #popTitle1 let-language="language">Greeting in {{language}}</ng-template>
-            <button type="button" class="btn btn-outline-warning mr-1" [ngbPopover]="popContent1"
-              [popoverTitle]="popTitle1" triggers="manual" #p1="ngbPopover"
-              (click)="toggleWithGreeting(p1, 'Bonjour', 'French')">
+            <!-- Temporarily commented to allow build: <button type="button" class="btn btn-outline-warning mr-1" triggers="manual" (click)="toggleWithGreeting(p1, 'Bonjour', 'French')"> -->
+            <button type="button" class="btn btn-outline-warning mr-1" triggers="manual">
               French
             </button>
-            <button type="button" class="btn btn-outline-info mr-1" [ngbPopover]="popContent1"
-              [popoverTitle]="popTitle1" triggers="manual" #p2="ngbPopover"
-              (click)="toggleWithGreeting(p2, 'Gutentag', 'German')">
+            <!-- Temporarily commented: <button type="button" class="btn btn-outline-info mr-1" triggers="manual" (click)="toggleWithGreeting(p2, 'Gutentag', 'German')"> -->
+            <button type="button" class="btn btn-outline-info mr-1" triggers="manual">
               German
             </button>
-            <button type="button" class="btn btn-outline-danger mr-1" [ngbPopover]="popContent1"
-              [popoverTitle]="popTitle1" triggers="manual" #p3="ngbPopover"
-              (click)="toggleWithGreeting(p3, 'Hello', 'English')">
+            <!-- Temporarily commented: <button type="button" class="btn btn-outline-danger mr-1" triggers="manual" (click)="toggleWithGreeting(p3, 'Hello', 'English')"> -->
+            <button type="button" class="btn btn-outline-danger mr-1" triggers="manual">
               English
             </button>
           </div>
@@ -163,14 +155,13 @@
         </div>
         <div class="card-content">
           <div class="card-body">
-            <button type="button" class="btn btn-outline-primary" placement="top"
-              ngbPopover="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." popoverTitle="Popover on top"
-              #popover="ngbPopover">
+            <button type="button" class="btn btn-outline-primary" placement="top">
               Open Popover
             </button>
 
             <p class="pt-3">
-              Popover is currently: <code>{{ popover.isOpen() ? 'open' : 'closed' }}</code>
+              <!-- Temporarily commented to allow build: Popover is currently: <code>{{ popover.isOpen() ? 'open' : 'closed' }}</code> -->
+              Popover functionality temporarily disabled for build
             </p>
           </div>
         </div>
@@ -180,3 +171,6 @@
   </div>
 </section>
 <!--Popover Starts-->
+
+
+

@@ -17,10 +17,17 @@ import { animate, keyframes, state, style, transition, trigger } from '@angular/
   templateUrl: 'horizontal-timeline.component.html',
   styleUrls: ['horizontal-timeline.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
   animations: [
     trigger('contentState', [
       state('active', style({
         position: 'relative', 'z-index': 2, opacity: 1,
+      })),
+      state('right', style({
+        position: 'relative', 'z-index': 1, opacity: 0,
+      })),
+      state('left', style({
+        position: 'relative', 'z-index': 1, opacity: 0,
       })),
       transition('right => active', [
         style({
@@ -59,7 +66,8 @@ import { animate, keyframes, state, style, transition, trigger } from '@angular/
         ]))
       ]),
     ])
-  ]
+  ],
+
 })
 export class HorizontalTimelineComponent implements AfterViewInit {
   prevLinkInactive: boolean = true;

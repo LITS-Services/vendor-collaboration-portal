@@ -11,7 +11,7 @@ describe('HorizontalMenuComponent', () => {
       declarations: [ HorizontalMenuComponent ]
     })
     .compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(HorizontalMenuComponent);

@@ -5,6 +5,8 @@ import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
   selector: 'app-ng-buttons',
   templateUrl: './ng-buttons.component.html',
   styleUrls: ['./ng-buttons.component.scss']
+
+
 })
 export class NgButtonsComponent implements OnInit {
 

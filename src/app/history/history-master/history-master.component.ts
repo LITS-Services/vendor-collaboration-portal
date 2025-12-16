@@ -47,7 +47,7 @@ $info_light = "#BDE2CD"
 var themeColors = [$info, $info_light];
 export interface Chart {
   type: ChartType;
-  data: Chartist.IChartistData;
+  data: any;
   options?: any;
   responsiveOptions?: any;
   events?: ChartEvent;
@@ -56,7 +56,8 @@ export interface Chart {
 @Component({
   selector: 'app-history-master',
   templateUrl: './history-master.component.html',
-  styleUrls: ['./history-master.component.scss']
+  styleUrls: ['./history-master.component.scss'],
+  standalone: false
 })
 export class HistoryMasterComponent implements OnInit {
 
@@ -108,7 +109,7 @@ export class HistoryMasterComponent implements OnInit {
             plotOptions: {
               bar: {
                 horizontal: false,
-                endingShape: 'rounded',
+                borderRadius: 4,
                 columnWidth: '25%',
               },
             },

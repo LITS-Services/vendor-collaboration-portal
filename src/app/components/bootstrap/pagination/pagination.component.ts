@@ -6,6 +6,8 @@ import {NgbPaginationConfig} from '@ng-bootstrap/ng-bootstrap';
     templateUrl: './pagination.component.html',
     styleUrls: ['./pagination.component.scss'],
     providers: [NgbPaginationConfig] // add NgbPaginationConfig to the component providers
+
+
 })
 
 export class PaginationComponent {

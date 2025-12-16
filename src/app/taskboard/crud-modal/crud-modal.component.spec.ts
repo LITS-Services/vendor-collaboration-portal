@@ -11,7 +11,7 @@ describe('CrudModalComponent', () => {
       declarations: [ CrudModalComponent ]
     })
     .compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CrudModalComponent);

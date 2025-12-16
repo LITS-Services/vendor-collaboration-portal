@@ -5,6 +5,8 @@ import { UntypedFormControl, Validators } from '@angular/forms';
   selector: 'app-rating',
   templateUrl: './rating.component.html',
   styleUrls: ['./rating.component.scss']
+
+
 })
 export class RatingComponent {
   // Variable Declaration

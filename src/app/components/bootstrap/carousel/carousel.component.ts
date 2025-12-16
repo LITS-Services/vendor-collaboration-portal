@@ -1,4 +1,5 @@
 import { Component, AfterViewChecked } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
 import { HighlightService } from 'app/shared/services/highlight.service';
 
@@ -6,7 +7,8 @@ import { HighlightService } from 'app/shared/services/highlight.service';
   selector: 'app-carousel',
   templateUrl: './carousel.component.html',
   styleUrls: ['./carousel.component.scss'],
-  providers: [NgbCarouselConfig] // add NgbCarouselConfig to the component providers
+  providers: [NgbCarouselConfig], // add NgbCarouselConfig to the component providers
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 
 export class CarouselComponent implements AfterViewChecked {

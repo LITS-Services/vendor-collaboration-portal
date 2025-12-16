@@ -32,6 +32,7 @@ a {
   &.text-info {
     &:hover,
     &:focus {
+      // Temporarily using darken instead of color.adjust to allow build
       color: darken($info, 5%);
     }
   }

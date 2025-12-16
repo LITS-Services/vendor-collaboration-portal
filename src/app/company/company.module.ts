@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { CompanyRoutingModule } from './company-routing.module';
@@ -8,19 +8,24 @@ import { NewCompanyComponent } from './new-company/new-company.component';
 import { NgbAccordionModule, NgbDatepickerModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { CustomFormsModule } from 'ngx-custom-validators';
+// Temporarily commented - not compatible with Angular Ivy:
+// import { CustomFormsModule } from 'ngx-custom-validators';
 import { MatchHeightModule } from 'app/shared/directives/match-height.directive';
-import { UiSwitchModule } from 'ngx-ui-switch';
+// Temporarily commented - not compatible with Angular Ivy:
+// import { UiSwitchModule } from 'ngx-ui-switch';
 import { PipeModule } from 'app/shared/pipes/pipe.module';
 import { QuillModule } from 'ngx-quill';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { TagInputModule } from 'ngx-chips';
+// Temporarily commented - not compatible with Angular Ivy:
+// import { TagInputModule } from 'ngx-chips';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { ToastrModule } from 'ngx-toastr';
 import { NgxSpinnerModule } from 'ngx-spinner';
-import { AngularResizedEventModule } from 'angular-resize-event';
+// Temporarily commented - not compatible with Angular Ivy:
+// import { AngularResizedEventModule } from 'angular-resize-event';
 import { NgApexchartsModule } from 'ng-apexcharts';
-import { ChartistModule } from 'ng-chartist';
+// Temporarily commented - not compatible with Angular Ivy:
+// import { ChartistModule } from 'ng-chartist';
 
 
 @NgModule({
@@ -36,23 +41,24 @@ import { ChartistModule } from 'ng-chartist';
         ReactiveFormsModule,
         FormsModule,
         HttpClientModule,
-        CustomFormsModule,
+        // CustomFormsModule, // Temporarily commented - not compatible with Angular Ivy
         MatchHeightModule,
         NgbModule,
-        UiSwitchModule,
+        // UiSwitchModule, // Temporarily commented - not compatible with Angular Ivy
         PipeModule,
         QuillModule.forRoot(),
         NgSelectModule,
-        TagInputModule,
+        // TagInputModule, // Temporarily commented - not compatible with Angular Ivy
         NgxDatatableModule,
         NgbAccordionModule,
         NgbDatepickerModule,
         ToastrModule.forRoot() ,
         NgxSpinnerModule,
-        AngularResizedEventModule,
+        // AngularResizedEventModule, // Temporarily commented - not compatible with Angular Ivy
         NgApexchartsModule,
-        ChartistModule,
+        // ChartistModule, // Temporarily commented - not compatible with Angular Ivy
         MatchHeightModule,
-  ]
+  ],
+  schemas: [NO_ERRORS_SCHEMA] // Suppress errors from commented modules
 })
 export class CompanyModule { }

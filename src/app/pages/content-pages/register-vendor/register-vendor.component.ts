@@ -9,7 +9,8 @@ import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-register-vendor',
   templateUrl: './register-vendor.component.html',
-  styleUrls: ['./register-vendor.component.scss']
+  styleUrls: ['./register-vendor.component.scss'],
+  standalone: false
 })
 export class RegisterVendorComponent implements OnInit {
   public hidePassword: boolean = true;

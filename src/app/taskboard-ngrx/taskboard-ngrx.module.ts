@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, NO_ERRORS_SCHEMA, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from "@angular/common";
 import { StoreModule } from '@ngrx/store';
 
@@ -10,10 +10,11 @@ import { taskReducer } from '../taskboard-ngrx/store/taskboard.reducers';
 
 
 @NgModule({
+    schemas: [NO_ERRORS_SCHEMA], // Allow dragula directives
     imports: [
         CommonModule,
         TaskboardNGRXRoutingModule,
-        DragulaModule.forRoot(),
+        DragulaModule.forRoot() as ModuleWithProviders<DragulaModule>,
         StoreModule.forFeature('task', taskReducer)
     ],
     declarations: [

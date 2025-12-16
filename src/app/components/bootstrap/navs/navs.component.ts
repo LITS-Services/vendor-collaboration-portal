@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import {NgbNavChangeEvent} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-navs',
   templateUrl: './navs.component.html',
   styleUrls: ['./navs.component.scss'],
+  schemas: [NO_ERRORS_SCHEMA]
 })
 export class NavsComponent {
   vActive = 'top'; // Vertical Pills

@@ -9,7 +9,8 @@ import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-purchase-order-list',
   templateUrl: './purchase-order-list.component.html',
-  styleUrls: ['./purchase-order-list.component.scss']
+  styleUrls: ['./purchase-order-list.component.scss'],
+  standalone: false
 })
 export class PurchaseOrderListComponent implements OnInit {
   public SelectionType = SelectionType;
