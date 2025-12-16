@@ -71,7 +71,6 @@
     "ng2-nouislider": "^1.8.2",
     "ngx-bootstrap": "^11.0.0",
     "ngx-chips": "^2.2.2",
-    "ngx-custom-validators": "^9.0.0",
     "ngx-device-detector": "^8.0.0",
     "ngx-image-cropper": "^7.0.0",
     "ngx-intl-tel-input": "^15.0.0",

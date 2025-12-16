@@ -74,6 +74,10 @@ export class QuotationBidModalComponent implements OnInit {
   });
 }
 
+isAccordionOpen(id: string): boolean {
+  return this.activeIds?.includes(id);
+}
+
   loadRfqDetails(rfqId: number) {
     const vendorUserId = localStorage.getItem("userId");
     this.rfqService.getRfqById(rfqId, true, vendorUserId).subscribe(

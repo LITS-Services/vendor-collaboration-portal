@@ -191,7 +191,7 @@ a:hover {
     font-size: 26px !important;
   }
 
-  .accordion-button {
+  /* .accordion-button {
     font-weight: 600 !important;
     position: relative;
     display: flex;
@@ -206,7 +206,7 @@ a:hover {
     border-radius: 0;
     overflow-anchor: none;
     transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, border-radius 0.15s ease;
-}
+} */
 
 .accordion-button:not(.collapsed) {
   color: #187741;
@@ -309,6 +309,105 @@ datatable-scroller {
     color: #616161;
     background-color: #dddddd;
 }
+
+.card {
+  background-color: white;
+}
+
+
+/* accordion wrapper */
+.accordion {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* each panel container */
+.accordion .accordion-item {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  border: none !important;
+}
+
+/* header wrapper */
+.accordion .accordion-header {
+  border-top: 1px solid #dfdfdf;
+  border-bottom: none !important;
+}
+
+/* clickable button */
+.accordion .accordion-button {
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 1rem 0 !important;
+  align-items: center;
+
+  border: none !important;
+}
+
+/* remove default bootstrap caret */
+.accordion .accordion-button::after {
+  display: none !important;
+}
+
+/* label styling */
+.accordion .accordion-button label {
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  color: #249D57 !important;
+  margin-bottom: 0 !important;
+}
+
+/* icon inside header */
+.accordion .accordion-button i {
+  color: #000 !important;
+}
+
+/* collapsed vs expanded */
+.accordion .accordion-button.collapsed {
+  background: #fff !important;
+
+}
+
+.accordion .accordion-button:not(.collapsed) {
+  background: #fff !important;
+}
+
+/* panel body */
+.accordion .accordion-body {
+  padding: 0 0 0.5rem 0 !important;
+  background-color: white !important;
+}
+
+/* address card override */
+.address-card .accordion-body {
+  background: #fff !important;
+}
+
+/* chevron animation */
+.accordion .accordion-button .accordion-chevron {
+  transition: transform 0.25s ease;
+}
+
+/* OPEN */
+.accordion .accordion-button:not(.collapsed) .accordion-chevron {
+  transform: rotate(180deg);
+}
+
+/* CLOSED */
+.accordion .accordion-button.collapsed .accordion-chevron {
+  transform: rotate(0deg);
+}
+
+
+.accordion .accordion-item:last-child .accordion-button.collapsed {
+  border-bottom: 1px solid #dfdfdf !important;
+}
+
+.dropdown-menu {
+  background-color: white !important;
+}
+
 
 /* html.swal2-shown,
 body.swal2-shown {

@@ -38,7 +38,9 @@ thead{
         }
 }
 
-table {
+.my-table {
+    width: 100% !important;
+    border-collapse: collapse;
     box-shadow: none !important;
     --bs-table-accent-bg: transparent !important;
      background-color: #fff; /* ensures white base */
@@ -47,11 +49,13 @@ table {
       transition: background-color 0.2s ease;
 
       &:nth-child(even) {
-        background-color: #f8fffa; // very light green
+        border-top: 1px solid #e0e0e0 !important;
+        border-bottom: 1px solid #e0e0e0 !important;
+        background-color: #f8fffa !important; // very light green
       }
 
       &:nth-child(odd) {
-        background-color: #ffffff;
+        background-color: #ffffff !important;
       }
 
       &:hover {
@@ -79,7 +83,7 @@ table {
 
 }
 
-table > :not(:first-child) {
+.my-table > :not(:first-child) {
     border-top: none !important;
 }
 

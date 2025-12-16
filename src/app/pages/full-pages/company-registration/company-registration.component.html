@@ -185,7 +185,7 @@
                                                 </app-company-address-modal>
 
                                                 <div class="table-responsive mt-2">
-                                                    <table class="table">
+                                                    <table class="my-table">
                                                         <thead>
                                                             <tr>
                                                                 <th>Street</th>
@@ -206,10 +206,10 @@
                                                                 <td>{{ address.country }}</td>
                                                                 <td>{{ address.primary ? 'Yes' : 'No' }}</td>
                                                                 <td>
-                                                                    <button class="ft-edit btn" type="button"
+                                                                    <button class="ft-edit btn px-1" type="button"
                                                                         (click)="openAddressEditor(i)"
                                                                         [disabled]="isReadonlyEntityFields"></button>
-                                                                    <button class="ft-trash btn" type="button"
+                                                                    <button class="ft-trash btn px-1" type="button"
                                                                         (click)="confirmAddressDeletion(i)"
                                                                         [disabled]="isReadonlyEntityFields"></button>
                                                                 </td>
@@ -231,7 +231,7 @@
                                         </app-company-contact-modal>
 
                                             <div class="table-responsive mt-2">
-                                                <table class="table">
+                                                <table class="my-table">
                                                     <thead>
                                                         <tr>
                                                             <th>Description</th>
@@ -250,10 +250,10 @@
                                                             <td>{{ contact.extension }}</td>
                                                             <td>{{ contact.primary ? 'Yes' : 'No' }}</td>
                                                             <td>
-                                                                <button class="ft-edit btn" type="button"
+                                                                <button class="ft-edit btn px-1" type="button"
                                                                     (click)="openContactEditor(i)"
                                                                     [disabled]="isReadonlyEntityFields"></button>
-                                                                <button class="ft-trash btn" type="button"
+                                                                <button class="ft-trash btn px-1" type="button"
                                                                     (click)="confirmContactDeletion(i)"
                                                                     [disabled]="isReadonlyEntityFields"></button>
                                                             </td>
@@ -484,7 +484,7 @@
 
                                             <div class="mt-4">
                                                 <div class="table-responsive mt-2">
-                                                    <table class="table">
+                                                    <table class="my-table">
                                                         <thead>
                                                             <tr>
                                                                 <th>Bank Name</th>
@@ -513,10 +513,10 @@
                                                                 <td>{{ bank.bankCurrency }}</td>
                                                 
                                                                 <td>
-                                                                    <button class="ft-edit btn" type="button" (click)="editBank(i)"
+                                                                    <button class="ft-edit btn px-1" type="button" (click)="editBank(i)"
                                                                         [disabled]="isReadonlyEntityFields"></button>
                                                 
-                                                                    <button class="ft-trash btn" type="button" (click)="confirmBankDeletion(i)"
+                                                                    <button class="ft-trash btn px-1" type="button" (click)="confirmBankDeletion(i)"
                                                                         [disabled]="isReadonlyEntityFields"></button>
                                                                 </td>
                                                             </tr>

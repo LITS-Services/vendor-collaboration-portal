@@ -24,7 +24,7 @@ export class LoginPageComponent implements OnInit {
     username: new UntypedFormControl("", [Validators.required]),
     password: new UntypedFormControl("", [Validators.required]),
     rememberMe: new UntypedFormControl(true),
-    recaptcha: new UntypedFormControl('', [Validators.required])
+    //recaptcha: new UntypedFormControl('', [Validators.required])
   });
 
   constructor(
@@ -89,10 +89,10 @@ export class LoginPageComponent implements OnInit {
 
   onSubmit() {  
     this.loginFormSubmitted = true;
-    if (this.loginForm.controls['recaptcha'].invalid) {
-      this.toastr.warning('Please verify the CAPTCHA to proceed.');
-      return;
-    }
+    // if (this.loginForm.controls['recaptcha'].invalid) {
+    //   this.toastr.warning('Please verify the CAPTCHA to proceed.');
+    //   return;
+    // }
 
     if (this.loginForm.invalid) return;
 
