@@ -110,4 +110,9 @@ GetCompanyApproverLevel(vendorCompanyId: number,procurementCompanyId : number): 
   // deleteCompany(id: number): Observable<any> {
   //   return this.http.delete(`${this.apiUrl}/${id}`);
   // }
+
+  getVendorCompanyById(id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/get-vendor-company-by-id`, { params: { id: id.toString() } });
+  }
+
 }

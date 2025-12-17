@@ -148,7 +148,7 @@
                               <div *ngFor="let att of getBid(item.id).vendorBidAttachments; let i = index"
                                 class="badge bg-light text-dark border rounded-pill px-2 py-1 d-flex align-items-center">
                                 <i class="fa fa-paperclip me-1 text-secondary"></i>
-                                <a href="javascript:void(0)" (click)="downloadBidAttachment(att)"
+                                <a href="javascript:void(0)" (click)="downloadVendorAttachment(att)"
                                   class="small text-dark text-decoration-none">
                                   {{ att.fileName }}
                                 </a>
@@ -180,7 +180,7 @@
                                 <div *ngFor="let att of getBid(item.id).vendorBidAttachments"
                                   class="badge bg-light text-dark border rounded-pill px-2 py-1 d-flex align-items-center">
                                   <i class="fa fa-paperclip me-1 text-secondary"></i>
-                                  <a href="javascript:void(0)" (click)="downloadBidAttachment(att)"
+                                  <a href="javascript:void(0)" (click)="downloadVendorAttachment(att)"
                                     class="small text-dark text-decoration-none">
                                     {{ att.fileName }}
                                   </a>
@@ -367,7 +367,7 @@
             <i class="fa fa-file text-secondary me-2"></i>
             {{ att.fileName }}
           </span>
-          <button class="btn btn-sm btn-outline-primary" (click)="downloadAttachment(att)">
+          <button class="btn btn-sm btn-outline-primary" (click)="downloadProcurementAttachment(att)">
             <i class="fa fa-download me-1"></i>
             Download
           </button>

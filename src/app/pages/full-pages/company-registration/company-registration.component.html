@@ -153,10 +153,10 @@
                                                                         (change)="onEntitySelect(entity)">
                                                                     <label class="form-check-label"
                                                                         [for]="'entity-' + entity.procurementCompanyId">
-                                                                        {{ entity.procurementCompany?.name }}
+                                                                        {{ entity.procurementCompanyName }}
                                                                         <span class="text-muted"
-                                                                            *ngIf="entity.requestStatus?.status">
-                                                                            ({{ entity.requestStatus.status }})
+                                                                            *ngIf="entity.requestStatus">
+                                                                            ({{ entity.requestStatus }})
                                                                         </span>
                                                                     </label>
                                                                 </div>

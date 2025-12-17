@@ -4,4 +4,5 @@ export interface VendorBidAttachment {
   contentType?: string;
   content?: string;
   fromForm?: string;
+  isNew?: boolean;
 }

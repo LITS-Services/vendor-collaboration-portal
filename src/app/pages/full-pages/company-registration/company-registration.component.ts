@@ -290,147 +290,120 @@ export class CompanyRegistrationComponent implements OnInit {
     this.cdr.markForCheck();
   }
 
-  loadCompanyById(companyId: number) {
-    this.isLoading = true;
-    this.spinner.show();
+loadCompanyById(companyId: number) {
+  this.isLoading = true;
+  this.spinner.show();
 
-    this.companyService.getCompanyById(companyId)
-      .pipe(finalize(() => {
-        this.spinner.hide();
-        this.cdr.detectChanges();
-      }))
-      .subscribe({
-        next: (res: any) => {
-          const company = res?.vendorCompany || res;
-          if (company) {
-            if (company.vendorUserCompanies && Array.isArray(company.vendorUserCompanies)) {
-              this.vendorEntities = company.vendorUserCompanies;
-              
-              // Check if all entities have status 7 (Completed)
-              this.checkAllEntitiesCompleted();
-              
-              // Auto-select first vendor entity
-              if (this.vendorEntities.length > 0) {
-                this.onEntitySelect(this.vendorEntities[0]);
-              }
-            } else {
-              this.vendorEntities = [];
-              this.allEntitiesCompleted = false;
-            }
+  this.companyService.getVendorCompanyById(companyId)
+    .pipe(finalize(() => {
+      this.spinner.hide();
+      this.cdr.detectChanges();
+    }))
+    .subscribe({
+      next: (res: any) => {
+        const company = res?.data || res; 
+        if (!company) {
+          this.isReadonlyEntityFields = false;
+          return;
+        }
 
-            // Basic Info
-            this.companyName = company.name || '';
-            this.companyType = company.companyType || 'Organization';
-            this.aboutCompany = company.aboutCompany || '';
-            this.remarks = company.remarks || '';
-            this.companyForm.patchValue({ remarks: this.remarks });
+        // General Info
+        this.companyName = company.name || '';
+        this.remarks = company.remarks || '';
+        this.companyType = company.companyType || 'Organization';
+        this.companyForm.patchValue({ remarks: this.remarks });
 
-            // Purchasing Demographics
-            const pd = company.purchasingDemographics || {};
-            this.vendorCategory = pd.vendorType || '';
-            this.primaryCurrency = pd.primaryCurrency || '';
-            this.lineOfBusiness = pd.lineOfBusiness || '';
-            this.birthCountry = pd.birthCountry || '';
-            this.employeeResponsible = pd.employeeResponsible || '';
-            this.segment = pd.segment || '';
-            this.speciality = pd.speciality || '';
-            this.chain = pd.chain || '';
-            this.note = pd.note || '';
-
-            // Addresses
-            this.addressList = (company.addresses || []).map(a => ({
-              street: a.street,
-              city: a.city,
-              state: a.state,
-              zip: a.zip,
-              country: a.country,
-              isPrimary: a.isPrimary || false
-            }));
-
-            // Vendor User Companies (Entities)
-            if (company.vendorUserCompanies && Array.isArray(company.vendorUserCompanies)) {
-              this.procurementCompanies = company.vendorUserCompanies;
-              
-              if (this.procurementCompanies.length > 0) {
-                this.onEntitySelect(this.procurementCompanies[0]);
-              } else {
-                this.isReadonlyEntityFields = false;
-                this.bankForm.enable();
-                this.companyForm.enable();
-              }
-            } else {
-              this.isReadonlyEntityFields = false;
-              this.bankForm.enable();
-              this.companyForm.enable();
-            }
-
-            // Contacts
-            this.contactList = (company.contacts || []).map(c => ({
-              description: c.description,
-              type: c.type,
-              contactNumber: c.contactNumber,
-              extension: c.extension || '',
-              isPrimary: c.isPrimary || false
-            }));
-
-            // Bank Details
-            this.bankList = (company.bankDetails || []).map(b => ({
-              id: b.id,
-              vendorCompanyId: b.vendorCompanyId,
-              bankName: b.bankName,
-              accountHolderName: b.accountHolderName,
-              accountNumber: b.accountNumber,
-              iban: b.iban,
-              swiftCode: b.swifT_BIC_Code,
-              branchName: b.branchName,
-              branchAddress: b.branchAddress,
-              bankCountry: b.country,
-              bankCurrency: b.currency,
-              isPrimary: b.isPrimary || false,
-              createdBy: b.createdBy,
-              createdDate: b.createdDate
-            }));
-
-            // Initialize bank form state based on current readonly status
-            if (this.isReadonlyEntityFields) {
-              this.bankForm.disable();
-            } else {
-              this.bankForm.enable();
-            }
-
-            // Attachments
-            this.attachedFiles = (company.attachments || []).map(f => ({
-              fileName: f.fileName,
-              format: f.fileFormat,
-              fileContent: f.fileContent,
-              attachedBy: f.attachedBy,
-              remarks: f.remarks,
-              attachedAt: f.attachedAt
-            }));
-
-            // Procurement Companies
-            if (Array.isArray(company.procurementCompanyId)) {
-              this.selectedProcurementCompanyIds = [...company.procurementCompanyId];
-            } else if (company.procurementCompanyId) {
-              this.selectedProcurementCompanyIds = [company.procurementCompanyId];
-            }
-
-            this.isEditMode = true;
-          }
-
-          this.isLoading = false;
-          this.cdr.markForCheck();
-        },
-        error: (err) => {
-          console.error('Error loading company:', err);
-          this.isLoading = false;
+        // Vendor User Companies (Entities)
+        this.vendorEntities = company.vendorUserCompanies || [];
+        if (this.vendorEntities.length > 0) {
+          this.onEntitySelect(this.vendorEntities[0]);
+        } else {
           this.isReadonlyEntityFields = false;
           this.bankForm.enable();
           this.companyForm.enable();
-          this.allEntitiesCompleted = false;
         }
-      });
-  }
+
+        // Purchasing Demographics
+        const pd = company.vendorCompanyPurchasingDemographics || {};
+        this.vendorCategory = pd.vendorType || '';
+        this.primaryCurrency = pd.primaryCurrency || '';
+        this.lineOfBusiness = pd.lineOfBusiness || '';
+        this.birthCountry = pd.birthCountry || '';
+        this.employeeResponsible = pd.employeeResponsible || '';
+        this.segment = pd.segment || '';
+        this.speciality = pd.speciality || '';
+        this.chain = pd.chain || '';
+        this.note = pd.note || '';
+
+        // Addresses
+        this.addressList = (company.vendorCompanyAddresses || []).map(a => ({
+          street: a.street,
+          city: a.city,
+          state: a.state,
+          zip: a.zip,
+          country: a.country,
+          primary: a.isPrimary || false
+        }));
+
+        // Contacts
+        this.contactList = (company.vendorCompanyContactDetails || []).map(c => ({
+          description: c.description,
+          type: c.type,
+          contactNumber: c.contactNumber,
+          extension: c.extension || '',
+          primary: c.isPrimary || false
+        }));
+
+        // Bank Details
+        this.bankList = (company.vendorBankDetails || []).map(b => ({
+          id: b.id,
+          vendorCompanyId: b.vendorCompanyId,
+          bankName: b.bankName,
+          accountHolderName: b.accountHolderName,
+          accountNumber: b.accountNumber,
+          iban: b.iban,
+          swiftCode: b.swifT_BIC_Code || b.swiftCode,
+          branchName: b.branchName,
+          branchAddress: b.branchAddress,
+          bankCountry: b.country,
+          bankCurrency: b.currency,
+          isPrimary: b.isPrimary || false,
+          createdBy: b.createdBy,
+          createdDate: b.createdDate
+        }));
+
+        // Attachments
+        this.attachedFiles = (company.vendorCompanyAttachments || []).map(f => ({
+          fileName: f.fileName,
+          format: f.fileFormat,
+          fileContent: f.fileContent,
+          attachedBy: f.attachedBy,
+          remarks: f.remarks,
+          attachedAt: f.attachedAt
+        }));
+
+        // Procurement Companies Selection
+        if (Array.isArray(company.procurementCompanyId)) {
+          this.selectedProcurementCompanyIds = [...company.procurementCompanyId];
+        } else if (company.procurementCompanyId) {
+          this.selectedProcurementCompanyIds = [company.procurementCompanyId];
+        }
+
+        this.isEditMode = true;
+
+        this.isLoading = false;
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('Error loading company:', err);
+        this.isLoading = false;
+        this.isReadonlyEntityFields = false;
+        this.bankForm.enable();
+        this.companyForm.enable();
+      }
+    });
+}
+
 
   // New method to check if all entities have status 7 (Completed)
   private checkAllEntitiesCompleted(): void {
@@ -488,8 +461,8 @@ export class CompanyRegistrationComponent implements OnInit {
     if (!this.selectedEntityId) return 'Select Entity';
     const entity = this.vendorEntities.find(e => e.procurementCompanyId === this.selectedEntityId);
     if (!entity) return 'Select Entity';
-    const companyName = entity.procurementCompany?.name || '';
-    const status = entity.requestStatus?.status ? ` (${entity.requestStatus.status})` : '';
+    const companyName = entity.procurementCompanyName || '';
+    const status = entity.requestStatus ? ` (${entity.requestStatus})` : '';
     return companyName + status;
   }
 

@@ -2,6 +2,8 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angu
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
+import { SystemService } from 'app/shared/services/system.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-rfq-bid-attachment',
@@ -25,7 +27,10 @@ export class RfqBidAttachmentComponent implements OnInit {
   procurementAttachments: any[] = [];
   vendorAttachments: any[] = [];
 
-  constructor(private fb: FormBuilder, public activeModal: NgbActiveModal) {
+  constructor(private fb: FormBuilder, public activeModal: NgbActiveModal,
+    private systemService: SystemService,
+    private toastr: ToastrService
+  ) {
     this.AttachmentForm = this.fb.group({});
   }
 
@@ -70,11 +75,40 @@ export class RfqBidAttachmentComponent implements OnInit {
     this.vendorAttachments = [...this.vendorAttachments];
   }
 
-  downloadLocalFile(file: any) {
-    const link = document.createElement('a');
-    link.href = file.content;
-    link.download = file.fileName;
-    link.click();
+  // downloadLocalFile(file: any) {
+  //   const link = document.createElement('a');
+  //   link.href = file.content;
+  //   link.download = file.fileName;
+  //   link.click();
+  // }
+
+  downloadAttachment(attachment: any) {
+    if (!attachment) return;
+    const fileName = attachment.fileName || 'download';
+
+    if (attachment.isNew) {
+      // Frontend-only download
+      const dataUrl = `data:${attachment.contentType};base64,${attachment.content}`;
+      const link = document.createElement('a');
+      link.href = dataUrl;
+      link.download = fileName;
+      link.click();
+    } else {
+      // Saved attachment → download via service
+      this.systemService.downloadAttachment('VendorBid', attachment.id).subscribe({
+        next: (blob) => {
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = fileName;
+          link.click();
+          window.URL.revokeObjectURL(url);
+        },
+        error: () => {
+          this.toastr.error('Failed to download attachment.');
+        }
+      });
+    }
   }
 
   private toBase64(file: File): Promise<string> {
