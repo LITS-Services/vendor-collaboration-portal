@@ -1,55 +1,27 @@
 import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output } from '@angular/core';
-import * as Chartist from 'chartist';
-import { ChartType, ChartEvent } from "ng-chartist";
-import ChartistTooltip from 'chartist-plugin-tooltips-updated';
-
-declare var require: any;
+import { Router } from '@angular/router';
 import {
   ApexAxisChartSeries,
   ApexChart,
+  ApexDataLabels,
+  ApexFill,
+  ApexGrid,
+  ApexLegend,
+  ApexMarkers,
+  ApexPlotOptions,
+  ApexResponsive,
+  ApexStroke,
+  ApexTooltip,
   ApexXAxis,
   ApexYAxis,
-  ApexGrid,
-  ApexDataLabels,
-  ApexStroke,
-  ApexTitleSubtitle,
-  ApexTooltip,
-  ApexLegend,
-  ApexPlotOptions,
-  ApexFill,
-  ApexMarkers,
-  ApexTheme,
-  ApexNonAxisChartSeries,
-  ApexResponsive
-} from "ng-apexcharts";
-import { Router } from '@angular/router';
-import { CompanyService } from '../../shared/services/company.service'; // <-- Import your service
+  ApexNonAxisChartSeries
+} from 'ng-apexcharts';
+
+import { CompanyService } from '../../shared/services/company.service';
 import { RfqService } from 'app/shared/services/rfq.service';
+import { PurchaseOrderService } from 'app/shared/services/purchase-order.service';
 import { FirebaseMessagingService } from 'app/firebase-messaging.service';
 import { ToastrService } from 'ngx-toastr';
-import { PurchaseOrderService } from 'app/shared/services/purchase-order.service';
-
-const data: any = require('../../shared/data/chartist.json');
-
-export type ChartOptions = {
-  series: ApexAxisChartSeries | ApexNonAxisChartSeries;
-  colors: string[],
-  chart: ApexChart;
-  xaxis: ApexXAxis;
-  yaxis: ApexYAxis | ApexYAxis[],
-  title: ApexTitleSubtitle;
-  dataLabels: ApexDataLabels,
-  stroke: ApexStroke,
-  grid: ApexGrid,
-  legend?: ApexLegend,
-  tooltip?: ApexTooltip,
-  plotOptions?: ApexPlotOptions,
-  labels?: string[],
-  fill: ApexFill,
-  markers?: ApexMarkers,
-  theme: ApexTheme,
-  responsive: ApexResponsive[]
-};
 
 export interface QuotationRequestsCountVM {
   totalQuotations: number;
@@ -65,18 +37,45 @@ export interface PurchaseOrdersCountVM {
   deliveredPurchaseOrders: number;
 }
 
-var $info = "#249D57",
-  $info_light = "#BDE2CD"
-var themeColors = [$info, $info_light];
+type IncomeRange = 'month' | 'quarter' | 'year';
 
-export interface Chart {
-  type: ChartType;
-  data: any;
-  options?: any;
-  responsiveOptions?: any;
-  events?: ChartEvent;
-  // plugins?: any;
-}
+type DonutChartOptions = {
+  series: ApexNonAxisChartSeries;
+  chart: ApexChart;
+  labels: string[];
+  dataLabels: ApexDataLabels;
+  plotOptions: ApexPlotOptions;
+  stroke: ApexStroke;
+  legend: ApexLegend;
+  tooltip: ApexTooltip;
+  responsive: ApexResponsive[];
+};
+
+type AreaChartOptions = {
+  series: ApexAxisChartSeries;
+  chart: ApexChart;
+  xaxis: ApexXAxis;
+  yaxis: ApexYAxis;
+  dataLabels: ApexDataLabels;
+  stroke: ApexStroke;
+  fill: ApexFill;
+  grid: ApexGrid;
+  tooltip: ApexTooltip;
+  markers: ApexMarkers;
+  legend: ApexLegend;
+    colors?: string[];
+};
+
+type RadialChartOptions = {
+  series: ApexNonAxisChartSeries;
+  chart: ApexChart;
+  plotOptions: ApexPlotOptions;
+  stroke: ApexStroke;
+  labels: string[];
+  fill: ApexFill;
+  tooltip: ApexTooltip;
+  colors?: string[];
+};
 
 @Component({
   selector: 'app-dashboard1',
@@ -84,137 +83,197 @@ export interface Chart {
   styleUrls: ['./dashboard1.component.scss'],
   standalone: false
 })
-
 export class Dashboard1Component implements OnInit {
-  columnChartOptions: Partial<ChartOptions>;
   @Output() statusSelected = new EventEmitter<string | null>();
-  totalCompaniesCount: number = 0;
-  inprogressCount: number = 0;
-  newlyOnboardedCount: number = 0;
+
+  totalCompaniesCount = 0;
+  inprogressCount = 0;
+  newlyOnboardedCount = 0;
+
   rfqCounts!: QuotationRequestsCountVM;
   poCounts!: PurchaseOrdersCountVM;
 
-  constructor(private router: Router,
+  // top cards (derived)
+  metrics = {
+    totalRfq: 0,
+    pendingQuotes: 0,
+    pendingDeliveries: 0,
+    totalIncome: 0
+  };
+
+  incomeRange: IncomeRange = 'year';
+
+  // ---------- Figma panels data ----------
+  pendingInvoices: Array<{ no: string; customer:string; amount: number; due: Date }> = [
+    { no: 'INV-198', customer:'Alpha Traders', amount: 1380, due: new Date('2025-12-20') },
+    { no: 'INV-201', customer:'Al Manal Developers', amount: 2000, due: new Date('2025-12-26') },
+    { no: 'INV-302', customer:'Al Manal ET-01', amount: 1257, due: new Date('2025-12-28') },
+    { no: 'INV-504', customer:'Al Manal ET-02', amount: 1500, due: new Date('2025-12-31') },
+    { no: 'INV-200', customer:'Alpha Traders', amount: 500, due: new Date('2025-12-06') },
+  ];
+
+  topItems: Array<{ name: string; amountLabel: string; pct: number }> = [
+    { name: 'Macbook', amountLabel: '398.05K', pct: 35 },
+    { name: 'iPhone 17 Pro Max', amountLabel: '229.9K', pct: 25 },
+    { name: 'iPad', amountLabel: '326.04K', pct: 10 },
+    { name: 'Others', amountLabel: '229.9K', pct: 30 }
+  ];
+
+  // ---------- Charts ----------
+  companyStatusDonut!: Partial<DonutChartOptions>;
+  incomeArea!: Partial<AreaChartOptions>;
+  deliveryRadial!: Partial<RadialChartOptions>;
+
+  // theme tokens
+  private readonly primary = '#249D57';
+  private readonly primarySoft = '#BDE2CD';
+
+  companyStatusKey: 'new' | 'in-progress' | 'onboarded' = 'onboarded'; // fixed for now
+  companyStatusPercent:number = 33;
+  companyStatusLabel = 'onboarded';
+  logoUrl = "assets/img/icons/vp-color.svg";
+
+  constructor(
+    private router: Router,
     private companyService: CompanyService,
     private rfqService: RfqService,
     private purchaseOrderService: PurchaseOrderService,
     private messagingService: FirebaseMessagingService,
     private toaster: ToastrService,
     private cdr: ChangeDetectorRef
-  ) {
-    this.columnChartOptions = {
-      chart: {
-        height: 350,
-        type: 'bar',
-        toolbar: { show: false },
-        animations: { enabled: false }
-      },
-      colors: themeColors,
-      plotOptions: {
-        bar: {
-          horizontal: false,
-          columnWidth: '25%',
-          borderRadius: 4,
-        },
-      },
-      grid: { borderColor: "#BDBDBD44" },
-      dataLabels: { enabled: false },
-      stroke: { show: true, width: 2, colors: ['transparent'] },
-      series: [
-        { name: 'Net Profit', data: [40, 50, 110, 90, 85, 115, 100, 90] },
-        { name: 'Revenue', data: [30, 40, 100, 80, 75, 105, 90, 80] }
-      ],
-      legend: { show: false },
-      xaxis: {
-        categories: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
-        axisBorder: { color: "#BDBDBD44" }
-      },
-      tooltip: {
-        y: { formatter: function (val) { return "$" + val + " thousands"; } }
-      }
-    }
-  }
+  ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
+    this.initCharts();
+    this.setCompanyStatus('onboarded');
     this.loadCompanyStats();
     this.loadQuotationRequestsCounts();
     this.loadPurchaseOrdersCount();
+    this.buildDeliveryRadialDummy();
+
+    // optional: refresh apex on first paint for scaling issues
+    setTimeout(() => window.dispatchEvent(new Event('resize')), 200);
   }
 
-  loadCompanyStats() {
+  // ------------------ API loaders (your logic kept) ------------------
+  loadCompanyStats(): void {
     const userId = localStorage.getItem('userId');
-    console.log('userId =', userId);
-
-    if (!userId) {
-      console.error('No user ID found in localStorage');
-      return;
-    }
+    if (!userId) return;
 
     this.companyService.getCompanyByVendorId(userId).subscribe({
       next: (res: any) => {
-        console.log('API raw response:', res);
-
         let companies: any[] = [];
+        if (Array.isArray(res)) companies = res;
+        else if (res?.$values && Array.isArray(res.$values)) companies = res.$values;
+        else if (res?.vendorId) companies = [res];
 
-        if (Array.isArray(res)) {
-          companies = res;
-        } else if (res?.$values && Array.isArray(res.$values)) {
-          companies = res.$values;
-        } else if (res?.vendorId) {
-          companies = [res]; // single object response
-        }
+        const vendorCompanies = companies.filter(c => (c.vendorId || '').toLowerCase() === userId.toLowerCase());
 
-        console.log('Parsed companies:', companies);
-        const vendorCompanies = companies.filter(c =>
-          (c.vendorId || '').toLowerCase() === userId.toLowerCase()
-        );
-
-        // Only count companies where status = "completed"
-        this.totalCompaniesCount = vendorCompanies.filter(c =>
-          (c.status || '').toLowerCase() === 'approve' ||
-          (c.status || '').toLowerCase() === 'inprocess' ||
-          (c.status || '').toLowerCase() === 'sendback').length;
-
-        this.cdr.detectChanges();
-
-        // Pending Companies: InProgress OR Recalled
-        this.inprogressCount = vendorCompanies.filter(c => {
-          const status = (c.status || '').toLowerCase();
-          return status === 'inprocess' || status === 'sendback';
+        this.totalCompaniesCount = vendorCompanies.filter(c => {
+          const s = (c.status || '').toLowerCase();
+          return s === 'approve' || s === 'inprocess' || s === 'sendback';
         }).length;
-        this.cdr.detectChanges();
 
-        // Newly Onboarded Companies: created in last 10 days AND approved
+        this.inprogressCount = vendorCompanies.filter(c => {
+          const s = (c.status || '').toLowerCase();
+          return s === 'inprocess' || s === 'sendback';
+        }).length;
+
         const now = new Date();
         this.newlyOnboardedCount = vendorCompanies.filter(c => {
           if (!c.createdDate) return false;
-          const createdDate = new Date(c.createdDate + 'Z'); // treat as UTC
+          const createdDate = new Date(c.createdDate + 'Z');
           const diffInDays = (now.getTime() - createdDate.getTime()) / (1000 * 60 * 60 * 24);
           const status = (c.status || '').toLowerCase();
           return diffInDays <= 10 && status === 'approve';
         }).length;
-        this.cdr.detectChanges();
 
-        console.log('Stats:', {
-          total: this.totalCompaniesCount,
-          inprogress: this.inprogressCount,
-          newlyOnboarded: this.newlyOnboardedCount
-        });
+        // update donut: Completed vs In Progress
+        const completed = Math.max(this.totalCompaniesCount - this.inprogressCount, 0);
+        this.updateCompanyDonut(completed, this.inprogressCount);
+
+        this.cdr.detectChanges();
       },
       error: (err) => console.error('API Error:', err)
     });
   }
 
+  completedPercent = 75;
+
+  buildDeliveryRadialDummy(): void {
+  const completed = this.completedPercent;
+
+  this.deliveryRadial = {
+    series: [completed],
+
+    chart: {
+      type: 'radialBar',
+      height: 360,
+      width: '100%',
+      offsetY: -15,
+      sparkline: { enabled: true },
+      toolbar: { show: false },
+      animations: { enabled: false }
+    },
+
+    colors: ['#249D57'],
+    
+    plotOptions: {
+      radialBar: {
+        startAngle: -135,
+        endAngle: 135,
+
+        // more center space for the text + legend (like figma)
+        // hollow: { size: '62%' },
+
+        track: {
+          background: '#D3EBDD',
+          strokeWidth: '100%',
+          margin: 0
+        },
+
+        // we will show our own text, so hide apex labels
+        dataLabels: {
+          name: { show: false },
+          value: { show: false }
+        }
+      }
+    },
+
+    stroke: {
+      lineCap: 'butt',
+      dashArray: 4
+    },
+
+    fill: { type: 'solid' },
+    tooltip: { enabled: false }
+  };
+}
+
+get statusPillClass(): string {
+  switch (this.companyStatusKey) {
+    case 'onboarded':
+      this.companyStatusLabel = 'Onboarded';
+      return 'status-pill--green';
+
+    case 'new':
+      this.companyStatusLabel = 'New';
+      return 'status-pill--blue';
+
+    default:
+      this.companyStatusLabel = 'In Progress';
+      return 'status-pill--orange';
+  }
+}
+
   loadQuotationRequestsCounts(): void {
     this.rfqService.getQuotationRequestsCount().subscribe({
       next: (data) => {
         this.rfqCounts = data;
+        this.recomputeTopMetrics();
       },
-      error: (err) => {
-        console.error('Error fetching quotation requests count:', err);
-      }
+      error: (err) => console.error('Error fetching quotation requests count:', err)
     });
-    this.cdr.detectChanges();
   }
 
   loadPurchaseOrdersCount(): void {
@@ -222,100 +281,288 @@ export class Dashboard1Component implements OnInit {
     this.purchaseOrderService.getPurchaseOrdersCount(userId).subscribe({
       next: (data) => {
         this.poCounts = data;
+        this.recomputeTopMetrics();
       },
-      error: (err) => {
-        console.error('Error fetching purchase orders count:', err);
-      }
+      error: (err) => console.error('Error fetching purchase orders count:', err)
     });
+  }
+
+
+
+
+
+  setCompanyStatus(status: 'new' | 'in-progress' | 'onboarded') {
+  this.companyStatusKey = status;
+
+  if (status === 'new') {
+    this.companyStatusPercent = 33;
+    this.companyStatusLabel = 'New';
+  } else if (status === 'in-progress') {
+    this.companyStatusPercent = 66;
+    this.companyStatusLabel = 'In Progress';
+  } else {
+    this.companyStatusPercent = 100;
+    this.companyStatusLabel = 'Completed';
+  }
+}
+  
+
+  // ------------------ Figma metrics mapping ------------------
+  private recomputeTopMetrics(): void {
+    const totalRfq = this.rfqCounts?.totalQuotations ?? 0;
+    const pendingQuotes = this.rfqCounts?.inProcessQuotations ?? 0;
+
+    const totalPO = this.poCounts?.totalPurchaseOrders ?? 0;
+    const deliveredPO = this.poCounts?.deliveredPurchaseOrders ?? 0;
+    const pendingDeliveries = 125;
+
+    const totalIncome = 8964
+
+    this.metrics = {
+      totalRfq,
+      pendingQuotes,
+      pendingDeliveries,
+      totalIncome
+    };
+
     this.cdr.detectChanges();
   }
 
-  navigateToStatusFilteredQuotations(status: string | null) {
-    if (status) {
-      this.router.navigate(['/rfq/rfq-list'], { queryParams: { status } });
-    } else {
-      this.router.navigate(['/rfq/rfq-list']); // Total (no filter)
-    }
-  }
-
-  // Donut chart configuration Starts
-  DonutChart: Chart = {
-    type: 'Pie',
-    data: data['donutDashboard'],
-    options: {
-      donut: true,
-      startAngle: 0,
-      labelInterpolationFnc: function (value) {
-        const total = data['donutDashboard'].series.reduce((prev: any, series: any) => prev + series.value, 0);
-        return total + '%';
-      }
-    },
-    events: {
-      draw(data: any): void {
-        if (data.type === 'label') {
-          if (data.index === 0) {
-            data.element.attr({
-              dx: data.element.root().width() / 2,
-              dy: data.element.root().height() / 2
-            });
-          } else {
-            data.element.remove();
+  // ------------------ Charts init + updates ------------------
+  private initCharts(): void {
+    // Company Status donut (Completed vs In Progress)
+    this.companyStatusDonut = {
+      series: [70, 30],
+      labels: ['Completed', 'In Progress'],
+      chart: {
+        type: 'donut',
+        height: 250,
+        toolbar: { show: false },
+        animations: { enabled: false }
+      },
+      dataLabels: { enabled: false },
+      stroke: { width: 0 },
+      plotOptions: {
+        pie: {
+          donut: {
+            size: '78%',
+            labels: {
+              show: true,
+              name: { show: false },
+              value: {
+                show: true,
+                fontSize: '22px',
+                fontWeight: 700,
+                formatter: (val: string) => `${Math.round(Number(val) || 0)}%`
+              },
+              total: {
+                show: true,
+                label: '',
+                formatter: (w: any) => {
+                  const s = w.globals.seriesTotals.reduce((a: number, b: number) => a + b, 0);
+                  const completed = w.globals.seriesTotals[0] || 0;
+                  const pct = s ? Math.round((completed / s) * 100) : 0;
+                  return `${pct}%`;
+                }
+              }
+            }
           }
         }
-      }
-    }
-  };
-
-  // Bar chart configuration Starts
-  BarChart: Chart = {
-    type: 'Bar', data: data['DashboardBar'], options: {
-      axisX: { showGrid: false },
-      axisY: { showGrid: false, showLabel: false, offset: 0 },
-      low: 0,
-      high: 60,
-    },
-    responsiveOptions: [
-      ['screen and (max-width: 640px)', {
-        seriesBarDistance: 5,
-        axisX: { labelInterpolationFnc: (value: string) => value[0] }
-      }]
-    ],
-    events: {
-      created(data: any): void {
-        const defs = data.svg.elem('defs');
-        defs.elem('linearGradient', { id: 'gradient4', x1: 0, y1: 1, x2: 0, y2: 0 })
-          .elem('stop', { offset: 0, 'stop-color': '#8E1A38' })
-          .parent().elem('stop', { offset: 1, 'stop-color': '#FAA750' });
-        defs.elem('linearGradient', { id: 'gradient5', x1: 0, y1: 1, x2: 0, y2: 0 })
-          .elem('stop', { offset: 0, 'stop-color': '#1750A5' })
-          .parent().elem('stop', { offset: 1, 'stop-color': '#40C057' });
-        defs.elem('linearGradient', { id: 'gradient6', x1: 0, y1: 1, x2: 0, y2: 0 })
-          .elem('stop', { offset: 0, 'stop-color': '#3B1C93' })
-          .parent().elem('stop', { offset: 1, 'stop-color': '#60AFF0' });
-        defs.elem('linearGradient', { id: 'gradient7', x1: 0, y1: 1, x2: 0, y2: 0 })
-          .elem('stop', { offset: 0, 'stop-color': '#562DB7' })
-          .parent().elem('stop', { offset: 1, 'stop-color': '#F55252' });
       },
-      draw(data: any): void {
-        if (data.type === 'bar') {
-          data.element.attr({ y1: 195, x1: data.x1 + 0.001 });
+      legend: { show: false },
+      tooltip: { enabled: true },
+      responsive: [
+        {
+          breakpoint: 576,
+          options: {
+            chart: { height: 220 }
+          }
         }
+      ]
+    };
+
+    // Income area (Figma style)
+    this.incomeArea = this.buildIncomeArea('year');
+  }
+
+  private updateCompanyDonut(completed: number, inProgress: number): void {
+    const c = Math.max(completed, 0);
+    const p = Math.max(inProgress, 0);
+
+    this.companyStatusDonut = {
+      ...this.companyStatusDonut,
+      series: [c, p]
+    };
+
+    this.cdr.detectChanges();
+  }
+
+  setIncomeRange(range: IncomeRange): void {
+    this.incomeRange = range;
+    this.incomeArea = this.buildIncomeArea(range);
+
+    // keep top card Total Income synced
+    this.recomputeTopMetrics();
+
+    setTimeout(() => window.dispatchEvent(new Event('resize')), 50);
+  }
+
+private buildIncomeArea(range: IncomeRange): Partial<AreaChartOptions> {
+  const config = this.getIncomeData(range);
+
+  // If you don’t have comparison data, just set it to [] and it won’t show.
+  const compareValues = [];
+
+  return {
+    series: [
+      { name: 'Income', data: config.values },
+      { name: 'Income (Prev)', data: compareValues } // dotted grey line
+    ],
+
+    chart: {
+      type: 'area',
+      height: 240,
+      toolbar: { show: false },
+      animations: { enabled: false },
+      zoom: { enabled: false },
+      fontFamily: 'Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial'
+    },
+
+      colors: [
+      'rgba(102, 199, 155, 0.55)', // main green (lighter stroke)
+      'rgba(154, 164, 160, 0.8)'   // comparison line
+    ],
+
+    stroke: {
+      curve: 'smooth',
+      width: [1.5, 2],
+      dashArray: [0, 6], // 2nd series dotted
+      lineCap: 'round'
+    },
+
+    fill: {
+      type: ['gradient', 'solid'],
+      gradient: {
+        shadeIntensity: 0,
+        opacityFrom: 0.40,   // ⬆ more visible area
+        opacityTo: 0.06,     // fades nicely
+        stops: [0, 85, 100]
       }
     },
-  };
 
-  onResized(event: any) {
-    setTimeout(() => { this.fireRefreshEventOnWindow(); }, 300);
+    markers: {
+      size: [0, 0],
+      strokeWidth: 0,
+      hover: { size: 6 },
+      discrete: [] // optional: you can set a fixed dot on a point if you want
+    },
+
+    grid: {
+      borderColor: '#E7EFEA',
+      strokeDashArray: 4,
+      xaxis: { lines: { show: false } },
+      yaxis: { lines: { show: true } },
+      padding: { left: 8, right: 8 }
+    },
+
+    xaxis: {
+      categories: config.labels,
+      axisBorder: { show: false },
+      axisTicks: { show: false },
+      labels: {
+        style: { colors: '#8B9B93', fontSize: '12px' }
+      },
+      crosshairs: {
+        show: true,
+        stroke: {
+          color: '#2B2F2D',
+          width: 1,
+          dashArray: 4
+        }
+      },
+      tooltip: { enabled: false }
+    },
+
+    yaxis: {
+      tickAmount: 4,
+      labels: {
+        style: { colors: '#8B9B93', fontSize: '12px' },
+        formatter: (v: number) => `AED ${Math.round(v)}`
+      }
+    },
+
+    dataLabels: { enabled: false },
+
+    legend: { show: false },
+
+    tooltip: {
+  shared: true,
+  intersect: false,
+  custom: ({ series, dataPointIndex, w }) => {
+    const label = w.globals.labels?.[dataPointIndex] ?? '';
+    const income = series?.[0]?.[dataPointIndex] ?? 0;
+    return `
+      <div class="income-tooltip">
+        <div class="income-tooltip__title"> <span> Revenue: </span> ${label}</div>
+        <div class="income-tooltip__row">
+          <div class="income-tooltip__value">
+            AED ${this.formatNumber(income)}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+}
+  };
+}
+  private getIncomeData(range: IncomeRange): { labels: string[]; values: number[] } {
+    // Replace this with real API later; UI stays same.
+    if (range === 'month') {
+      return {
+        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+        values: [4200, 5150, 4600, 6200]
+      };
+    }
+    if (range === 'quarter') {
+      return {
+        labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+        values: [14500, 12100, 17500, 9800]
+      };
+    }
+    return {
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+      values: [5200, 6100, 8200, 5150, 10400, 7500, 6900, 12000, 17800, 13200, 4600, 5100]
+    };
   }
 
-  goToAllVendorQuotations() {
-    const userId = localStorage.getItem('userId'); // assuming saved on login
-    this.router.navigate(['/rfq/rfq-list'], { queryParams: { userId: userId } });
+  // ------------------ navigation ------------------
+  navigateToStatusFilteredQuotations(status: string | null): void {
+    if (status) this.router.navigate(['/rfq/rfq-list'], { queryParams: { status } });
+    else this.router.navigate(['/rfq/rfq-list']);
   }
 
-  fireRefreshEventOnWindow = function () {
-    const evt = document.createEvent("HTMLEvents");
-    evt.initEvent("resize", true, false);
-    window.dispatchEvent(evt);
-  };
+  goToPOs(): void {
+    this.router.navigate(['/po/po-list']);
+  }
+
+  goToIncome(): void {
+    // optional route
+    // this.router.navigate(['/reports/income']);
+  }
+
+  goToInvoices(): void {
+    this.router.navigate(['/invoices']);
+  }
+
+  // ------------------ formatting helpers ------------------
+  formatNumber(val: any): string {
+    const n = Number(val) || 0;
+    return n.toLocaleString();
+  }
+
+  formatCurrency(val: any): string {
+    const n = Number(val) || 0;
+    // change AED/$ etc as per your app
+    return `AED ${n.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
+  }
 }

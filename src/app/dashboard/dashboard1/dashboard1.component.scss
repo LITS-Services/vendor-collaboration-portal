@@ -1,456 +1,59 @@
-@import "assets/sass/core/variables/gradient-variables.scss";
-
-.card-title{
-      font-size: 15px;
-    font-weight: 400;
+:host {
+  display: block;
 }
 
-h6{
-  font-size: 14px !important;
+:root {
+  --status-completed: #22c55e; /* modern green */
+  --status-pending:   #f59e0b; /* modern amber/orange */
+  --status-new:       #3b82f6; /* modern blue */
 }
 
-.cstm-media{
-  margin-top: 10px;
+.dash {
+  --primary: #249d57;
+  --soft: #bde2cd;
+  --text: #0f172a;
+  --muted: #64748b;
+  --card: #ffffff;
+  --line: #E9E9E9;
+  margin: 0 auto;
 }
 
-.media{
-    margin-top: 10px;
+.dash__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
 }
 
-.cstm-card-body{
-  padding: 0px 12px !important;
-}
-
-.cstm-card{
-   background: linear-gradient(135deg, #249D57 0%, #187741 100%);
-
-   .card-title{
-    color: #FFFFFF !important;
-   }
-
-   h1{
-    color: #FFFFFF !important;
-   }
-
-   h6{
-    color: #FFFFFF !important;
-   }
-
-   .vector1{
-    color: #FFFFFF !important;
-   }
-}
-.media-body{
+.dash__title {
   h1{
-    font-size: 36px !important;
+        font-size: 20px !important;
+    font-weight: 500;
+    color: var(--text);
   }
 
+  p {
+    margin-top: 4px !important;
+    font-size: 13px;
+    color: #262626 !important;
+  }
 }
 
-h1{
-  font-size: 26px !important;
-}
-
-.card-body {
-   padding: 0px 12px !important;
-}
-
-:host ::ng-deep .ct-grid {
-  stroke-dasharray : 0;
-  stroke : rgba(0, 0, 0, 0.1);
-}
-
-:host ::ng-deep .ct-label {
-  font-size : 0.9rem;
-}
-
-:host ::ng-deep .WidgetlineChart .ct-point {
-  stroke-width : 0;
-}
-
-:host ::ng-deep .WidgetlineChart .ct-line {
-  stroke : rgba(255, 255, 255, 0.6);
-    stroke-width: 4px;
-}
-
-:host ::ng-deep .WidgetlineChart .ct-grid {
-  stroke-dasharray : 0;
-  stroke : transparent !important;
-}
-
-:host ::ng-deep .WidgetlineChart .ct-point-regular {
-  stroke-width : 2px;
-  fill : transparent;
-  stroke : transparent !important;
-}
-
-:host ::ng-deep .WidgetlineChartshadow {
-  -webkit-filter : drop-shadow(0px 13px 6px rgba(0, 0, 0, 0.5));
-          filter : drop-shadow(0px 13px 6px rgba(0, 0, 0, 0.5));
-  /* Same syntax as box-shadow, except for the spread property */
-}
-
-:host ::ng-deep .lineArea .ct-line {
-  stroke-width : 0;
-}
-
-:host ::ng-deep .lineArea .ct-point {
-  stroke-width : 0;
-}
-
-:host ::ng-deep .lineArea .ct-series-a .ct-area {
-  fill-opacity : 0.7;
-  fill : url($dashboard1-gradient-path +  #gradient1) !important;
-}
-
-:host ::ng-deep .lineArea .ct-series-b .ct-area {
-  fill : url($dashboard1-gradient-path +  #gradient) !important;
-  fill-opacity : 0.9;
-}
-
-:host ::ng-deep .lineArea .ct-point-regular {
-  stroke-width : 2px;
-  fill : transparent;
-  stroke : transparent !important;
-}
-
-:host ::ng-deep .Stackbarchart .ct-series-a .ct-bar {
-  stroke : url($dashboard1-gradient-path +  #linear) !important;
-}
-
-:host ::ng-deep .Stackbarchart .ct-series-b .ct-bar {
-  stroke : #EEEEEE;
-}
-
-:host ::ng-deep .shopping-cart i.ft-trash-2 {
-  cursor : pointer;
-}
-:host ::ng-deep .shopping-cart i.ft-trash-2:hover {
-  color : #F55252;
-}
-
-:host ::ng-deep .shopping-cart table td {
-  vertical-align : middle;
-}
-
-:host ::ng-deep .lineArea2 .ct-line {
-  fill : none;
-  stroke-width : 2px;
-}
-
-:host ::ng-deep .lineArea2 .ct-point-circle {
-  stroke-width : 2px;
-  fill : #FFFFFF;
-}
-
-:host ::ng-deep .lineArea2 .ct-series-a .ct-area {
-  fill : url($dashboard1-gradient-path +  #gradient2) !important;
-  fill-opacity : 0.8;
-}
-
-:host ::ng-deep .lineArea2 .ct-series-a .ct-line {
-  stroke : #60AFF0;
-}
-
-:host ::ng-deep .lineArea2 .ct-series-a .ct-point-circle {
-  stroke : #2F8BE6;
-}
-
-:host ::ng-deep .lineArea2 .ct-series-b .ct-area {
-  fill : url($dashboard1-gradient-path +  #gradient3) !important;
-  fill-opacity : 0.8;
-}
-
-:host ::ng-deep .lineArea2 .ct-series-b .ct-line {
-  stroke : #6CD975;
-}
-
-:host ::ng-deep .lineArea2 .ct-series-b .ct-point-circle {
-  stroke : #40C057;
-}
-
-:host ::ng-deep .lineChart .ct-line {
-  fill : none;
-  stroke : #FFFFFF;
-  stroke-width : 1px;
-}
-
-:host ::ng-deep .lineChart .ct-label {
-  color : #FFFFFF;
-}
-
-:host ::ng-deep .lineChart .ct-point-circle {
-  stroke-width : 2px;
-  fill : #FFFFFF;
-}
-
-:host ::ng-deep .lineChart .ct-series-a .ct-point-circle, .lineChart .ct-series-a .ct-point {
-  stroke : #FFFFFF;
-}
-
-:host ::ng-deep .lineChartShadow {
-  -webkit-filter : drop-shadow(0px 25px 8px rgba(0, 0, 0, 0.5));
-          filter : drop-shadow(0px 25px 8px rgba(0, 0, 0, 0.5));
-  /* Same syntax as box-shadow, except for the spread property */
-}
-
-:host ::ng-deep .BarChart .ct-series-a .ct-bar:nth-of-type(4n+1) {
-  stroke : url($dashboard1-gradient-path +  #gradient7);
-}
-
-:host ::ng-deep .BarChart .ct-series-a .ct-bar:nth-of-type(4n+2) {
-  stroke : url($dashboard1-gradient-path +  #gradient5);
-}
-
-:host ::ng-deep .BarChart .ct-series-a .ct-bar:nth-of-type(4n+3) {
-  stroke : url($dashboard1-gradient-path +  #gradient6);
-}
-
-:host ::ng-deep .BarChart .ct-series-a .ct-bar:nth-of-type(4n+4) {
-  stroke : url($dashboard1-gradient-path +  #gradient4);
-}
-
-:host ::ng-deep .BarChartShadow {
-  -webkit-filter : drop-shadow(0px 20px 8px rgba(0, 0, 0, 0.3));
-          filter : drop-shadow(0px 20px 8px rgba(0, 0, 0, 0.3));
-  /* Same syntax as box-shadow, except for the spread property */
-}
-
-:host ::ng-deep .donut .ct-label {
-  font-size : 20px;
-}
-
-:host ::ng-deep .donut .ct-done .ct-slice-donut {
-  stroke : #249D57;
-  stroke-width : 16px !important;
-}
-
-:host ::ng-deep .donut .ct-progress .ct-slice-donut {
-  stroke : #A7D8BC;
-  stroke-width : 16px !important;
-}
-
-:host ::ng-deep .donut .ct-outstanding .ct-slice-donut {
-  stroke : #975AFF;
-  stroke-width : 8px !important;
-}
-
-:host ::ng-deep .donut .ct-started .ct-slice-donut {
-  stroke : #2F8BE6;
-  stroke-width : 32px !important;
-}
-.text-card{
-   color: #249D57;
-    padding: 5px 8px;
-    display: flex;
-    font-size: 12px;
-    gap: 6px;
-    align-items: center;
-  
-}
-.cube{
-  background-color: #A8EEC1;
-  border-radius: 20px;
-  align-items: center;
-  justify-self: center;
-}
-.vector1{
-  width: 34px;
-  height: 34px;
-  color: #249D57;
-}
-.card{
-  border: 1px solid #BDE2CD !important;
-  border-radius: 20px !important;
-  box-shadow: none;
-
-}
-.card-info {
-  position: relative;
-  border-radius: 15px; /* Rounded corners for the card */
-  // background-color: #249D57;
-  padding: 20px;
-  color: white;
-  overflow: hidden;
-  height: 180px !important;
-  // &::before {
-  //   content: "";
-  //   position: absolute;
-  //   top: 0;
-  //   right: 0;
-  //   width: 60px;   /* Adjust the width for a larger or smaller curve */
-  //   height: 60px;  /* Should match the width for a perfect circle */
-  //   border: 1px solid #BDE2CD;
-  //   // background-color: #249D57; /* Set this to the background color of the card */
-  //   border-radius: 0 0 0 20px; /* Curve on bottom-left of this circle */
-  //   transform: translate(0, 0); /* Adjust the curve’s position */
-  // }
-}
-
-.curve-button {
-    position: absolute;
-    top: 15px;
-    right: 5px;
-    width: 60px;
-    height: 60px;
-    border-right: 1px solid #ffffff;
-    border-left: 1px solid #bde2cd;
-    border-bottom: 1px solid #bde2cd;
-    border-radius: 0 0 0 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transform: translate(0, 0);
-    z-index: 1;
-    background: #ffffff;
-}
-
-.curve-button2 {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 60px;  /* Adjust for desired curve size */
-  height: 60px;
-  // border: 1px solid #BDE2CD;
-  border-radius: 0 0 0 20px; /* Curve on bottom-left */
+.dash__actions {
   display: flex;
   align-items: center;
-  justify-content: center;
-  transform: translate(0, 0);
-  z-index: 1;
+  gap: 10px;
 }
 
-
-
-.circle-button {
-  width: 36px;
-  height: 36px;
-  background-color: #E3FCEC;
-  border: 1px solid #54d98c;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #249D57;
-  font-size: 16px;
-  cursor: pointer;
-  transition: all 0.3s ease; /* Smooth transition */
-}
-
-.circle-button:hover {
-  background-color: #249D57; /* Change background color on hover */
-  color: white; /* Change icon color on hover */
-  border-color: #249D57; /* Change border color on hover */
-  transform: scale(1.1); /* Slightly enlarge the button on hover */
-}
-
-
-.circle-button i {
-  font-size: 1.2rem; /* Adjust icon size as needed */
-}
-
-.dash-title{
-  font-weight: 500;
-}
-
-.dash-desc{
-  font-weight: 400;
-  font-size: 12px;
-}
-
-.primary-color{
-  color: #249D57 !important;
-}
-
-.sec-color{
-  color: #BDE2CD !important;
-}
-
-
-@media (max-width: 576px)  {
-    .card-title {
-          font-size: 12px;
-    }
-
-    .card-info{
-      padding: 20px 14px !important;
-      height: 140px !important;
-    }
-
-
-    .curve-button{
-      width: 40px;
-      height: 40px;
-      border-radius: 0 0 0 20px;
-    }
-
-    .circle-button{
-      width: 24px;
-    height: 24px;
-    }
-
-    .circle-button i {
-      font-size: 1em;
-    }
-
-    .media{
-      margin-top: 0px;
-    }
-
-    .cstm-media{
-      margin-top: 0px;
-    }
-
-    h1{
-      font-size: 16px !important;
-    }
-
-    .text-card{
-      padding: 2px 4px;
-      font-size: 10px;
-    }
-
-    h6{
-      font-size: 10px !important;
-    }
-
-    .vector1{
-      height: 22px;
-      width: 22px;
-    }
-
-    .cstm-gx{
-          --bs-gutter-x: 0.80em;
-    }
-}
-
-.icon-circle{
-    width: 34px;
-  height: 34px;
-  border: 1px solid #3AA768;
-  border-radius: 50%;
-  background: #fff;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  outline: none;
-}
-
-
-.search-input {
-  border: none !important;
-  padding-left: 36px !important;
-  width: 100%;
-}
-
-/* Input wrapper (with search icon) */
+/* Search + filter (your same style, refined) */
 .search-input-wrapper {
-    background: white;
-    position: relative;
-    border: 1px solid #3AA768;
-    border-radius: 150px;
-    width: 175px;
-    padding: 4px 8px;
+  background: #fff;
+  position: relative;
+  border: 1px solid #3aa768;
+  border-radius: 999px;
+  width: 220px;
+  padding: 6px 10px;
 }
 
 .search-icon {
@@ -458,21 +61,771 @@ h1{
   left: 14px;
   top: 50%;
   transform: translateY(-50%);
-  color: #249d57;
-  font-size: 20px;
+  color: var(--primary);
+  font-size: 18px;
 }
 
-.filter-btn{
-  width: 34px;
-  height: 34px;
+.search-input {
+  border: none !important;
+  outline: none !important;
+  padding-left: 34px !important;
+  width: 100%;
+  font-size: 13px;
+}
+
+.filter-btn {
+  width: 38px;
+  height: 38px;
   border: 1px solid #3aa768;
   border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--primary);
+  background: transparent;
+}
+
+/* ===== Stat Cards ===== */
+.dash__cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.stat-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 22px 16px 11px 16px;
+  text-decoration: none;
+  cursor: pointer;
+
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  grid-template-rows: auto auto;
+  row-gap: 14px;
+
+  align-items: start;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+  }
+}
+
+/* icon cell (row 1 col 1) */
+.stat-card__icon {
+  grid-column: 1;
+  grid-row: 1;
+
+  width: 48px;
+  height: 48px;
+  border-radius: 9px;
+  background: var(--primary);
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-size: 18px;
+}
+
+/* title/value (row 1 col 2) */
+.stat-card__main {
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+}
+
+.stat-card__label {
+  font-size: 13px;
+  color: #262626;
+  line-height: 1.1;
+}
+
+.stat-card__value {
+  margin-top: 4px;
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.1;
+}
+
+/* ✅ View details under icon (row 2 col 1-2 but visually under icon area) */
+.stat-card__details {
+  grid-column: 1 / 3;
+  grid-row: 2;
+  padding-left: 0;           /* keep tight like figma */
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* ✅ arrow aligned with view details row (row 2 col 3) */
+.stat-card__arrow {
+  grid-column: 3;
+  grid-row: 2;
+
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 10px;
+  color: var(--muted);
+  justify-self: end;
+  align-self: center;
+}
+
+.stat-card__footer {
+  grid-column: 1 / 3;
+  grid-row: 2;
+
+  display: grid;
+  grid-template-columns: 64px 1fr auto; /* icon width | spacer | arrow */
+  align-items: center;
+}
+
+/* ===== Panels ===== */
+.dash__grid {
+  display: grid;
+  gap: 14px;
+}
+
+.dash__grid--mid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-bottom: 14px;
+}
+
+.dash__grid--mid > :first-child { grid-column: span 1; }
+.dash__grid--mid > :last-child  { grid-column: span 3; }
+
+.dash__grid--bottom {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+//  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.dash__grid--bottom > :nth-child(1) { grid-column: span 1; }
+.dash__grid--bottom > :nth-child(2) { grid-column: span 2; }
+.dash__grid--bottom > :nth-child(3) { grid-column: span 1; }
+
+.panel {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  overflow: hidden;
+  min-height: 320px;
+}
+
+.panel--wide {
+  min-height: 320px;
+}
+
+.panel__head {
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.panel__head--split {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.panel__title {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+
+.panel__sub {
+  margin-top: 3px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.panel__link {
+  font-size: 12px;
+  color: var(--primary);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.panel__body {
+  padding: 0px 16px;
+}
+
+.panel__body--center2 {
+  padding: 16px;
+  display: grid;
+  // justify-items: center;
+  align-content: center;
+    justify-items: stretch; 
+  gap: 10px;
+}
+
+.panel__body--center {
+  padding: 16px;
+  display: grid;
+ justify-items: center;
+  align-content: center;
+
+  gap: 10px;
+}
+
+/* Segmented control (Month/Quarter/Year) */
+.segmented {
+  display: inline-flex;
+  padding: 4px;
+  background: #FAFAFC;
+  border-radius: 999px;
+  gap: 6px;
+}
+
+.segmented__btn {
+  border: none;
+  background: transparent;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  color: var(--muted);
+  cursor: pointer;
+
+  &.is-active {
+    background: #CDEFDE;
+    color: #0e0e0e;
+    font-weight: 500;
+  }
+}
+
+.apx {
+  width: 100%;
+}
+
+.apx--income {
+  min-height: 280px;
+}
+
+/* Mini legend */
+.mini-legend {
+  display: flex;
+  gap: 14px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.mini-legend__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.dot--primary {
+  background: var(--primary);
+}
+
+.dot--soft {
+  background: var(--soft);
+}
+
+.table-card {
+  border: 1px solid #eef2f6;
+  overflow: hidden;            // so header bg + row borders clip nicely
+  background: #fff;
+  font-size: 12px;
+}
+
+.table {
+  display: grid;
+}
+
+/* rows */
+.table__row {
+  display: grid;
+   grid-template-columns:
+    minmax(0, 1.5fr)       /* invoice no */
+    minmax(0, 1.5fr)     /* customer */
+     minmax(0, 1fr)              /* amount */
+      minmax(0, 1.5fr);
+  gap: 12px;
+  padding: 12px 16px;
+  align-items: center;
+
+  // ✅ remove your chip style
+  border-radius: 0;
+  background: transparent;
+  border: 0;
+
+  // ✅ simple separators like figma
+  &:not(.table__row--head) {
+    border-top: 1px solid #f1f5f9;
+  }
+}
+
+.table-scroll {
+  max-height: 260px;      // 🔥 control visible rows here
+  overflow-y: auto;
+}
+/* header strip */
+.table__row--head {
+  background: #f6f8fb;         // light gray header strip
+  color: #7a8699;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  padding: 10px 16px;
+  border-top: 0;
+}
+
+/* cells */
+.table__row > div {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mono {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Top Items */
+.top-items {
+  display: grid;
+  gap: 14px;
+}
+
+.top-item__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.top-item__name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.top-item__pct {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.top-item__sub {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.bar {
+  margin-top: 8px;
+  height: 6px;
+  background: #eef6f1;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.bar__fill {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 999px;
+}
+
+
+:host ::ng-deep .panel__body--center {
+  height: 100%;
+  min-height: 0;
+}
+
+.status-pill {
+  --bg: #fff7ed;     // orange-50
+  --fg: #b45309;     // orange-700
+  --bd: #fed7aa;     // orange-200
+
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--fg);
+  border: 1px solid var(--bd);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.status-pill__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.85;
+}
+
+/* Variants */
+.status-pill--orange {
+  --bg: #fff7ed;
+  --fg: #b45309;
+  --bd: #fed7aa;
+}
+
+.status-pill--green {
+  --bg: #ecfdf5; // emerald-50
+  --fg: #047857; // emerald-700
+  --bd: #a7f3d0; // emerald-200
+}
+
+.status-pill--blue {
+  --bg: #eff6ff; // blue-50
+  --fg: #1d4ed8; // blue-700
+  --bd: #bfdbfe; // blue-200
+}
+
+/* main layout: middle expands, footer sticks bottom */
+.company-status-layout {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+
+}
+
+/* center the ring area vertically */
+.company-status-mid {
+  flex: 1;
+  min-height: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #249D57;
-  font-size: 16px;
-  background: transparent !important;
+   transform: translateY(-38px);
+}
+
+/* footer pinned bottom */
+.company-status-footer {
+  display: flex;
+  justify-content: center;
+  padding: 0 0 22px; /* keep your original bottom breathing */
 }
 
 
+/* =========================
+   YOUR ORIGINAL STYLES (unchanged)
+   ========================= */
+
+.company-status {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* vertical stack: ring centered */
+.company-status__stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 0 0px;
+}
+
+.company-status__ring {
+  --p: 66.6; /* example */
+  --ring: var(--primary);
+
+  width: 190px;
+  height: 190px;
+  padding: 4px;            /* controls green thickness */
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  position: relative;
+
+     background: conic-gradient(
+    var(--ring-color) 0 calc(var(--p) * 1%),
+    var(--ring-bg-color) 0 100%
+  );
+}
+
+/* ✅ OUTER THIN CIRCLE ONLY */
+.company-status__ring::before {
+  content: "";
+  position: absolute;
+  inset: -14px;
+  border-radius: 50%;
+  border: 2px solid #d7dde1;
+  pointer-events: none;
+}
+
+/* inner white area */
+.company-status__inner {
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+.company-status__logo {
+  width: 90px;
+  height: auto;
+  object-fit: contain;
+}
+
+.company-title {
+  font-size: 16px;
+  color: #181818;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* chip stays absolute to wrapper */
+.company-status__chip {
+  position: absolute;
+  top: 22px;
+  right: 50%;
+  transform: translateX(115px) translateY(6px);
+  background: #000;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.14);
+  opacity: 0;
+  transition: all 0.15s ease;
+  pointer-events: none;
+}
+
+.company-status:hover .company-status__chip {
+  opacity: 1;
+  transform: translateX(115px) translateY(0);
+  z-index: 999;
+}
+
+.company-status__ring.onboarded {
+  --ring-color: #249D57; /* green */
+  --ring-bg-color: #eafff3 ;
+}
+
+.company-status__ring.in-progress {
+  --ring-color: #f59e0b; /* orange */
+  --ring-bg-color: #fff6e7 ;
+}
+
+.company-status__ring.new {
+  --ring-color: #3b82f6; /* blue */
+  --ring-bg-color: #e9f1ff ;
+}
+
+
+
+/* ===== Responsive ===== */
+@media (max-width: 1200px) {
+  .dash {
+    max-width: 100%;
+  }
+
+  .dash__cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dash__grid--mid {
+    grid-template-columns: 1fr;
+  }
+
+  // .dash__grid--bottom {
+  //    grid-template-columns: 360px 1fr 360px;
+  // }
+
+  .panel {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 576px) {
+  .dash {
+    padding: 12px;
+  }
+
+  .dash__top {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .dash__actions {
+    justify-content: space-between;
+  }
+
+  .search-input-wrapper {
+    width: 100%;
+  }
+
+  .stat-card__value {
+    font-size: 20px;
+  }
+
+  .table__row {
+    grid-template-columns: 1fr 110px 120px;
+  }
+
+    .company-status {
+    width: 200px;
+    height: 200px;
+  }
+  .company-status__ring {
+    width: 155px;
+    height: 155px;
+  }
+  .company-status__logo {
+    width: 78px;
+  }
+
+  .dash__cards {
+    grid-template-columns: 1fr; /* stack cards */
+  }
+
+  /* Row 2 + Row 3 (if you applied my “repeat(4)” solution) */
+  .dash__grid--mid,
+  .dash__grid--bottom {
+    grid-template-columns: 1fr; /* stack sections */
+  }
+
+  /* remove spans on mobile */
+  .dash__grid--mid > *,
+  .dash__grid--bottom > * {
+    grid-column: auto !important;
+  }
+}
+
+@media (min-width: 577px) and (max-width: 1300px){
+  .delivery-radial__value{
+    font-size: 18px !important;
+  }
+
+  .delivery-radial__label{
+    font-size: 12px !important;
+  }
+
+  .delivery-radial__legend{
+    font-size: 10px !important;
+  }
+}
+
+// apex charts
+:host ::ng-deep .apexcharts-tooltip {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+:host ::ng-deep .income-tooltip {
+  background: #121615;
+  color: #fff;
+  border-radius: 12px;
+  padding: 10px 12px;
+  min-width: 210px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.22);
+}
+
+:host ::ng-deep .income-tooltip__title {
+  font-size: 12px;
+  opacity: 0.85;
+  margin-bottom: 6px;
+}
+
+:host ::ng-deep .income-tooltip__row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+:host ::ng-deep .income-tooltip__value {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+:host ::ng-deep .income-tooltip__meta {
+  font-size: 12px;
+  opacity: 0.85;
+  white-space: nowrap;
+}
+
+
+.delivery-radial {
+  position: relative;
+  width: 100%;          // ✅ take full card width
+  max-width: 520px;     // ✅ increase (or remove max-width)
+  margin: 0 auto;
+    transform: translateY(-10%);
+}
+
+.apexcharts-canvas {
+  margin: 0 auto;       // keeps it centered
+}
+
+.delivery-radial__chart {
+  width: 100%;
+  display: block;
+}
+
+.delivery-radial__center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(26px); // tiny downward nudge like figma
+  pointer-events: none;
+}
+
+.delivery-radial__value {
+  font-size: 22px;
+  font-weight: 600;
+  color: #181818;
+  line-height: 1;
+}
+
+.delivery-radial__label {
+  margin-top: 6px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #606060; // figma-like gray
+}
+
+.delivery-radial__legend {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: #262626;
+}
+
+.delivery-radial__legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot--primary { background: #21B26F; }
+.dot--soft { background: #BFE6D2; }

@@ -7,6 +7,9 @@ export const HROUTES: RouteInfo[] = [
   //   submenu: [  
   //   ]
   // },
+
+   { path: '/dashboard/dashboard1', title: 'Dashboard', icon: 'ft-briefcase',class: '', isExternalLink: false, submenu: [
+   ] },
   { path: '/company', title: 'Companies', icon: 'ft-briefcase',class: '', isExternalLink: false, submenu: [
   ] },
   { path: '/rfq', title: 'RFQ', icon: 'fa fa-handshake-o',class: '', isExternalLink: false, submenu: [
