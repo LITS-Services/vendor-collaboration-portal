@@ -42,12 +42,12 @@ const routes: Routes = [
 
       {
         path: "",
-        redirectTo: "purchase-order-master",
+        redirectTo: "purchase-order-list",
         pathMatch: "full",
       },
       {
         path: "**",
-        redirectTo: "purchase-order-master",
+        redirectTo: "purchase-order-list",
       },
 
 

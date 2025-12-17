@@ -32,12 +32,12 @@ const routes: Routes = [
       },
       {
         path: "",
-        redirectTo: "company-master",
+        redirectTo: "company-list",
         pathMatch: "full",
       },
       {
         path: "**",
-        redirectTo: "company-master",
+        redirectTo: "company-list",
       },
     ],
   },
