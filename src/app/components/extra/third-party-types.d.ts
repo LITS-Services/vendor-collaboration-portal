@@ -2,12 +2,9 @@
 // This file allows Angular's template compiler to accept property bindings
 // from these older libraries that don't have full TypeScript support
 
-declare module '@angular/core' {
-  interface Component {
-    // Allow any property bindings in templates
-    [key: string]: any;
-  }
-}
+// Note: Removed @angular/core module declaration as it was interfering with exports
+// If Component interface augmentation is needed, it should be done via proper module augmentation
+// that doesn't shadow the module's exports
 
 // Allow nouislider element properties
 interface NouisliderElement extends HTMLElement {
