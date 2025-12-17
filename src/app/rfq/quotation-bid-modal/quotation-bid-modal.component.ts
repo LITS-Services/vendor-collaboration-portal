@@ -6,8 +6,9 @@ import { QuotationItemAttachmentResponse, QuotationRequestWithDetailsResponse } 
 import { ToastrService } from 'ngx-toastr';
 import { finalize } from 'rxjs/operators';
 import { FormBuilder, Validators } from '@angular/forms';
-
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { SignalRService } from 'app/shared/services/signalr.service';
+import { SystemService } from 'app/shared/services/system.service';
 
 enum CreatedByType {
   Procurement = 1,
@@ -49,7 +50,9 @@ export class QuotationBidModalComponent implements OnInit {
     private zone: NgZone,
     private toastr: ToastrService,
     private fb: FormBuilder,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private signalRService: SignalRService,
+    private systemService: SystemService
   ) {}
 
   ngOnInit(): void {
@@ -72,7 +75,33 @@ export class QuotationBidModalComponent implements OnInit {
       console.error("No RFQ ID found in route");
     }
   });
+
+   this.signalRService.startConnection();
+
+  this.signalRService.commentReceived.subscribe((comment) => {
+    if (comment) {
+      if (
+        comment.quotationId === this.rfq.id &&
+        comment.vendorCompanyId === this.companyId
+      ) {
+        this.dataComments.push({
+          comments: comment.commentText,
+          createdByType: comment.createdByType,
+          createdByLabel:
+            comment.createdByType === CreatedByType.Procurement
+              ? "Procurement"
+              : "Vendor",
+          createdOn: new Date(),
+          createdBy: comment.createdBy,
+        });
+
+        this.cdr.detectChanges();
+        this.scrollToBottom();
+      }
+    }
+  });
 }
+
 
 isAccordionOpen(id: string): boolean {
   return this.activeIds?.includes(id);
@@ -177,7 +206,7 @@ isAccordionOpen(id: string): boolean {
       .subscribe({
         next: (saved: any) => {
           this.form.reset();
-          this.loadRfqComments();
+          //this.loadRfqComments();
         },
         error: (err: any) => {
           console.error("Error posting RFQ comment", err);
@@ -304,6 +333,7 @@ isAccordionOpen(id: string): boolean {
             fileName: file.name,
             content: (reader.result as string).split(",")[1],
             contentType: file.type,
+            isNew: true
           });
         });
         this.cdr.detectChanges();
@@ -318,14 +348,64 @@ isAccordionOpen(id: string): boolean {
     this.cdr.detectChanges();
   }
 
-  downloadAttachment(att: QuotationItemAttachmentResponse) {
-    if (!att.content) return;
+  // downloadAttachment(att: QuotationItemAttachmentResponse) {
+  //   if (!att.content) return;
 
-    // Create a temporary link
-    const a = document.createElement("a");
-    a.href = att.content; // Use the full data URL
-    a.download = att.fileName!; // Set the file name
-    a.click(); // Trigger download
+  //   // Create a temporary link
+  //   const a = document.createElement("a");
+  //   a.href = att.content; // Use the full data URL
+  //   a.download = att.fileName!; // Set the file name
+  //   a.click(); // Trigger download
+  // }
+    downloadVendorAttachment(attachment: any) {
+    if (!attachment) return;
+    const fileName = attachment.fileName || 'download';
+
+    if (attachment.isNew) {
+      // Frontend-only download
+      const dataUrl = `data:${attachment.contentType};base64,${attachment.content}`;
+      const link = document.createElement('a');
+      link.href = dataUrl;
+      link.download = fileName;
+      link.click();
+    } else {
+      // Saved attachment → download via service
+      this.systemService.downloadAttachment('VendorBid', attachment.id).subscribe({
+        next: (blob) => {
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = fileName;
+          link.click();
+          window.URL.revokeObjectURL(url);
+        },
+        error: () => {
+          this.toastr.error('Failed to download attachment.');
+        }
+      });
+    }
+  }
+
+  downloadProcurementAttachment(attachment: any) {
+    if (!attachment) return;
+    const fileName = attachment.fileName || 'download';
+
+    
+      // Saved attachment → download via service
+      this.systemService.downloadAttachment('RFQ', attachment.id).subscribe({
+        next: (blob) => {
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = fileName;
+          link.click();
+          window.URL.revokeObjectURL(url);
+        },
+        error: () => {
+          this.toastr.error('Failed to download attachment.');
+        }
+      });
+    
   }
 
   downloadBidAttachment(att: any) {
@@ -417,4 +497,5 @@ isAccordionOpen(id: string): boolean {
 
     return this.timeSince(createdOn);
   }
+
 }

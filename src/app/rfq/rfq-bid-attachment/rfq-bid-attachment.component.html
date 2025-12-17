@@ -30,7 +30,7 @@
           <ngx-datatable-column name="Actions" [width]="100">
             <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex">
               <a matTooltip="Download File" style="cursor: pointer; color: #5a5a5a; margin-right: 10px;"
-                (click)="downloadLocalFile(procurementAttachments[rowIndex])">
+                (click)="downloadAttachment(procurementAttachments[rowIndex])">
                 <i class="ft-download" style="font-size: 1.3rem;"></i>
               </a>
             </ng-template>
@@ -72,7 +72,7 @@
           <ngx-datatable-column name="Actions" [width]="100">
             <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex">
               <a matTooltip="Download" style="cursor: pointer; color: #5a5a5a; margin-right: 10px;"
-                (click)="downloadLocalFile(vendorAttachments[rowIndex])">
+                (click)="downloadAttachment(vendorAttachments[rowIndex])">
                 <i class="ft-download" style="font-size: 1.3rem;"></i>
               </a>
 
