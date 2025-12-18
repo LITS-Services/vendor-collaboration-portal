@@ -28,8 +28,8 @@
 
   <div class="stat-card__main">
     <div class="stat-card__label">Total RFQ</div>
-    <div class="stat-card__value">24</div>
-        <!-- <div class="stat-card__value">{{ formatNumber(metrics.totalRfq) }}</div> -->
+    <!-- <div class="stat-card__value">{{dashboardCounts?.totalRfqs}}</div> -->
+        <div class="stat-card__value">{{ formatNumber(metrics.totalRfqs) }}</div>
   </div>
 
   <div class="stat-card__footer">
@@ -40,15 +40,15 @@
 
 
 
-    <a class="stat-card" role="button" (click)="navigateToStatusFilteredQuotations('InProcess')">
+    <a class="stat-card" role="button" (click)="navigateToStatusFilteredQuotations(null, true)">
   <div class="stat-card__icon">
      <img src="assets/img/icons/total-pending.svg">
   </div>
 
   <div class="stat-card__main">
     <div class="stat-card__label">Total Pending Quotes</div>
-    <!-- <div class="stat-card__value">{{ formatNumber(metrics.pendingQuotes) }}</div> -->
-     <div class="stat-card__value">529</div>
+    <div class="stat-card__value">{{ formatNumber(metrics.totalPendingQuotes) }}</div>
+     <!-- <div class="stat-card__value">{{dashboardCounts?.totalPendingQuotes}}</div> -->
   </div>
 
   <div class="stat-card__footer">
@@ -58,14 +58,15 @@
     </a>
     
 
-    <a class="stat-card" role="button" (click)="goToPOs()">
+    <a class="stat-card" role="button" (click)="navigateToStatusFilteredPOs(null, true)">
   <div class="stat-card__icon">
      <img src="assets/img/icons/pending-delivery.svg">
   </div>
 
   <div class="stat-card__main">
     <div class="stat-card__label">Total Pending Deliveries</div>
-    <div class="stat-card__value">{{ formatNumber(metrics.pendingDeliveries) }}</div>
+    <div class="stat-card__value">{{ formatNumber(metrics.totalPendingDeliveries) }}</div>
+     <!-- <div class="stat-card__value">{{dashboardCounts?.totalPendingDeliveries}}</div> -->
   </div>
 
   <div class="stat-card__footer">
@@ -82,6 +83,7 @@
   <div class="stat-card__main">
     <div class="stat-card__label">Total Income</div>
     <div class="stat-card__value">{{ formatNumber(metrics.totalIncome) }}</div>
+     <!-- <div class="stat-card__value">{{dashboardCounts?.totalIncome}}</div> -->
   </div>
 
   <div class="stat-card__footer">

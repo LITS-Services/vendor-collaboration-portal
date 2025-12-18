@@ -24,10 +24,11 @@ export class PurchaseOrderService {
     return this.http.get<PurchaseOrdersCountVM>(`${environment.apiUrl}/ProcurementDashboard/purchase-orders-count-for-vendor-portal?userId=${userId}`);
   }
 
-  getPurchaseOrdersByVendorAndStatus(vendorUserId: string, status: string): Observable<any> {
+  getPurchaseOrdersByVendorAndStatus(vendorUserId: string, status: string, forPending?: boolean): Observable<any> {
     const params = new HttpParams()
       .set('vendorUserId', vendorUserId)
       .set('status', status)
+      .set('forPending', forPending);
     return this.http.get<any>(`${this.baseUrl}/get-purchase-orders-by-vendor`, { params });
   }
 

@@ -1,5 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { VendorPortalDashboardCountVM } from "app/dashboard/dashboard1/dashboard1.component";
 import { environment } from "environments/environment";
 import { Observable } from "rxjs";
 export enum ReferenceType {
@@ -32,5 +33,9 @@ export class NotifcationService {
 
     clearAllNotification(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/System/clear-all-notifications`);
+  }
+
+  getVendorPortalDashboardCount(userId: string): Observable<VendorPortalDashboardCountVM> {
+    return this.http.get<VendorPortalDashboardCountVM>(`${environment.apiUrl}/ProcurementDashboard/vendor-dashboard-counts?userId=${userId}`);
   }
 }

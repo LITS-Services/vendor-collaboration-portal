@@ -26,9 +26,10 @@ export class RfqService {
     return this.http.get<any>(`${this.baseUrl}/get-quotations-by-status`, { params });
   }
 
-  getQuotationsByVendor(vendorUserId: string, status: string | null): Observable<QuotationRequest[]> {
+  getQuotationsByVendor(vendorUserId: string, status: string | null, forPending?: boolean): Observable<QuotationRequest[]> {
     let params = new HttpParams().set('vendorUserId', vendorUserId);
     if (status) params = params.set('status', status);
+    if (forPending) params = params.set('forPending', forPending);
 
     return this.http.get<QuotationRequest[]>(`${this.baseUrl}/by-vendor`, { params });
   }

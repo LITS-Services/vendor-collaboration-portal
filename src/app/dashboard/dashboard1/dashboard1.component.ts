@@ -22,6 +22,7 @@ import { RfqService } from 'app/shared/services/rfq.service';
 import { PurchaseOrderService } from 'app/shared/services/purchase-order.service';
 import { FirebaseMessagingService } from 'app/firebase-messaging.service';
 import { ToastrService } from 'ngx-toastr';
+import { NotifcationService } from 'app/shared/services/notification.service';
 
 export interface QuotationRequestsCountVM {
   totalQuotations: number;
@@ -35,6 +36,13 @@ export interface PurchaseOrdersCountVM {
   awardedPurchaseOrders: number;
   rejectedPurchaseOrders: number;
   deliveredPurchaseOrders: number;
+}
+
+export interface VendorPortalDashboardCountVM {
+  totalRfqs: number;
+  totalPendingQuotes: number;
+  totalPendingDeliveries: number;
+  totalIncome: number;
 }
 
 type IncomeRange = 'month' | 'quarter' | 'year';
@@ -92,12 +100,13 @@ export class Dashboard1Component implements OnInit {
 
   rfqCounts!: QuotationRequestsCountVM;
   poCounts!: PurchaseOrdersCountVM;
+  dashboardCounts!: VendorPortalDashboardCountVM;
 
   // top cards (derived)
   metrics = {
-    totalRfq: 0,
-    pendingQuotes: 0,
-    pendingDeliveries: 0,
+    totalRfqs: 0,
+    totalPendingQuotes: 0,
+    totalPendingDeliveries: 0,
     totalIncome: 0
   };
 
@@ -140,7 +149,8 @@ export class Dashboard1Component implements OnInit {
     private purchaseOrderService: PurchaseOrderService,
     private messagingService: FirebaseMessagingService,
     private toaster: ToastrService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private notificationService: NotifcationService
   ) {}
 
   ngOnInit(): void {
@@ -150,6 +160,7 @@ export class Dashboard1Component implements OnInit {
     this.loadQuotationRequestsCounts();
     this.loadPurchaseOrdersCount();
     this.buildDeliveryRadialDummy();
+    this.loadVendorPortalDashboardCount();
 
     // optional: refresh apex on first paint for scaling issues
     setTimeout(() => window.dispatchEvent(new Event('resize')), 200);
@@ -287,7 +298,16 @@ get statusPillClass(): string {
     });
   }
 
-
+  loadVendorPortalDashboardCount(): void {
+    const userId = localStorage.getItem('userId');
+    this.notificationService.getVendorPortalDashboardCount(userId).subscribe({
+      next: (data) => {
+        this.dashboardCounts = data;
+        this.recomputeTopMetrics();
+      },
+      error: (err) => console.error('Error fetching dashboard count:', err)
+    });
+  }
 
 
 
@@ -309,19 +329,19 @@ get statusPillClass(): string {
 
   // ------------------ Figma metrics mapping ------------------
   private recomputeTopMetrics(): void {
-    const totalRfq = this.rfqCounts?.totalQuotations ?? 0;
-    const pendingQuotes = this.rfqCounts?.inProcessQuotations ?? 0;
+    const totalRfqs = this.dashboardCounts?.totalRfqs ?? 0;
+    const totalPendingQuotes = this.dashboardCounts?.totalPendingQuotes ?? 0;
 
-    const totalPO = this.poCounts?.totalPurchaseOrders ?? 0;
-    const deliveredPO = this.poCounts?.deliveredPurchaseOrders ?? 0;
-    const pendingDeliveries = 125;
+    const totalPendingDeliveries = this.dashboardCounts?.totalPendingDeliveries ?? 0;
+    const totalIncome = this.dashboardCounts?.totalIncome ?? 0;
+    // const pendingDeliveries = 125;
 
-    const totalIncome = 8964
+    // const totalIncome = 8964
 
     this.metrics = {
-      totalRfq,
-      pendingQuotes,
-      pendingDeliveries,
+      totalRfqs,
+      totalPendingQuotes,
+      totalPendingDeliveries,
       totalIncome
     };
 
@@ -536,15 +556,52 @@ private buildIncomeArea(range: IncomeRange): Partial<AreaChartOptions> {
   }
 
   // ------------------ navigation ------------------
-  navigateToStatusFilteredQuotations(status: string | null): void {
-    if (status) this.router.navigate(['/rfq/rfq-list'], { queryParams: { status } });
-    else this.router.navigate(['/rfq/rfq-list']);
+  // navigateToStatusFilteredQuotations(status: string | null): void {
+  //   if (status) this.router.navigate(['/rfq/rfq-list'], { queryParams: { status } });
+  //   else this.router.navigate(['/rfq/rfq-list']);
+  // }
+  navigateToStatusFilteredQuotations(
+  status: string | null,
+  forPending: boolean = false
+): void {
+  const queryParams: any = {};
+
+  if (status) {
+    queryParams.status = status;
   }
+
+  if (forPending) {
+    queryParams.forPending = true;
+  }
+
+  this.router.navigate(['/rfq/rfq-list'], { queryParams });
+}
+
+  navigateToStatusFilteredPOs(
+  status: string | null,
+  forPending: boolean = false
+): void {
+  const queryParams: any = {};
+
+  if (status) {
+    queryParams.status = status;
+  }
+
+  if (forPending) {
+    queryParams.forPending = true;
+  }
+
+  this.router.navigate(['/purchase-order/purchase-order-list'], { queryParams });
+}
+
 
   goToPOs(): void {
     this.router.navigate(['/po/po-list']);
   }
 
+  // goToRfqs(): void {
+  //   this.router.navigate(['/rfq/rfq-list']);
+  // }
   goToIncome(): void {
     // optional route
     // this.router.navigate(['/reports/income']);

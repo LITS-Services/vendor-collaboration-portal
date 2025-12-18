@@ -16,6 +16,7 @@ export class RfqListComponent implements OnInit {
   quotations: QuotationRequest[] = [];
   selectedStatus: string = '';
   isFilterOpen = false;
+  forPending = false;
 
   constructor(private rfqService: RfqService, private modalService: NgbModal,
     private cdr: ChangeDetectorRef,
@@ -27,6 +28,7 @@ export class RfqListComponent implements OnInit {
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.selectedStatus = params['status'] || '';
+      this.forPending = params['forPending'] === 'true' || false;
       this.loadQuotations();
     });
   }
@@ -38,7 +40,7 @@ export class RfqListComponent implements OnInit {
       return;
     }
 
-    this.rfqService.getQuotationsByVendor(vendorUserId, this.selectedStatus)
+    this.rfqService.getQuotationsByVendor(vendorUserId, this.selectedStatus, this.forPending)
       .subscribe(res => {
         this.quotations = res;
         this.cdr.detectChanges();

@@ -31,6 +31,7 @@ export class PurchaseOrderListComponent implements OnInit {
   title: string = 'Purchase Orders';
   status: string = '';
   selectedStatus: string = '';
+  forPending: boolean = false;
 
   vendorUserId!: string;
   purchaseOrders: any[] = [];
@@ -45,6 +46,7 @@ export class PurchaseOrderListComponent implements OnInit {
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.selectedStatus = params['status'] || '';
+      this.forPending = params['forPending'] === 'true' || false;
       this.loadPurchaseOrders();
     });
   }
@@ -56,7 +58,7 @@ export class PurchaseOrderListComponent implements OnInit {
       this.toastr.error('Vendor user not found. Please login again.');
       return;
     }
-    this.poService.getPurchaseOrdersByVendorAndStatus(vendorUserId, this.selectedStatus)
+    this.poService.getPurchaseOrdersByVendorAndStatus(vendorUserId, this.selectedStatus, this.forPending)
       .subscribe(res => {
         this.purchaseOrders = res;
         this.cdr.detectChanges();
