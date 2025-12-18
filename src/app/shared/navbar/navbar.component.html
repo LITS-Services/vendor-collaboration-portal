@@ -81,10 +81,10 @@
           </div>
         </div>
         <!-- User dropdown (kept from your code) -->
-        <div class="dropdown" container="body" ngbDropdown placement="bottom-right">
-          <a class="user-btn" ngbDropdownToggle>
+        <div class="dropdown" container="body"  ngbDropdown placement="bottom-right">
+          <a class="user-btn" ngbDropdownToggle >
             <!-- <span class="user-name d-none d-md-inline">{{ username }}</span> -->
-            <img [title]="username" class="avatar"
+            <img class="avatar" [ngbTooltip]="username"
               [ngClass]="{ 'default-avatar': profilePicture === 'assets/img/profile/user.png' || !profilePicture }"
               [src]="profilePicture || 'assets/img/profile/user.png'" alt="avatar" height="34" width="34" />
           </a>
