@@ -89,7 +89,7 @@
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 14px;
-  margin-bottom: 14px;
+  margin-bottom: 8px;
 }
 
 .stat-card {
@@ -191,7 +191,7 @@
 
 .dash__grid--mid {
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  margin-bottom: 14px;
+  margin-bottom: 8px;
 }
 
 .dash__grid--mid > :first-child { grid-column: span 1; }

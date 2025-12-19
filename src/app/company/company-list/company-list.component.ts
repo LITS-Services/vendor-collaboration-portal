@@ -32,7 +32,7 @@ export class CompanyListComponent implements OnInit {
   loadingRemarks: boolean = false;
   loadingStatus: boolean = false;
   showNoRemarksMessage: boolean = false; // Added for template flag
-
+  showRegisterButton: boolean = false;
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -54,6 +54,15 @@ export class CompanyListComponent implements OnInit {
     });
   }
 
+  goBack() {
+    this.router.navigate(['/company/company-list']);
+  }
+
+  
+  newCompany(): void {
+    this.router.navigateByUrl("/pages/company-registration");
+  }
+
   loadCompanies(status: string): void {
     this.loading = true;
     const userId = localStorage.getItem('userId');
@@ -71,6 +80,7 @@ export class CompanyListComponent implements OnInit {
         
         const rawCompanies = Array.isArray(res) ? res : res?.$values || [];
         console.log('Processed companies array:', rawCompanies);
+        this.showRegisterButton = rawCompanies.length === 0;
 
         // Base company mapping - IGNORE remarks from getCompanyByVendorId
      this.companyData = rawCompanies.map(c => ({

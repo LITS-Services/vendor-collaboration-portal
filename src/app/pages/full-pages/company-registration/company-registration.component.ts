@@ -929,7 +929,7 @@ loadCompanyById(companyId: number) {
 
 
   goBack() {
-    this.router.navigate(['/company/company-master']);
+    this.router.navigate(['/company/company-list']);
   }
 
 addBank(): void {
