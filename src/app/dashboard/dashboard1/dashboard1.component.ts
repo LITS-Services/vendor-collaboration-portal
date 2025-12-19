@@ -23,6 +23,7 @@ import { PurchaseOrderService } from 'app/shared/services/purchase-order.service
 import { FirebaseMessagingService } from 'app/firebase-messaging.service';
 import { ToastrService } from 'ngx-toastr';
 import { NotifcationService } from 'app/shared/services/notification.service';
+import { DashboardService } from 'app/shared/services/dashboard.service';
 
 export interface QuotationRequestsCountVM {
   totalQuotations: number;
@@ -102,7 +103,6 @@ export class Dashboard1Component implements OnInit {
   poCounts!: PurchaseOrdersCountVM;
   dashboardCounts!: VendorPortalDashboardCountVM;
 
-  // top cards (derived)
   metrics = {
     totalRfqs: 0,
     totalPendingQuotes: 0,
@@ -128,14 +128,10 @@ export class Dashboard1Component implements OnInit {
     { name: 'Others', amountLabel: '229.9K', pct: 30 }
   ];
 
-  // ---------- Charts ----------
   companyStatusDonut!: Partial<DonutChartOptions>;
   incomeArea!: Partial<AreaChartOptions>;
   deliveryRadial!: Partial<RadialChartOptions>;
 
-  // theme tokens
-  private readonly primary = '#249D57';
-  private readonly primarySoft = '#BDE2CD';
 
   companyStatusKey: 'new' | 'in-progress' | 'onboarded' = 'onboarded'; // fixed for now
   companyStatusPercent:number = 33;
@@ -150,23 +146,21 @@ export class Dashboard1Component implements OnInit {
     private messagingService: FirebaseMessagingService,
     private toaster: ToastrService,
     private cdr: ChangeDetectorRef,
-    private notificationService: NotifcationService
+    private dashboardService:DashboardService
   ) {}
 
   ngOnInit(): void {
-    this.initCharts();
+    this.incomeArea = this.buildIncomeAreaFromApi([], [], []);
+    this.setIncomeRange('year');
     this.setCompanyStatus('onboarded');
     this.loadCompanyStats();
-    this.loadQuotationRequestsCounts();
-    this.loadPurchaseOrdersCount();
+
     this.buildDeliveryRadialDummy();
     this.loadVendorPortalDashboardCount();
 
-    // optional: refresh apex on first paint for scaling issues
     setTimeout(() => window.dispatchEvent(new Event('resize')), 200);
   }
 
-  // ------------------ API loaders (your logic kept) ------------------
   loadCompanyStats(): void {
     const userId = localStorage.getItem('userId');
     if (!userId) return;
@@ -199,7 +193,7 @@ export class Dashboard1Component implements OnInit {
           return diffInDays <= 10 && status === 'approve';
         }).length;
 
-        // update donut: Completed vs In Progress
+        // update donut: Completed/ In Progress
         const completed = Math.max(this.totalCompaniesCount - this.inprogressCount, 0);
         this.updateCompanyDonut(completed, this.inprogressCount);
 
@@ -234,16 +228,11 @@ export class Dashboard1Component implements OnInit {
         startAngle: -135,
         endAngle: 135,
 
-        // more center space for the text + legend (like figma)
-        // hollow: { size: '62%' },
-
         track: {
           background: '#D3EBDD',
           strokeWidth: '100%',
           margin: 0
         },
-
-        // we will show our own text, so hide apex labels
         dataLabels: {
           name: { show: false },
           value: { show: false }
@@ -277,30 +266,10 @@ get statusPillClass(): string {
   }
 }
 
-  loadQuotationRequestsCounts(): void {
-    this.rfqService.getQuotationRequestsCount().subscribe({
-      next: (data) => {
-        this.rfqCounts = data;
-        this.recomputeTopMetrics();
-      },
-      error: (err) => console.error('Error fetching quotation requests count:', err)
-    });
-  }
-
-  loadPurchaseOrdersCount(): void {
-    const userId = localStorage.getItem('userId');
-    this.purchaseOrderService.getPurchaseOrdersCount(userId).subscribe({
-      next: (data) => {
-        this.poCounts = data;
-        this.recomputeTopMetrics();
-      },
-      error: (err) => console.error('Error fetching purchase orders count:', err)
-    });
-  }
 
   loadVendorPortalDashboardCount(): void {
     const userId = localStorage.getItem('userId');
-    this.notificationService.getVendorPortalDashboardCount(userId).subscribe({
+    this.dashboardService.getVendorPortalDashboardCount(userId).subscribe({
       next: (data) => {
         this.dashboardCounts = data;
         this.recomputeTopMetrics();
@@ -327,16 +296,12 @@ get statusPillClass(): string {
 }
   
 
-  // ------------------ Figma metrics mapping ------------------
   private recomputeTopMetrics(): void {
     const totalRfqs = this.dashboardCounts?.totalRfqs ?? 0;
     const totalPendingQuotes = this.dashboardCounts?.totalPendingQuotes ?? 0;
 
     const totalPendingDeliveries = this.dashboardCounts?.totalPendingDeliveries ?? 0;
     const totalIncome = this.dashboardCounts?.totalIncome ?? 0;
-    // const pendingDeliveries = 125;
-
-    // const totalIncome = 8964
 
     this.metrics = {
       totalRfqs,
@@ -348,62 +313,6 @@ get statusPillClass(): string {
     this.cdr.detectChanges();
   }
 
-  // ------------------ Charts init + updates ------------------
-  private initCharts(): void {
-    // Company Status donut (Completed vs In Progress)
-    this.companyStatusDonut = {
-      series: [70, 30],
-      labels: ['Completed', 'In Progress'],
-      chart: {
-        type: 'donut',
-        height: 250,
-        toolbar: { show: false },
-        animations: { enabled: false }
-      },
-      dataLabels: { enabled: false },
-      stroke: { width: 0 },
-      plotOptions: {
-        pie: {
-          donut: {
-            size: '78%',
-            labels: {
-              show: true,
-              name: { show: false },
-              value: {
-                show: true,
-                fontSize: '22px',
-                fontWeight: 700,
-                formatter: (val: string) => `${Math.round(Number(val) || 0)}%`
-              },
-              total: {
-                show: true,
-                label: '',
-                formatter: (w: any) => {
-                  const s = w.globals.seriesTotals.reduce((a: number, b: number) => a + b, 0);
-                  const completed = w.globals.seriesTotals[0] || 0;
-                  const pct = s ? Math.round((completed / s) * 100) : 0;
-                  return `${pct}%`;
-                }
-              }
-            }
-          }
-        }
-      },
-      legend: { show: false },
-      tooltip: { enabled: true },
-      responsive: [
-        {
-          breakpoint: 576,
-          options: {
-            chart: { height: 220 }
-          }
-        }
-      ]
-    };
-
-    // Income area (Figma style)
-    this.incomeArea = this.buildIncomeArea('year');
-  }
 
   private updateCompanyDonut(completed: number, inProgress: number): void {
     const c = Math.max(completed, 0);
@@ -417,26 +326,49 @@ get statusPillClass(): string {
     this.cdr.detectChanges();
   }
 
-  setIncomeRange(range: IncomeRange): void {
-    this.incomeRange = range;
-    this.incomeArea = this.buildIncomeArea(range);
+setIncomeRange(range: IncomeRange): void {
+  this.incomeRange = range;
 
-    // keep top card Total Income synced
-    this.recomputeTopMetrics();
+  const userId = localStorage.getItem('userId') || '';
+  const filterType = range === 'month' ? 1 : range === 'quarter' ? 2 : 3;
 
-    setTimeout(() => window.dispatchEvent(new Event('resize')), 50);
+  this.dashboardService.getPurchaseOrderAmountGraphData(userId, filterType).subscribe({
+    next: (rows: any[]) => {
+      const { labels, values, rawDates } = this.mapIncomeApiToChart(range, rows);
+      this.incomeArea = this.buildIncomeAreaFromApi(labels, values, rawDates);
+      setTimeout(() => window.dispatchEvent(new Event('resize')), 50);
+      this.cdr.detectChanges();
+    },
+    error: (err) => console.error('Income graph error:', err)
+  });
+}
+
+private mapIncomeApiToChart(
+  range: IncomeRange,
+  rows: Array<{ groupData: string; totalAmount: number | null }>
+): { labels: string[]; values: number[]; rawDates: string[] } {
+
+  const labels: string[] = [];
+  const values: number[] = [];
+  const rawDates: string[] = [];
+
+  for (const r of rows || []) {
+    rawDates.push(r.groupData);
+    labels.push(this.formatIncomeLabel(range, r.groupData));
+    values.push(Number(r.totalAmount ?? 0));
   }
 
-private buildIncomeArea(range: IncomeRange): Partial<AreaChartOptions> {
-  const config = this.getIncomeData(range);
+  return { labels, values, rawDates };
+}
 
-  // If you don’t have comparison data, just set it to [] and it won’t show.
-  const compareValues = [];
+
+private buildIncomeAreaFromApi(labels: string[], values: number[],  rawDates: string[]): Partial<AreaChartOptions> {
+  const compareValues: number[] = []; // keep empty if you don't have prev period
 
   return {
     series: [
-      { name: 'Income', data: config.values },
-      { name: 'Income (Prev)', data: compareValues } // dotted grey line
+      { name: 'Income', data: values },
+      { name: 'Income (Prev)', data: compareValues }
     ],
 
     chart: {
@@ -448,15 +380,15 @@ private buildIncomeArea(range: IncomeRange): Partial<AreaChartOptions> {
       fontFamily: 'Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial'
     },
 
-      colors: [
-      'rgba(102, 199, 155, 0.55)', // main green (lighter stroke)
-      'rgba(154, 164, 160, 0.8)'   // comparison line
+    colors: [
+      'rgba(102, 199, 155, 0.55)',
+      'rgba(154, 164, 160, 0.8)'
     ],
 
     stroke: {
       curve: 'smooth',
       width: [1.5, 2],
-      dashArray: [0, 6], // 2nd series dotted
+      dashArray: [0, 6],
       lineCap: 'round'
     },
 
@@ -464,8 +396,8 @@ private buildIncomeArea(range: IncomeRange): Partial<AreaChartOptions> {
       type: ['gradient', 'solid'],
       gradient: {
         shadeIntensity: 0,
-        opacityFrom: 0.40,   // ⬆ more visible area
-        opacityTo: 0.06,     // fades nicely
+        opacityFrom: 0.40,
+        opacityTo: 0.06,
         stops: [0, 85, 100]
       }
     },
@@ -474,7 +406,7 @@ private buildIncomeArea(range: IncomeRange): Partial<AreaChartOptions> {
       size: [0, 0],
       strokeWidth: 0,
       hover: { size: 6 },
-      discrete: [] // optional: you can set a fixed dot on a point if you want
+      discrete: []
     },
 
     grid: {
@@ -486,19 +418,13 @@ private buildIncomeArea(range: IncomeRange): Partial<AreaChartOptions> {
     },
 
     xaxis: {
-      categories: config.labels,
+      categories: labels,
       axisBorder: { show: false },
       axisTicks: { show: false },
-      labels: {
-        style: { colors: '#8B9B93', fontSize: '12px' }
-      },
+      labels: { style: { colors: '#8B9B93', fontSize: '12px' } },
       crosshairs: {
         show: true,
-        stroke: {
-          color: '#2B2F2D',
-          width: 1,
-          dashArray: 4
-        }
+        stroke: { color: '#2B2F2D', width: 1, dashArray: 4 }
       },
       tooltip: { enabled: false }
     },
@@ -507,53 +433,34 @@ private buildIncomeArea(range: IncomeRange): Partial<AreaChartOptions> {
       tickAmount: 4,
       labels: {
         style: { colors: '#8B9B93', fontSize: '12px' },
-        formatter: (v: number) => `AED ${Math.round(v)}`
+        formatter: (v: number) => `${Math.round(v)}`
       }
     },
 
     dataLabels: { enabled: false },
-
     legend: { show: false },
 
-    tooltip: {
-  shared: true,
-  intersect: false,
-  custom: ({ series, dataPointIndex, w }) => {
-    const label = w.globals.labels?.[dataPointIndex] ?? '';
-    const income = series?.[0]?.[dataPointIndex] ?? 0;
-    return `
-      <div class="income-tooltip">
-        <div class="income-tooltip__title"> <span> Revenue: </span> ${label}</div>
-        <div class="income-tooltip__row">
-          <div class="income-tooltip__value">
-            AED ${this.formatNumber(income)}
+  tooltip: {
+      shared: true,
+      intersect: false,
+      custom: ({ series, dataPointIndex }) => {
+        const fullDate = this.formatFullDate(rawDates?.[dataPointIndex] ?? labels?.[dataPointIndex] ?? '', this.incomeRange);
+        const income = series?.[0]?.[dataPointIndex] ?? 0;
+
+        return `
+          <div class="income-tooltip">
+            <div class="income-tooltip__title">Revenue on ${fullDate}</div>
+            <div class="income-tooltip__row">
+              <div class="income-tooltip__value">${this.formatNumber(income)}</div>
+            </div>
           </div>
-        </div>
-      </div>
-    `;
-  }
-}
+        `;
+      }
+    }
   };
 }
-  private getIncomeData(range: IncomeRange): { labels: string[]; values: number[] } {
-    // Replace this with real API later; UI stays same.
-    if (range === 'month') {
-      return {
-        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
-        values: [4200, 5150, 4600, 6200]
-      };
-    }
-    if (range === 'quarter') {
-      return {
-        labels: ['Q1', 'Q2', 'Q3', 'Q4'],
-        values: [14500, 12100, 17500, 9800]
-      };
-    }
-    return {
-      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-      values: [5200, 6100, 8200, 5150, 10400, 7500, 6900, 12000, 17800, 13200, 4600, 5100]
-    };
-  }
+
+
 
   // ------------------ navigation ------------------
   // navigateToStatusFilteredQuotations(status: string | null): void {
@@ -620,6 +527,56 @@ private buildIncomeArea(range: IncomeRange): Partial<AreaChartOptions> {
   formatCurrency(val: any): string {
     const n = Number(val) || 0;
     // change AED/$ etc as per your app
-    return `AED ${n.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
+    return `${n.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
   }
+
+  private formatIncomeLabel(range: IncomeRange, raw: string): string {
+  if (range === 'quarter') return raw;
+
+  const d = new Date(raw);
+  if (Number.isNaN(d.getTime())) return raw;
+
+  if (range === 'month') {
+    // 1,2,3,... (day of month)
+    return String(d.getDate());
+  }
+
+  // year: Jan, Feb, Mar...
+  return d.toLocaleDateString(undefined, { month: 'short' });
+}
+
+private formatFullDate(raw: string, range: IncomeRange): string {
+  // QUARTER → "Q4 (Oct – Dec), 2025"
+  if (range === 'quarter') {
+    const quarterMonths: Record<string, string> = {
+      Q1: 'Jan – Mar',
+      Q2: 'Apr – Jun',
+      Q3: 'Jul – Sep',
+      Q4: 'Oct – Dec'
+    };
+
+    const year = new Date().getFullYear(); // or derive later
+    const months = quarterMonths[raw] ?? '';
+    return `${raw} (${months}), ${year}`;
+  }
+
+  const d = new Date(raw);
+  if (Number.isNaN(d.getTime())) return raw;
+
+  if (range === 'year') {
+    const month = d.toLocaleDateString(undefined, { month: 'short' });
+    const year = d.getFullYear();
+    return `${month}, ${year}`;
+  }
+
+  // MONTH
+  const monthDay = d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  const weekday = d.toLocaleDateString(undefined, { weekday: 'long' });
+  const year = d.getFullYear();
+
+  return `${monthDay}, ${weekday}, ${year}`;
+}
+
+
+
 }
