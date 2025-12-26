@@ -35,7 +35,9 @@ export class QuotationBidModalComponent implements OnInit {
   dataComments: any[] = [];
   loading = false;
   CreatedByType = CreatedByType;
-  activeIds = ["static-1", "static-2"];
+  activeIds = ["static-1", "static-2", "static-3"];
+
+  quotationId: number;
 
   private focusComments = false;
 
@@ -53,59 +55,53 @@ export class QuotationBidModalComponent implements OnInit {
     private modalService: NgbModal,
     private signalRService: SignalRService,
     private systemService: SystemService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.vendorUserId = localStorage.getItem("userId");
-     this.companyId = localStorage.getItem("company");
-    if (!this.vendorUserId) {
-      console.error(
-        "Vendor user ID not found in localStorage. Please login again."
-      );
-    }
-    this.route.queryParamMap.subscribe(qp => {
-    this.focusComments = qp.get('focus') === 'comments';
-  });
+    this.companyId = localStorage.getItem("company");
+    if (!this.vendorUserId) console.error("Vendor user ID not found in localStorage.");
 
-   this.route.paramMap.subscribe(params => {
-    const id = Number(params.get("rfqId"));
-    if (id) {
-      this.loadRfqDetails(id);
-    } else {
-      console.error("No RFQ ID found in route");
-    }
-  });
+    this.route.paramMap.subscribe(params => {
+      this.quotationId = Number(params.get("rfqId"));
+      if (this.quotationId) this.loadRfqDetails(this.quotationId);
+      else console.error("No RFQ ID found in route");
+    });
 
-   this.signalRService.startConnection();
+    this.signalRService.startConnection().then(async () => {
+      console.log('SignalR connected');
+      if (this.quotationId && this.vendorUserId) {
+        await this.signalRService.joinQuotation(this.quotationId, this.vendorUserId)
+        console.log("Joined quotation group:", this.quotationId, this.vendorUserId);
 
-  this.signalRService.commentReceived.subscribe((comment) => {
-    if (comment) {
-      if (
-        comment.quotationId === this.rfq.id &&
-        comment.vendorCompanyId === this.companyId
-      ) {
+      }
+    });
+
+    this.signalRService.comment$.subscribe((comment) => {
+      if (!comment) return;
+      if (comment.quotationId === this.quotationId && comment.vendorId === this.vendorUserId) {
         this.dataComments.push({
           comments: comment.commentText,
           createdByType: comment.createdByType,
-          createdByLabel:
-            comment.createdByType === CreatedByType.Procurement
-              ? "Procurement"
-              : "Vendor",
-          createdOn: new Date(),
-          createdBy: comment.createdBy,
+          createdByLabel: comment.createdByType === CreatedByType.Vendor ? 'Vendor' : 'Procurement',
+          createdOn: comment.createdAt,
+          createdBy: comment.createdBy
         });
-
         this.cdr.detectChanges();
         this.scrollToBottom();
       }
-    }
-  });
-}
+    });
+  }
 
 
-isAccordionOpen(id: string): boolean {
-  return this.activeIds?.includes(id);
-}
+  ngOnDestroy(): void {
+    this.signalRService.leaveQuotation(this.quotationId, this.companyId);
+    this.signalRService.stopConnection();
+  }
+
+  isAccordionOpen(id: string): boolean {
+    return this.activeIds?.includes(id);
+  }
 
   loadRfqDetails(rfqId: number) {
     const vendorUserId = localStorage.getItem("userId");
@@ -151,12 +147,12 @@ isAccordionOpen(id: string): boolean {
       .pipe(finalize(() => {
         setTimeout(() => {
           this.loading = false
-          this.cdr.detectChanges()  
+          this.cdr.detectChanges()
         }, 1250);
       }))
       .subscribe({
         next: (res: any) => {
-           const list: any[] = Array.isArray(res) ? res : [];
+          const list: any[] = Array.isArray(res) ? res : [];
           this.dataComments = list.reverse().map((c: any) => ({
             //vendor: this.vendorName,
             comments: c?.commentText ?? "",
@@ -168,7 +164,7 @@ isAccordionOpen(id: string): boolean {
             createdOn: c?.createdOn,
             createdBy: c?.createdBy,
           }));
-            this.cdr.markForCheck();
+          this.cdr.markForCheck();
           this.scrollToBottom();
           this.scrollToCommentsOnNotif();
         },
@@ -199,8 +195,8 @@ isAccordionOpen(id: string): boolean {
       .addRfqComment(payload)
       .pipe(
         finalize(() => {
-            this.loading = false;
-              this.cdr.detectChanges();
+          this.loading = false;
+          this.cdr.detectChanges();
         })
       )
       .subscribe({
@@ -222,28 +218,28 @@ isAccordionOpen(id: string): boolean {
   }
 
   private scrollToCommentsOnNotif(): void {
-  if (!this.focusComments) return;
+    if (!this.focusComments) return;
 
-  // Open Comments panel
-  this.activeIds = ['static-3']; // or ['static-1','static-3'] if you want items also open
-  this.cdr.detectChanges();
+    // Open Comments panel
+    this.activeIds = ['static-3']; // or ['static-1','static-3'] if you want items also open
+    this.cdr.detectChanges();
 
     setTimeout(() => {
-    const anchor = document.getElementById('commentsSectionAnchor');
-    if (anchor) {
-      anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } else {
-      // fallback: scroll to bottom of page
-      window.scrollTo({
-        top: document.body.scrollHeight,
-        behavior: 'smooth'
-      });
-    }
+      const anchor = document.getElementById('commentsSectionAnchor');
+      if (anchor) {
+        anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        // fallback: scroll to bottom of page
+        window.scrollTo({
+          top: document.body.scrollHeight,
+          behavior: 'smooth'
+        });
+      }
 
-    // don’t repeat on later opens
-    this.focusComments = false;
-  }, 0);
-}
+      // don’t repeat on later opens
+      this.focusComments = false;
+    }, 0);
+  }
 
   getBid(itemId: number): BidSubmissionDetails {
     if (!this.bidMap.has(itemId)) {
@@ -357,7 +353,8 @@ isAccordionOpen(id: string): boolean {
   //   a.download = att.fileName!; // Set the file name
   //   a.click(); // Trigger download
   // }
-    downloadVendorAttachment(attachment: any) {
+
+  downloadVendorAttachment(attachment: any) {
     if (!attachment) return;
     const fileName = attachment.fileName || 'download';
 
@@ -390,22 +387,22 @@ isAccordionOpen(id: string): boolean {
     if (!attachment) return;
     const fileName = attachment.fileName || 'download';
 
-    
-      // Saved attachment → download via service
-      this.systemService.downloadAttachment('RFQ', attachment.id).subscribe({
-        next: (blob) => {
-          const url = window.URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = fileName;
-          link.click();
-          window.URL.revokeObjectURL(url);
-        },
-        error: () => {
-          this.toastr.error('Failed to download attachment.');
-        }
-      });
-    
+
+    // Saved attachment → download via service
+    this.systemService.downloadAttachment('RFQ', attachment.id).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        link.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: () => {
+        this.toastr.error('Failed to download attachment.');
+      }
+    });
+
   }
 
   downloadBidAttachment(att: any) {
@@ -452,7 +449,7 @@ isAccordionOpen(id: string): boolean {
     });
   }
 
-    timeSince(date: Date): string {
+  timeSince(date: Date): string {
     const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
 
     if (seconds < 30) return 'just now';
@@ -474,7 +471,7 @@ isAccordionOpen(id: string): boolean {
     return '1m ago';
   }
 
-   get lastMessageAgo(): string | null {
+  get lastMessageAgo(): string | null {
     if (!this.dataComments || this.dataComments.length === 0) {
       return null;
     }
@@ -497,5 +494,4 @@ isAccordionOpen(id: string): boolean {
 
     return this.timeSince(createdOn);
   }
-
 }
