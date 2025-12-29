@@ -168,6 +168,20 @@ export class ShipmentDetailsComponent implements OnInit {
       return;
     }
 
+    Swal.fire({
+      title: 'Confirm Shipment',
+      text: this.isEdit
+        ? 'Are you sure you want to update this shipment?'
+        : 'Are you sure you want to create this shipment?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, continue',
+      cancelButtonText: 'Cancel'
+    }).then((result) => {
+      if (!result.isConfirmed) {
+        return;
+      }
+
     const itemsPayload = this.itemsForm.controls.map(ctrl => ({
       purchaseOrderLineId: ctrl.get('purchaseOrderLineId')?.value,
       deliveryDate: ctrl.get('deliveryDate')?.value
@@ -192,7 +206,6 @@ export class ShipmentDetailsComponent implements OnInit {
     };
 
     if (this.isEdit && this.shipmentId) {
-
       const updatePayload = {
         shipmentDetailId: this.shipmentId,
         shipmentDetail: shipmentDetailPayload
@@ -217,6 +230,7 @@ export class ShipmentDetailsComponent implements OnInit {
         this.router.navigate([`/purchase-order/purchase-order-details/${this.poId}`], { skipLocationChange: true });
         this.checkIfShipmentExists();
       }
+    });
     });
   }
 
