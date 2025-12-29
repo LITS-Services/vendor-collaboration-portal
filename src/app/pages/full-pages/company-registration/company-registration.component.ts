@@ -88,6 +88,14 @@ editingAddressIndex: number | null = null;
 editingAddress: any = this.createEmptyAddress();
 editingBankIndex: number | null = null;
 
+
+logoFile: File | null = null;
+logoPreviewUrl: string | null = null;
+
+// for edit mode (logo already saved on server)
+existingLogoUrl: string | null = null;
+
+
 allEntitiesCompleted: boolean = false;
 private createEmptyContact() {
   return {
@@ -926,7 +934,39 @@ loadCompanyById(companyId: number) {
     });
   }
 
+onLogoSelect(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0] || null;
 
+  // allow selecting same file again
+  input.value = '';
+
+  if (!file) return;
+
+  // size check 2MB (since your UI says 2MB)
+  if (file.size > 2 * 1024 * 1024) {
+    // you can show toast if you want
+    // this.toastr.error('Max 2MB allowed');
+    return;
+  }
+
+  this.logoFile = file;
+
+  // preview
+  if (this.logoPreviewUrl) URL.revokeObjectURL(this.logoPreviewUrl);
+  this.logoPreviewUrl = URL.createObjectURL(file);
+}
+
+removeLogo() {
+  this.logoFile = null;
+
+  if (this.logoPreviewUrl) {
+    URL.revokeObjectURL(this.logoPreviewUrl);
+  }
+
+  this.logoPreviewUrl = null;
+  this.existingLogoUrl = null; // remove existing too (if you want)
+}
 
   goBack() {
     this.router.navigate(['/company/company-list']);

@@ -24,6 +24,7 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 import { ChatModule } from 'app/chat/chat.module';
 import { RfqBidAttachmentComponent } from './rfq-bid-attachment/rfq-bid-attachment.component';
 import { QuotationBidModalComponent } from './quotation-bid-modal/quotation-bid-modal.component';
+import { AutoResizeDatatableDirective } from 'app/shared/directives/table-auto-resize.directive';
 
 
 @NgModule({
@@ -60,6 +61,7 @@ import { QuotationBidModalComponent } from './quotation-bid-modal/quotation-bid-
     NgApexchartsModule,
     // ChartistModule, // Not compatible with Angular Ivy
     MatchHeightModule,
+    AutoResizeDatatableDirective
   ]
 })
 export class RfqModule { }

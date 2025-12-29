@@ -1,4 +1,9 @@
 @import './app/shared/custom-style/custom-tab.css';
+
+:root,
+[data-bs-theme="light"] {
+  --bs-body-font-family: "Onest", sans-serif;
+}
 .modal-title {
   color: white !important;
 }
@@ -64,6 +69,10 @@
     text-decoration: none;
     background-color: transparent;
 }
+.datatable-body a{
+  text-decoration: underline !important;
+}
+ 
 a:hover {
     color: #187741;
     text-decoration: none;
@@ -224,8 +233,8 @@ a:hover {
 }
 
     .ngx-datatable .datatable-header-inner {
-      background-color: #249d57 !important;
-      color: white;
+    background-color: #F4F4F4 !important;
+    color: #606060;
     }
 
   .ngx-datatable.bootstrap .datatable-header .datatable-header-cell {
@@ -233,12 +242,11 @@ a:hover {
 }
 
 .ngx-datatable.bootstrap .datatable-body .datatable-body-row {
-  border-top: none !important;   /* allow growth */
-  margin-bottom: -3px !important;
+      border-bottom: 1px solid #ededed !important;
+      border-top: none;
 }
-
   .ngx-datatable.bootstrap .datatable-body .datatable-body-row.datatable-row-even {
-    background-color: #f1fff7bd !important;
+   background-color: white;
   }
 
    .ngx-datatable.bootstrap .datatable-body .datatable-body-row.datatable-row-odd {
@@ -248,6 +256,8 @@ a:hover {
   .ngx-datatable.bootstrap .datatable-body .datatable-body-row.active{
     background-color: #249d57 !important;
   }
+
+
 
 
   .ngx-datatable.fixed-row .datatable-scroll .datatable-body-row .datatable-body-cell{

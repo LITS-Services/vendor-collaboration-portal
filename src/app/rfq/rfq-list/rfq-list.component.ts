@@ -5,6 +5,7 @@ import { RfqService } from 'app/shared/services/rfq.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { skip } from 'rxjs/operators';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-rfq-list',
@@ -17,12 +18,13 @@ export class RfqListComponent implements OnInit {
   selectedStatus: string = '';
   isFilterOpen = false;
   forPending = false;
-
+    datatableVisible: boolean = true;
   constructor(private rfqService: RfqService, private modalService: NgbModal,
     private cdr: ChangeDetectorRef,
     private router: Router,
     private route: ActivatedRoute,
-    public toastr: ToastrService
+    public toastr: ToastrService,
+    public spinner:NgxSpinnerService
   ) { }
 
   ngOnInit(): void {
@@ -33,6 +35,18 @@ export class RfqListComponent implements OnInit {
     });
   }
 
+
+    onAutoResize(): void {
+      this.spinner.show();
+    this.datatableVisible = false;
+    this.cdr.detectChanges(); // destroy
+
+    requestAnimationFrame(() => {
+      this.datatableVisible = true;
+      this.spinner.hide();
+      this.cdr.detectChanges(); // recreate
+    });
+  }
   loadQuotations(): void {
     const vendorUserId = localStorage.getItem('userId');
     if (!vendorUserId) {
@@ -40,9 +54,12 @@ export class RfqListComponent implements OnInit {
       return;
     }
 
+    this.spinner.show();
+
     this.rfqService.getQuotationsByVendor(vendorUserId, this.selectedStatus, this.forPending)
       .subscribe(res => {
         this.quotations = res;
+        this.spinner.hide();
         this.cdr.detectChanges();
       });
   }
@@ -71,4 +88,14 @@ export class RfqListComponent implements OnInit {
       this.isFilterOpen = false;
     }
   }
+
+  getStatusClass(status: any): string {
+  const s = (status ?? '').toString().trim().toLowerCase();
+
+  if (s === 'new') return 'status-pill--new';
+  if (s === 'inprocess' || s === 'in process' || s === 'in_process') return 'status-pill--inprocess';
+  if (s === 'completed') return 'status-pill--completed';
+
+  return 'status-pill--default';
+}
 }

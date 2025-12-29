@@ -24,6 +24,7 @@ import { NgxSpinnerModule } from 'ngx-spinner';
 // Temporarily commented - not compatible with Angular Ivy:
 // import { AngularResizedEventModule } from 'angular-resize-event';
 import { NgApexchartsModule } from 'ng-apexcharts';
+import { AutoResizeDatatableDirective } from 'app/shared/directives/table-auto-resize.directive';
 // Temporarily commented - not compatible with Angular Ivy:
 // import { ChartistModule } from 'ng-chartist';
 
@@ -58,6 +59,7 @@ import { NgApexchartsModule } from 'ng-apexcharts';
         NgApexchartsModule,
         // ChartistModule, // Temporarily commented - not compatible with Angular Ivy
         MatchHeightModule,
+        AutoResizeDatatableDirective
   ],
   schemas: [NO_ERRORS_SCHEMA] // Suppress errors from commented modules
 })

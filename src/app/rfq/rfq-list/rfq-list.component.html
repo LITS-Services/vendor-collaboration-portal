@@ -27,55 +27,67 @@
 
   <div class="row">
     <div class="col-12">
-      <ngx-datatable class="bootstrap core-bootstrap" [rows]="quotations" [columnMode]="'force'" [headerHeight]="50"
-        [footerHeight]="50" [rowHeight]="50" [scrollbarH]="true">
-
+      @if(datatableVisible){
+      <ngx-datatable autoResize (autoResize)="onAutoResize()" class="bootstrap core-bootstrap" [rows]="quotations"
+        [columnMode]="'force'" [headerHeight]="42" [footerHeight]="50" [rowHeight]="42" [scrollbarH]="true">
+      
         <!-- Sr. No Column -->
-        <ngx-datatable-column name="Sr. No." [sortable]="false" [resizeable]="false">
+        <ngx-datatable-column name="Sr. No." [sortable]="false" [resizeable]="false" [width]="50">
           <ng-template let-rowIndex="rowIndex" ngx-datatable-cell-template>
-            {{ rowIndex + 1 }}
+            <span class="ms-1">{{ rowIndex + 1 }}</span>
           </ng-template>
         </ngx-datatable-column>
-
+      
         <!-- RFQ No -->
         <ngx-datatable-column name="RFQ No." prop="rfqNo" [sortable]="false"></ngx-datatable-column>
-
+      
         <!-- Status -->
-        <ngx-datatable-column name="Status" prop="requestStatus" [sortable]="false"></ngx-datatable-column>
-
+      
+      
         <!-- Start Date -->
         <ngx-datatable-column name="Start Date" prop="startDate" [sortable]="false">
           <ng-template let-row="row" ngx-datatable-cell-template>
             {{ row.startDate | date: 'yyyy-MM-dd' }}
           </ng-template>
         </ngx-datatable-column>
-
+      
         <!-- End Date -->
         <ngx-datatable-column name="End Date" prop="endDate" [sortable]="false">
           <ng-template let-row="row" ngx-datatable-cell-template>
             {{ row.endDate | date: 'yyyy-MM-dd' }}
           </ng-template>
         </ngx-datatable-column>
-
+      
         <!-- Owner -->
         <ngx-datatable-column name="Owner" prop="owner" [sortable]="false"></ngx-datatable-column>
-
+      
+        <ngx-datatable-column name="Status" prop="requestStatus" [sortable]="false">
+          <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+            <span class="status-pill" [ngClass]="getStatusClass(value)">
+              {{ value }}
+            </span>
+          </ng-template>
+      
+        </ngx-datatable-column>
+      
         <!-- Total Amount -->
         <!-- <ngx-datatable-column name="Total Amount" prop="totalAmount" [sortable]="false">
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            {{ row.totalAmount }}
-          </ng-template>
-        </ngx-datatable-column> -->
-
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                  {{ row.totalAmount }}
+                </ng-template>
+              </ngx-datatable-column> -->
+      
         <!-- Action -->
-        <ngx-datatable-column name="Action" [sortable]="false">
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            <div class="d-flex justify-content-center align-items-center">
-              <button class="btn btn-light btn-sm position-relative action-bid-btn" (click)="openBidModal(row)"
-                ngbTooltip="Submit Bids" container="body">
-                <i class="ft-file-text"></i>
-                <span class="badge bg-primary position-absolute top-0 start-100 translate-middle rounded-pill"
-                  *ngIf="row.qrItems?.length > 0">
+        <ngx-datatable-column name="Action" [sortable]="false" minWidth="50" maxWidth="200" cellClass="action-cell"
+          headerClass="action-cell">
+          <ng-template ngx-datatable-cell-template let-row="row">
+            <div class="d-flex justify-content-end w-100">
+              <button type="button" class="proposal-btn position-relative" (click)="openBidModal(row)"
+                ngbTooltip="View Proposal details" container="body">
+      
+                Proposal
+      
+                <span class="proposal-badge" *ngIf="row.qrItems?.length > 0">
                   {{ row.qrItems.length }}
                 </span>
               </button>
@@ -83,6 +95,8 @@
           </ng-template>
         </ngx-datatable-column>
       </ngx-datatable>
+      }
+      
     </div>
   </div>
 </section>

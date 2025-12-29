@@ -5,6 +5,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BehaviorSubject, forkJoin, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { CompanyService } from 'app/shared/services/company.service';
+import { NgxSpinner, NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-company-list',
@@ -33,12 +34,14 @@ export class CompanyListComponent implements OnInit {
   loadingStatus: boolean = false;
   showNoRemarksMessage: boolean = false; // Added for template flag
   showRegisterButton: boolean = false;
+  datatableVisible: boolean = true;
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private modalService: NgbModal,
     private companyService: CompanyService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private spinner:NgxSpinnerService
   ) {}
 
   ngOnInit(): void {
@@ -59,18 +62,31 @@ export class CompanyListComponent implements OnInit {
   }
 
   
+    onAutoResize(): void {
+    this.datatableVisible = false;
+    this.cdr.detectChanges(); // destroy
+
+    requestAnimationFrame(() => {
+      this.datatableVisible = true;
+      this.cdr.detectChanges(); // recreate
+    });
+  }
+
+  
   newCompany(): void {
     this.router.navigateByUrl("/pages/company-registration");
   }
 
   loadCompanies(status: string): void {
     this.loading = true;
+    this.spinner.show();
     const userId = localStorage.getItem('userId');
     if (!userId) {
       console.error('No userId found in localStorage');
       this.loading = false;
       return;
     }
+       this.spinner.show();
 
     console.log('Loading companies with status:', status, 'for user:', userId);
 
@@ -117,11 +133,13 @@ export class CompanyListComponent implements OnInit {
         if (this.companyData.length === 0) {
           console.log('No companies found');
           this.loading = false;
+          this.spinner.hide();
           this.cdr.detectChanges();
           return;
         }
 
         this.loading = false;
+        this.spinner.hide();
         this.cdr.detectChanges();
       },
       error: err => {
@@ -132,6 +150,7 @@ export class CompanyListComponent implements OnInit {
           message: err.message,
           error: err.error
         });
+        this.spinner.hide();
         this.loading = false;
         this.cdr.detectChanges();
       }
@@ -431,6 +450,17 @@ getMainStatus(vendorUseCompaniesVM: any[]): string {
     return 'InProcess'; // Default fallback
   }
 }
+
+  getStatusClass(status: any): string {
+  const s = (status ?? '').toString().trim().toLowerCase();
+
+  if (s === 'new') return 'status-pill--new';
+  if (s === 'inprocess' || s === 'in process' || s === 'in_process') return 'status-pill--inprocess';
+  if (s === 'onboarded') return 'status-pill--completed';
+
+  return 'status-pill--default';
+}
+
   shouldShowRemarks(entity: any): boolean {
     const status = entity.status?.toLowerCase();
     return ['completed', 'sendback', 'rejected'].includes(status);

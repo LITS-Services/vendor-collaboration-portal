@@ -10,8 +10,9 @@
         </div>
       </div>
 
-      <ngx-datatable class="bootstrap core-bootstrap" [rows]="companyData" [columnMode]="'force'" [headerHeight]="50"
-        [footerHeight]="50" rowHeight="50" [limit]="15" [scrollbarH]="true" [loadingIndicator]="loading"
+            @if(datatableVisible){
+      <ngx-datatable autoResize (autoResize)="onAutoResize()" class="bootstrap core-bootstrap" [rows]="companyData" [columnMode]="'force'" [headerHeight]="42"
+        [footerHeight]="50" rowHeight="42" [limit]="15" [scrollbarH]="true" [loadingIndicator]="loading"
         [selected]="chkBoxSelected" [swapColumns]="false" [selectionType]="SelectionType.checkbox"
         (sort)="onSort($event)" (select)="customChkboxOnSelect($event)">
 
@@ -26,13 +27,9 @@
 
         <!-- Main Status Column (NEW) -->
         <ngx-datatable-column name="Main Status" prop="mainStatus">
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            <span class="badge" [ngClass]="{
-                    'bg-success': row.mainStatus?.toLowerCase() === 'onboarded',
-                    'bg-warning text-light': row.mainStatus?.toLowerCase() === 'inprocess',
-                    'bg-secondary': !row.mainStatus
-                  }">
-              {{ row.mainStatus || 'InProcess' }}
+              <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+            <span class="status-pill" [ngClass]="getStatusClass(value)">
+              {{ value }}
             </span>
           </ng-template>
         </ngx-datatable-column>
@@ -45,9 +42,9 @@
         </ngx-datatable-column>
 
         <!-- Status (Popup Trigger) -->
-        <ngx-datatable-column name="Status" [sortable]="false">
+        <ngx-datatable-column name="Status" [sortable]="false"   minWidth="180" maxWidth="300">
           <ng-template let-row="row" ngx-datatable-cell-template>
-            <button type="button" class="btn btn-sm btn-outline-info" title="View Status"
+            <button type="button" class="btn btn-sm btn-outline-info cstm-status-btn" title="View Status"
               (click)="openStatusPopup(row)">
               <i class="ft-info"></i> View Status & Level
             </button>
@@ -55,15 +52,19 @@
         </ngx-datatable-column>
 
         <!-- Remarks (Popup Trigger) -->
-        <ngx-datatable-column name="Remarks" [sortable]="false">
+        <ngx-datatable-column name="Remarks" [sortable]="false"
+          minWidth="50" maxWidth="200" cellClass="action-cell"
+          headerClass="action-cell"
+        >
           <ng-template let-row="row" ngx-datatable-cell-template>
-            <button type="button" class="btn btn-sm btn-outline-secondary" title="View Remarks"
+            <button type="button" class="btn btn-sm csm-remarks-btn" title="View Remarks"
               (click)="openRemarksPopup(row)">
-              <i class="ft-file-text"></i>
+              View
             </button>
           </ng-template>
         </ngx-datatable-column>
       </ngx-datatable>
+    }
     </div>
   </div>
 

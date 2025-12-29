@@ -81,9 +81,9 @@
                                             </button>
 
 
-                                            <button type="button" class="btn btn-primary" *ngIf="!isLastTab()"
+                                            <button type="button" class="btn btn-primary d-flex align-items-center gap-1" *ngIf="!isLastTab()"
                                                 (click)="goToNextTab()" [disabled]="isReadonlyEntityFields">
-                                                Next
+                                             Next     <i class="fa fa-chevron-right next-icon"></i> 
                                             </button>
 
 
@@ -101,79 +101,130 @@
                                 <div class="col-12">
                                     <div class="col-12">
 
-                                        <div *ngIf="selectedTab === 'general'">
-
-                                            <div class="d-flex align-items-center gap-2">
-
-
-
-                                                <div *ngIf="!isEditMode" class="col-md-6">
-                                                    <label>Select Procurement Companies</label>
-                                                    <div class="dropdown">
-                                                        <button
-                                                            class="btn btn-outline-primary w-100 text-start procurement-btn"
-                                                            type="button" (click)="dropdownOpen = !dropdownOpen">
-                                                            {{ getSelectedCompaniesText() || 'Select Companies' }}
-                                                        </button>
-                                                        <div class="dropdown-menu w-100 p-2" [class.show]="dropdownOpen"
-                                                            style="max-height: 200px; overflow-y: auto;">
-                                                            <div *ngFor="let company of procurementCompanies">
-                                                                <div class="form-check">
-                                                                    <input class="form-check-input" type="checkbox"
-                                                                        [value]="company.id"
-                                                                        [checked]="selectedProcurementCompanyIds?.includes(company.id)"
-                                                                        (change)="toggleCompanySelection(company.id, $event)">
-                                                                    <label class="form-check-label">{{ company.name
-                                                                        }}</label>
+                                    <div *ngIf="selectedTab === 'general'">
+                                    
+                                        <!-- Row 1: Procurement companies + Name -->
+                                        <div class="row g-3 align-items-start">
+                                    
+                                            <!-- LEFT: Your existing inputs -->
+                                            <div class="col-lg-6">
+                                                <div class="row g-3">
+                                    
+                                                    <!-- Your existing Select Procurement Companies (not edit mode) -->
+                                                    <div *ngIf="!isEditMode" class="col-12 form-group">
+                                                        <label>Select Procurement Companies</label>
+                                                        <div class="dropdown">
+                                                            <button class="btn btn-outline-primary w-cstm text-start procurement-btn" type="button"
+                                                                (click)="dropdownOpen = !dropdownOpen">
+                                                                {{ getSelectedCompaniesText() || 'Select Companies' }}
+                                                            </button>
+                                    
+                                                            <div class="dropdown-menu w-cstm p-2" [class.show]="dropdownOpen"
+                                                                style="max-height: 200px; overflow-y: auto;">
+                                                                <div *ngFor="let company of procurementCompanies">
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="checkbox" [value]="company.id"
+                                                                            [checked]="selectedProcurementCompanyIds?.includes(company.id)"
+                                                                            (change)="toggleCompanySelection(company.id, $event)">
+                                                                        <label class="form-check-label">{{ company.name }}</label>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-
-                                                <div *ngIf="isEditMode" class="col-md-6 form-group">
-                                                    <label>Select Entity</label>
-                                                    <div class="dropdown">
-                                                        <button class="btn btn-outline-primary w-100 text-start"
-                                                            type="button"
-                                                            (click)="entityDropdownOpen = !entityDropdownOpen">
-                                                            {{ getSelectedEntityName() || 'Select Entity' }}
-                                                        </button>
-
-                                                        <div class="dropdown-menu w-100 p-2"
-                                                            [class.show]="entityDropdownOpen"
-                                                            style="max-height: 200px; overflow-y: auto;">
-                                                            <div *ngFor="let entity of vendorEntities">
-                                                                <div class="form-check">
-                                                                    <input class="form-check-input" type="radio"
-                                                                        name="entityRadio"
-                                                                        [id]="'entity-' + entity.procurementCompanyId"
-                                                                        [value]="entity.procurementCompanyId"
-                                                                        [checked]="selectedEntityId === entity.procurementCompanyId"
-                                                                        (change)="onEntitySelect(entity)">
-                                                                    <label class="form-check-label"
-                                                                        [for]="'entity-' + entity.procurementCompanyId">
-                                                                        {{ entity.procurementCompanyName }}
-                                                                        <span class="text-muted"
-                                                                            *ngIf="entity.requestStatus">
-                                                                            ({{ entity.requestStatus }})
-                                                                        </span>
-                                                                    </label>
+                                    
+                                                    <!-- Your existing Select Entity (edit mode) -->
+                                                    <div *ngIf="isEditMode" class="col-12 form-group">
+                                                        <label>Select Entity</label>
+                                                        <div class="dropdown">
+                                                            <button class="btn btn-outline-primary w-cstm text-start" type="button"
+                                                                (click)="entityDropdownOpen = !entityDropdownOpen">
+                                                                {{ getSelectedEntityName() || 'Select Entity' }}
+                                                            </button>
+                                    
+                                                            <div class="dropdown-menu w-cstm p-2" [class.show]="entityDropdownOpen"
+                                                                style="max-height: 200px; overflow-y: auto;">
+                                                                <div *ngFor="let entity of vendorEntities">
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="radio" name="entityRadio"
+                                                                            [id]="'entity-' + entity.procurementCompanyId"
+                                                                            [value]="entity.procurementCompanyId"
+                                                                            [checked]="selectedEntityId === entity.procurementCompanyId"
+                                                                            (change)="onEntitySelect(entity)">
+                                                                        <label class="form-check-label" [for]="'entity-' + entity.procurementCompanyId">
+                                                                            {{ entity.procurementCompanyName }}
+                                                                            <span class="text-muted" *ngIf="entity.requestStatus">
+                                                                                ({{ entity.requestStatus }})
+                                                                            </span>
+                                                                        </label>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
+                                    
+                                                    <!-- Your existing Name input -->
+                                                    <div class="col-12 form-group">
+                                                        <label>Name</label>
+                                                        <input type="text" class="form-control w-cstm" [(ngModel)]="companyName"
+                                                            [disabled]="isReadonlyEntityFields" placeholder="Enter company name">
+                                                    </div>
+                                    
+                                                    <!-- NEW: Website URL -->
+                                                    <div class="col-12 form-group">
+                                                        <label>Website URL</label>
+                                                        <input type="url" class="form-control w-cstm" [(ngModel)]="websiteUrl" [disabled]="isReadonlyEntityFields"
+                                                            placeholder="https://www.example.com">
+                                                        <small class="text-danger" *ngIf="websiteUrlError">{{ websiteUrlError }}</small>
+                                                    </div>
+                                    
                                                 </div>
-
-                                                <div class="col-md-6 form-group">
-                                                    <label>Name</label>
-                                                    <input type="text" class="form-control" [(ngModel)]="companyName"
-                                                        [disabled]="isReadonlyEntityFields"
-                                                        placeholder="Enter company name">
-                                                </div>
-
                                             </div>
+                                    
+                                            <!-- RIGHT: Company Logo Upload -->
+                                           <!-- Right side / Logo uploader -->
+                                                    <div class="col-6">
+                                                        <div class="mb-2 d-flex flex-column align-items-center logo-div">
+                                                            <label class="mb-1">Logo</label>
+
+                                                            <!-- Circle upload button -->
+                                                            <label class="logo-upload-circle" [ngClass]="{ 'has-image': logoPreviewUrl || existingLogoUrl }">
+                                                                <input type="file" accept="image/*" (change)="onLogoSelect($event)" class="d-none"
+                                                                    [disabled]="isReadonlyEntityFields" />
+
+                                                                <!-- When no image selected -->
+                                                                <ng-container *ngIf="!logoPreviewUrl && !existingLogoUrl">
+                                                                    <i class="ft-image text-muted"></i>
+                                                                    <span class="logo-upload-text">Upload</span>
+                                                                </ng-container>
+
+                                                                <!-- When image selected / existing -->
+                                                                <ng-container *ngIf="logoPreviewUrl || existingLogoUrl">
+                                                                    <img [src]="logoPreviewUrl || existingLogoUrl" alt="Logo" class="logo-upload-img" />
+
+                                                                    <!-- Hover overlay -->
+                                                                    <div class="logo-upload-overlay">
+                                                                        <span class="logo-upload-overlay-text">
+                                                                            <i class="ft-upload mr-1"></i>change image
+                                                                        </span>
+                                                                    </div>
+                                                                </ng-container>
+                                                            </label>
+
+                                                            <small class="text-muted mt-2">
+                                                                PNG / JPG up to 2MB.
+                                                            </small>
+
+                                                            <!-- OPTIONAL remove (if you want) -->
+                                                            <button *ngIf="logoPreviewUrl || existingLogoUrl" type="button" class="btn btn-sm btn-outline-danger mt-2"
+                                                                (click)="removeLogo()" [disabled]="isReadonlyEntityFields">
+                                                                Remove
+                                                            </button>
+                                                        </div>
+                                                    </div>
+
                                         </div>
+                                    </div>
 
 
                                         <div *ngIf="selectedTab === 'addresses'">
@@ -619,8 +670,8 @@
 <ng-template #remarksModal let-modal>
     <div class="modal-header bg-primary text-white">
         <h4 class="modal-title">Remarks Details - {{ action }}</h4>
-        <button type="button" style="background: transparent;border: unset;font-size: 2em;" class="close text-white"
-            (click)="modal.dismiss()">X</button>
+        <button type="button" class="btn-close text-white"
+            (click)="modal.dismiss()"></button>
     </div>
 
     <div class="modal-body">
