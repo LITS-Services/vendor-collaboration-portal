@@ -41,6 +41,9 @@ export class QuotationBidModalComponent implements OnInit {
 
   private focusComments = false;
 
+  isTyping = false;
+  typingTimeout: any;
+
   form = this.fb.group({
     comment: ["", [Validators.required, Validators.maxLength(1000)]],
   });
@@ -91,6 +94,13 @@ export class QuotationBidModalComponent implements OnInit {
         this.scrollToBottom();
       }
     });
+
+     this.signalRService.typing$.subscribe(data => {
+    if (data?.quotationId === this.quotationId && data.vendorId === this.vendorUserId && data.createdByType !== CreatedByType.Vendor) {
+      this.isTyping = data.isTyping;
+      this.cdr.detectChanges();
+    }
+  });
   }
 
 
@@ -133,6 +143,14 @@ export class QuotationBidModalComponent implements OnInit {
       },
       (err) => console.error("Error loading RFQ:", err)
     );
+  }
+  onTyping() {
+    this.signalRService.sendTyping(this.quotationId, this.vendorUserId, true, CreatedByType.Vendor);
+
+    clearTimeout(this.typingTimeout);
+    this.typingTimeout = setTimeout(() => {
+      this.signalRService.sendTyping(this.quotationId, this.vendorUserId, false, CreatedByType.Vendor);
+    }, 3000);
   }
 
   loadRfqComments() {
@@ -203,11 +221,31 @@ export class QuotationBidModalComponent implements OnInit {
         next: (saved: any) => {
           this.form.reset();
           //this.loadRfqComments();
+          this.signalRService.sendTyping(
+            this.quotationId,
+            this.vendorUserId,
+            false,
+            CreatedByType.Vendor
+          );
         },
         error: (err: any) => {
           console.error("Error posting RFQ comment", err);
         },
       });
+  }
+
+  onEnterPress(event: KeyboardEvent) {
+    if (event.shiftKey) {
+      // Shift + Enter → allow new line
+      return;
+    }
+
+    // Enter only → send message
+    event.preventDefault();
+
+    if (this.form.invalid) return;
+
+    this.insertComment();
   }
 
   private scrollToBottom() {
