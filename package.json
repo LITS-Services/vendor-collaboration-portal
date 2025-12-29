@@ -80,7 +80,7 @@
     "ngx-spinner": "^17.0.0",
     "ngx-swiper-wrapper": "^10.0.0",
     "ngx-take-until-destroy": "^5.4.0",
-    "ngx-toastr": "^18.0.0",
+    "ngx-toastr": "^19.1.0",
     "ngx-ui-switch": "^10.0.2",
     "nouislider": "^15.7.0",
     "postcss-rtl": "^1.7.3",
