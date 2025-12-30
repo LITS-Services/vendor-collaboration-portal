@@ -1,11 +1,7 @@
 <div class="px-2 pb-1">
 
 
-    <div *ngIf="isReadonlyEntityFields" class="alert alert-warning mt-3 mb-3">
-        <i class="fa fa-exclamation-triangle me-2"></i>
-        This company profile cannot be edited because the selected entity has "InProcess" status.
-        Please select a different entity to enable editing.
-    </div>
+
 
 
     <div class="row">
@@ -48,7 +44,7 @@
                 <span>BANK DETAILS</span>
             </button>
 
-                 <button (click)="selectTab('attachments')" [ngClass]="{ 'tab-current': selectedTab === 'attachments' }"
+            <button (click)="selectTab('attachments')" [ngClass]="{ 'tab-current': selectedTab === 'attachments' }"
                 class="po-style-tab">
                 <span>ATTACHMENTS</span>
             </button>
@@ -65,8 +61,7 @@
                             <div class="row">
                                 <div class="d-flex align-items-center justify-content-end mb-2">
                                     <ng-container *ngIf="isEditMode; else newCompanyNav">
-                                        <button class="btn btn-primary" (click)="submitForm()"
-                                            [disabled]="isReadonlyEntityFields">
+                                        <button class="btn btn-primary" (click)="submitForm()">
                                             Update Company
                                         </button>
                                     </ng-container>
@@ -81,14 +76,15 @@
                                             </button>
 
 
-                                            <button type="button" class="btn btn-primary d-flex align-items-center gap-1" *ngIf="!isLastTab()"
-                                                (click)="goToNextTab()" [disabled]="isReadonlyEntityFields">
-                                             Next     <i class="fa fa-chevron-right next-icon"></i> 
+                                            <button type="button"
+                                                class="btn btn-primary d-flex align-items-center gap-1"
+                                                *ngIf="!isLastTab()" (click)="goToNextTab()">
+                                                Next <i class="fa fa-chevron-right next-icon"></i>
                                             </button>
 
 
                                             <button type="button" class="btn btn-primary" *ngIf="isLastTab()"
-                                                (click)="submitForm()" [disabled]="isReadonlyEntityFields">
+                                                (click)="submitForm()">
                                                 Submit Company
                                             </button>
                                         </div>
@@ -101,137 +97,93 @@
                                 <div class="col-12">
                                     <div class="col-12">
 
-                                    <div *ngIf="selectedTab === 'general'">
-                                    
-                                        <!-- Row 1: Procurement companies + Name -->
-                                        <div class="row g-3 align-items-start">
-                                    
-                                            <!-- LEFT: Your existing inputs -->
-                                            <div class="col-lg-6">
-                                                <div class="row g-3">
-                                    
-                                                    <!-- Your existing Select Procurement Companies (not edit mode) -->
-                                                    <div *ngIf="!isEditMode" class="col-12 form-group">
-                                                        <label>Select Procurement Companies</label>
-                                                        <div class="dropdown">
-                                                            <button class="btn btn-outline-primary w-cstm text-start procurement-btn" type="button"
-                                                                (click)="dropdownOpen = !dropdownOpen">
-                                                                {{ getSelectedCompaniesText() || 'Select Companies' }}
-                                                            </button>
-                                    
-                                                            <div class="dropdown-menu w-cstm p-2" [class.show]="dropdownOpen"
-                                                                style="max-height: 200px; overflow-y: auto;">
-                                                                <div *ngFor="let company of procurementCompanies">
-                                                                    <div class="form-check">
-                                                                        <input class="form-check-input" type="checkbox" [value]="company.id"
-                                                                            [checked]="selectedProcurementCompanyIds?.includes(company.id)"
-                                                                            (change)="toggleCompanySelection(company.id, $event)">
-                                                                        <label class="form-check-label">{{ company.name }}</label>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+                                        <div *ngIf="selectedTab === 'general'">
+
+                                            <!-- Row 1: Procurement companies + Name -->
+                                            <div class="row g-3 align-items-start">
+
+                                                <!-- LEFT: Your existing inputs -->
+                                                <div class="col-lg-6">
+                                                    <div class="row g-3">
+
+                                                        <!-- Your existing Select Procurement Companies (not edit mode) -->
+
+
+                                                        <!-- Your existing Name input -->
+                                                        <div class="col-12 form-group">
+                                                            <label>Name</label>
+                                                            <input type="text" class="form-control w-cstm"
+                                                                [(ngModel)]="companyName"
+                                                                placeholder="Enter company name">
                                                         </div>
-                                                    </div>
-                                    
-                                                    <!-- Your existing Select Entity (edit mode) -->
-                                                    <div *ngIf="isEditMode" class="col-12 form-group">
-                                                        <label>Select Entity</label>
-                                                        <div class="dropdown">
-                                                            <button class="btn btn-outline-primary w-cstm text-start" type="button"
-                                                                (click)="entityDropdownOpen = !entityDropdownOpen">
-                                                                {{ getSelectedEntityName() || 'Select Entity' }}
-                                                            </button>
-                                    
-                                                            <div class="dropdown-menu w-cstm p-2" [class.show]="entityDropdownOpen"
-                                                                style="max-height: 200px; overflow-y: auto;">
-                                                                <div *ngFor="let entity of vendorEntities">
-                                                                    <div class="form-check">
-                                                                        <input class="form-check-input" type="radio" name="entityRadio"
-                                                                            [id]="'entity-' + entity.procurementCompanyId"
-                                                                            [value]="entity.procurementCompanyId"
-                                                                            [checked]="selectedEntityId === entity.procurementCompanyId"
-                                                                            (change)="onEntitySelect(entity)">
-                                                                        <label class="form-check-label" [for]="'entity-' + entity.procurementCompanyId">
-                                                                            {{ entity.procurementCompanyName }}
-                                                                            <span class="text-muted" *ngIf="entity.requestStatus">
-                                                                                ({{ entity.requestStatus }})
-                                                                            </span>
-                                                                        </label>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+
+                                                        <!-- NEW: Website URL -->
+                                                        <div class="col-12 form-group">
+                                                            <label>Website URL</label>
+                                                            <input type="url" class="form-control w-cstm"
+                                                                [(ngModel)]="websiteUrl"
+                                                                placeholder="https://www.example.com">
+                                                            <small class="text-danger" *ngIf="websiteUrlError">{{
+                                                                websiteUrlError }}</small>
                                                         </div>
+
                                                     </div>
-                                    
-                                                    <!-- Your existing Name input -->
-                                                    <div class="col-12 form-group">
-                                                        <label>Name</label>
-                                                        <input type="text" class="form-control w-cstm" [(ngModel)]="companyName"
-                                                            [disabled]="isReadonlyEntityFields" placeholder="Enter company name">
-                                                    </div>
-                                    
-                                                    <!-- NEW: Website URL -->
-                                                    <div class="col-12 form-group">
-                                                        <label>Website URL</label>
-                                                        <input type="url" class="form-control w-cstm" [(ngModel)]="websiteUrl" [disabled]="isReadonlyEntityFields"
-                                                            placeholder="https://www.example.com">
-                                                        <small class="text-danger" *ngIf="websiteUrlError">{{ websiteUrlError }}</small>
-                                                    </div>
-                                    
                                                 </div>
-                                            </div>
-                                    
-                                            <!-- RIGHT: Company Logo Upload -->
-                                           <!-- Right side / Logo uploader -->
-                                                    <div class="col-6">
-                                                        <div class="mb-2 d-flex flex-column align-items-center logo-div">
-                                                            <label class="mb-1">Logo</label>
 
-                                                            <!-- Circle upload button -->
-                                                            <label class="logo-upload-circle" [ngClass]="{ 'has-image': logoPreviewUrl || existingLogoUrl }">
-                                                                <input type="file" accept="image/*" (change)="onLogoSelect($event)" class="d-none"
-                                                                    [disabled]="isReadonlyEntityFields" />
+                                                <!-- RIGHT: Company Logo Upload -->
+                                                <!-- Right side / Logo uploader -->
+                                                <div class="col-6">
+                                                    <div class="mb-2 d-flex flex-column align-items-center logo-div">
+                                                        <label class="mb-1">Logo</label>
 
-                                                                <!-- When no image selected -->
-                                                                <ng-container *ngIf="!logoPreviewUrl && !existingLogoUrl">
-                                                                    <i class="ft-image text-muted"></i>
-                                                                    <span class="logo-upload-text">Upload</span>
-                                                                </ng-container>
+                                                        <!-- Circle upload button -->
+                                                        <label class="logo-upload-circle"
+                                                            [ngClass]="{ 'has-image': logoPreviewUrl || existingLogoUrl }">
+                                                            <input type="file" accept="image/*"
+                                                                (change)="onLogoSelect($event)" class="d-none" />
 
-                                                                <!-- When image selected / existing -->
-                                                                <ng-container *ngIf="logoPreviewUrl || existingLogoUrl">
-                                                                    <img [src]="logoPreviewUrl || existingLogoUrl" alt="Logo" class="logo-upload-img" />
+                                                            <!-- When no image selected -->
+                                                            <ng-container *ngIf="!logoPreviewUrl && !existingLogoUrl">
+                                                                <i class="ft-image text-muted"></i>
+                                                                <span class="logo-upload-text">Upload</span>
+                                                            </ng-container>
 
-                                                                    <!-- Hover overlay -->
-                                                                    <div class="logo-upload-overlay">
-                                                                        <span class="logo-upload-overlay-text">
-                                                                            <i class="ft-upload mr-1"></i>change image
-                                                                        </span>
-                                                                    </div>
-                                                                </ng-container>
-                                                            </label>
+                                                            <!-- When image selected / existing -->
+                                                            <ng-container *ngIf="logoPreviewUrl || existingLogoUrl">
+                                                                <img [src]="logoPreviewUrl || existingLogoUrl"
+                                                                    alt="Logo" class="logo-upload-img" />
 
-                                                            <small class="text-muted mt-2">
-                                                                PNG / JPG up to 2MB.
-                                                            </small>
+                                                                <!-- Hover overlay -->
+                                                                <div class="logo-upload-overlay">
+                                                                    <span class="logo-upload-overlay-text">
+                                                                        <i class="ft-upload mr-1"></i>change image
+                                                                    </span>
+                                                                </div>
+                                                            </ng-container>
+                                                        </label>
 
-                                                            <!-- OPTIONAL remove (if you want) -->
-                                                            <button *ngIf="logoPreviewUrl || existingLogoUrl" type="button" class="btn btn-sm btn-outline-danger mt-2"
-                                                                (click)="removeLogo()" [disabled]="isReadonlyEntityFields">
-                                                                Remove
-                                                            </button>
-                                                        </div>
+                                                        <small class="text-muted mt-2">
+                                                            PNG / JPG up to 2MB.
+                                                        </small>
+
+                                                        <!-- OPTIONAL remove (if you want) -->
+                                                        <button *ngIf="logoPreviewUrl || existingLogoUrl" type="button"
+                                                            class="btn btn-sm btn-outline-danger mt-2"
+                                                            (click)="removeLogo()">
+                                                            Remove
+                                                        </button>
                                                     </div>
+                                                </div>
 
+                                            </div>
                                         </div>
-                                    </div>
 
 
                                         <div *ngIf="selectedTab === 'addresses'">
                                             <div class="address-table-container">
-                                              
-                                                <app-company-address-modal  [address]="editingAddress"
-                                                    [isEditAddressMode]="editingAddressIndex !== null" 
+
+                                                <app-company-address-modal [address]="editingAddress"
+                                                    [isEditAddressMode]="editingAddressIndex !== null"
                                                     (submit)="onAddressSubmit($event)">
                                                 </app-company-address-modal>
 
@@ -258,11 +210,9 @@
                                                                 <td>{{ address.primary ? 'Yes' : 'No' }}</td>
                                                                 <td>
                                                                     <button class="ft-edit btn px-1" type="button"
-                                                                        (click)="openAddressEditor(i)"
-                                                                        [disabled]="isReadonlyEntityFields"></button>
+                                                                        (click)="openAddressEditor(i)"></button>
                                                                     <button class="ft-trash btn px-1" type="button"
-                                                                        (click)="confirmAddressDeletion(i)"
-                                                                        [disabled]="isReadonlyEntityFields"></button>
+                                                                        (click)="confirmAddressDeletion(i)"></button>
                                                                 </td>
                                                             </tr>
                                                         </tbody>
@@ -273,13 +223,11 @@
 
 
                                         <div *ngIf="selectedTab === 'contacts'">
-                                
-                                        <app-company-contact-modal
-                                     
-                                         [contact]="editingContact"
-                                        [isEditMode]="editingContactIndex !== null" 
-                                        (submit)="onContactSubmit($event)">
-                                        </app-company-contact-modal>
+
+                                            <app-company-contact-modal [contact]="editingContact"
+                                                [isEditMode]="editingContactIndex !== null"
+                                                (submit)="onContactSubmit($event)">
+                                            </app-company-contact-modal>
 
                                             <div class="table-responsive mt-2">
                                                 <table class="my-table">
@@ -302,11 +250,9 @@
                                                             <td>{{ contact.primary ? 'Yes' : 'No' }}</td>
                                                             <td>
                                                                 <button class="ft-edit btn px-1" type="button"
-                                                                    (click)="openContactEditor(i)"
-                                                                    [disabled]="isReadonlyEntityFields"></button>
+                                                                    (click)="openContactEditor(i)"></button>
                                                                 <button class="ft-trash btn px-1" type="button"
-                                                                    (click)="confirmContactDeletion(i)"
-                                                                    [disabled]="isReadonlyEntityFields"></button>
+                                                                    (click)="confirmContactDeletion(i)"></button>
                                                             </td>
                                                         </tr>
                                                     </tbody>
@@ -324,8 +270,7 @@
                                                             ngbTooltip="Select the main currency used for transactions with this company"
                                                             placement="right"></i>
                                                     </label>
-                                                    <select class="form-control" [(ngModel)]="primaryCurrency"
-                                                        [disabled]="isReadonlyEntityFields">
+                                                    <select class="form-control" [(ngModel)]="primaryCurrency">
                                                         <option value="">Select primary currency</option>
                                                         <option>USD</option>
                                                         <option>GBP</option>
@@ -340,8 +285,7 @@
                                                             ngbTooltip="Choose the main contact person for this vendor"
                                                             placement="right"></i>
                                                     </label>
-                                                    <select class="form-control" [(ngModel)]="employeeResponsible"
-                                                        [disabled]="isReadonlyEntityFields">
+                                                    <select class="form-control" [(ngModel)]="employeeResponsible">
                                                         <option value="">Select primary contact</option>
                                                         <option *ngFor="let c of contactList">{{ c.description }}
                                                         </option>
@@ -355,8 +299,7 @@
                                                             ngbTooltip="Specify whether this vendor is Local or Foreign"
                                                             placement="right"></i>
                                                     </label>
-                                                    <select class="form-control" [(ngModel)]="vendorCategory"
-                                                        [disabled]="isReadonlyEntityFields">
+                                                    <select class="form-control" [(ngModel)]="vendorCategory">
                                                         <option>Select vendor type</option>
                                                         <option>Local</option>
                                                         <option>Foreign</option>
@@ -371,7 +314,6 @@
                                                             placement="right"></i>
                                                     </label>
                                                     <input type="text" class="form-control" [(ngModel)]="lineOfBusiness"
-                                                        [disabled]="isReadonlyEntityFields"
                                                         placeholder="Enter line of business">
                                                 </div>
 
@@ -383,7 +325,6 @@
                                                             placement="right"></i>
                                                     </label>
                                                     <input type="text" class="form-control" [(ngModel)]="birthCountry"
-                                                        [disabled]="isReadonlyEntityFields"
                                                         placeholder="Enter birth country">
                                                 </div>
 
@@ -396,7 +337,6 @@
                                                     </label>
                                                     <input type="text" class="form-control"
                                                         [(ngModel)]="employeeResponsible"
-                                                        [disabled]="isReadonlyEntityFields"
                                                         placeholder="Enter employee responsible">
                                                 </div>
 
@@ -408,7 +348,7 @@
                                                             placement="right"></i>
                                                     </label>
                                                     <input type="text" class="form-control" [(ngModel)]="segment"
-                                                        [disabled]="isReadonlyEntityFields" placeholder="Enter segment">
+                                                        placeholder="Enter segment">
                                                 </div>
 
                                                 <div class="col-md-3 mt-1 form-group">
@@ -419,7 +359,6 @@
                                                             placement="right"></i>
                                                     </label>
                                                     <input type="text" class="form-control" [(ngModel)]="speciality"
-                                                        [disabled]="isReadonlyEntityFields"
                                                         placeholder="Enter speciality">
                                                 </div>
 
@@ -431,7 +370,7 @@
                                                             placement="right"></i>
                                                     </label>
                                                     <input type="text" class="form-control" [(ngModel)]="chain"
-                                                        [disabled]="isReadonlyEntityFields" placeholder="Enter chain">
+                                                        placeholder="Enter chain">
                                                 </div>
 
                                                 <div class="col-12 mt-1 form-group">
@@ -442,7 +381,6 @@
                                                             placement="right"></i>
                                                     </label>
                                                     <textarea class="form-control" rows="3" [(ngModel)]="note"
-                                                        [disabled]="isReadonlyEntityFields"
                                                         placeholder="Enter note"></textarea>
                                                 </div>
                                             </div>
@@ -525,7 +463,7 @@
 
                                                     <div class="d-flex justify-content-end mt-3">
                                                         <button type="button" class="btn btn-primary"
-                                                            (click)="addBank()" [disabled]="isReadonlyEntityFields">
+                                                            (click)="addBank()">
                                                             Add Bank
                                                         </button>
                                                     </div>
@@ -550,7 +488,7 @@
                                                                 <th>Actions</th>
                                                             </tr>
                                                         </thead>
-                                                
+
                                                         <tbody>
                                                             <tr *ngFor="let bank of bankList; let i = index">
                                                                 <td>{{ bank.bankName }}</td>
@@ -562,13 +500,13 @@
                                                                 <td>{{ bank.branchAddress }}</td>
                                                                 <td>{{ bank.bankCountry }}</td>
                                                                 <td>{{ bank.bankCurrency }}</td>
-                                                
+
                                                                 <td>
-                                                                    <button class="ft-edit btn px-1" type="button" (click)="editBank(i)"
-                                                                        [disabled]="isReadonlyEntityFields"></button>
-                                                
-                                                                    <button class="ft-trash btn px-1" type="button" (click)="confirmBankDeletion(i)"
-                                                                        [disabled]="isReadonlyEntityFields"></button>
+                                                                    <button class="ft-edit btn px-1" type="button"
+                                                                        (click)="editBank(i)"></button>
+
+                                                                    <button class="ft-trash btn px-1" type="button"
+                                                                        (click)="confirmBankDeletion(i)"></button>
                                                                 </td>
                                                             </tr>
                                                         </tbody>
@@ -578,11 +516,9 @@
                                         </div>
 
                                         <div *ngIf="selectedTab === 'attachments'">
-                                        <app-company-profile-attachment
-                                        [attachedFiles]="attachedFiles"
-                                        [readonly]="isReadonlyEntityFields"
-                                        (saveAttachment)="onAttachmentsUpdated($event)">
-                                        </app-company-profile-attachment>
+                                            <app-company-profile-attachment [attachedFiles]="attachedFiles"
+                                                (saveAttachment)="onAttachmentsUpdated($event)">
+                                            </app-company-profile-attachment>
                                         </div>
 
                                     </div>
@@ -670,8 +606,7 @@
 <ng-template #remarksModal let-modal>
     <div class="modal-header bg-primary text-white">
         <h4 class="modal-title">Remarks Details - {{ action }}</h4>
-        <button type="button" class="btn-close text-white"
-            (click)="modal.dismiss()"></button>
+        <button type="button" class="btn-close text-white" (click)="modal.dismiss()"></button>
     </div>
 
     <div class="modal-body">

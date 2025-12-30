@@ -32,30 +32,30 @@ export class CompanyService {
   }
 
 
-getCompanyByVendorId(vendorId: string, status?: string): Observable<any> {
-  let params = new HttpParams();
-  if (status) {
-    params = params.set('status', status);
+  getCompanyByVendorId(vendorId: string, status?: string): Observable<any> {
+    let params = new HttpParams();
+    if (status) {
+      params = params.set('status', status);
+    }
+    return this.http.get(`${this.apiUrl}/get-vendor-company/${vendorId}`);
   }
-  return this.http.get(`${this.apiUrl}/get-vendor-company/${vendorId}`);
-}
 
 
 
 
 
-//VendorUsers 
-GetVendoruserByid(userId: string): Observable<Company> {
-  return this.http.get<Company>(`${environment.apiUrl}/VendorUsers/GetVendorUserById/${userId}`);
-}
+  //VendorUsers 
+  GetVendoruserByid(userId: string): Observable<Company> {
+    return this.http.get<Company>(`${environment.apiUrl}/VendorUsers/GetVendorUserById/${userId}`);
+  }
 
-updateVendoruser(userId: string, payload: any) {
-  return this.http.put(`${environment.apiUrl}/VendorUsers/UpdateVendorUser/${userId}`, payload);
-}
+  updateVendoruser(userId: string, payload: any) {
+    return this.http.put(`${environment.apiUrl}/VendorUsers/UpdateVendorUser/${userId}`, payload);
+  }
 
-resetPassword(payload: any) {
-  return this.http.post(`${environment.apiUrl}/VendorUsers/VendorChangePassword/`, payload);
-}
+  resetPassword(payload: any) {
+    return this.http.post(`${environment.apiUrl}/VendorUsers/VendorChangePassword/`, payload);
+  }
 
 
 
@@ -75,35 +75,31 @@ resetPassword(payload: any) {
 
 
 
-  getProcurementCompanies(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/get-all-procurement-companies`);
-  }
+
 
   /** Fetch list of companies (optionally filtered by status) */
 
 
-getCompanyById(id: number): Observable<Company> {
-  return this.http.get<Company>(`${this.apiUrl}/${id}`);
-}
-
-getsetuphistory(associationId: number): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/SetupHistory?vendorEntityAssociationId=${associationId}`);
+  getCompanyById(id: number): Observable<Company> {
+    return this.http.get<Company>(`${this.apiUrl}/get-vendor-company-by-id?id=${id}`);
   }
 
 
-updateCompany(id: number, payload: any) {
-  return this.http.put(`${this.apiUrl}/update-vendor-company/${id}`, payload);
-}
 
-getlatestremarkscompanyId(procurementCompanyId: number, vendorCompanyId: number): Observable<any> {
-  return this.http.get<any>(
-    `${environment.apiUrl}/Company/get-latest-company-remark?ProcurementCompanyId=${procurementCompanyId}&VendorCompanyId=${vendorCompanyId}`
-  );
-}
 
-GetCompanyApproverLevel(vendorCompanyId: number,procurementCompanyId : number): Observable<any> {
-  return this.http.get<any>(`${environment.apiUrl}/Company/get-company-approver-level?vendorCompanyId=${vendorCompanyId}&ProcurementCompanyId=${procurementCompanyId}`);
-}
+  updateCompany(id: number, payload: any) {
+    return this.http.put(`${this.apiUrl}/update-vendor-company/${id}`, payload);
+  }
+
+  getlatestremarkscompanyId(procurementCompanyId: number, vendorCompanyId: number): Observable<any> {
+    return this.http.get<any>(
+      `${environment.apiUrl}/Company/get-latest-company-remark?ProcurementCompanyId=${procurementCompanyId}&VendorCompanyId=${vendorCompanyId}`
+    );
+  }
+
+  GetCompanyApproverLevel(vendorCompanyId: number, procurementCompanyId: number): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrl}/Company/get-company-approver-level?vendorCompanyId=${vendorCompanyId}&ProcurementCompanyId=${procurementCompanyId}`);
+  }
 
 
   // /** Delete company */

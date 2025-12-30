@@ -41,8 +41,8 @@ export class CompanyListComponent implements OnInit {
     private modalService: NgbModal,
     private companyService: CompanyService,
     private cdr: ChangeDetectorRef,
-    private spinner:NgxSpinnerService
-  ) {}
+    private spinner: NgxSpinnerService
+  ) { }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
@@ -61,8 +61,8 @@ export class CompanyListComponent implements OnInit {
     this.router.navigate(['/company/company-list']);
   }
 
-  
-    onAutoResize(): void {
+
+  onAutoResize(): void {
     this.datatableVisible = false;
     this.cdr.detectChanges(); // destroy
 
@@ -72,7 +72,7 @@ export class CompanyListComponent implements OnInit {
     });
   }
 
-  
+
   newCompany(): void {
     this.router.navigateByUrl("/pages/company-registration");
   }
@@ -86,47 +86,47 @@ export class CompanyListComponent implements OnInit {
       this.loading = false;
       return;
     }
-       this.spinner.show();
+    this.spinner.show();
 
     console.log('Loading companies with status:', status, 'for user:', userId);
 
     this.companyService.getCompanyByVendorId(userId, status).subscribe({
       next: (res: any) => {
         console.log('Raw API response from getCompanyByVendorId:', res);
-        
+
         const rawCompanies = Array.isArray(res) ? res : res?.$values || [];
         console.log('Processed companies array:', rawCompanies);
         this.showRegisterButton = rawCompanies.length === 0;
 
         // Base company mapping - IGNORE remarks from getCompanyByVendorId
-     this.companyData = rawCompanies.map(c => ({
-  id: c.id,
-  companyGUID: c.companyGUID,
-  name: c.name,
-  logo: c.logo,
-  createDate: c.createdDate,
-  status: this.getOverallStatus(c.vendorUseCompaniesVM),
-  mainStatus: this.getMainStatus(c.vendorUseCompaniesVM), // ADD THIS LINE
-  vendorId: c.vendorId,
-  street: c.addressesVM?.[0]?.street || '',
-  city: c.addressesVM?.[0]?.city || '',
-  state: c.addressesVM?.[0]?.state || '',
-  country: c.addressesVM?.[0]?.country || '',
-  contactNumber: c.contactsVM?.[0]?.contactNumber || '',
-  contactType: c.contactsVM?.[0]?.type || '',
-  entity: c.vendorUseCompaniesVM?.map(vuc => vuc.procurementCompany).join(', ') || '',
-  procurementCompanyId: c.vendorUseCompaniesVM?.[0]?.procurementCompanyId || null,
-  entityDetails: c.vendorUseCompaniesVM?.map(vuc => ({
-    id: vuc.id, // Added: Use this as associationId for getsetuphistory
-    entity: vuc.procurementCompany,
-    status: vuc.status,
-    createdDate: vuc.createdDate,
-    approverName: vuc.createdBy || '',
-    procurementCompanyId: vuc.procurementCompanyId,
-    level: 'Loading...', // Initialize level as loading
-    approverLevelName: '' // Initialize approver name
-  })) || []
-}));
+        this.companyData = rawCompanies.map(c => ({
+          id: c.id,
+          companyGUID: c.companyGUID,
+          name: c.name,
+          logo: c.logo,
+          createDate: c.createdDate,
+          status: c.status || this.getOverallStatus(c.vendorUseCompaniesVM), // Use API status if available
+          mainStatus: c.status || this.getMainStatus(c.vendorUseCompaniesVM), // Use API status if available
+          vendorId: c.vendorId,
+          street: c.addressesVM?.[0]?.street || '',
+          city: c.addressesVM?.[0]?.city || '',
+          state: c.addressesVM?.[0]?.state || '',
+          country: c.addressesVM?.[0]?.country || '',
+          contactNumber: c.contactsVM?.[0]?.contactNumber || '',
+          contactType: c.contactsVM?.[0]?.type || '',
+          entity: c.vendorUseCompaniesVM?.map(vuc => vuc.procurementCompany).join(', ') || '',
+          procurementCompanyId: c.vendorUseCompaniesVM?.[0]?.procurementCompanyId || null,
+          entityDetails: c.vendorUseCompaniesVM?.map(vuc => ({
+            id: vuc.id, // Added: Use this as associationId for getsetuphistory
+            entity: vuc.procurementCompany,
+            status: vuc.status,
+            createdDate: vuc.createdDate,
+            approverName: vuc.createdBy || '',
+            procurementCompanyId: vuc.procurementCompanyId,
+            level: 'Loading...', // Initialize level as loading
+            approverLevelName: '' // Initialize approver name
+          })) || []
+        }));
 
         console.log('Mapped companyData:', this.companyData);
 
@@ -208,7 +208,7 @@ export class CompanyListComponent implements OnInit {
   openStatusPopup(row: any): void {
     this.loadingStatus = true;
     this.selectedStatusEntities = [...row.entityDetails]; // Copy entity details
-    
+
     console.log('Opening status popup for company:', row);
     console.log('Entity details:', row.entityDetails);
 
@@ -220,15 +220,15 @@ export class CompanyListComponent implements OnInit {
     }
 
     // Create API calls for each entity to get approver level
-    const levelRequests = this.selectedStatusEntities.map(entity => 
+    const levelRequests = this.selectedStatusEntities.map(entity =>
       this.companyService.GetCompanyApproverLevel(row.id, entity.procurementCompanyId).pipe(
         tap(response => {
           console.log(`✅ Approver level response for entity ${entity.entity}:`, response);
         }),
         catchError(error => {
           console.error(`❌ Error fetching approver level for entity ${entity.entity}:`, error);
-          return of({ 
-            error: true, 
+          return of({
+            error: true,
             entity: entity.entity,
             message: 'Failed to fetch approver level'
           });
@@ -246,11 +246,11 @@ export class CompanyListComponent implements OnInit {
     forkJoin(levelRequests).subscribe({
       next: (responses: any[]) => {
         console.log('All approver level responses:', responses);
-        
+
         // Update each entity with approver level data
         this.selectedStatusEntities.forEach((entity, index) => {
           const response = responses[index];
-          
+
           // Check if this response is an error
           if (response?.error) {
             entity.level = 'N/A';
@@ -260,7 +260,7 @@ export class CompanyListComponent implements OnInit {
 
           // Extract approver level and name from response
           let approverLevel, approverName;
-          
+
           if (response?.value?.approverLevel !== undefined) {
             approverLevel = response.value.approverLevel;
             approverName = response.value.approverName;
@@ -305,161 +305,161 @@ export class CompanyListComponent implements OnInit {
     });
   }
 
-openRemarksPopup(row: any): void {
-  this.loadingRemarks = true;
-  this.selectedRemarksEntities = [];
-  this.showNoRemarksMessage = false; // Reset flag
+  openRemarksPopup(row: any): void {
+    this.loadingRemarks = true;
+    this.selectedRemarksEntities = [];
+    this.showNoRemarksMessage = false; // Reset flag
 
-  console.log('Row data for remarks:', row);
-  console.log('Entity details for remarks:', row.entityDetails);
+    console.log('Row data for remarks:', row);
+    console.log('Entity details for remarks:', row.entityDetails);
 
-  // Remove the filter: Call API for ALL entities (including 'InProcess')
-  const entitiesWithRemarks = row.entityDetails; // No filtering
+    // Remove the filter: Call API for ALL entities (including 'InProcess')
+    const entitiesWithRemarks = row.entityDetails; // No filtering
 
-  console.log('Entities for remarks (all entities):', entitiesWithRemarks);
+    console.log('Entities for remarks (all entities):', entitiesWithRemarks);
 
-  // If no entities found, show message
-  if (!entitiesWithRemarks || entitiesWithRemarks.length === 0) {
-    this.selectedRemarksEntities = [{
-      entity: 'No remarks available',
-      remarks: [], // Empty array for no remarks
-      status: '',
-      source: 'no-remarks'
-    }];
-    this.showNoRemarksMessage = true; // Set flag
-    console.log('No entities available');
-    this.loadingRemarks = false;
-    this.modalService.open(this.remarksModal, { size: 'lg', backdrop: 'static' });
-    return;
-  }
-
-  // Create API calls for each entity using getsetuphistory with associationId (entity.id)
-  const apiCalls = entitiesWithRemarks.map(entity => 
-    this.companyService.getsetuphistory(entity.id).pipe(
-      tap(response => {
-        console.log(`✅ Setup history response for entity ${entity.entity}:`, response);
-      }),
-      catchError(error => {
-        console.error(`❌ Error fetching setup history for entity ${entity.entity}:`, error);
-        return of({ 
-          error: true, 
-          entity: entity.entity,
-          message: 'Failed to fetch remarks from setup history API'
-        });
-      })
-    )
-  );
-
-  console.log('Making setup history API calls for entities:', entitiesWithRemarks.map(e => ({
-    entity: e.entity,
-    associationId: e.id // Using entity.id as associationId
-  })));
-
-  // Execute all API calls in parallel
-  forkJoin(apiCalls).subscribe({
-    next: (responses: any[]) => {
-      console.log('All setup history API responses:', responses);
-      
-      // Process each entity with its corresponding API response
-      this.selectedRemarksEntities = entitiesWithRemarks.map((entity, index) => {
-        const response = responses[index];
-        
-        // Check if response has error
-        if (response?.error) {
-          return {
-            entity: entity.entity,
-            remarks: [], // Empty array on error
-            status: entity.status,
-            source: 'api-error'
-          };
-        }
-
-        // CORRECTED: Extract remarks array from response.value
-        let remarksArray = [];
-        
-        // Handle different possible response structures
-        if (Array.isArray(response?.value)) {
-          remarksArray = response.value;
-        } else if (Array.isArray(response?.data?.value)) {
-          remarksArray = response.data.value;
-        } else if (Array.isArray(response)) {
-          remarksArray = response;
-        }
-        
-        console.log(`Processed remarks for ${entity.entity}:`, remarksArray);
-
-        return {
-          entity: entity.entity,
-          remarks: remarksArray, // Array of { remarks, createdDate, approverName }
-          status: entity.status,
-          source: 'setup-history-api'
-        };
-      });
-
-      // Set the flag for no remarks message - check if ALL entities have no remarks
-      const hasAnyRemarks = this.selectedRemarksEntities.some(e => e.remarks && e.remarks.length > 0);
-      this.showNoRemarksMessage = !hasAnyRemarks;
-
-      console.log('Final selectedRemarksEntities:', this.selectedRemarksEntities);
+    // If no entities found, show message
+    if (!entitiesWithRemarks || entitiesWithRemarks.length === 0) {
+      this.selectedRemarksEntities = [{
+        entity: 'No remarks available',
+        remarks: [], // Empty array for no remarks
+        status: '',
+        source: 'no-remarks'
+      }];
+      this.showNoRemarksMessage = true; // Set flag
+      console.log('No entities available');
       this.loadingRemarks = false;
-      this.cdr.detectChanges();
       this.modalService.open(this.remarksModal, { size: 'lg', backdrop: 'static' });
-    },
-    error: (error) => {
-      console.error('API Error in forkJoin for setup history:', error);
-      
-      this.selectedRemarksEntities = entitiesWithRemarks.map(entity => ({
-        entity: entity.entity,
-        remarks: [], // Empty array on complete failure
-        status: entity.status,
-        source: 'api-complete-failure'
-      }));
-      
-      this.showNoRemarksMessage = true; // Set flag on error
-      this.loadingRemarks = false;
-      this.cdr.detectChanges();
-      this.modalService.open(this.remarksModal, { size: 'lg', backdrop: 'static' });
+      return;
     }
-  });
-}
 
+    // Create API calls for each entity using getsetuphistory with associationId (entity.id)
+    // const apiCalls = entitiesWithRemarks.map(entity => 
+    //   this.companyService.getsetuphistory(entity.id).pipe(
+    //     tap(response => {
+    //       console.log(`✅ Setup history response for entity ${entity.entity}:`, response);
+    //     }),
+    //     catchError(error => {
+    //       console.error(`❌ Error fetching setup history for entity ${entity.entity}:`, error);
+    //       return of({ 
+    //         error: true, 
+    //         entity: entity.entity,
+    //         message: 'Failed to fetch remarks from setup history API'
+    //       });
+    //     })
+    //   )
+    // );
 
-getMainStatus(vendorUseCompaniesVM: any[]): string {
-  if (!vendorUseCompaniesVM || vendorUseCompaniesVM.length === 0) {
-    return 'InProcess'; // Default status if no entities
+    console.log('Making setup history API calls for entities:', entitiesWithRemarks.map(e => ({
+      entity: e.entity,
+      associationId: e.id // Using entity.id as associationId
+    })));
+
+    // Execute all API calls in parallel
+    // forkJoin(apiCalls).subscribe({
+    //   next: (responses: any[]) => {
+    //     console.log('All setup history API responses:', responses);
+
+    //     // Process each entity with its corresponding API response
+    //     this.selectedRemarksEntities = entitiesWithRemarks.map((entity, index) => {
+    //       const response = responses[index];
+
+    //       // Check if response has error
+    //       if (response?.error) {
+    //         return {
+    //           entity: entity.entity,
+    //           remarks: [], // Empty array on error
+    //           status: entity.status,
+    //           source: 'api-error'
+    //         };
+    //       }
+
+    //       // CORRECTED: Extract remarks array from response.value
+    //       let remarksArray = [];
+
+    //       // Handle different possible response structures
+    //       if (Array.isArray(response?.value)) {
+    //         remarksArray = response.value;
+    //       } else if (Array.isArray(response?.data?.value)) {
+    //         remarksArray = response.data.value;
+    //       } else if (Array.isArray(response)) {
+    //         remarksArray = response;
+    //       }
+
+    //       console.log(`Processed remarks for ${entity.entity}:`, remarksArray);
+
+    //       return {
+    //         entity: entity.entity,
+    //         remarks: remarksArray, // Array of { remarks, createdDate, approverName }
+    //         status: entity.status,
+    //         source: 'setup-history-api'
+    //       };
+    //     });
+
+    //     // Set the flag for no remarks message - check if ALL entities have no remarks
+    //     const hasAnyRemarks = this.selectedRemarksEntities.some(e => e.remarks && e.remarks.length > 0);
+    //     this.showNoRemarksMessage = !hasAnyRemarks;
+
+    //     console.log('Final selectedRemarksEntities:', this.selectedRemarksEntities);
+    //     this.loadingRemarks = false;
+    //     this.cdr.detectChanges();
+    //     this.modalService.open(this.remarksModal, { size: 'lg', backdrop: 'static' });
+    //   },
+    //   error: (error) => {
+    //     console.error('API Error in forkJoin for setup history:', error);
+
+    //     this.selectedRemarksEntities = entitiesWithRemarks.map(entity => ({
+    //       entity: entity.entity,
+    //       remarks: [], // Empty array on complete failure
+    //       status: entity.status,
+    //       source: 'api-complete-failure'
+    //     }));
+
+    //     this.showNoRemarksMessage = true; // Set flag on error
+    //     this.loadingRemarks = false;
+    //     this.cdr.detectChanges();
+    //     this.modalService.open(this.remarksModal, { size: 'lg', backdrop: 'static' });
+    //   }
+    // });
   }
 
-  // Check if ALL entities have status 'Completed'
-  const allCompleted = vendorUseCompaniesVM.every(
-    entity => entity.status?.toLowerCase() === 'completed'
-  );
 
-  // Check if ANY entity has status 'InProcess' or 'SendBack'
-  const hasInProcessOrSendBack = vendorUseCompaniesVM.some(
-    entity => 
-      entity.status?.toLowerCase() === 'inprocess' || 
-      entity.status?.toLowerCase() === 'sendback'
-  );
+  getMainStatus(vendorUseCompaniesVM: any[]): string {
+    if (!vendorUseCompaniesVM || vendorUseCompaniesVM.length === 0) {
+      return 'InProcess'; // Default status if no entities
+    }
 
-  if (allCompleted) {
-    return 'Onboarded';
-  } else if (hasInProcessOrSendBack) {
-    return 'InProcess';
-  } else {
-    // If there are other statuses (like Rejected) but no InProcess/SendBack
-    return 'InProcess'; // Default fallback
+    // Check if ALL entities have status 'Completed'
+    const allCompleted = vendorUseCompaniesVM.every(
+      entity => entity.status?.toLowerCase() === 'completed'
+    );
+
+    // Check if ANY entity has status 'InProcess' or 'SendBack'
+    const hasInProcessOrSendBack = vendorUseCompaniesVM.some(
+      entity =>
+        entity.status?.toLowerCase() === 'inprocess' ||
+        entity.status?.toLowerCase() === 'sendback'
+    );
+
+    if (allCompleted) {
+      return 'Onboarded';
+    } else if (hasInProcessOrSendBack) {
+      return 'InProcess';
+    } else {
+      // If there are other statuses (like Rejected) but no InProcess/SendBack
+      return 'InProcess'; // Default fallback
+    }
   }
-}
 
   getStatusClass(status: any): string {
-  const s = (status ?? '').toString().trim().toLowerCase();
+    const s = (status ?? '').toString().trim().toLowerCase();
 
-  if (s === 'new') return 'status-pill--new';
-  if (s === 'inprocess' || s === 'in process' || s === 'in_process') return 'status-pill--inprocess';
-  if (s === 'onboarded') return 'status-pill--completed';
+    if (s === 'new') return 'status-pill--new';
+    if (s === 'inprocess' || s === 'in process' || s === 'in_process') return 'status-pill--inprocess';
+    if (s === 'onboarded' || s === 'completed') return 'status-pill--completed';
 
-  return 'status-pill--default';
-}
+    return 'status-pill--default';
+  }
 
   shouldShowRemarks(entity: any): boolean {
     const status = entity.status?.toLowerCase();
