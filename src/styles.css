@@ -1,4 +1,6 @@
 @import './app/shared/custom-style/custom-tab.css';
+@import 'intl-tel-input/build/css/intlTelInput.css';
+
 
 :root,
 [data-bs-theme="light"] {
