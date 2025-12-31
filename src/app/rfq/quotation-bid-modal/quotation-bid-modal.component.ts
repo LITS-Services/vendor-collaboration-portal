@@ -43,7 +43,7 @@ export class QuotationBidModalComponent implements OnInit {
 
   isTyping = false;
   typingTimeout: any;
-
+  currentUserType: CreatedByType = CreatedByType.Vendor;
   form = this.fb.group({
     comment: ["", [Validators.required, Validators.maxLength(1000)]],
   });
@@ -61,6 +61,8 @@ export class QuotationBidModalComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.signalRService.setChatActive(true);
+
     this.vendorUserId = localStorage.getItem("userId");
     this.companyId = localStorage.getItem("company");
     if (!this.vendorUserId) console.error("Vendor user ID not found in localStorage.");
@@ -77,35 +79,69 @@ export class QuotationBidModalComponent implements OnInit {
         await this.signalRService.joinQuotation(this.quotationId, this.vendorUserId)
         console.log("Joined quotation group:", this.quotationId, this.vendorUserId);
 
+        const currentUserType = this.CreatedByType.Vendor;
+        this.signalRService.hubConnection.invoke(
+          'MarkCommentAsRead',
+          this.quotationId,
+          this.vendorUserId,
+          currentUserType
+        ).catch(err => console.error('Failed to mark comments as read', err));
       }
     });
 
     this.signalRService.comment$.subscribe((comment) => {
       if (!comment) return;
+
       if (comment.quotationId === this.quotationId && comment.vendorId === this.vendorUserId) {
         this.dataComments.push({
+          commentId: comment.commentId,
           comments: comment.commentText,
           createdByType: comment.createdByType,
           createdByLabel: comment.createdByType === CreatedByType.Vendor ? 'Vendor' : 'Procurement',
           createdOn: comment.createdAt,
-          createdBy: comment.createdBy
+          createdBy: comment.createdBy,
+          seenByType: 0
         });
+
+        if (this.signalRService.isChatActive && comment.commentId) {
+          const currentUserType = this.CreatedByType.Vendor;
+          this.signalRService.markCommentAsRead(comment.quotationId, comment.vendorId, currentUserType);
+        }
         this.cdr.detectChanges();
         this.scrollToBottom();
       }
     });
 
-     this.signalRService.typing$.subscribe(data => {
-    if (data?.quotationId === this.quotationId && data.vendorId === this.vendorUserId && data.createdByType !== CreatedByType.Vendor) {
-      this.isTyping = data.isTyping;
-      this.cdr.detectChanges();
-    }
-  });
+    this.signalRService.typing$.subscribe(data => {
+      if (data?.quotationId === this.quotationId && data.vendorId === this.vendorUserId && data.createdByType !== CreatedByType.Vendor) {
+        this.isTyping = data.isTyping;
+        this.cdr.detectChanges();
+      }
+    });
+
+    this.signalRService.commentSeen$.subscribe(seen => {
+      if (!seen) return;
+
+      this.dataComments
+        .filter(c => c.createdByType === this.currentUserType)
+        .forEach(c => {
+          c.seenByType = 0; // or null if you prefer
+        });
+      const lastOwnMessage = [...this.dataComments]
+        .reverse()
+        .find(c => c.createdByType === this.currentUserType);
+
+      // Only mark seen if this event is for that last message
+      if (lastOwnMessage?.commentId === seen.commentId) {
+        lastOwnMessage.seenByType = seen.seenByType;
+        this.cdr.detectChanges();
+      }
+    });
   }
 
-
   ngOnDestroy(): void {
-    this.signalRService.leaveQuotation(this.quotationId, this.companyId);
+    this.signalRService.setChatActive(false);
+    this.signalRService.leaveQuotation(this.quotationId, this.vendorUserId);
     this.signalRService.stopConnection();
   }
 
@@ -239,12 +275,10 @@ export class QuotationBidModalComponent implements OnInit {
       // Shift + Enter → allow new line
       return;
     }
-
     // Enter only → send message
     event.preventDefault();
 
     if (this.form.invalid) return;
-
     this.insertComment();
   }
 
@@ -424,7 +458,6 @@ export class QuotationBidModalComponent implements OnInit {
   downloadProcurementAttachment(attachment: any) {
     if (!attachment) return;
     const fileName = attachment.fileName || 'download';
-
 
     // Saved attachment → download via service
     this.systemService.downloadAttachment('RFQ', attachment.id).subscribe({

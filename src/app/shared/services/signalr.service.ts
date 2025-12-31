@@ -1,11 +1,17 @@
 import { Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 
+enum CreatedByType {
+  Procurement = 1,
+  Vendor = 2,
+}
 @Injectable({ providedIn: 'root' })
+
 export class SignalRService {
-  private hubConnection!: signalR.HubConnection;
+
+  public hubConnection!: signalR.HubConnection;
 
   constructor(private authService: AuthService) { }
   // Observable for incoming comments/messages
@@ -14,7 +20,15 @@ export class SignalRService {
 
   private typingSource = new BehaviorSubject<any>(null);
   typing$ = this.typingSource.asObservable();
-  
+
+  private commentSeenSubject = new Subject<{ commentId: number, seenByType: number }>();
+  public commentSeen$ = this.commentSeenSubject.asObservable();
+
+  public isChatActive = false;
+
+  setChatActive(active: boolean) {
+    this.isChatActive = active;
+  }
   // Start the connection
   startConnection(): Promise<void> {
     this.hubConnection = new signalR.HubConnectionBuilder()
@@ -33,13 +47,13 @@ export class SignalRService {
       this.typingSource.next(data);
     });
 
-    return this.hubConnection
-      .start()
-      .then(() => console.log('SignalR Connected'))
-      .catch(err => {
-        console.error('SignalR Connection Error:', err);
-        throw err;
-      });
+
+    return this.hubConnection.start()
+      .then(() => {
+        console.log('SignalR Connected');
+        this.registerOnServerEvents();
+      })
+      .catch(err => console.error('SignalR connection error', err));
   }
 
   stopConnection() {
@@ -65,5 +79,21 @@ export class SignalRService {
   sendTyping(quotationId: number, vendorId: string, isTyping: boolean, createdByType: number): Promise<void> {
     if (!this.hubConnection) return Promise.reject("Hub connection not established");
     return this.hubConnection.invoke('SendTyping', quotationId, vendorId, isTyping, createdByType);
+  }
+
+  // SignalRService
+  markCommentAsRead(quotationId: number, vendorId: string, currentUserType: number): Promise<void> {
+    if (!this.hubConnection) return Promise.reject("Hub connection not established");
+    return this.hubConnection.invoke('MarkCommentAsRead', quotationId, vendorId, currentUserType)
+      .catch(err => console.error('Failed to mark comment as read', err));
+  }
+
+  private registerOnServerEvents() {
+    this.hubConnection?.on('CommentSeen', (data: any[]) => {
+      if (!data) return;
+      data.forEach((item: { commentId: number, seenByType: number }) => {
+        this.commentSeenSubject.next(item);
+      });
+    });
   }
 }
