@@ -91,14 +91,14 @@ export class CompanyService {
     return this.http.put(`${this.apiUrl}/update-vendor-company/${id}`, payload);
   }
 
-  getlatestremarkscompanyId(procurementCompanyId: number, vendorCompanyId: number): Observable<any> {
+  getlatestremarkscompanyId(vendorCompanyId: number): Observable<any> {
     return this.http.get<any>(
-      `${environment.apiUrl}/Company/get-latest-company-remark?ProcurementCompanyId=${procurementCompanyId}&VendorCompanyId=${vendorCompanyId}`
+      `${environment.apiUrl}/Company/get-latest-company-remark?VendorCompanyId=${vendorCompanyId}`
     );
   }
 
-  GetCompanyApproverLevel(vendorCompanyId: number, procurementCompanyId: number): Observable<any> {
-    return this.http.get<any>(`${environment.apiUrl}/Company/get-company-approver-level?vendorCompanyId=${vendorCompanyId}&ProcurementCompanyId=${procurementCompanyId}`);
+  GetCompanyApproverLevel(vendorCompanyId: number): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrl}/Company/get-company-approver-level?vendorCompanyId=${vendorCompanyId}`);
   }
 
 

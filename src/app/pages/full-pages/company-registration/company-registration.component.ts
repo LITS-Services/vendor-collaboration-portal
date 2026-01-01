@@ -50,6 +50,7 @@ export class CompanyRegistrationComponent implements OnInit {
   companyType: string = 'Organization';
   companyName: string = '';
   primaryCurrency: string = '';
+  websiteUrl: string = '';  // Added websiteUrl
   vendorCategory: string = '';
   lineOfBusiness: string = '';
   birthCountry: string = '';
@@ -314,8 +315,10 @@ export class CompanyRegistrationComponent implements OnInit {
 
           // General Info
           this.companyName = company.name || '';
+          this.websiteUrl = company.websiteUrl || ''; // Map websiteUrl from API
           this.remarks = company.remarks || '';
           this.companyType = company.companyType || 'Organization';
+          this.existingLogoUrl = company.logo || null; // Map existing logo
           this.companyForm.patchValue({ remarks: this.remarks });
 
           // Purchasing Demographics
@@ -732,9 +735,26 @@ export class CompanyRegistrationComponent implements OnInit {
       return f;
     }));
 
+    // Handle Logo Conversion
+    let logoBase64 = '';
+    if (this.logoFile) {
+      try {
+        logoBase64 = await this.convertFileToBase64(this.logoFile);
+      } catch (e) {
+        console.error('Error converting logo to base64', e);
+      }
+    } else if (this.existingLogoUrl) {
+      // If preserving existing logo, we might need to send it back or send empty if backend handles "no change"
+      // The requirement is "map... and send".
+      // Sending the URL back might work or might need ignore.
+      // For now, assuming if no new file, we send existing URL (or empty if none).
+      logoBase64 = this.existingLogoUrl;
+    }
+
     const vendorCompanyPayload = {
       name: this.companyName,
-      logo: '',
+      websiteUrl: this.websiteUrl,
+      logo: logoBase64,
       requestStatusId: 1,
 
       // procurementCompanyId: [...this.selectedProcurementCompanyIds], // REMOVED
@@ -787,7 +807,7 @@ export class CompanyRegistrationComponent implements OnInit {
       next: () => {
         this.toastr.success(`Company ${this.isEditMode ? 'Updated' : 'Registered'} Successfully!`);
         this.isLoading = false;
-        this.router.navigate(['/company/company-master']);
+        this.router.navigate(['/company/company-list']);
       },
       error: () => {
         this.isLoading = false;

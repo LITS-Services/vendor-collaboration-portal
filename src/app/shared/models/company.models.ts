@@ -70,6 +70,8 @@ export interface PurchasingDemographics {
 export interface CompanyProfile {
     id?: number;
     name: string;
+    websiteUrl?: string;
+    logo?: string;
     companyType: string;
     aboutCompany: string;
     remarks?: string;
