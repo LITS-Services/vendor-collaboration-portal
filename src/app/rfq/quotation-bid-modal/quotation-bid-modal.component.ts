@@ -191,12 +191,13 @@ export class QuotationBidModalComponent implements OnInit {
 
   loadRfqComments() {
     //this.loading = true;
-
+    const currentUserType = this.CreatedByType.Vendor;
     this.rfqService
       .getRFQComments(
         this.vendorUserId,
         this.rfq.id,
-        this.companyId
+        this.companyId,
+        currentUserType
       )
       .pipe(finalize(() => {
         setTimeout(() => {
@@ -217,6 +218,7 @@ export class QuotationBidModalComponent implements OnInit {
                 : "Vendor",
             createdOn: c?.createdOn,
             createdBy: c?.createdBy,
+            seenByType: c.seenByType ?? 0
           }));
           this.cdr.markForCheck();
           this.scrollToBottom();
@@ -565,4 +567,6 @@ export class QuotationBidModalComponent implements OnInit {
 
     return this.timeSince(createdOn);
   }
+
+  
 }

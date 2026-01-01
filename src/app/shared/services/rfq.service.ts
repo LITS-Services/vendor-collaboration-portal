@@ -57,9 +57,9 @@ export class RfqService {
     );
   }
 
-     getRFQComments(vendorId: string, quotationId: number, vendorComapnyId: string): Observable<any[]> {
+     getRFQComments(vendorId: string, quotationId: number, vendorComapnyId: string, currentUserType: number): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/quotation-request-comment`, {
-      params: { vendorId:vendorId ,quotationId: quotationId, vendorComapnyId: vendorComapnyId }
+      params: { vendorId:vendorId ,quotationId: quotationId, vendorComapnyId: vendorComapnyId, currentUserType }
     });
   }
 
