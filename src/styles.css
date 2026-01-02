@@ -7,7 +7,14 @@
   --bs-body-font-family: "Onest", sans-serif;
 }
 .modal-title {
-  color: white !important;
+  color: #249D57 !important;
+}
+
+.modal-body{
+  background-color: white !important;
+}
+.modal-footer{
+  background-color: white !important;
 }
 .btn-primary{
     background: #249D57;
@@ -104,11 +111,12 @@ a:hover {
     color: #187741;
   } */
   .modal-header{
-    background: linear-gradient(to right, #187741, #299c5b);
+    background: white !important;
   
-    color: #fff;
+    color: #249D57 !important;
     font-size: 18px;
      font-weight: 600;
+     border-bottom: none !important;
   }
   
   .form-control:focus {
@@ -241,11 +249,13 @@ a:hover {
 
   .ngx-datatable.bootstrap .datatable-header .datatable-header-cell {
   border-bottom: none !important;
+  height: 42px !important;
 }
 
 .ngx-datatable.bootstrap .datatable-body .datatable-body-row {
       border-bottom: 1px solid #ededed !important;
       border-top: none;
+      transition: background-color 0.2s ease;
 }
   .ngx-datatable.bootstrap .datatable-body .datatable-body-row.datatable-row-even {
    background-color: white;
@@ -259,7 +269,29 @@ a:hover {
     background-color: #249d57 !important;
   }
 
+  /* Datatable row hover highlight (global) */
+  .ngx-datatable.bootstrap .datatable-body .datatable-body-row:not(.active):hover {
+    background-color: rgba(36, 157, 87, 0.06) !important;
+  }
 
+  /* Some ngx-datatable templates hover the wrapper instead of the row */
+  .ngx-datatable.bootstrap .datatable-body .datatable-row-wrapper:hover .datatable-body-row:not(.active) {
+    background-color: rgba(36, 157, 87, 0.06) !important;
+  }
+
+  .ngx-datatable .datatable-header-cell,
+  .ngx-datatable .datatable-body-cell {
+   overflow: hidden !important;
+ }
+ 
+  .ngx-datatable .datatable-header-cell .datatable-header-cell-label,
+  .ngx-datatable .datatable-body-cell .datatable-body-cell-label {
+   display: block !important;
+   white-space: nowrap !important;
+   overflow: hidden !important;
+   text-overflow: ellipsis !important;
+   color: #606060  !important;
+ }
 
 
   .ngx-datatable.fixed-row .datatable-scroll .datatable-body-row .datatable-body-cell{
@@ -288,6 +320,42 @@ a:hover {
     background-color: #249d57 !important;
     font-weight: bold;
     color: #ffffff !important;
+  }
+
+  .app-table-card {
+    border: 1px solid #eef2f6;
+    /* border-radius: 10px; */
+    overflow: hidden;
+    background: #ffffff;
+  }
+
+  .app-table-card .table.app-table {
+    margin-bottom: 0 !important;
+    font-size: 12px;
+    border-color: transparent !important; 
+  }
+
+  .app-table-card .table.app-table > :not(caption) > * > * {
+    padding: 10px 14px !important;
+    background-color: transparent;
+    box-shadow: none !important;
+    transition: background-color 0.3s ease;
+  }
+
+  .app-table thead th {
+    background: #F4F4F4 !important;
+    color: #606060 !important;
+    font-size: 12px !important;
+    letter-spacing: 0.06em !important;
+    font-weight: 600;
+  }
+
+  .app-table-card .table.app-table tbody td {
+    border-top: 1px solid #f1f5f9 !important;
+  }
+
+  .app-table-card .table.app-table.table-hover > tbody > tr:hover > * {
+    background-color: rgba(36, 157, 87, 0.06) !important;
   }
 
   .cstm-checkbox-form{
@@ -460,6 +528,9 @@ datatable-scroller {
   pointer-events: auto; /* optional: allow close click */
 }
 
+.pr-table-wrapper {
+  width: 100%;
+}
 
 
 /* html.swal2-shown,

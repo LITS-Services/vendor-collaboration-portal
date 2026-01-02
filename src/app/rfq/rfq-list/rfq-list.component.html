@@ -27,39 +27,39 @@
 
   <div class="row">
     <div class="col-12">
-      @if(datatableVisible){
-      <ngx-datatable autoResize (autoResize)="onAutoResize()" class="bootstrap core-bootstrap" [rows]="quotations"
-        [columnMode]="'force'" [headerHeight]="42" [footerHeight]="50" [rowHeight]="42" [scrollbarH]="true">
+      <div  class="pr-table-wrapper" appDatatableAutoResize [datatable]="datatable">
+      <ngx-datatable #datatable class="bootstrap core-bootstrap" [rows]="quotations"
+        [columnMode]="'force'" [headerHeight]="42" [footerHeight]="50" [scrollbarH]="isMobile"  [rowHeight]="42">
       
         <!-- Sr. No Column -->
-        <ngx-datatable-column name="Sr. No." [sortable]="false" [resizeable]="false" [width]="50">
+        <ngx-datatable-column name="Sr. No." [width]="50" [sortable]="false">
           <ng-template let-rowIndex="rowIndex" ngx-datatable-cell-template>
             <span class="ms-1">{{ rowIndex + 1 }}</span>
           </ng-template>
         </ngx-datatable-column>
       
         <!-- RFQ No -->
-        <ngx-datatable-column name="RFQ No." prop="rfqNo" [sortable]="false"></ngx-datatable-column>
+        <ngx-datatable-column name="RFQ No." prop="rfqNo" [flexGrow]="2" [minWidth]="140" [sortable]="false"></ngx-datatable-column>
       
         <!-- Status -->
       
       
         <!-- Start Date -->
-        <ngx-datatable-column name="Start Date" prop="startDate" [sortable]="false">
+        <ngx-datatable-column name="Start Date" prop="startDate" [flexGrow]="1" [minWidth]="120" [sortable]="false">
           <ng-template let-row="row" ngx-datatable-cell-template>
             {{ row.startDate | date: 'yyyy-MM-dd' }}
           </ng-template>
         </ngx-datatable-column>
       
         <!-- End Date -->
-        <ngx-datatable-column name="End Date" prop="endDate" [sortable]="false">
+        <ngx-datatable-column name="End Date" prop="endDate"  [flexGrow]="1" [minWidth]="120" [sortable]="false">
           <ng-template let-row="row" ngx-datatable-cell-template>
             {{ row.endDate | date: 'yyyy-MM-dd' }}
           </ng-template>
         </ngx-datatable-column>
       
         <!-- Owner -->
-        <ngx-datatable-column name="Owner" prop="owner" [sortable]="false"></ngx-datatable-column>
+        <ngx-datatable-column name="Owner" prop="owner"  [flexGrow]="1" [minWidth]="120" [sortable]="false"></ngx-datatable-column>
       
         <ngx-datatable-column name="Status" prop="requestStatus" [sortable]="false">
           <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
@@ -78,10 +78,9 @@
               </ngx-datatable-column> -->
       
         <!-- Action -->
-        <ngx-datatable-column name="Action" [sortable]="false" minWidth="50" maxWidth="200" cellClass="action-cell"
-          headerClass="action-cell">
+        <ngx-datatable-column name="Action" [sortable]="false"  [flexGrow]="1" minWidth="100" maxWidth="300" >
           <ng-template ngx-datatable-cell-template let-row="row">
-            <div class="d-flex justify-content-end w-100">
+            <div class="d-flex justify-content-end w-100 pe-3 py-3">
               <button type="button" class="proposal-btn position-relative" (click)="openBidModal(row)"
                 ngbTooltip="View Proposal details" container="body">
       
@@ -95,7 +94,7 @@
           </ng-template>
         </ngx-datatable-column>
       </ngx-datatable>
-      }
+      </div>
       
     </div>
   </div>

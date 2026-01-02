@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, HostListener, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { QuotationRequest } from '../../models/quotation-request.model';
 import { RfqService } from 'app/shared/services/rfq.service';
@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { skip } from 'rxjs/operators';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { DatatableComponent } from '@swimlane/ngx-datatable';
 
 @Component({
   selector: 'app-rfq-list',
@@ -15,6 +16,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 })
 export class RfqListComponent implements OnInit {
   quotations: QuotationRequest[] = [];
+  @ViewChild('datatable', { static: false }) datatable!: DatatableComponent;
   selectedStatus: string = '';
   isFilterOpen = false;
   forPending = false;
@@ -63,6 +65,11 @@ export class RfqListComponent implements OnInit {
         this.cdr.detectChanges();
       });
   }
+
+  get isMobile(): boolean {
+    return window.innerWidth <= 768;
+  }
+  
 
   openBidModal(rfq: QuotationRequest): void {
     if (!rfq.id) {

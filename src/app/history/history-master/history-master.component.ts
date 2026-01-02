@@ -20,39 +20,34 @@ import {
   ApexNonAxisChartSeries,
   ApexResponsive,
 } from "ng-apexcharts";
-import { ChartEvent, ChartType } from 'ng-chartist';
-const data: any = require('../../shared/data/chartist.json');
-export type ChartOptions = {
-  series: ApexAxisChartSeries | ApexNonAxisChartSeries;
-  colors: string[],
-  chart: ApexChart;
-  xaxis: ApexXAxis;
-  yaxis: ApexYAxis | ApexYAxis[],
-  title: ApexTitleSubtitle;
-  dataLabels: ApexDataLabels,
-  stroke: ApexStroke,
-  grid: ApexGrid,
-  legend?: ApexLegend,
-  tooltip?: ApexTooltip,
-  plotOptions?: ApexPlotOptions,
-  labels?: string[],
-  fill: ApexFill,
-  markers?: ApexMarkers,
-  theme: ApexTheme,
-  responsive: ApexResponsive[]
-};
 
-var $info = "#249D57",
-$info_light = "#BDE2CD"
-var themeColors = [$info, $info_light];
-export interface Chart {
-  type: ChartType;
-  data: any;
-  options?: any;
-  responsiveOptions?: any;
-  events?: ChartEvent;
-  // plugins?: any;
+interface BidHistoryRow {
+  bidId: string;
+  rfqNo: string;
+  vendorName: string;
+  bidAmount: number;
+  totalBids: number;
+  statusLabel: string;
+  statusKey: 'success' | 'pending' | 'rejected';
 }
+
+interface InvoiceRow {
+  invoiceNo: string;
+  vendor: string;
+  amount: number;
+  statusLabel: string;
+  statusKey: 'paid' | 'pending';
+  dueDate: string; // ISO date
+}
+
+interface VendorRating {
+  initials: string;
+  name: string;
+  orders: number;
+  rating: number;
+  isActive?: boolean;
+}
+
 @Component({
   selector: 'app-history-master',
   templateUrl: './history-master.component.html',
@@ -60,146 +55,219 @@ export interface Chart {
   standalone: false
 })
 export class HistoryMasterComponent implements OnInit {
+ metrics = {
+    totalRfqs: 549,
+    totalItemsSold: 600,
+    totalPurchaseOrders: 600,
+    poSuccessPercent: 75,
+    poRejectedPercent: 45,
+      poSuccessCount: 745,
+  poRejectedCount: 149
+  };
 
-  columnChartOptions : Partial<ChartOptions>;
-  DonutChart: Chart = {
-    type: 'Pie',
-    data: data['donutDashboard'],
-    options: {
-      donut: true,
-      startAngle: 0,
-      labelInterpolationFnc: function (value) {
-        var total = data['donutDashboard'].series.reduce(function (prev, series) {
-          return prev + series.value;
-        }, 0);
-        return total + '%';
-      }
+  // Recent bids history (dummy)
+  recentBids: BidHistoryRow[] = [
+    {
+      bidId: 'BID-10231',
+      rfqNo: 'RFQ-8891',
+      vendorName: 'Alpha Traders',
+      bidAmount: 12500,
+      totalBids: 12,
+      statusLabel: 'Successful',
+      statusKey: 'success',
     },
-    events: {
-      draw(data: any): void {
-        if (data.type === 'label') {
-          if (data.index === 0) {
-            data.element.attr({
-              dx: data.element.root().width() / 2,
-              dy: data.element.root().height() / 2
-            });
-          } else {
-            data.element.remove();
+    {
+      bidId: 'BID-10232',
+      rfqNo: 'RFQ-8891',
+      vendorName: 'Nova Supplies',
+      bidAmount: 11950,
+      totalBids: 5,
+      statusLabel: 'Pending finalization',
+      statusKey: 'pending',
+    },
+    {
+      bidId: 'BID-10233',
+      rfqNo: 'RFQ-8891',
+      vendorName: 'CoreTech Ltd',
+      bidAmount: 12300,
+      totalBids: 3,
+      statusLabel: 'Pending finalization',
+      statusKey: 'pending',
+    },
+    {
+      bidId: 'BID-10234',
+      rfqNo: 'RFQ-9024',
+      vendorName: 'Prime Vendors',
+      bidAmount: 8200,
+      totalBids: 8,
+      statusLabel: 'Successful',
+      statusKey: 'success',
+    },
+    {
+      bidId: 'BID-10235',
+      rfqNo: 'RFQ-9024',
+      vendorName: 'Vertex Solutions',
+      bidAmount: 7980,
+      totalBids: 6,
+      statusLabel: 'Successful',
+      statusKey: 'success',
+    },
+    {
+      bidId: 'BID-10236',
+      rfqNo: 'RFQ-9024',
+      vendorName: 'OmniTrade',
+      bidAmount: 8450,
+      totalBids: 5,
+      statusLabel: 'Rejected',
+      statusKey: 'rejected',
+    },
+  ];
+
+  // Purchase order invoice list (dummy)
+  invoices: InvoiceRow[] = [
+    {
+      invoiceNo: 'INV-198',
+      vendor: 'Global Supplier Inc.',
+      amount: 1380,
+      statusLabel: 'Paid',
+      statusKey: 'paid',
+      dueDate: '2025-12-20',
+    },
+    {
+      invoiceNo: 'INV-201',
+      vendor: 'Tech Solution Ltd.',
+      amount: 2000,
+      statusLabel: 'Pending',
+      statusKey: 'pending',
+      dueDate: '2025-12-26',
+    },
+    {
+      invoiceNo: 'INV-302',
+      vendor: 'Innovate Corp.',
+      amount: 1257,
+      statusLabel: 'Paid',
+      statusKey: 'paid',
+      dueDate: '2025-12-28',
+    },
+    {
+      invoiceNo: 'INV-504',
+      vendor: 'Future System',
+      amount: 1500,
+      statusLabel: 'Pending',
+      statusKey: 'pending',
+      dueDate: '2025-12-31',
+    },
+    {
+      invoiceNo: 'INV-607',
+      vendor: 'Industrial Printer',
+      amount: 1500,
+      statusLabel: 'Pending',
+      statusKey: 'pending',
+      dueDate: '2025-12-31',
+    },
+  ];
+
+  // Vendor ratings (dummy)
+  vendors: VendorRating[] = [
+    { initials: 'GS', name: 'Global Supplier Inc.', orders: 127, rating: 4.9, isActive: true },
+    { initials: 'TS', name: 'Tech Solution Ltd.', orders: 127, rating: 4.7 },
+    { initials: 'IC', name: 'Innovate Corp.', orders: 127, rating: 4.8 },
+    { initials: 'FS', name: 'Future System', orders: 127, rating: 4.5 },
+    { initials: 'IP', name: 'Industrial Printer', orders: 127, rating: 4.6 },
+  ];
+  poSuccessRadial: any;
+  poRejectedRadial: any;
+
+  vendorAverageRating = 3.9;     
+  vendorRatingRadial: any;
+
+  fullStars: number[] = [];
+  halfStars: number[] = [];
+  emptyStars: number[] = [];
+  starsArr = [1, 2, 3, 4, 5];
+  ngOnInit(): void {
+    this.buildVendorRatingRadial();
+    this.buildStars();
+  }
+
+
+  buildVendorRatingRadial(): void {
+
+    const pct = (this.vendorAverageRating / 5) * 100;
+
+    this.vendorRatingRadial = {
+      series: [pct],
+      chart: {
+        type: 'radialBar',
+        height: 220,
+        width: '100%',
+        sparkline: { enabled: true },
+        toolbar: { show: false },
+        animations: { enabled: false }
+      },
+      colors: ['#249D57'], // green
+      plotOptions: {
+        radialBar: {
+          startAngle: 0,
+          endAngle: 360,
+          hollow: {
+            size: '82%',
+            background: '#ffffff'
+          },
+          track: {
+            background: '#e5f7ec', // soft green track
+            strokeWidth: '100%',
+            margin: 0
+          },
+          dataLabels: {
+            name: { show: false },
+            value: { show: false } // we show our own in the center
           }
         }
+      },
+      stroke: {
+        lineCap: 'round'
+      },
+      fill: { type: 'solid' },
+      tooltip: { enabled: false }
+    };
+  }
 
-      }
-    }
-  };
 
-  constructor(private router: Router,
-    private modalService: NgbModal) { 
-        this.columnChartOptions = {
-            chart: {
-              height: 350,
-              type: 'bar',
-              toolbar: {
-                show: false
-              },
-              animations: {
-                enabled: false
-              }
-            },
-            colors: themeColors,
-            plotOptions: {
-              bar: {
-                horizontal: false,
-                borderRadius: 4,
-                columnWidth: '25%',
-              },
-            },
-            grid: {
-              borderColor: "#BDBDBD44"
-            },
-            dataLabels: {
-              enabled: false
-            },
-            stroke: {
-              show: true,
-              width: 2,
-              colors: ['transparent']
-            },
-            series: [{
-              name: 'Net Profit',
-              data: [40, 50, 110, 90, 85, 115, 100, 90]
-            }, {
-              name: 'Revenue',
-              data: [30, 40, 100, 80, 75, 105, 90, 80]
-            }],
-            legend: {
-              show: false
-            },
-            xaxis: {
-              categories: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
-              axisBorder: {
-                color: "#BDBDBD44"
-              }
-            },
-            tooltip: {
-              y: {
-                formatter: function (val) {
-                  return "$" + val + " thousands"
-                }
-              }
-            }
-          }
-    }
-
-  ngOnInit(): void {
-  }
-  onResized(event: any) {
-    setTimeout(() => {
-      this.fireRefreshEventOnWindow();
-    }, 300);
-  }
-  prRequest() {
-    this.router.navigate(['/history/PR-Request'], {
-      queryParams: { title: 'PR Request' }
-    });
-  }
-  rfqRequest() {
-    this.router.navigate(['/history/RFQ-Request'], {
-      queryParams: { title: 'RFQ Request' }
-    });
-  }
-  poDetails() {
-    this.router.navigate(['/history/PO-Details'], {
-      queryParams: { title: 'PO Details' }
-    });
-  }
-  recievingDetails() {
-    this.router.navigate(['/history/Recieving-Details'], {
-      queryParams: { title: 'Recieving Details' }
-    });
-  }
-  invoiceDetails() {
-    this.router.navigate(['/history/Invoice-Details'], {
-      queryParams: { title: 'Invoice Details' }
-    });
-  }
-  paymentDetails() {
-    this.router.navigate(['/history/Payment-Details'], {
-      queryParams: { title: 'Payment Details' }
-    });
+  buildStars(): void {
+    const rating = this.vendorAverageRating;
+  
+    const full = Math.round(rating);
+    const empty = 5 - full;
+  
+    this.fullStars = Array(full).fill(0);
+    this.halfStars = [];     // no half stars
+    this.emptyStars = Array(empty).fill(0);
   }
   
-  rfqList(title: string, status?: string) {
-    this.router.navigate(['/rfq/rfq-list'], {
-      queryParams: {
-        title: title,
-        status: status || ''
-      }
-    });
-  }  
-  fireRefreshEventOnWindow = function () {
-    var evt = document.createEvent("HTMLEvents");
-    evt.initEvent("resize", true, false);
-    window.dispatchEvent(evt);
-  };
+  formatNumber(value: number | null | undefined): string {
+    if (value == null) return '0';
+    return value.toLocaleString('en-US');
+  }
 
+  formatCurrency(value: number | null | undefined): string {
+    if (value == null) return '0';
+    return value.toLocaleString('en-US', {
+      maximumFractionDigits: 0,
+    });
+  }
+
+  // View all handlers (you can wire these later)
+  viewAllBids(): void {
+    // TODO: route/navigation
+    console.log('View all bids clicked');
+  }
+
+  viewAllInvoices(): void {
+    console.log('View all invoices clicked');
+  }
+
+  viewAllVendors(): void {
+    console.log('View all vendors clicked');
+  }
 }

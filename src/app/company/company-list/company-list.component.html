@@ -10,14 +10,14 @@
         </div>
       </div>
 
-      @if(datatableVisible){
-      <ngx-datatable autoResize (autoResize)="onAutoResize()" class="bootstrap core-bootstrap" [rows]="companyData"
-        [columnMode]="'force'" [headerHeight]="42" [footerHeight]="50" rowHeight="42" [limit]="15" [scrollbarH]="true"
-        [loadingIndicator]="loading" [selected]="chkBoxSelected" [swapColumns]="false"
-        [selectionType]="SelectionType.checkbox" (sort)="onSort($event)" (select)="customChkboxOnSelect($event)">
+      <div  class="pr-table-wrapper" appDatatableAutoResize [datatable]="datatable">
+      <ngx-datatable #datatable class="bootstrap core-bootstrap" [rows]="companyData" [columnMode]="'force'" [headerHeight]="42"
+        [footerHeight]="50" rowHeight="42" [limit]="15" [scrollbarH]="isMobile" [loadingIndicator]="loading"
+        [selected]="chkBoxSelected" [swapColumns]="false" [selectionType]="SelectionType.checkbox"
+        (sort)="onSort($event)" (select)="customChkboxOnSelect($event)">
 
         <!-- Company Name -->
-        <ngx-datatable-column name="Company Name" prop="name">
+        <ngx-datatable-column  [flexGrow]="2" [minWidth]="140" name="Company Name" prop="name">
           <ng-template let-row="row" ngx-datatable-cell-template>
             <a href="javascript:void(0)" (click)="editCompany(row)" class="text-primary font-weight-bold">
               {{ row.name }}
@@ -26,7 +26,7 @@
         </ngx-datatable-column>
 
         <!-- Main Status Column (NEW) -->
-        <ngx-datatable-column name="Main Status" prop="mainStatus">
+        <ngx-datatable-column name="Main Status" prop="mainStatus"  [flexGrow]="1" [minWidth]="140">
           <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
             <span class="status-pill" [ngClass]="getStatusClass(value)">
               {{ value }}
@@ -35,14 +35,14 @@
         </ngx-datatable-column>
 
         <!-- Created Date -->
-        <ngx-datatable-column name="Create Date" prop="createDate">
+        <ngx-datatable-column name="Create Date" prop="createDate" [flexGrow]="1" [minWidth]="140">
           <ng-template let-row="row" ngx-datatable-cell-template>
             {{ row.createDate | date:'dd-MMM-yyyy' }}
           </ng-template>
         </ngx-datatable-column>
 
         <!-- Level Column (Renamed from Status) -->
-        <ngx-datatable-column name="Level" prop="level" [sortable]="false" minWidth="150" maxWidth="200">
+        <ngx-datatable-column name="Level" prop="level" [sortable]="false" [flexGrow]="1" [minWidth]="140">
           <ng-template let-row="row" ngx-datatable-cell-template>
             <span class="badge bg-light text-dark border" *ngIf="row.level && row.level !== 'Loading...'">
               {{ row.level }}
@@ -54,8 +54,9 @@
         </ngx-datatable-column>
 
         <!-- Remarks (Popup Trigger) -->
-        <ngx-datatable-column name="Remarks" [sortable]="false" minWidth="50" maxWidth="200" cellClass="action-cell"
-          headerClass="action-cell">
+        <ngx-datatable-column name="Remarks" [sortable]="false" [flexGrow]="1" minWidth="180" [maxWidth]="200"
+        
+        >
           <ng-template let-row="row" ngx-datatable-cell-template>
             <button type="button" class="btn btn-sm csm-remarks-btn" title="View Remarks"
               (click)="openRemarksPopup(row)">
@@ -64,11 +65,60 @@
           </ng-template>
         </ngx-datatable-column>
       </ngx-datatable>
-      }
+    </div>
     </div>
   </div>
 
+  <!-- STATUS MODAL -->
+  <ng-template #statusModal let-modal>
+    <div class="modal-header bg-light ps-2">
+      <h5 class="modal-title text-dark">Company Status & Level Details</h5>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+    </div>
+    <div class="modal-body p-0">
+      <div *ngIf="loadingStatus" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading status details...</span>
+        </div>
+        <p class="mt-2 text-muted">Loading status and level information...</p>
+      </div>
 
+      <div *ngIf="!loadingStatus">
+        <div class="table-responsive app-table-card">
+          <table class="table app-table">
+            <thead>
+              <tr>
+                <th>Entity</th>
+                <th>Status</th>
+                <th>Level</th>
+                <th>Approver Name</th>
+                <th>Created Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let e of selectedStatusEntities" class="align-middle">
+                <td class="border-0">{{ e.entity }}</td>
+                <td class="border-0">
+                  <span class="status-pill" [ngClass]="getStatusClass(e.status)">
+                    {{ e.status }}
+                  </span>
+                </td>
+                <td class="border-0">
+                  <span class="level-badge">{{ e.level }}</span>
+                </td>
+                <td class="border-0">{{ e.approverLevelName || '-' }}</td>
+                <td class="border-0 text-muted">{{ e.createdDate | date:'dd-MMM-yyyy' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Close</button>
+    </div> -->
+  </ng-template>
 
   <!-- REMARKS MODAL -->
   <ng-template #remarksModal let-modal>
@@ -76,7 +126,7 @@
       <h5 class="modal-title">Remarks Details</h5>
       <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
     </div>
-    <div class="modal-body">
+    <div class="modal-body py-0 px-4">
       <div *ngIf="loadingRemarks" class="text-center py-4">
         <div class="spinner-border text-primary" role="status">
           <span class="visually-hidden">Loading remarks...</span>
@@ -96,15 +146,15 @@
 
         <!-- Show remarks tables for each entity -->
         <div *ngIf="!showNoRemarksMessage">
-          <div *ngFor="let entity of selectedRemarksEntities" class="mb-4">
+          <div *ngFor="let entity of selectedRemarksEntities" class="mb-3">
             <!-- Only show entity if it has remarks -->
             <div *ngIf="entity.remarks && entity.remarks.length > 0">
               <!-- Entity Header -->
-              <h6 class="fw-bold mb-3 entity-header">{{ entity.entity }}</h6>
+              <h6 class="mb-2 entity-header">{{ entity.entity }}</h6>
               <!-- Remarks Table -->
-              <div class="table-responsive">
-                <table class="table table-hover table-bordered">
-                  <thead class="table-light">
+              <div class="table-responsive app-table-card">
+                <table class="table app-table">
+                  <thead>
                     <tr>
                       <th>User</th>
                       <th>Date</th>

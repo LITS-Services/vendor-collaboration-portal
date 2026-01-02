@@ -72,7 +72,7 @@
   }
 
   &:not([class*="application"]) .main-content {
-    min-height: calc((var(--vh, 1vh) * 100) - 10.93rem);
+    min-height: calc((var(--vh, 1vh) * 100) - 11.93rem);
   }
 
   &[class*="application"] .main-content {

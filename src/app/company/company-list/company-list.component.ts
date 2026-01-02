@@ -15,6 +15,7 @@ import { NgxSpinner, NgxSpinnerService } from 'ngx-spinner';
 })
 export class CompanyListComponent implements OnInit {
   behaviourSubject = new BehaviorSubject<string>('Default');
+  @ViewChild('datatable', { static: false }) datatable!: DatatableComponent;
   public SelectionType = SelectionType;
   public ColumnMode = ColumnMode;
   @ViewChild(DatatableComponent) table: DatatableComponent;
@@ -55,6 +56,11 @@ export class CompanyListComponent implements OnInit {
       }
     });
   }
+
+  get isMobile(): boolean {
+    return window.innerWidth <= 768;
+  }
+  
 
   goBack() {
     this.router.navigate(['/company/company-list']);
@@ -331,8 +337,8 @@ export class CompanyListComponent implements OnInit {
     const s = (status ?? '').toString().trim().toLowerCase();
 
     if (s === 'new') return 'status-pill--new';
-    if (s === 'inprocess' || s === 'in process' || s === 'in_process') return 'status-pill--inprocess';
-    if (s === 'onboarded' || s === 'completed') return 'status-pill--completed';
+    if (s === 'inprocess' || s === 'in process' || s === 'in_process' || s === 'rejected') return 'status-pill--inprocess';
+    if (s === 'onboarded' || s === 'completed' || 'completed') return 'status-pill--completed';
 
     return 'status-pill--default';
   }

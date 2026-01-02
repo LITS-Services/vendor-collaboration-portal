@@ -1,328 +1,209 @@
-<!-- Header Starts -->
-<div class="row">
-    <div class="col-12">
-      <h1>History</h1>
+<div class="history">
+
+  <!-- Header -->
+  <div class="history__top">
+    <div class="history__title">
+      <h1 class="m-0">History</h1>
     </div>
-  </div>
-  <!-- Header End -->
-  
-  <!--Statistics cards Starts-->
-    
-  <div class="row gx-2" (resized)="onResized($event)">
-    <div class="col-xl-4 col-lg-6 col-md-6 col-12">
-        <div class="card card-info">
-          <h4 class="card-title">PR Requests</h4>
-          <!-- <div class="curve-button">
-            <button class="circle-button" (click)="prRequest()">
-              <i class="ft-arrow-up-right"></i>
-            </button>
-          </div> -->
-          <div class="card-content">
-            <div class="card-body py-0">
-              <div class="media pb-1">
-                <div class="media-body">
-                  <h1>13,476</h1>
-                  <div class="row align-items-center">
-                    <div class="col-2 d-flex justify-content-center">
-                      <div class="cube">
-                        <span class="text-card"><i class="ft-chevron-up mr-2"></i>17%</span>
-                      </div>
-                    </div>
-                    <div class="col-8 text-center mt-2">
-                      <h6>Last three months</h6>
-                    </div>
-                    <div class="col-2 d-flex justify-content-center">
-                      <img src="/assets/img/icons/Vector1.svg" class="vector1" alt="">
-                    </div>
-                  </div>
-                  
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    <div class="col-xl-4 col-lg-6 col-md-6 col-12">
-      <div class="card card-info">
-        <h4 class="card-title">RFQ Requests</h4>
-        <div class="curve-button">
-          <button class="circle-button" (click)="rfqRequest()">
-            <i class="ft-arrow-up-right"></i>
-          </button>
-        </div>
-        <div class="card-content">
-          <div class="card-body py-0">
-            <div class="media pb-1">
-              <div class="media-body">
-                <h1>9,476</h1>
-                <div class="row align-items-center">
-                  <div class="col-2 d-flex justify-content-center">
-                    <div class="cube">
-                      <span class="text-card"><i class="ft-chevron-up mr-2"></i>17%</span>
-                    </div>
-                  </div>
-                  <div class="col-8 text-center mt-2">
-                    <h6>Last three months</h6>
-                  </div>
-                  <div class="col-2 d-flex justify-content-center">
-                    <img src="/assets/img/icons/Vector1.svg" class="vector1" alt="">
-                  </div>
-                </div>
-                
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-xl-4 col-lg-6 col-md-6 col-12">
-      <div class="card card-info">
-        <h4 class="card-title">PO Details</h4>
-        <div class="curve-button">
-          <button class="circle-button" (click)="poDetails()">
-            <i class="ft-arrow-up-right"></i>
-          </button>
-        </div>
-        <div class="card-content">
-          <div class="card-body py-0">
-            <div class="media pb-1">
-              <div class="media-body">
-                <h1>4,044</h1>
-                <div class="row align-items-center">
-                  <div class="col-2 d-flex justify-content-center">
-                    <div class="cube">
-                      <span class="text-card"><i class="ft-chevron-up mr-2"></i>17%</span>
-                    </div>
-                  </div>
-                  <div class="col-8 text-center mt-2">
-                    <h6>Last three months</h6>
-                  </div>
-                  <div class="col-2 d-flex justify-content-center">
-                    <img src="/assets/img/icons/vector2.svg" class="vector1" alt="">
-                  </div>
-                </div>
-                
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-xl-4 col-lg-6 col-md-6 col-12">
-        <div class="card card-info">
-          <h4 class="card-title">Recieving Details</h4>
-          <!-- <div class="curve-button">
-            <button class="circle-button" (click)="recievingDetails()">
-              <i class="ft-arrow-up-right"></i>
-            </button>
-          </div> -->
-          <div class="card-content">
-            <div class="card-body py-0">
-              <div class="media pb-1">
-                <div class="media-body">
-                  <h1>4,044</h1>
-                  <div class="row align-items-center">
-                    <div class="col-2 d-flex justify-content-center">
-                      <div class="cube">
-                        <span class="text-card"><i class="ft-chevron-up mr-2"></i>17%</span>
-                      </div>
-                    </div>
-                    <div class="col-8 text-center mt-2">
-                      <h6>Last three months</h6>
-                    </div>
-                    <div class="col-2 d-flex justify-content-center">
-                      <img src="/assets/img/icons/vector2.svg" class="vector1" alt="">
-                    </div>
-                  </div>
-                  
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-xl-4 col-lg-6 col-md-6 col-12">
-        <div class="card card-info">
-          <h4 class="card-title">Invoice Details</h4>
-          <div class="curve-button">
-            <button class="circle-button" (click)="invoiceDetails()">
-              <i class="ft-arrow-up-right"></i>
-            </button>
-          </div>
-          <div class="card-content">
-            <div class="card-body py-0">
-              <div class="media pb-1">
-                <div class="media-body">
-                  <h1>4,044</h1>
-                  <div class="row align-items-center">
-                    <div class="col-2 d-flex justify-content-center">
-                      <div class="cube">
-                        <span class="text-card"><i class="ft-chevron-up mr-2"></i>17%</span>
-                      </div>
-                    </div>
-                    <div class="col-8 text-center mt-2">
-                      <h6>Last three months</h6>
-                    </div>
-                    <div class="col-2 d-flex justify-content-center">
-                      <img src="/assets/img/icons/vector2.svg" class="vector1" alt="">
-                    </div>
-                  </div>
-                  
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-xl-4 col-lg-6 col-md-6 col-12">
-        <div class="card card-info">
-          <h4 class="card-title">Payment Details</h4>
-          <div class="curve-button">
-            <button class="circle-button" (click)="paymentDetails()">
-              <i class="ft-arrow-up-right"></i>
-            </button>
-          </div>
-          <div class="card-content">
-            <div class="card-body py-0">
-              <div class="media pb-1">
-                <div class="media-body">
-                  <h1>4,044</h1>
-                  <div class="row align-items-center">
-                    <div class="col-2 d-flex justify-content-center">
-                      <div class="cube">
-                        <span class="text-card"><i class="ft-chevron-up mr-2"></i>17%</span>
-                      </div>
-                    </div>
-                    <div class="col-8 text-center mt-2">
-                      <h6>Last three months</h6>
-                    </div>
-                    <div class="col-2 d-flex justify-content-center">
-                      <img src="/assets/img/icons/vector2.svg" class="vector1" alt="">
-                    </div>
-                  </div>
-                  
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
   </div>
 
-  <!--Statistics cards Ends-->
-  
-  <!--Line with Area Chart 1 Starts-->
-  <div class="row">
-    <div class="col-xl-4 col-12">
-      <div class="card">
-        <div class="card-header mt-1">
-          <h4 class="card-title dash-title">Customer Satisfaction</h4>
-          <p class="dash-desc">Customer Satisfaction Score</p>    
-        </div>
-        <div class="card-content">
-  
-          <!-- <p class="font-medium-2 text-center mb-0 mt-2">Project Tasks</p> -->
-          <div id="donut-dashboard-chart" class="donut">
-            <x-chartist class="height-250" [data]="DonutChart.data" [type]="DonutChart.type"
-              [options]="DonutChart.options" [responsiveOptions]="DonutChart.responsiveOptions"
-              [events]="DonutChart.events">
-            </x-chartist>
-          </div>
-  
-          <div class="card-body">
-                 <div class="chart-info gap-3 d-flex text-center justify-content-center mb-2">
-              <span class="mr-3">
-                <i class="fa fa-circle primary-color font-small-3 me-1"></i>
-                <span>Positive</span>
-              </span>
-              <span class="mr-3">
-                <i class="fa fa-circle sec-color lighten-3 font-small-3 me-1"></i>
-                <span>Negative</span>
-              </span>
-            </div>
-            
-            <div class="d-flex align-items-center justify-content-center gap-2 mb-2">
-              <div class="d-flex justify-content-center">
-                <div class="cube">
-                  <span class="text-card"><i class="ft-chevron-up mr-2"></i>17%</span>
-                </div>
-              </div>
-              <div class="text-center mt-2">
-                <h6>Last three months</h6>
-              </div>
-            </div>
-            <!-- <div class="row mb-3">
-              <div class="col">
-                <span class="mb-1 text-muted d-block">85% - Satisfied</span>
-                <div class="progress" style="height: 5px;">
-                  <div class="progress-bar bg-success" role="progressbar" style="width: 85%;" aria-valuenow="85"
-                    aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-              </div>
-            </div>
-            <div class="row mb-3">
-              <div class="col">
-                <span class="mb-1 text-muted d-block">15% - Unsatisfied</span>
-                <div class="progress" style="height: 5px;">
-                  <div class="progress-bar bg-warning" role="progressbar" style="width: 15%;" aria-valuenow="15"
-                    aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-              </div>
-            </div> -->
-          </div>
+  <!-- Top cards (3) -->
+  <div class="history__cards">
+    <!-- Total RFQ -->
+    <a class="stat-card" role="button">
+      <div class="stat-card__icon">
+        <img src="assets/img/icons/total-rfq.svg" alt="Total RFQ" />
+      </div>
+
+      <div class="stat-card__main">
+        <div class="stat-card__label">Total RFQ</div>
+        <div class="stat-card__value">{{ formatNumber(metrics.totalRfqs) }}</div>
+      </div>
+
+      <div class="stat-card__footer">
+        <div class="stat-card__details">View details</div>
+        <div class="stat-card__arrow">
+          <i class="ft-arrow-right"></i>
         </div>
       </div>
-    </div>
-    <div class="col-xl-8 col-12">
-      <div class="card">
-      <div class="card-header mt-1">
-        <div class="d-flex align-items-baseline gap-4">
-              <h4 class="card-title dash-title">
-                <span>Statistics</span>
-                <!-- <span class="float-right cursor-pointer">
-                  <i class="ft-more-vertical-"></i>
-                </span> -->
-                </h4>
-                <div class="chart-info gap-3 d-flex">
-                  <span class="mr-3">
-                    <i class="fa fa-circle primary-color font-small-3 me-1"></i>
-                    <span>Net Profit</span>
-                  </span>
-                  <span class="mr-3">
-                    <i class="fa fa-circle sec-color lighten-3 font-small-3 me-1"></i>
-                    <span>Revenue</span>
-                  </span>
-                </div>
+    </a>
+
+    <!-- Total Item Sold -->
+    <a class="stat-card" role="button">
+      <div class="stat-card__icon">
+         <img src="assets/img/icons/total-rfq.svg" alt="Total RFQ" />
+      </div>
+
+      <div class="stat-card__main">
+        <div class="stat-card__label">Total Item Sold</div>
+        <div class="stat-card__value">{{ formatNumber(metrics.totalItemsSold) }}</div>
+      </div>
+
+      <div class="stat-card__footer">
+        <div class="stat-card__details">View details</div>
+        <div class="stat-card__arrow">
+          <i class="ft-arrow-right"></i>
+        </div>
+      </div>
+    </a>
+
+    <!-- Total Purchase Order + donuts -->
+    <a class="stat-card" role="button">
+      <div class="stat-card__icon">
+         <img src="assets/img/icons/total-rfq.svg" alt="Total RFQ" />
+      </div>
+
+      <div class="stat-card__main">
+        <div class="stat-card__label">Total Purchase Order</div>
+        <div class="stat-card__value">{{ formatNumber(metrics.totalItemsSold) }}</div>
+      </div>
+
+      <div class="stat-card__footer stat-card__footer--chips">
+        <div class="po-chip po-chip--success">
+          <span class="po-chip__dot po-chip__dot--green"></span>
+          {{ formatNumber(metrics.poSuccessCount) }} Successful
+        </div>
       
+        <div class="po-chip po-chip--danger">
+          <span class="po-chip__dot po-chip__dot--red"></span>
+          {{ formatNumber(metrics.poRejectedCount) }} Rejected
         </div>
-          
       </div>
-        <div class="card-content">
-          <div class="card-body">
-        
-            <div id="line-chart1" class="height-350">
-              <apx-chart
-                      [series]="columnChartOptions.series"
-                      [colors]="columnChartOptions.colors"
-                      [chart]="columnChartOptions.chart"
-                      [xaxis]="columnChartOptions.xaxis"
-                      [yaxis]="columnChartOptions.yaxis"
-                      [title]="columnChartOptions.title"
-                      [dataLabels]="columnChartOptions.dataLabels"
-                      [stroke]="columnChartOptions.stroke"
-                      [grid]="columnChartOptions.grid"
-                      [tooltip]="columnChartOptions.tooltip"
-                      [plotOptions]="columnChartOptions.plotOptions"
-                      [fill]="columnChartOptions.fill"
-                      [legend]="columnChartOptions.legend"
-                      [labels]="columnChartOptions.labels"
-                      [markers]="columnChartOptions.markers"
-                      [theme]="columnChartOptions.theme"
-                      [responsive]="columnChartOptions.responsive"
-                    ></apx-chart>
+    </a>
+  </div>
+
+  <!-- Recent Bids History (full width) -->
+  <div class="panel panel--full panel--bids">
+    <div class="panel__head">
+      <div class="panel__title">Recent Bids History</div>
+      <a class="panel__link" role="button" (click)="viewAllBids()">View all</a>
+    </div>
+
+    <div class="panel__body panel__body--bids">
+      <div class="table-card table-card--bids">
+        <div class="table__row table__row--head table__row--bids">
+          <div>BID ID</div>
+          <div>RFQ NO.</div>
+          <div>VENDOR NAME</div>
+          <div class="text-end">BID AMOUNT</div>
+          <div class="text-end">TOTAL BIDS</div>
+          <div class="text-end">STATUS</div>
+        </div>
+
+        <div class="table-scroll table-scroll--bids">
+          <div class="table__row table__row--bids"
+               *ngFor="let row of recentBids">
+            <div class="mono">{{ row.bidId }}</div>
+            <div class="mono">{{ row.rfqNo }}</div>
+            <div>{{ row.vendorName }}</div>
+            <div class="text-end">
+              {{ formatCurrency(row.bidAmount) }}
+            </div>
+            <div class="text-end">
+              {{ row.totalBids }} Bids
+            </div>
+            <div class="text-end">
+              <span class="chip"
+                    [ngClass]="{
+                      'chip--success': row.statusKey === 'success',
+                      'chip--pending': row.statusKey === 'pending',
+                      'chip--rejected': row.statusKey === 'rejected'
+                    }">
+                {{ row.statusLabel }}
+              </span>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Bottom grid: invoices + vendor ratings -->
+  <div class="history__grid--bottom">
+
+    <!-- Purchase Order Invoice -->
+    <div class="panel panel--wide">
+      <div class="panel__head">
+        <div class="panel__title">Purchase Order Invoice</div>
+        <a class="panel__link" role="button" (click)="viewAllInvoices()">View all</a>
+      </div>
+
+      <div class="panel__body">
+        <div class="table-card table-card--invoice">
+          <div class="table__row table__row--head table__row--invoice">
+            <div>INVOICE NO.</div>
+            <div>VENDOR</div>
+            <div class="text-end">AMOUNT</div>
+            <div class="text-center">STATUS</div>
+            <div class="text-end">DUE DATE</div>
+          </div>
+
+          <div class="table-scroll table-scroll--invoice">
+            <div class="table__row table__row--invoice"
+                 *ngFor="let inv of invoices">
+              <div class="mono">{{ inv.invoiceNo }}</div>
+              <div>{{ inv.vendor }}</div>
+              <div class="text-end">{{ formatCurrency(inv.amount) }}</div>
+              <div class="text-center">
+                <span class="chip"
+                      [ngClass]="{
+                        'chip--success': inv.statusKey === 'paid',
+                        'chip--pending': inv.statusKey === 'pending'
+                      }">
+                  {{ inv.statusLabel }}
+                </span>
+              </div>
+              <div class="text-end">
+                {{ inv.dueDate | date:'MMM d, y' }}
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Vendor Ratings -->
+   <div class="panel panel--side">
+  <div class="panel__head">
+    <div class="panel__title">Vendor Ratings</div>
+    <a class="panel__link" role="button" (click)="viewAllVendors()">View all</a>
+  </div>
+
+  <div class="panel__body panel__body--vendor">
+    <div class="vendor-gauge">
+      <apx-chart
+        class="vendor-gauge__chart"
+        [series]="vendorRatingRadial.series"
+        [chart]="vendorRatingRadial.chart"
+        [plotOptions]="vendorRatingRadial.plotOptions"
+        [stroke]="vendorRatingRadial.stroke"
+        [fill]="vendorRatingRadial.fill"
+        [colors]="vendorRatingRadial.colors"
+        [tooltip]="vendorRatingRadial.tooltip">
+      </apx-chart>
+
+      <div class="vendor-gauge__center">
+        <div class="vendor-gauge__value">
+          {{ vendorAverageRating | number:'1.1-1' }}
+        </div>
+        <div class="vendor-gauge__label">
+          Average Rating
+        </div>
+        <div class="vendor-gauge__stars">
+          <!-- Full -->
+          <i class="ft-star star star--full" *ngFor="let _ of fullStars"></i>
+        
+          <!-- Half -->
+          <i class="ft-star star star--half" *ngFor="let _ of halfStars"></i>
+        
+          <!-- Empty -->
+          <i class="ft-star star star--empty" *ngFor="let _ of emptyStars"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  </div>
+</div>

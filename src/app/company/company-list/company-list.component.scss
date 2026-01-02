@@ -1,3 +1,20 @@
+::ng-deep .ngx-datatable{
+  .sortable .sort-btn:before {
+      // font-family: data-table;
+      // content: "c";
+      display: none !important;
+  }
+  .sortable .sort-btn.datatable-icon-down:before {
+      // content: "f";
+      display: none !important;
+
+  }
+  .sortable .sort-btn.datatable-icon-up:before {
+      // content: "e";
+      display: none !important;
+  }
+}
+
 .switch {
     border: none !important;
     position: relative;
@@ -62,6 +79,8 @@
   }
   .entity-header {
   color: rgb(26, 124, 68) !important;
+  margin-left: 3px !important;
+  font-weight: 600 !important;
 }
 
 .cstm-status-btn{
@@ -139,4 +158,10 @@
   color: #616d89;
   border-color: #cfd6e4;
   background: rgba(97, 109, 137, 0.08);
+}
+
+.level-badge{
+    padding: 6px 12px;
+    border: 1px solid #D7D7D7;
+    border-radius: 31px;
 }
