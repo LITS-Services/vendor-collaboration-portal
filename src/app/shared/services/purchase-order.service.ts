@@ -38,4 +38,8 @@ export class PurchaseOrderService {
     };
     return this.http.post<any>(`${this.baseUrl}/reject-purchase-order`, payload);
   }
+
+  getGoodsReceiptNoteById(purchaseOrderId: number) {
+    return this.http.get<any>(`${this.baseUrl}/get-grn?purchaseOrderId=${purchaseOrderId}`);
+  }
 }
