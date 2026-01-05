@@ -269,4 +269,7 @@ export class AuthService {
     if (firstCompanyId) localStorage.setItem('company', firstCompanyId);
   }
 
+  getUserId(): string | null {
+    return localStorage.getItem('userId');
+  }
 }

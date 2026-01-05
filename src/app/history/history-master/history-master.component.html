@@ -21,9 +21,9 @@
       </div>
 
       <div class="stat-card__footer">
-        <div class="stat-card__details">View details</div>
+        <div class="stat-card__details" (click)="viewAllBids()">View details</div>
         <div class="stat-card__arrow">
-          <i class="ft-arrow-right"></i>
+          <i class="ft-arrow-right" (click)="viewAllBids()"></i>
         </div>
       </div>
     </a>
@@ -40,9 +40,9 @@
       </div>
 
       <div class="stat-card__footer">
-        <div class="stat-card__details">View details</div>
+        <div class="stat-card__details" (click)="viewAllSoldItems()">View details</div>
         <div class="stat-card__arrow">
-          <i class="ft-arrow-right"></i>
+          <i class="ft-arrow-right" (click)="viewAllSoldItems()"></i>
         </div>
       </div>
     </a>
@@ -55,7 +55,7 @@
 
       <div class="stat-card__main">
         <div class="stat-card__label">Total Purchase Order</div>
-        <div class="stat-card__value">{{ formatNumber(metrics.totalItemsSold) }}</div>
+        <div class="stat-card__value">{{ formatNumber(metrics.totalPurchaseOrders) }}</div>
       </div>
 
       <div class="stat-card__footer stat-card__footer--chips">
@@ -82,34 +82,34 @@
     <div class="panel__body panel__body--bids">
       <div class="table-card table-card--bids">
         <div class="table__row table__row--head table__row--bids">
-          <div>BID ID</div>
+          <div>ITEM CODE</div>
           <div>RFQ NO.</div>
-          <div>VENDOR NAME</div>
-          <div class="text-end">BID AMOUNT</div>
-          <div class="text-end">TOTAL BIDS</div>
-          <div class="text-end">STATUS</div>
+          <!-- <div>VENDOR NAME</div> -->
+          <div>BID AMOUNT</div>
+          <div>END DATE</div>
+          <div>STATUS</div>
         </div>
 
         <div class="table-scroll table-scroll--bids">
           <div class="table__row table__row--bids"
                *ngFor="let row of recentBids">
-            <div class="mono">{{ row.bidId }}</div>
+            <div class="mono">{{ row.itemCode }}</div>
             <div class="mono">{{ row.rfqNo }}</div>
-            <div>{{ row.vendorName }}</div>
-            <div class="text-end">
-              {{ formatCurrency(row.bidAmount) }}
+            <!-- <div>{{ row.vendorName }}</div> -->
+            <div class="mono">
+              {{ formatCurrency(row.biddingAmount) }}
             </div>
-            <div class="text-end">
-              {{ row.totalBids }} Bids
+            <div class="mono">
+              {{ row.endDate | date:'MMM d, y' }}
             </div>
-            <div class="text-end">
+            <div class="mono">
               <span class="chip"
                     [ngClass]="{
                       'chip--success': row.statusKey === 'success',
                       'chip--pending': row.statusKey === 'pending',
                       'chip--rejected': row.statusKey === 'rejected'
                     }">
-                {{ row.statusLabel }}
+                {{ row.status }}
               </span>
             </div>
           </div>
@@ -167,7 +167,7 @@
    <div class="panel panel--side">
   <div class="panel__head">
     <div class="panel__title">Vendor Ratings</div>
-    <a class="panel__link" role="button" (click)="viewAllVendors()">View all</a>
+    <!-- <a class="panel__link" role="button" (click)="viewAllVendors()">View all</a> -->
   </div>
 
   <div class="panel__body panel__body--vendor">

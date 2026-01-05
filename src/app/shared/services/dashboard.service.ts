@@ -26,4 +26,16 @@ export class DashboardService {
       { params: { vendorUserId, filterType } }
     );
   }
+
+  getVendorDashboardHistory(vendorId: string) {
+    return this.http.get<any>(
+      `${environment.apiUrl}/ProcurementDashboard/vendor-dashboard-history?vendorId=${vendorId}`
+    );
+  }
+
+  getRecentVendorBidsHistory(vendorId: string) {
+    return this.http.get<any>(
+      `${environment.apiUrl}/ProcurementDashboard/recent-vendor-bids-history?vendorId=${vendorId}`
+    );
+  }
 }

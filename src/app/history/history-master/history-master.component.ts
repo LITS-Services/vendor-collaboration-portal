@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AuthService } from 'app/shared/auth/auth.service';
+import { DashboardService } from 'app/shared/services/dashboard.service';
 declare var require: any;
 import {
   ApexAxisChartSeries,
@@ -21,13 +23,21 @@ import {
   ApexResponsive,
 } from "ng-apexcharts";
 
-interface BidHistoryRow {
-  bidId: string;
+export interface VendorDashboardHistoryVM {
+  totalRFQs: number;
+  totalAcceptedQuantity: number;
+  totalPurchaseOrders: number;
+  successfulOrders: number;
+  rejectedOrders: number;
+  averageVendorRating: number;
+}
+
+export interface RecentVendorBidsHistoryVM {
+  itemCode: string;
   rfqNo: string;
-  vendorName: string;
-  bidAmount: number;
-  totalBids: number;
-  statusLabel: string;
+  biddingAmount: number;
+  endDate: string | null;   // ISO string
+  status: string;
   statusKey: 'success' | 'pending' | 'rejected';
 }
 
@@ -55,73 +65,16 @@ interface VendorRating {
   standalone: false
 })
 export class HistoryMasterComponent implements OnInit {
- metrics = {
-    totalRfqs: 549,
-    totalItemsSold: 600,
-    totalPurchaseOrders: 600,
-    poSuccessPercent: 75,
-    poRejectedPercent: 45,
-      poSuccessCount: 745,
-  poRejectedCount: 149
+
+  metrics = {
+    totalRfqs: 0,
+    totalItemsSold: 0,
+    totalPurchaseOrders: 0,
+    poSuccessCount: 0,
+    poRejectedCount: 0
   };
 
-  // Recent bids history (dummy)
-  recentBids: BidHistoryRow[] = [
-    {
-      bidId: 'BID-10231',
-      rfqNo: 'RFQ-8891',
-      vendorName: 'Alpha Traders',
-      bidAmount: 12500,
-      totalBids: 12,
-      statusLabel: 'Successful',
-      statusKey: 'success',
-    },
-    {
-      bidId: 'BID-10232',
-      rfqNo: 'RFQ-8891',
-      vendorName: 'Nova Supplies',
-      bidAmount: 11950,
-      totalBids: 5,
-      statusLabel: 'Pending finalization',
-      statusKey: 'pending',
-    },
-    {
-      bidId: 'BID-10233',
-      rfqNo: 'RFQ-8891',
-      vendorName: 'CoreTech Ltd',
-      bidAmount: 12300,
-      totalBids: 3,
-      statusLabel: 'Pending finalization',
-      statusKey: 'pending',
-    },
-    {
-      bidId: 'BID-10234',
-      rfqNo: 'RFQ-9024',
-      vendorName: 'Prime Vendors',
-      bidAmount: 8200,
-      totalBids: 8,
-      statusLabel: 'Successful',
-      statusKey: 'success',
-    },
-    {
-      bidId: 'BID-10235',
-      rfqNo: 'RFQ-9024',
-      vendorName: 'Vertex Solutions',
-      bidAmount: 7980,
-      totalBids: 6,
-      statusLabel: 'Successful',
-      statusKey: 'success',
-    },
-    {
-      bidId: 'BID-10236',
-      rfqNo: 'RFQ-9024',
-      vendorName: 'OmniTrade',
-      bidAmount: 8450,
-      totalBids: 5,
-      statusLabel: 'Rejected',
-      statusKey: 'rejected',
-    },
-  ];
+  recentBids: RecentVendorBidsHistoryVM[] = [];
 
   // Purchase order invoice list (dummy)
   invoices: InvoiceRow[] = [
@@ -185,9 +138,38 @@ export class HistoryMasterComponent implements OnInit {
   halfStars: number[] = [];
   emptyStars: number[] = [];
   starsArr = [1, 2, 3, 4, 5];
+
+  constructor(private dashboardService: DashboardService, private authService: AuthService,
+    private cdr: ChangeDetectorRef, private router: Router
+  ) { }
   ngOnInit(): void {
     this.buildVendorRatingRadial();
     this.buildStars();
+    this.loadVendorDashboardHistory();
+    this.loadRecentBids();
+  }
+
+  loadVendorDashboardHistory(): void {
+    const vendorId = this.authService.getUserId();
+
+    this.dashboardService.getVendorDashboardHistory(vendorId)
+      .subscribe(res => {
+
+        const data = res; // Ardalis.Result => value
+
+        this.metrics.totalRfqs = data.totalRFQs;
+        this.metrics.totalItemsSold = data.totalAcceptedQuantity;
+        this.metrics.totalPurchaseOrders = data.totalPurchaseOrders;
+        this.metrics.poSuccessCount = data.successfulOrders;
+        this.metrics.poRejectedCount = data.rejectedOrders;
+
+        this.vendorAverageRating = data.averageVendorRating;
+
+        this.cdr.detectChanges();
+
+        this.buildVendorRatingRadial();
+        this.buildStars();
+      });
   }
 
 
@@ -231,20 +213,56 @@ export class HistoryMasterComponent implements OnInit {
       fill: { type: 'solid' },
       tooltip: { enabled: false }
     };
+
+    this.cdr.detectChanges();
   }
 
 
   buildStars(): void {
     const rating = this.vendorAverageRating;
-  
+
     const full = Math.round(rating);
     const empty = 5 - full;
-  
+
     this.fullStars = Array(full).fill(0);
     this.halfStars = [];     // no half stars
     this.emptyStars = Array(empty).fill(0);
+
+    this.cdr.detectChanges();
   }
-  
+
+  loadRecentBids(): void {
+    const vendorId = this.authService.getUserId();
+
+    this.dashboardService.getRecentVendorBidsHistory(vendorId)
+      .subscribe(res => {
+
+        const rows = res;
+
+        this.recentBids = rows.map(r => ({
+          itemCode: r.itemCode,
+          rfqNo: r.rfqNo,
+          biddingAmount: r.biddingAmount,
+          endDate: r.endDate,
+          status: r.status,
+          statusKey: this.mapStatusKey(r.status)
+        }));
+        this.cdr.detectChanges();
+      });
+  }
+
+  private mapStatusKey(status: string): 'success' | 'pending' | 'rejected' {
+    const s = status?.toLowerCase();
+
+    if (s === 'completed' || s === 'successful' || s === 'accepted')
+      return 'success';
+
+    if (s === 'rejected')
+      return 'rejected';
+
+    return 'pending';
+  }
+
   formatNumber(value: number | null | undefined): string {
     if (value == null) return '0';
     return value.toLocaleString('en-US');
@@ -260,7 +278,12 @@ export class HistoryMasterComponent implements OnInit {
   // View all handlers (you can wire these later)
   viewAllBids(): void {
     // TODO: route/navigation
-    console.log('View all bids clicked');
+    this.router.navigate(['/rfq/rfq-list']);
+  }
+
+  viewAllSoldItems(): void {
+    // TODO: route/navigation
+    this.router.navigate(['/purchase-order/purchase-order-list']);
   }
 
   viewAllInvoices(): void {
