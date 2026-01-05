@@ -8,10 +8,10 @@ describe('CrudModalComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ CrudModalComponent ]
+      declarations: [CrudModalComponent]
     })
-    .compileComponents();
-  });
+      .compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(CrudModalComponent);

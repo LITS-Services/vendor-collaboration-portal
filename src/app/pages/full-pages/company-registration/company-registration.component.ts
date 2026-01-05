@@ -318,7 +318,14 @@ export class CompanyRegistrationComponent implements OnInit {
           this.websiteUrl = company.websiteUrl || ''; // Map websiteUrl from API
           this.remarks = company.remarks || '';
           this.companyType = company.companyType || 'Organization';
-          this.existingLogoUrl = company.logo || null; // Map existing logo
+
+          // Handle existing logo - add data URI prefix if missing
+          if (company.logo) {
+            this.existingLogoUrl = this.formatBase64Logo(company.logo);
+          } else {
+            this.existingLogoUrl = null;
+          }
+
           this.companyForm.patchValue({ remarks: this.remarks });
 
           // Purchasing Demographics
@@ -570,6 +577,7 @@ export class CompanyRegistrationComponent implements OnInit {
       reader.onload = () => {
         const result = reader.result;
         if (typeof result === 'string') {
+          // We only want the base64 part for the backend
           const base64 = result.split(',')[1];
           resolve(base64);
         } else {
@@ -578,6 +586,17 @@ export class CompanyRegistrationComponent implements OnInit {
       };
       reader.onerror = (error) => reject(error);
     });
+  }
+
+  private formatBase64Logo(base64: string): string {
+    if (!base64) return '';
+    // Check if it already has the data URI prefix
+    if (base64.startsWith('data:image')) {
+      return base64;
+    }
+    // Default to png if unknown, but browser often figures it out or we can try a generic one.
+    // However, usually we can just assume standard image format.
+    return `data:image/png;base64,${base64}`;
   }
 
   // ==================== Payload Helpers ====================
@@ -743,12 +762,11 @@ export class CompanyRegistrationComponent implements OnInit {
       } catch (e) {
         console.error('Error converting logo to base64', e);
       }
-    } else if (this.existingLogoUrl) {
-      // If preserving existing logo, we might need to send it back or send empty if backend handles "no change"
-      // The requirement is "map... and send".
-      // Sending the URL back might work or might need ignore.
-      // For now, assuming if no new file, we send existing URL (or empty if none).
-      logoBase64 = this.existingLogoUrl;
+    } else {
+      // If we are in edit mode and no new logo is selected, we send an empty string (or null).
+      // Sending the existing URL (this.existingLogoUrl) would be incorrect if the backend expects Base64 data.
+      // We assume the backend will ignore an empty 'logo' field during update and preserve the existing one.
+      logoBase64 = '';
     }
 
     const vendorCompanyPayload = {
