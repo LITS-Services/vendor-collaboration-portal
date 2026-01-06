@@ -816,22 +816,26 @@ export class CompanyRegistrationComponent implements OnInit {
 
 
     this.isLoading = true;
+    this.spinner.show();
 
     const apiCall = this.isEditMode
       ? this.companyService.updateCompany(this.companyId, payload)
       : this.companyService.registerCompany(payload);
 
-    apiCall.subscribe({
-      next: () => {
-        this.toastr.success(`Company ${this.isEditMode ? 'Updated' : 'Registered'} Successfully!`);
+    apiCall
+      .pipe(finalize(() => {
         this.isLoading = false;
-        this.router.navigate(['/company/company-list']);
-      },
-      error: () => {
-        this.isLoading = false;
-        this.toastr.error('Error saving company!');
-      }
-    });
+        this.spinner.hide();
+      }))
+      .subscribe({
+        next: () => {
+          this.toastr.success(`Company ${this.isEditMode ? 'Updated' : 'Registered'} Successfully!`);
+          this.router.navigate(['/company/company-list']);
+        },
+        error: () => {
+          this.toastr.error('Error saving company!');
+        }
+      });
   }
 
   onLogoSelect(event: Event) {

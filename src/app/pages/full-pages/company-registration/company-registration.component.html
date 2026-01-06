@@ -61,7 +61,8 @@
                             <div class="row">
                                 <div class="d-flex align-items-center justify-content-end mb-2">
                                     <ng-container *ngIf="isEditMode; else newCompanyNav">
-                                        <button class="btn btn-primary" (click)="submitForm()">
+                                        <button class="btn btn-primary" (click)="submitForm()" [disabled]="isLoading">
+                                            <i class="fa fa-spinner fa-spin mr-1" *ngIf="isLoading"></i>
                                             Update Company
                                         </button>
                                     </ng-container>
@@ -84,7 +85,8 @@
 
 
                                             <button type="button" class="btn btn-primary" *ngIf="isLastTab()"
-                                                (click)="submitForm()">
+                                                (click)="submitForm()" [disabled]="isLoading">
+                                                <i class="fa fa-spinner fa-spin mr-1" *ngIf="isLoading"></i>
                                                 Submit Company
                                             </button>
                                         </div>
