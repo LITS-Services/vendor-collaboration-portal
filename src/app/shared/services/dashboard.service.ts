@@ -38,4 +38,16 @@ export class DashboardService {
       `${environment.apiUrl}/ProcurementDashboard/recent-vendor-bids-history?vendorId=${vendorId}`
     );
   }
+
+  getVendorPortalDeliveryPerformance(vendorId: string) {
+    return this.http.get<any>(
+      `${environment.apiUrl}/ProcurementDashboard/vendor-portal-delivery-performance?vendorId=${vendorId}`
+    );
+  }
+
+  getVendorTopItems(vendorId: string) {
+    return this.http.get<any>(
+      `${environment.apiUrl}/ProcurementDashboard/vendor-top-items?vendorId=${vendorId}`
+    );
+  }
 }

@@ -86,6 +86,12 @@ type RadialChartOptions = {
   colors?: string[];
 };
 
+export interface VendorTopItemVM {
+  itemName: string;
+  totalSoldQuantity: number;
+  pct: number; // static for now
+}
+
 @Component({
   selector: 'app-dashboard1',
   templateUrl: './dashboard1.component.html',
@@ -121,12 +127,7 @@ export class Dashboard1Component implements OnInit {
     { no: 'INV-200', customer:'Alpha Traders', amount: 500, due: new Date('2025-12-06') },
   ];
 
-  topItems: Array<{ name: string; amountLabel: string; pct: number }> = [
-    { name: 'Macbook', amountLabel: '398.05K', pct: 35 },
-    { name: 'iPhone 17 Pro Max', amountLabel: '229.9K', pct: 25 },
-    { name: 'iPad', amountLabel: '326.04K', pct: 10 },
-    { name: 'Others', amountLabel: '229.9K', pct: 30 }
-  ];
+  topItems: VendorTopItemVM[] = [];
 
   companyStatusDonut!: Partial<DonutChartOptions>;
   incomeArea!: Partial<AreaChartOptions>;
@@ -154,10 +155,10 @@ export class Dashboard1Component implements OnInit {
     this.setIncomeRange('year');
     this.setCompanyStatus('onboarded');
     this.loadCompanyStats();
-
-    this.buildDeliveryRadialDummy();
+    this.loadVendorDeliveryPerformance();
     this.loadVendorPortalDashboardCount();
-
+    this.loadVendorTopItems();
+    
     setTimeout(() => window.dispatchEvent(new Event('resize')), 200);
   }
 
@@ -203,52 +204,92 @@ export class Dashboard1Component implements OnInit {
     });
   }
 
-  completedPercent = 75;
+  completedPercent = 0;
+  loadVendorDeliveryPerformance(): void {
+    const userId = localStorage.getItem('userId');
+    if (!userId) return;
 
-  buildDeliveryRadialDummy(): void {
-  const completed = this.completedPercent;
+    this.dashboardService.getVendorPortalDeliveryPerformance(userId).subscribe({
+      next: (res) => {
+        const percent = Number(res?.completionPercentage ?? 0);
 
-  this.deliveryRadial = {
-    series: [completed],
+        this.completedPercent = Math.round(percent);
+        this.buildDeliveryRadial(this.completedPercent);
 
-    chart: {
-      type: 'radialBar',
-      height: 360,
-      width: '100%',
-      offsetY: -15,
-      sparkline: { enabled: true },
-      toolbar: { show: false },
-      animations: { enabled: false }
-    },
-
-    colors: ['#249D57'],
-    
-    plotOptions: {
-      radialBar: {
-        startAngle: -135,
-        endAngle: 135,
-
-        track: {
-          background: '#D3EBDD',
-          strokeWidth: '100%',
-          margin: 0
-        },
-        dataLabels: {
-          name: { show: false },
-          value: { show: false }
-        }
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Delivery performance error:', err);
+        this.completedPercent = 0;
+        this.buildDeliveryRadial(0);
       }
-    },
+    });
+  }
 
-    stroke: {
-      lineCap: 'butt',
-      dashArray: 4
-    },
+  loadVendorTopItems(): void {
+    const userId = localStorage.getItem('userId');
+    if (!userId) return;
 
-    fill: { type: 'solid' },
-    tooltip: { enabled: false }
-  };
-}
+    this.dashboardService.getVendorTopItems(userId).subscribe({
+      next: (res: any[]) => {
+        // Static pct for now
+        this.topItems = res.map(i => ({
+          itemName: i.itemName,
+          totalSoldQuantity: i.totalSoldQuantity,
+          pct: 30 // static percentage for all items
+        }));
+
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Top items error:', err);
+        this.topItems = [];
+      }
+    });
+  }
+
+  buildDeliveryRadial(completed: number): void {
+    this.deliveryRadial = {
+      series: [completed],
+
+      chart: {
+        type: 'radialBar',
+        height: 360,
+        width: '100%',
+        offsetY: -15,
+        sparkline: { enabled: true },
+        toolbar: { show: false },
+        animations: { enabled: false }
+      },
+
+      colors: ['#249D57'],
+
+      plotOptions: {
+        radialBar: {
+          startAngle: -135,
+          endAngle: 135,
+          track: {
+            background: '#D3EBDD',
+            strokeWidth: '100%',
+            margin: 0
+          },
+          dataLabels: {
+            name: { show: false },
+            value: { show: false }
+          }
+        }
+      },
+
+      stroke: {
+        lineCap: 'butt',
+        dashArray: 4
+      },
+
+      fill: { type: 'solid' },
+      tooltip: { enabled: false }
+    };
+  }
+
 
 get statusPillClass(): string {
   switch (this.companyStatusKey) {

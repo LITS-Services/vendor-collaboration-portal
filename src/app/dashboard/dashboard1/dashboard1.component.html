@@ -255,11 +255,11 @@
         <div class="top-items">
           <div class="top-item" *ngFor="let item of topItems">
             <div class="top-item__row">
-              <div class="top-item__name">{{ item.name }}</div>
+              <div class="top-item__name">{{ item.itemName }}</div>
               <div class="top-item__pct">{{ item.pct }}%</div>
             </div>
             <div class="top-item__sub">
-              <div class="top-item__amt">{{ item.amountLabel }}</div>
+              <div class="top-item__amt">{{ item.totalSoldQuantity }}</div>
             </div>
             <div class="bar">
               <div class="bar__fill" [style.width.%]="item.pct"></div>
