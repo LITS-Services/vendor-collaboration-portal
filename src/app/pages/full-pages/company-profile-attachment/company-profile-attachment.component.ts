@@ -9,7 +9,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class CompanyProfileAttachmentComponent implements OnInit {
   @Input() attachedFiles: any[] = [];
-   @Input() readonly = false;  
+  @Input() readonly = false;
   @Output() saveAttachment = new EventEmitter<any[]>();
   @ViewChild('fileInput') fileInput: ElementRef | undefined;
 
@@ -26,12 +26,12 @@ export class CompanyProfileAttachmentComponent implements OnInit {
   deleteIndex: number | null = null;
   showAttachmentDeletePopup: boolean = false;
 
-  constructor() {}
+  constructor() { }
 
   ngOnInit(): void {
     console.log('Initial Attached Files in Modal:', this.attachedFiles);
   }
- 
+
   onFileChange(event: any): void {
     const file = event.target.files[0];
     if (file) {
@@ -44,34 +44,35 @@ export class CompanyProfileAttachmentComponent implements OnInit {
   attachDocument(): void {
     if (this.readonly) return;
 
-    if (!this.attachment.file || !this.attachment.fileName || !this.attachment.attachedBy || !this.attachment.remarks) {
+    if (!this.attachment.file || !this.attachment.fileName || !this.attachment.remarks) {
       alert('Please select a file and fill out all fields before attaching.');
       return;
     }
-  
+
     const now = new Date();
-  
+
     const newAttachment = {
       ...this.attachment,
+      attachedBy: this.attachment.attachedBy || localStorage.getItem('username') || '',
       attachedAt: now.toISOString()  // ✅ use ISO timestamp
     };
-  
+
     if (this.editIndex !== null) {
       this.attachedFiles[this.editIndex] = newAttachment;
       this.editIndex = null;
     } else {
       this.attachedFiles.push(newAttachment);
     }
-  
+
     this.resetAttachmentForm();
-      this.emitChange();
+    this.emitChange();
   }
 
-    private emitChange(): void {
+  private emitChange(): void {
     this.saveAttachment.emit([...this.attachedFiles]);
   }
 
-  
+
   editFile(index: number): void {
     this.attachment = { ...this.attachedFiles[index] };
     this.editIndex = index;
@@ -88,7 +89,7 @@ export class CompanyProfileAttachmentComponent implements OnInit {
   }
 
 
-    deleteFile(): void {
+  deleteFile(): void {
     if (this.deleteIndex === null || this.readonly) return;
 
     this.attachedFiles.splice(this.deleteIndex, 1);
@@ -96,7 +97,7 @@ export class CompanyProfileAttachmentComponent implements OnInit {
     this.emitChange();
   }
 
-    private resetAttachmentForm(): void {
+  private resetAttachmentForm(): void {
     this.attachment = {
       file: null,
       fileName: '',

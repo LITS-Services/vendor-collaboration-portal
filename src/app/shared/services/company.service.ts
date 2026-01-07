@@ -93,7 +93,7 @@ export class CompanyService {
 
   getlatestremarkscompanyId(vendorCompanyId: number): Observable<any> {
     return this.http.get<any>(
-      `${environment.apiUrl}/Company/get-latest-company-remark?VendorCompanyId=${vendorCompanyId}`
+      `${environment.apiUrl}/Company/get-latest-company-remark?VendorEntityAssociationId=${vendorCompanyId}`
     );
   }
 

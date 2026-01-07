@@ -784,7 +784,7 @@ export class CompanyRegistrationComponent implements OnInit {
         fileName: f.fileName,
         fileFormat: f.format?.split('/').pop() || f.format || 'unknown',
         fileContent: f.fileContent || '',
-        attachedBy: f.attachedBy,
+        attachedBy: f.attachedBy || this.createdBy,
         remarks: f.remarks,
         attachedAt: f.attachedAt ? new Date(f.attachedAt).toISOString() : new Date().toISOString()
       })),
