@@ -9,7 +9,8 @@
           class="form-control"
           (change)="onFileChange($event)"
         /> -->
-      <input type="file" id="fileInput" class="form-control file-div" (change)="onFileChange($event)" #fileInput />
+      <input type="file" id="fileInput" class="form-control file-div" (change)="onFileChange($event)" #fileInput
+        [disabled]="readonly" />
       <div *ngIf="attachment.fileName && editIndex !== null" class="mt-1">
         <small class="text-muted">Current File: {{ attachment.fileName }}</small>
       </div>
@@ -26,12 +27,13 @@
     <div class="col-12 mb-3">
       <label for="remarks" class="form-label">Remarks</label>
       <textarea id="remarks" class="form-control" [(ngModel)]="attachment.remarks" rows="3"
-        placeholder="Add remarks here..."></textarea>
+        placeholder="Add remarks here..." [disabled]="readonly"></textarea>
     </div>
 
     <!-- Attach Button -->
     <div class="col-12 d-flex justify-content-end mb-2">
-      <button class="btn btn-primary" (click)="attachDocument()"><i class="ft-chevrons-down me-1"></i> Add</button>
+      <button class="btn btn-primary" (click)="attachDocument()" *ngIf="!readonly"><i class="ft-chevrons-down me-1"></i>
+        Add</button>
     </div>
 
     <!-- Table of Attached Files -->
@@ -43,8 +45,6 @@
               <th>File Name</th>
               <th>File Format</th>
               <th>Attached By</th>
-              <th>Date</th>
-              <th>Time</th>
               <th>Remarks</th>
               <th>Actions</th>
             </tr>
@@ -54,12 +54,12 @@
               <td>{{ file.fileName }}</td>
               <td>{{ file.format }}</td>
               <td>{{ file.attachedBy }}</td>
-              <td>{{ file.date }}</td>
-              <td>{{ file.time }}</td>
               <td>{{ file.remarks }}</td>
               <td>
-                <button class="btn ft-edit" (click)="editFile(i)"></button>
-                <button class="btn ft-trash" (click)="openAttachmentDeletionPopup(i)"></button>
+                <ng-container *ngIf="!readonly">
+                  <button class="btn ft-edit" (click)="editFile(i)"></button>
+                  <button class="btn ft-trash" (click)="openAttachmentDeletionPopup(i)"></button>
+                </ng-container>
               </td>
             </tr>
           </tbody>

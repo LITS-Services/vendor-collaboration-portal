@@ -61,7 +61,8 @@
                             <div class="row">
                                 <div class="d-flex align-items-center justify-content-end mb-2">
                                     <ng-container *ngIf="isEditMode; else newCompanyNav">
-                                        <button class="btn btn-primary" (click)="submitForm()" [disabled]="isLoading">
+                                        <button class="btn btn-primary" (click)="submitForm()"
+                                            [disabled]="isLoading || isReadOnly">
                                             <i class="fa fa-spinner fa-spin mr-1" *ngIf="isLoading"></i>
                                             Update Company
                                         </button>
@@ -115,7 +116,7 @@
                                                         <div class="col-12 form-group">
                                                             <label>Name</label>
                                                             <input type="text" class="form-control w-cstm"
-                                                                [(ngModel)]="companyName"
+                                                                [(ngModel)]="companyName" [disabled]="isReadOnly"
                                                                 placeholder="Enter company name">
                                                         </div>
 
@@ -123,7 +124,7 @@
                                                         <div class="col-12 form-group">
                                                             <label>Website URL</label>
                                                             <input type="url" class="form-control w-cstm"
-                                                                [(ngModel)]="websiteUrl"
+                                                                [(ngModel)]="websiteUrl" [disabled]="isReadOnly"
                                                                 placeholder="https://www.example.com">
                                                             <small class="text-danger" *ngIf="websiteUrlError">{{
                                                                 websiteUrlError }}</small>
@@ -140,8 +141,8 @@
 
                                                         <!-- Circle upload button -->
                                                         <label class="logo-upload-circle"
-                                                            [ngClass]="{ 'has-image': logoPreviewUrl || existingLogoUrl }">
-                                                            <input type="file" accept="image/*"
+                                                            [ngClass]="{ 'has-image': logoPreviewUrl || existingLogoUrl, 'disabled-upload': isReadOnly }">
+                                                            <input type="file" accept="image/*" [disabled]="isReadOnly"
                                                                 (change)="onLogoSelect($event)" class="d-none" />
 
                                                             <!-- When no image selected -->
@@ -169,8 +170,9 @@
                                                         </small>
 
                                                         <!-- OPTIONAL remove (if you want) -->
-                                                        <button *ngIf="logoPreviewUrl || existingLogoUrl" type="button"
-                                                            class="btn btn-sm btn-outline-danger mt-2"
+                                                        <button
+                                                            *ngIf="(logoPreviewUrl || existingLogoUrl) && !isReadOnly"
+                                                            type="button" class="btn btn-sm btn-outline-danger mt-2"
                                                             (click)="removeLogo()">
                                                             Remove
                                                         </button>
@@ -186,7 +188,7 @@
 
                                                 <app-company-address-modal [address]="editingAddress"
                                                     [isEditAddressMode]="editingAddressIndex !== null"
-                                                    (submit)="onAddressSubmit($event)">
+                                                    *ngIf="!isReadOnly" (submit)="onAddressSubmit($event)">
                                                 </app-company-address-modal>
 
                                                 <div class="table-responsive mt-2">
@@ -211,10 +213,12 @@
                                                                 <td>{{ address.country }}</td>
                                                                 <td>{{ address.primary ? 'Yes' : 'No' }}</td>
                                                                 <td>
-                                                                    <button class="ft-edit btn px-1" type="button"
-                                                                        (click)="openAddressEditor(i)"></button>
-                                                                    <button class="ft-trash btn px-1" type="button"
-                                                                        (click)="confirmAddressDeletion(i)"></button>
+                                                                    <ng-container *ngIf="!isReadOnly">
+                                                                        <button class="ft-edit btn px-1" type="button"
+                                                                            (click)="openAddressEditor(i)"></button>
+                                                                        <button class="ft-trash btn px-1" type="button"
+                                                                            (click)="confirmAddressDeletion(i)"></button>
+                                                                    </ng-container>
                                                                 </td>
                                                             </tr>
                                                         </tbody>
@@ -227,7 +231,7 @@
                                         <div *ngIf="selectedTab === 'contacts'">
 
                                             <app-company-contact-modal [contact]="editingContact"
-                                                [isEditMode]="editingContactIndex !== null"
+                                                [isEditMode]="editingContactIndex !== null" *ngIf="!isReadOnly"
                                                 (submit)="onContactSubmit($event)">
                                             </app-company-contact-modal>
 
@@ -251,10 +255,12 @@
                                                             <td>{{ contact.extension }}</td>
                                                             <td>{{ contact.primary ? 'Yes' : 'No' }}</td>
                                                             <td>
-                                                                <button class="ft-edit btn px-1" type="button"
-                                                                    (click)="openContactEditor(i)"></button>
-                                                                <button class="ft-trash btn px-1" type="button"
-                                                                    (click)="confirmContactDeletion(i)"></button>
+                                                                <ng-container *ngIf="!isReadOnly">
+                                                                    <button class="ft-edit btn px-1" type="button"
+                                                                        (click)="openContactEditor(i)"></button>
+                                                                    <button class="ft-trash btn px-1" type="button"
+                                                                        (click)="confirmContactDeletion(i)"></button>
+                                                                </ng-container>
                                                             </td>
                                                         </tr>
                                                     </tbody>
@@ -272,7 +278,8 @@
                                                             ngbTooltip="Select the main currency used for transactions with this company"
                                                             placement="right"></i>
                                                     </label>
-                                                    <select class="form-control" [(ngModel)]="primaryCurrency">
+                                                    <select class="form-control" [(ngModel)]="primaryCurrency"
+                                                        [disabled]="isReadOnly">
                                                         <option value="">Select primary currency</option>
                                                         <option>USD</option>
                                                         <option>GBP</option>
@@ -287,7 +294,8 @@
                                                             ngbTooltip="Choose the main contact person for this vendor"
                                                             placement="right"></i>
                                                     </label>
-                                                    <select class="form-control" [(ngModel)]="employeeResponsible">
+                                                    <select class="form-control" [(ngModel)]="employeeResponsible"
+                                                        [disabled]="isReadOnly">
                                                         <option value="">Select primary contact</option>
                                                         <option *ngFor="let c of contactList">{{ c.description }}
                                                         </option>
@@ -301,7 +309,8 @@
                                                             ngbTooltip="Specify whether this vendor is Local or Foreign"
                                                             placement="right"></i>
                                                     </label>
-                                                    <select class="form-control" [(ngModel)]="vendorCategory">
+                                                    <select class="form-control" [(ngModel)]="vendorCategory"
+                                                        [disabled]="isReadOnly">
                                                         <option>Select vendor type</option>
                                                         <option>Local</option>
                                                         <option>Foreign</option>
@@ -316,7 +325,7 @@
                                                             placement="right"></i>
                                                     </label>
                                                     <input type="text" class="form-control" [(ngModel)]="lineOfBusiness"
-                                                        placeholder="Enter line of business">
+                                                        [disabled]="isReadOnly" placeholder="Enter line of business">
                                                 </div>
 
                                                 <div class="col-md-3 mt-1 form-group">
@@ -327,7 +336,7 @@
                                                             placement="right"></i>
                                                     </label>
                                                     <input type="text" class="form-control" [(ngModel)]="birthCountry"
-                                                        placeholder="Enter birth country">
+                                                        [disabled]="isReadOnly" placeholder="Enter birth country">
                                                 </div>
 
                                                 <div class="col-md-3 mt-1 form-group">
@@ -338,7 +347,7 @@
                                                             placement="right"></i>
                                                     </label>
                                                     <input type="text" class="form-control"
-                                                        [(ngModel)]="employeeResponsible"
+                                                        [(ngModel)]="employeeResponsible" [disabled]="isReadOnly"
                                                         placeholder="Enter employee responsible">
                                                 </div>
 
@@ -350,7 +359,7 @@
                                                             placement="right"></i>
                                                     </label>
                                                     <input type="text" class="form-control" [(ngModel)]="segment"
-                                                        placeholder="Enter segment">
+                                                        [disabled]="isReadOnly" placeholder="Enter segment">
                                                 </div>
 
                                                 <div class="col-md-3 mt-1 form-group">
@@ -361,7 +370,7 @@
                                                             placement="right"></i>
                                                     </label>
                                                     <input type="text" class="form-control" [(ngModel)]="speciality"
-                                                        placeholder="Enter speciality">
+                                                        [disabled]="isReadOnly" placeholder="Enter speciality">
                                                 </div>
 
                                                 <div class="col-md-3 mt-1 form-group">
@@ -372,7 +381,7 @@
                                                             placement="right"></i>
                                                     </label>
                                                     <input type="text" class="form-control" [(ngModel)]="chain"
-                                                        placeholder="Enter chain">
+                                                        [disabled]="isReadOnly" placeholder="Enter chain">
                                                 </div>
 
                                                 <div class="col-12 mt-1 form-group">
@@ -383,7 +392,7 @@
                                                             placement="right"></i>
                                                     </label>
                                                     <textarea class="form-control" rows="3" [(ngModel)]="note"
-                                                        placeholder="Enter note"></textarea>
+                                                        [disabled]="isReadOnly" placeholder="Enter note"></textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -465,7 +474,7 @@
 
                                                     <div class="d-flex justify-content-end mt-3">
                                                         <button type="button" class="btn btn-primary"
-                                                            (click)="addBank()">
+                                                            *ngIf="!isReadOnly" (click)="addBank()">
                                                             Add Bank
                                                         </button>
                                                     </div>
@@ -504,11 +513,13 @@
                                                                 <td>{{ bank.bankCurrency }}</td>
 
                                                                 <td>
-                                                                    <button class="ft-edit btn px-1" type="button"
-                                                                        (click)="editBank(i)"></button>
+                                                                    <ng-container *ngIf="!isReadOnly">
+                                                                        <button class="ft-edit btn px-1" type="button"
+                                                                            (click)="editBank(i)"></button>
 
-                                                                    <button class="ft-trash btn px-1" type="button"
-                                                                        (click)="confirmBankDeletion(i)"></button>
+                                                                        <button class="ft-trash btn px-1" type="button"
+                                                                            (click)="confirmBankDeletion(i)"></button>
+                                                                    </ng-container>
                                                                 </td>
                                                             </tr>
                                                         </tbody>
@@ -519,7 +530,7 @@
 
                                         <div *ngIf="selectedTab === 'attachments'">
                                             <app-company-profile-attachment [attachedFiles]="attachedFiles"
-                                                (saveAttachment)="onAttachmentsUpdated($event)">
+                                                [readonly]="isReadOnly" (saveAttachment)="onAttachmentsUpdated($event)">
                                             </app-company-profile-attachment>
                                         </div>
 

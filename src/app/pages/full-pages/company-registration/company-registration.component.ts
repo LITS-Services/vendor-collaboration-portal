@@ -296,6 +296,8 @@ export class CompanyRegistrationComponent implements OnInit {
     this.cdr.markForCheck();
   }
 
+  isReadOnly: boolean = false;
+
   loadCompanyById(companyId: number) {
     this.isLoading = true;
     this.spinner.show();
@@ -312,6 +314,20 @@ export class CompanyRegistrationComponent implements OnInit {
           if (!company) {
             return;
           }
+
+          // Check for ReadOnly Status (InProcess or Rejected)
+          // Matching logic from company-list.component.ts
+          const status = (company.status || company.requestStatus || '').toLowerCase();
+          // requestStatusId: 0 or null is often pending/inprocess, but let's rely on string status if available or map it.
+          // If status string is available:
+          if (['inprocess', 'rejected', 'sendback'].includes(status)) {
+            this.isReadOnly = true;
+          } else {
+            this.isReadOnly = false;
+          }
+
+          // Fallback if status string is empty but requestStatusId is known 'submitted' state? 
+          // Assuming API returns a status string as seen in company-list.
 
           // General Info
           this.companyName = company.name || '';
@@ -388,6 +404,12 @@ export class CompanyRegistrationComponent implements OnInit {
           }));
 
           this.isEditMode = true;
+
+          // Disable forms if read-only
+          if (this.isReadOnly) {
+            this.bankForm.disable();
+            this.companyForm.disable();
+          }
 
           this.isLoading = false;
           this.cdr.markForCheck();
@@ -763,10 +785,18 @@ export class CompanyRegistrationComponent implements OnInit {
         console.error('Error converting logo to base64', e);
       }
     } else {
-      // If we are in edit mode and no new logo is selected, we send an empty string (or null).
-      // Sending the existing URL (this.existingLogoUrl) would be incorrect if the backend expects Base64 data.
-      // We assume the backend will ignore an empty 'logo' field during update and preserve the existing one.
-      logoBase64 = '';
+      // If we are in edit mode and no new logo is selected, check for existing logo
+      if (this.isEditMode && this.existingLogoUrl) {
+        // Extract base64 from data URI
+        const commaIndex = this.existingLogoUrl.indexOf(',');
+        if (commaIndex > -1) {
+          logoBase64 = this.existingLogoUrl.substring(commaIndex + 1);
+        } else {
+          logoBase64 = this.existingLogoUrl;
+        }
+      } else {
+        logoBase64 = '';
+      }
     }
 
     const vendorCompanyPayload = {
