@@ -132,25 +132,27 @@
         <div class="table-card table-card--invoice">
           <div class="table__row table__row--head table__row--invoice">
             <div>INVOICE NO.</div>
-            <div>VENDOR</div>
-            <div class="text-end">AMOUNT</div>
+            <!-- <div>PO NO.</div> -->
+            <div>ENTITY</div>
+            <div class="text-center">TOTAL AMOUNT</div>
             <div class="text-center">STATUS</div>
             <div class="text-end">DUE DATE</div>
           </div>
 
           <div class="table-scroll table-scroll--invoice">
             <div class="table__row table__row--invoice"
-                 *ngFor="let inv of invoices">
+                 *ngFor="let inv of vendorDashboardAndHistoryInvoices">
               <div class="mono">{{ inv.invoiceNo }}</div>
-              <div>{{ inv.vendor }}</div>
-              <div class="text-end">{{ formatCurrency(inv.amount) }}</div>
+              <!-- <div>{{ inv.purchaseOrderNo }}</div> -->
+              <div>{{ inv.entityName }}</div>
+              <div class="text-center">{{ formatCurrency(inv.totalAmount) }}</div>
               <div class="text-center">
                 <span class="chip"
                       [ngClass]="{
                         'chip--success': inv.statusKey === 'paid',
                         'chip--pending': inv.statusKey === 'pending'
                       }">
-                  {{ inv.statusLabel }}
+                  {{ inv.status }}
                 </span>
               </div>
               <div class="text-end">

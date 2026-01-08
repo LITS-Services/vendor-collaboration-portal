@@ -50,4 +50,16 @@ export class DashboardService {
       `${environment.apiUrl}/ProcurementDashboard/vendor-top-items?vendorId=${vendorId}`
     );
   }
+
+  getVendorDashboardAndHistoryInvoices(vendorId: string, onlyPending: boolean) {
+    return this.http.get<any>(
+      `${environment.apiUrl}/ProcurementDashboard/vendor-dashboard-history-invoices?vendorId=${vendorId}&onlyPending=${onlyPending}`
+    );
+  }
+
+  getVendorDashboardLogoAndStatus(vendorId: string) {
+    return this.http.get<any>(
+      `${environment.apiUrl}/ProcurementDashboard/vendor-logo-status?vendorId=${vendorId}`
+    );
+  }
 }

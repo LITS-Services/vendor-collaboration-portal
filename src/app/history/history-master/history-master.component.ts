@@ -41,6 +41,17 @@ export interface RecentVendorBidsHistoryVM {
   statusKey: 'success' | 'pending' | 'rejected';
 }
 
+export interface VendorDashboardAndHistoryInvoicesVM
+{
+  invoiceNo: string;
+  purchaseOrderNo: string;
+  entityName: string;
+  totalAmount: number;
+  status: string;
+  dueDate: Date;
+  statusKey: 'paid' | 'pending for payment';
+}
+
 interface InvoiceRow {
   invoiceNo: string;
   vendor: string;
@@ -77,48 +88,7 @@ export class HistoryMasterComponent implements OnInit {
   recentBids: RecentVendorBidsHistoryVM[] = [];
 
   // Purchase order invoice list (dummy)
-  invoices: InvoiceRow[] = [
-    {
-      invoiceNo: 'INV-198',
-      vendor: 'Global Supplier Inc.',
-      amount: 1380,
-      statusLabel: 'Paid',
-      statusKey: 'paid',
-      dueDate: '2025-12-20',
-    },
-    {
-      invoiceNo: 'INV-201',
-      vendor: 'Tech Solution Ltd.',
-      amount: 2000,
-      statusLabel: 'Pending',
-      statusKey: 'pending',
-      dueDate: '2025-12-26',
-    },
-    {
-      invoiceNo: 'INV-302',
-      vendor: 'Innovate Corp.',
-      amount: 1257,
-      statusLabel: 'Paid',
-      statusKey: 'paid',
-      dueDate: '2025-12-28',
-    },
-    {
-      invoiceNo: 'INV-504',
-      vendor: 'Future System',
-      amount: 1500,
-      statusLabel: 'Pending',
-      statusKey: 'pending',
-      dueDate: '2025-12-31',
-    },
-    {
-      invoiceNo: 'INV-607',
-      vendor: 'Industrial Printer',
-      amount: 1500,
-      statusLabel: 'Pending',
-      statusKey: 'pending',
-      dueDate: '2025-12-31',
-    },
-  ];
+  vendorDashboardAndHistoryInvoices: VendorDashboardAndHistoryInvoicesVM[] = [];
 
   // Vendor ratings (dummy)
   vendors: VendorRating[] = [
@@ -147,6 +117,7 @@ export class HistoryMasterComponent implements OnInit {
     this.buildStars();
     this.loadVendorDashboardHistory();
     this.loadRecentBids();
+    this.loadVendorDashboardAndHistoryInvoices();
   }
 
   loadVendorDashboardHistory(): void {
@@ -251,15 +222,37 @@ export class HistoryMasterComponent implements OnInit {
       });
   }
 
-  private mapStatusKey(status: string): 'success' | 'pending' | 'rejected' {
+  loadVendorDashboardAndHistoryInvoices(): void {
+    const vendorId = this.authService.getUserId();
+    const onlyPending = false;
+    this.dashboardService.getVendorDashboardAndHistoryInvoices(vendorId, onlyPending)
+      .subscribe(res => {
+
+        const rows = res;
+
+        this.vendorDashboardAndHistoryInvoices = rows.map(r => ({
+          invoiceNo: r.invoiceNo,
+          purchaseOrderNo: r.purchaseOrderNo,
+          entityName: r.entityName,
+          totalAmount: r.totalAmount,
+          status: r.status,
+          dueDate: r.dueDate,
+          statusKey: this.mapStatusKey(r.status)
+        }));
+        this.cdr.detectChanges();
+      });
+  }
+
+  private mapStatusKey(status: string): 'success' | 'pending' | 'rejected' | 'pending for payment' | 'paid'{
     const s = status?.toLowerCase();
 
-    if (s === 'completed' || s === 'successful' || s === 'accepted')
+    if (s === 'completed' || s === 'successful' || s === 'accepted'  || s === 'paid')
       return 'success';
 
     if (s === 'rejected')
       return 'rejected';
 
+    if (s === 'pending for payment' || s === 'pending')
     return 'pending';
   }
 
@@ -287,7 +280,7 @@ export class HistoryMasterComponent implements OnInit {
   }
 
   viewAllInvoices(): void {
-    console.log('View all invoices clicked');
+    this.router.navigate(['/invoices/invoice-list']);
   }
 
   viewAllVendors(): void {

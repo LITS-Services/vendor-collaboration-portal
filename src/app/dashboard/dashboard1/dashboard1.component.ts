@@ -24,6 +24,7 @@ import { FirebaseMessagingService } from 'app/firebase-messaging.service';
 import { ToastrService } from 'ngx-toastr';
 import { NotifcationService } from 'app/shared/services/notification.service';
 import { DashboardService } from 'app/shared/services/dashboard.service';
+import { AuthService } from 'app/shared/auth/auth.service';
 
 export interface QuotationRequestsCountVM {
   totalQuotations: number;
@@ -92,6 +93,17 @@ export interface VendorTopItemVM {
   pct: number; // static for now
 }
 
+export interface VendorDashboardAndHistoryInvoicesVM
+{
+  invoiceNo: string;
+  purchaseOrderNo: string;
+  entityName: string;
+  totalAmount: number;
+  status: string;
+  dueDate: Date;
+  statusKey: 'paid' | 'pending for payment';
+}
+
 @Component({
   selector: 'app-dashboard1',
   templateUrl: './dashboard1.component.html',
@@ -128,16 +140,22 @@ export class Dashboard1Component implements OnInit {
   ];
 
   topItems: VendorTopItemVM[] = [];
-
+  vendorDashboardAndHistoryInvoices: VendorDashboardAndHistoryInvoicesVM[] = [];
   companyStatusDonut!: Partial<DonutChartOptions>;
   incomeArea!: Partial<AreaChartOptions>;
   deliveryRadial!: Partial<RadialChartOptions>;
 
 
-  companyStatusKey: 'new' | 'in-progress' | 'onboarded' = 'onboarded'; // fixed for now
-  companyStatusPercent:number = 33;
-  companyStatusLabel = 'onboarded';
-  logoUrl = "assets/img/icons/vp-color.svg";
+  companyStatusKey: 'new' | 'in-progress' | 'onboarded' = 'onboarded';
+  companyStatusPercent: number = 33;
+  companyStatusLabel: string = 'Onboarded';
+  logoUrl: string = "assets/img/icons/vp-color.svg";
+
+
+  vendorLogo: string | null = null;
+  vendorCompanyName: string = '';
+  vendorStatus: string = '';
+
 
   constructor(
     private router: Router,
@@ -147,18 +165,20 @@ export class Dashboard1Component implements OnInit {
     private messagingService: FirebaseMessagingService,
     private toaster: ToastrService,
     private cdr: ChangeDetectorRef,
-    private dashboardService:DashboardService
+    private dashboardService:DashboardService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
     this.incomeArea = this.buildIncomeAreaFromApi([], [], []);
     this.setIncomeRange('year');
-    this.setCompanyStatus('onboarded');
+    // this.setCompanyStatus('onboarded');
     this.loadCompanyStats();
     this.loadVendorDeliveryPerformance();
     this.loadVendorPortalDashboardCount();
     this.loadVendorTopItems();
-    
+    this.loadVendorDashboardAndHistoryInvoices();
+    this.loadVendorLogoAndStatus();
     setTimeout(() => window.dispatchEvent(new Event('resize')), 200);
   }
 
@@ -248,6 +268,49 @@ export class Dashboard1Component implements OnInit {
     });
   }
 
+  loadVendorDashboardAndHistoryInvoices(): void {
+    const vendorId = this.authService.getUserId();
+    const onlyPending = true;
+    this.dashboardService.getVendorDashboardAndHistoryInvoices(vendorId, onlyPending)
+      .subscribe(res => {
+
+        const rows = res;
+
+        this.vendorDashboardAndHistoryInvoices = rows.map(r => ({
+          invoiceNo: r.invoiceNo,
+          purchaseOrderNo: r.purchaseOrderNo,
+          entityName: r.entityName,
+          totalAmount: r.totalAmount,
+          status: r.status,
+          dueDate: r.dueDate
+        }));
+        this.cdr.detectChanges();
+      });
+  }
+
+  loadVendorLogoAndStatus(): void {
+    const vendorId = this.authService.getUserId();
+    if (!vendorId) return;
+
+    this.dashboardService.getVendorDashboardLogoAndStatus(vendorId).subscribe({
+      next: (res) => {
+        const data = res;
+        if (data) {
+          this.vendorCompanyName = data.vendorCompanyName || '';
+          this.vendorStatus = data.status || '';
+          this.vendorLogo = data.logo.startsWith('data:') ? data.logo : `data:image/png;base64,${data.logo}`;
+          this.setCompanyStatus(this.mapStatus(data.status));
+          this.cdr.detectChanges();
+        }
+        
+      },
+      error: (err) => {
+        console.error('Logo API error:', err);
+      }
+    });
+  }
+
+
   buildDeliveryRadial(completed: number): void {
     this.deliveryRadial = {
       series: [completed],
@@ -307,7 +370,6 @@ get statusPillClass(): string {
   }
 }
 
-
   loadVendorPortalDashboardCount(): void {
     const userId = localStorage.getItem('userId');
     this.dashboardService.getVendorPortalDashboardCount(userId).subscribe({
@@ -319,23 +381,32 @@ get statusPillClass(): string {
     });
   }
 
-
-
   setCompanyStatus(status: 'new' | 'in-progress' | 'onboarded') {
-  this.companyStatusKey = status;
+    this.companyStatusKey = status;
 
-  if (status === 'new') {
-    this.companyStatusPercent = 33;
-    this.companyStatusLabel = 'New';
-  } else if (status === 'in-progress') {
-    this.companyStatusPercent = 66;
-    this.companyStatusLabel = 'In Progress';
-  } else {
-    this.companyStatusPercent = 100;
-    this.companyStatusLabel = 'Completed';
+    if (status === 'new') {
+      this.companyStatusPercent = 33;
+      this.companyStatusLabel = 'New';
+    } else if (status === 'in-progress') {
+      this.companyStatusPercent = 66;
+      this.companyStatusLabel = 'In Progress';
+    } else { // onboarded
+      this.companyStatusPercent = 100;
+      this.companyStatusLabel = 'Onboarded';
+    }
   }
-}
-  
+
+  private mapStatus(status: string | null): 'new' | 'in-progress' | 'onboarded' {
+    if (!status) return 'new';
+    status = status.toLowerCase();
+
+    if (status === 'new') return 'new';
+    if (status === 'in progress' || status === 'in-progress') return 'in-progress';
+    if (status === 'onboarded') return 'onboarded';
+
+    return 'new';
+  }
+
 
   private recomputeTopMetrics(): void {
     const totalRfqs = this.dashboardCounts?.totalRfqs ?? 0;

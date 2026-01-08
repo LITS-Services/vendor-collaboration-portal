@@ -129,7 +129,7 @@
             [ngClass]="companyStatusKey"
           >
             <div class="company-status__inner">
-              <img class="company-status__logo" [src]="logoUrl" alt="Logo" />
+              <img class="company-status__logo" [src]="vendorLogo" alt="Logo" />
             </div>
           </div>
         </div>
@@ -138,7 +138,7 @@
 
     <!-- FOOTER: title always at bottom -->
     <div class="company-status-footer">
-      <div class="company-title">Al Manal Developers</div>
+      <div class="company-title">{{ vendorCompanyName || 'Company Name' }}</div>
     </div>
 
   </div>
@@ -233,11 +233,11 @@
       </div>
 
         <div class="table-scroll">
-      <div class="table__row" *ngFor="let inv of pendingInvoices">
-        <div class="mono">{{ inv.no }}</div>
-         <div>{{ inv.customer }}</div>
-        <div class="text-end">{{ formatCurrency(inv.amount) }}</div>
-        <div class="text-end">{{ inv.due | date:'MMM d, y' }}</div>
+      <div class="table__row" *ngFor="let inv of vendorDashboardAndHistoryInvoices">
+        <div class="mono">{{ inv.invoiceNo }}</div>
+         <div>{{ inv.entityName }}</div>
+        <div class="text-end">{{ formatCurrency(inv.totalAmount) }}</div>
+        <div class="text-end">{{ inv.dueDate | date:'MMM d, y' }}</div>
       </div>
     </div>
 
