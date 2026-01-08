@@ -17,9 +17,11 @@ export const HROUTES: RouteInfo[] = [
   { path: '/purchase-order', title: 'POs/SOs', icon: 'ft-shopping-cart', class: '', badge: '', badgeClass: '', isExternalLink: false, submenu: [] },
   // { path: '/tendering/tender-master', title: 'Tendering', icon: 'ft-dollar-sign',class: '', isExternalLink: false, submenu: [
   // ] },
+  { path: '/invoices', title: 'Invoices', icon: 'ft-invoice',class: '', isExternalLink: false, submenu: [
+  ] },
   { path: '/reports', title: 'Reports', icon: 'ft-file-text',class: '', isExternalLink: false, submenu: [
   ] },
-  { path: '/history', title: 'History', icon: 'ft-file-text',class: '', isExternalLink: false, submenu: [
+  { path: '/history', title: 'History', icon: 'ft-history',class: '', isExternalLink: false, submenu: [
   ] },
   
 ];

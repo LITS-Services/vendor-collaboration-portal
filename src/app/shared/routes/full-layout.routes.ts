@@ -91,4 +91,8 @@ export const Full_ROUTES: Routes = [
     path: 'taskboard-ngrx',
     loadChildren: () => import('../../taskboard-ngrx/taskboard-ngrx.module').then(m => m.TaskboardNGRXModule)
   },
+  {
+    path: 'invoices',
+    loadChildren: () => import('../../invoice-list/invoice-list-module').then(m => m.InvoiceListModule)
+  },
  ];

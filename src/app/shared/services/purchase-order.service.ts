@@ -4,6 +4,12 @@ import { PurchaseOrdersCountVM } from 'app/dashboard/dashboard1/dashboard1.compo
 import { environment } from 'environments/environment';
 import { Observable } from 'rxjs';
 
+export interface InvoiceQuery {
+  currentPage: number,
+  pageSize: number,
+  vendorId: string | null
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -42,4 +48,36 @@ export class PurchaseOrderService {
   getGoodsReceiptNoteById(purchaseOrderId: number) {
     return this.http.get<any>(`${this.baseUrl}/get-grn?purchaseOrderId=${purchaseOrderId}`);
   }
+
+  createInvoice(payload: any): Observable<any> {
+    return this.http.post<any>(
+      `${this.baseUrl}/create-invoice`,
+      payload
+    );
+  }
+
+  getInvoiceByPoId(purchaseOrderId: number) {
+    return this.http.get<any>(`${this.baseUrl}/get-invoice-by-id?purchaseOrderId=${purchaseOrderId}`);
+  }
+
+  downloadInvoicePdf(invoiceId: number): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/download-pdf/${invoiceId}`, { responseType: 'blob' });
+  }
+
+  getAllInvoices(q: {
+    currentPage: number,
+    pageSize: number,
+    vendorId?: string | null
+  }): Observable<any> {
+
+
+    let params = new HttpParams()
+      .set("currentPage", q.currentPage)
+      .set("pageSize", q.pageSize)
+    if (q.vendorId) params = params.set("vendorId", q.vendorId);
+    return this.http.get<any>(
+      `${this.baseUrl}/get-all-invoices`, { params }
+    );
+  }
+
 }

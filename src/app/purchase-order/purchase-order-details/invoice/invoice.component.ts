@@ -1,5 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { PurchaseOrderService } from 'app/shared/services/purchase-order.service';
+import { ToastrService } from 'ngx-toastr';
+import Swal from 'sweetalert2';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-invoice',
@@ -8,38 +13,182 @@ import { Router } from '@angular/router';
   standalone: false
 })
 export class InvoiceComponent implements OnInit {
+  @Input() poId!: number;
 
-  invoiceDetails: any;
-  itemsExpanded: boolean = true;
-  constructor(private router: Router) { }
+  form!: FormGroup;
+  itemsForm!: FormArray;
+  isEdit = false;
+  itemsExpanded = true;
+  invoiceId?: number;
+  purchaseOrderNo: string = '';
+  vendorName: string = '';
+  grNumber: string = '';
+  invoiceExists = false;
+
+  constructor(
+    private fb: FormBuilder,
+    private cdr: ChangeDetectorRef,
+    private router: Router,
+    private purchaseOrderService: PurchaseOrderService,
+    private toastr: ToastrService
+  ) { }
+
   ngOnInit(): void {
-    this.invoiceDetails = {
-      invoiceNo: 'INV-2025-0045',
-      poNo: 'PO-2025-0098',
-      vendorName: 'ABC Industrial Supplies',
-      invoiceDate: '2025-02-18',
-      grnNo: 'GRN-2025-0012',
-      deliveryChallan: 'DC-847392',
-      paymentTerms: 'Net 30 Days',
-      dueDate: '2025-03-20',
-      subtotal: 185500,
-      tax: 18550,
-      otherCharges: 0,
-      total: 204050,
-      remarks: 'Invoice matches GRN and PO. Pending finance approval.',
-      items: [
-        { itemName: 'Steel Bolts M8', qty: 500, price: 150, amount: 75000 },
-        { itemName: 'Washer 16mm', qty: 480, price: 20, amount: 9600 },
-        { itemName: 'Industrial Grease 1kg', qty: 10, price: 10000, amount: 100000 }
-      ]
-    };
+    this.initForm();
+    this.loadPurchaseOrder();
+    this.checkInvoice();
+    this.cdr.detectChanges();
   }
 
-   toggleItems() {
+  private initForm() {
+    this.form = this.fb.group({
+      invoiceNo: [{ value: '', disabled: true }],
+      purchaseOrderNo: [{ value: '', disabled: true }],
+      vendorName: [{ value: '', disabled: true }],
+      invoiceDate: [{ value: '', disabled: true }],
+      grNumber: [{ value: '', disabled: true }],
+      paymentTerms: [''],
+      dueDate: [''],
+      remarks: [''],
+      items: this.fb.array([])
+    });
+
+    this.itemsForm = this.form.get('items') as FormArray;
+  }
+
+  private loadPurchaseOrder() {
+    this.purchaseOrderService.getPurchaseOrderById(this.poId).subscribe({
+      next: (po) => {
+        if (!po) return;
+
+        this.purchaseOrderNo = po.purchaseOrderNo;
+        this.vendorName = po.vendorName;
+        this.grNumber = po.grNumber;
+
+        this.form.patchValue({
+          purchaseOrderNo: po.purchaseOrderNo,
+          vendorName: po.vendorName,
+          grNumber: po.grNumber
+        });
+
+        if (po.items?.length) {
+          po.items.forEach(item => this.itemsForm.push(this.createItemGroup(item, true)));
+        }
+
+        this.cdr.markForCheck();
+      },
+      error: (err) => console.error(err)
+    });
+  }
+
+  private checkInvoice() {
+    this.purchaseOrderService.getInvoiceByPoId(this.poId).subscribe({
+      next: (invoice) => {
+        if (invoice && invoice.id) {
+          this.invoiceExists = true;
+          this.isEdit = true;
+
+          this.form.patchValue({
+            invoiceNo: invoice.invoiceNo,
+            invoiceDate: this.formatDate(invoice.invoiceDate),
+            paymentTerms: invoice.paymentTerms,
+            dueDate: this.formatDate(invoice.dueDate),
+            remarks: invoice.remarks
+          });
+
+          // Patch invoice items
+          if (invoice.invoiceItems?.length) {
+            this.itemsForm.clear();
+            invoice.invoiceItems.forEach(item =>
+              this.itemsForm.push(this.createItemGroup(item, false))
+            );
+          }
+
+          this.form.disable();
+        }
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.invoiceExists = false;
+        this.isEdit = false;
+      }
+    });
+  }
+
+  private createItemGroup(item: any, isPOItem: boolean): FormGroup {
+    return this.fb.group({
+      itemName: [{ value: item.itemName, disabled: true }],
+      acceptedQuantity: [{ value: item.acceptedQuantity, disabled: true }],
+      unitPrice: [{ value: isPOItem ? item.unitPrice : item.amount, disabled: true }],
+      totalAmount: [{ value: isPOItem ? item.amount : item.totalAmount, disabled: this.isEdit }]
+    });
+  }
+
+  toggleItems() {
     this.itemsExpanded = !this.itemsExpanded;
+  }
+
+  sendForPayment() {
+    if (this.form.invalid) {
+      this.toastr.warning('Please fill required fields.');
+      return;
+    }
+
+    Swal.fire({
+      title: 'Confirm Invoice',
+      text: 'Do you want to send this invoice for payment?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, send',
+      cancelButtonText: 'Cancel'
+    }).then(result => {
+      if (!result.isConfirmed) return;
+
+      const payload = {
+        purchaseOrderId: this.poId,
+        invoice: {
+          paymentTerms: this.form.get('paymentTerms')?.value,
+          dueDate: this.form.get('dueDate')?.value,
+          remarks: this.form.get('remarks')?.value,
+          invoiceItems: this.itemsForm.getRawValue().map((item: any) => ({
+            totalAmount: item.totalAmount
+          }))
+        }
+      };
+
+      this.purchaseOrderService.createInvoice(payload).subscribe({
+        next: (res: any) => {
+          if (res) {
+            this.purchaseOrderService.downloadInvoicePdf(res).subscribe(blob => {
+              const url = window.URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = `Invoice_${this.form.get('invoiceNo')?.value}.pdf`;
+              link.click();
+              window.URL.revokeObjectURL(url);
+            });
+
+            this.form.disable();
+            this.isEdit = true;
+            this.cdr.detectChanges();
+            this.checkInvoice();
+          }
+        },
+        error: (err) => {
+          this.toastr.error('Failed to create invoice.');
+        }
+      });
+
+
+    });
   }
 
   goBack() {
     this.router.navigate(['/purchase-order/purchase-order-list']);
+  }
+
+  private formatDate(date?: string | Date): string {
+    if (!date) return '';
+    return formatDate(date, 'MM-dd-yyyy', 'en-US');
   }
 }
