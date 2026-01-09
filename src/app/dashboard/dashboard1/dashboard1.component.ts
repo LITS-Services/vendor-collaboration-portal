@@ -155,7 +155,7 @@ export class Dashboard1Component implements OnInit {
   vendorLogo: string | null = null;
   vendorCompanyName: string = '';
   vendorStatus: string = '';
-
+  vendorInitials: string = '';
 
   constructor(
     private router: Router,
@@ -298,7 +298,19 @@ export class Dashboard1Component implements OnInit {
         if (data) {
           this.vendorCompanyName = data.vendorCompanyName || '';
           this.vendorStatus = data.status || '';
-          this.vendorLogo = data.logo.startsWith('data:') ? data.logo : `data:image/png;base64,${data.logo}`;
+          //this.vendorLogo = data.logo.startsWith('data:') ? data.logo : `data:image/png;base64,${data.logo}`;
+          if (data.logo) {
+        // Logo exists → show image
+        this.vendorLogo = data.logo.startsWith('data:')
+          ? data.logo
+          : `data:image/png;base64,${data.logo}`;
+
+        this.vendorInitials = '';
+      } else {
+        // No logo → show initials
+        this.vendorLogo = null;
+        this.vendorInitials = this.getInitials(this.vendorCompanyName);
+      }
           this.setCompanyStatus(this.mapStatus(data.status));
           this.cdr.detectChanges();
         }
@@ -308,6 +320,20 @@ export class Dashboard1Component implements OnInit {
         console.error('Logo API error:', err);
       }
     });
+  }
+
+  private getInitials(name: string | null | undefined): string {
+    if (!name) return '';
+
+    const parts = name.trim().split(' ').filter(p => p.length > 0);
+
+    if (parts.length === 1) {
+      return parts[0].charAt(0).toUpperCase();
+    }
+
+    return (
+      parts[0].charAt(0) + parts[parts.length - 1].charAt(0)
+    ).toUpperCase();
   }
 
 

@@ -129,7 +129,14 @@
             [ngClass]="companyStatusKey"
           >
             <div class="company-status__inner">
-              <img class="company-status__logo" [src]="vendorLogo" alt="Logo" />
+              <!-- <img class="company-status__logo" [src]="vendorLogo" alt="Logo" /> -->
+              <!-- Logo -->
+              <img *ngIf="vendorLogo" class="company-status__logo" [src]="vendorLogo" alt="Logo" />
+            
+              <!-- Initials fallback -->
+              <div *ngIf="!vendorLogo" class="company-status__avatar">
+                {{ vendorInitials }}
+              </div>
             </div>
           </div>
         </div>
@@ -233,12 +240,19 @@
       </div>
 
         <div class="table-scroll">
+          @if(vendorDashboardAndHistoryInvoices.length > 0) {
       <div class="table__row" *ngFor="let inv of vendorDashboardAndHistoryInvoices">
         <div class="mono">{{ inv.invoiceNo }}</div>
          <div>{{ inv.entityName }}</div>
         <div class="text-end">{{ formatCurrency(inv.totalAmount) }}</div>
         <div class="text-end">{{ inv.dueDate | date:'MMM d, y' }}</div>
       </div>
+    }
+    @else {
+      <div class="p-3" >
+        No data available.
+      </div>
+    }
     </div>
 
     </div>
@@ -252,6 +266,9 @@
       </div>
   
       <div class="panel__body">
+        @if (topItems.length > 0) {
+          
+        
         <div class="top-items">
           <div class="top-item" *ngFor="let item of topItems">
             <div class="top-item__row">
@@ -266,6 +283,12 @@
             </div>
           </div>
         </div>
+      }
+      @else {
+        <div>
+          No data available.
+        </div>
+      }
       </div>
     </div>
   
