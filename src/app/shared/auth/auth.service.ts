@@ -48,10 +48,10 @@ export class AuthService {
   }
   set accessToken(token: string | null) {
     if (token) {
-      console.log('[AUTH] Setting accessToken:', token.slice(0, 12) + '...');
+      
       localStorage.setItem('token', token);
     } else {
-      console.log('[AUTH] Clearing accessToken');
+      
       localStorage.removeItem('token');
     }
   }
@@ -61,10 +61,10 @@ export class AuthService {
   }
   set refreshToken(token: string | null) {
     if (token) {
-      console.log('[AUTH] Setting refreshToken:', token.slice(0, 12) + '...');
+      
       localStorage.setItem('refreshToken', token);
     } else {
-      console.log('[AUTH] Clearing refreshToken');
+      
       localStorage.removeItem('refreshToken');
     }
   }
@@ -154,8 +154,7 @@ export class AuthService {
   //   return this.http.post(`${this.baseUrl}/register-company`, payload);
   // }
   registerCompany(payload: any): Observable<any> {
-    console.log('userId', payload.userId);
-    console.log('Sending payload to backend:', payload);
+    
     return this.http.post(`${this.baseUrl}/register-company`, payload); // <-- use correct API endpoint
   }
 

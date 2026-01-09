@@ -121,7 +121,7 @@ export class LoginPageComponent implements OnInit {
 
           localStorage.setItem('username', username);
 
-          console.log('Login successful');
+          
           this.router.navigate(['/dashboard/dashboard1']);
           this.cdr.detectChanges();
         },

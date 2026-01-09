@@ -21,7 +21,7 @@ export class FirebaseMessagingService {
   requestPermission(userId: string) {
     this.afMessaging.requestToken.subscribe(
       token => {
-        console.log('FCM Token:', token);
+        
         debugger;
         this.sendTokenToBackend(userId, token);
         // Send this token to your backend to send push messages
@@ -41,7 +41,7 @@ export class FirebaseMessagingService {
 
     this.http.post(apiUrl, body).subscribe({
       next: response => {
-        console.log('Token sent to backend successfully:', response);
+        
       },
       error: err => {
         console.error('Error sending token to backend:', err);
