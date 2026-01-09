@@ -73,6 +73,10 @@
   background-color: #249D57;
   border-color: #249D57;
 }
+
+.btn-danger{
+  color: white;
+}
   a {
     color: #187741;
     text-decoration: none;
