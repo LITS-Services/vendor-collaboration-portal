@@ -116,6 +116,21 @@ a:hover {
   html{
     font-family: "Onest", sans-serif !important;
   }
+
+  /*
+    Prevent layout shift when the page toggles between needing / not needing a vertical scrollbar.
+    On Windows this otherwise changes viewport width and makes fixed headers appear to "jump".
+  */
+  html {
+    scrollbar-gutter: stable;
+  }
+
+  /* Fallback for browsers without `scrollbar-gutter` support */
+  @supports not (scrollbar-gutter: stable) {
+    body {
+      overflow-y: scroll;
+    }
+  }
   /* .h1 .h2 .h3 .h4 .h5 .h6{
     color: #187741;
   } */

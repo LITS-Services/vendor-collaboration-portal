@@ -295,7 +295,7 @@
 }
 
 /* --- RESPONSIVE OVERRIDES --- */
-@media (min-width: 768px) {
+@media (min-width: 960) {
 
   .vp-mobile,
   .vp-mobile-offset {
@@ -304,7 +304,7 @@
   }
 }
 
-@media (max-width: 767.98px) {
+@media (max-width: 960.98px) {
 
   /* Hide desktop pill/tabs area if the desktop navbar ever slips through */
   .vp-navbar .vp-pill {
