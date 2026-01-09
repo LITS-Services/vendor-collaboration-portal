@@ -424,9 +424,8 @@
 /* Bids table layout (6 columns) */
 .table__row--bids {
   grid-template-columns:
-    minmax(0, 1.1fr)  /* BID ID */
-    minmax(0, 1.1fr)  /* RFQ NO */
-    minmax(0, 2.2fr)  /* Vendor Name */
+    minmax(0, 1.4fr)  /* BID ID */
+    minmax(0, 1.8fr)  /* RFQ NO */
     minmax(0, 1.4fr)  /* Bid amount */
     minmax(0, 1.4fr)  /* Total bids */
     minmax(0, 1.4fr); /* Status */
