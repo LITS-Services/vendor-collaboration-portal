@@ -35,13 +35,17 @@ export class PurchaseOrderDetailsComponent implements OnInit {
 
   loadPurchaseOrder() {
     this.loading = true;
+    this.spinner.show();
     this.purchaseOrderService.getPurchaseOrderById(this.poId).subscribe({
       next: (res) => {
         this.poDetails = res;
         this.loading = false;
+        this.spinner.hide();
         this.cdr.detectChanges();
       },
-      error: () => { this.loading = false; }
+      error: () => { 
+        this.spinner.hide();
+        this.loading = false; }
     });
   }
 

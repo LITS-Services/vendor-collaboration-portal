@@ -9,6 +9,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { SignalRService } from 'app/shared/services/signalr.service';
 import { SystemService } from 'app/shared/services/system.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 enum CreatedByType {
   Procurement = 1,
@@ -57,7 +58,8 @@ export class QuotationBidModalComponent implements OnInit {
     private fb: FormBuilder,
     private modalService: NgbModal,
     private signalRService: SignalRService,
-    private systemService: SystemService
+    private systemService: SystemService,
+    private spinner: NgxSpinnerService
   ) { }
 
   ngOnInit(): void {
@@ -150,6 +152,7 @@ export class QuotationBidModalComponent implements OnInit {
   }
 
   loadRfqDetails(rfqId: number) {
+    this.spinner.show();
     const vendorUserId = localStorage.getItem("userId");
     this.rfqService.getRfqById(rfqId, true, vendorUserId).subscribe(
       (res) => {
@@ -175,9 +178,13 @@ export class QuotationBidModalComponent implements OnInit {
           }
         });
         this.loadRfqComments();
+        this.spinner.hide();
         this.cdr.detectChanges();
       },
-      (err) => console.error("Error loading RFQ:", err)
+      (err) => {
+        this.spinner.hide();
+        console.error("Error loading RFQ:", err)
+      }
     );
   }
   onTyping() {

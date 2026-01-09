@@ -77,6 +77,11 @@
 .btn-danger{
   color: white;
 }
+
+.btn-danger:hover{
+  color: white;
+}
+
   a {
     color: #187741;
     text-decoration: none;
