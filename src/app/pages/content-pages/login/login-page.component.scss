@@ -343,3 +343,8 @@ p {
     height: 30px;
     display: grid;
 }
+
+/* Toastr is appended to <body>; override global top offset only on login page */
+::ng-deep body.login-page .toast-container {
+  top: 16px !important;
+}

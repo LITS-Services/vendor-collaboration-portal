@@ -1,5 +1,5 @@
 
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from "@angular/router";
 import { AuthService } from 'app/shared/auth/auth.service';
@@ -13,7 +13,7 @@ import { finalize } from 'rxjs/operators';
   styleUrls: ['./login-page.component.scss'],
   standalone: false
 })
-export class LoginPageComponent implements OnInit {
+export class LoginPageComponent implements OnInit, OnDestroy {
   token: string | undefined;
   public hidePassword: boolean = true;
   loginFormSubmitted = false;
@@ -46,6 +46,9 @@ export class LoginPageComponent implements OnInit {
   }
 
   ngOnInit() {
+    // Scope global UI tweaks (like toastr placement) to login only
+    document.body.classList.add('login-page');
+
     const msg = sessionStorage.getItem('authFlash');
     if (msg) {
       sessionStorage.removeItem('authFlash');
@@ -88,6 +91,10 @@ export class LoginPageComponent implements OnInit {
     }
   }
 
+  ngOnDestroy(): void {
+    document.body.classList.remove('login-page');
+  }
+
   onSubmit() {  
     this.loginFormSubmitted = true;
     // if (this.loginForm.controls['recaptcha'].invalid) {
@@ -127,8 +134,12 @@ export class LoginPageComponent implements OnInit {
         },
         error: (err) => {
           this.isLoginFailed = true;
-          this.errorMessage =
-            err?.error?.message || 'Login failed. Check your credentials.';
+            if(err?.error?.includes('Invalid username or password')){
+              this.errorMessage = 'Invalid username or password';
+            }
+            else{
+              this.errorMessage = 'Login failed. Check your credentials.';
+            }
           this.toastr.error(this.errorMessage);
           console.error(' Login failed:', err);
           this.cdr.detectChanges();
