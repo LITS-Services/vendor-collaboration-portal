@@ -202,6 +202,18 @@ export class HistoryMasterComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
+  getVendorRatingLabel(): string {
+    const rating = this.vendorAverageRating;
+
+    if (rating >= 4.5) return 'Excellent';
+    if (rating >= 4.0) return 'Very Good';
+    if (rating >= 3.0) return 'Good';
+    if (rating >= 2.0) return 'Fair';
+    if (rating > 0) return 'Poor';
+    return 'No Rating';
+  }
+
+
   loadRecentBids(): void {
     const vendorId = this.authService.getUserId();
 
