@@ -10,62 +10,61 @@
         </div>
       </div>
 
-      <div  class="pr-table-wrapper" appDatatableAutoResize [datatable]="datatable">
-      <ngx-datatable #datatable class="bootstrap core-bootstrap" [rows]="companyData" [columnMode]="'force'" [headerHeight]="42"
-        [footerHeight]="50" rowHeight="42" [limit]="15" [scrollbarH]="isMobile" [loadingIndicator]="loading"
-        [selected]="chkBoxSelected" [swapColumns]="false" [selectionType]="SelectionType.checkbox"
-        (sort)="onSort($event)" (select)="customChkboxOnSelect($event)">
+      <div class="pr-table-wrapper" appDatatableAutoResize [datatable]="datatable">
+        <ngx-datatable #datatable class="bootstrap core-bootstrap" [rows]="companyData" [columnMode]="'force'"
+          [headerHeight]="42" [footerHeight]="50" rowHeight="42" [limit]="15" [scrollbarH]="isMobile"
+          [loadingIndicator]="loading" [selected]="chkBoxSelected" [swapColumns]="false"
+          [selectionType]="SelectionType.checkbox" (sort)="onSort($event)" (select)="customChkboxOnSelect($event)">
 
-        <!-- Company Name -->
-        <ngx-datatable-column  [flexGrow]="2" [minWidth]="140" name="Company Name" prop="name">
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            <a href="javascript:void(0)" (click)="editCompany(row)" class="text-primary font-weight-bold">
-              {{ row.name }}
-            </a>
-          </ng-template>
-        </ngx-datatable-column>
+          <!-- Company Name -->
+          <ngx-datatable-column [flexGrow]="2" [minWidth]="140" name="Company Name" prop="name">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <a href="javascript:void(0)" (click)="editCompany(row)" class="text-primary font-weight-bold">
+                {{ row.name }}
+              </a>
+            </ng-template>
+          </ngx-datatable-column>
 
-        <!-- Main Status Column (NEW) -->
-        <ngx-datatable-column name="Main Status" prop="mainStatus"  [flexGrow]="1" [minWidth]="140">
-          <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
-            <span class="status-pill" [ngClass]="getStatusClass(value)">
-              {{ value }}
-            </span>
-          </ng-template>
-        </ngx-datatable-column>
+          <!-- Main Status Column (NEW) -->
+          <ngx-datatable-column name="Main Status" prop="mainStatus" [flexGrow]="1" [minWidth]="140">
+            <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+              <span class="status-pill" [ngClass]="getStatusClass(value)">
+                {{ value }}
+              </span>
+            </ng-template>
+          </ngx-datatable-column>
 
-        <!-- Created Date -->
-        <ngx-datatable-column name="Create Date" prop="createDate" [flexGrow]="1" [minWidth]="140">
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            {{ row.createDate | date:'dd-MMM-yyyy' }}
-          </ng-template>
-        </ngx-datatable-column>
+          <!-- Created Date -->
+          <ngx-datatable-column name="Create Date" prop="createDate" [flexGrow]="1" [minWidth]="140">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              {{ row.createDate | date:'dd-MMM-yyyy' }}
+            </ng-template>
+          </ngx-datatable-column>
 
-        <!-- Level Column (Renamed from Status) -->
-        <ngx-datatable-column name="Level" prop="level" [sortable]="false" [flexGrow]="1" [minWidth]="140">
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            <span class="badge bg-light text-dark border" *ngIf="row.level && row.level !== 'Loading...'">
-              {{ row.level }}
-            </span>
-            <div *ngIf="row.level === 'Loading...'" class="spinner-border spinner-border-sm text-primary" role="status">
-              <span class="visually-hidden">Loading...</span>
-            </div>
-          </ng-template>
-        </ngx-datatable-column>
+          <!-- Level Column (Renamed from Status) -->
+          <ngx-datatable-column name="Level" prop="level" [sortable]="false" [flexGrow]="1" [minWidth]="140">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <span class="badge bg-light text-dark border" *ngIf="row.level && row.level !== 'Loading...'">
+                {{ row.level }}
+              </span>
+              <div *ngIf="row.level === 'Loading...'" class="spinner-border spinner-border-sm text-primary"
+                role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </ng-template>
+          </ngx-datatable-column>
 
-        <!-- Remarks (Popup Trigger) -->
-        <ngx-datatable-column name="Remarks" [sortable]="false" [flexGrow]="1" minWidth="180" [maxWidth]="200"
-        
-        >
-          <ng-template let-row="row" ngx-datatable-cell-template>
-            <button type="button" class="btn btn-sm csm-remarks-btn" title="View Remarks"
-              (click)="openRemarksPopup(row)">
-              View
-            </button>
-          </ng-template>
-        </ngx-datatable-column>
-      </ngx-datatable>
-    </div>
+          <!-- Remarks (Popup Trigger) -->
+          <ngx-datatable-column name="Remarks" [sortable]="false" [flexGrow]="1" minWidth="180" [maxWidth]="200">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <button type="button" class="btn btn-sm csm-remarks-btn" title="View Remarks"
+                (click)="openRemarksPopup(row)">
+                View
+              </button>
+            </ng-template>
+          </ngx-datatable-column>
+        </ngx-datatable>
+      </div>
     </div>
   </div>
 
@@ -162,13 +161,21 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr *ngFor="let remark of entity.remarks" class="align-middle">
+                    <tr
+                      *ngFor="let remark of entity.remarks | slice: (remarksPage-1) * remarksPageSize : remarksPage * remarksPageSize"
+                      class="align-middle">
                       <td>{{ remark.approverName || '-' }}</td>
                       <td>{{ remark.createdDate | date:'dd-MMM-yyyy HH:mm' }}</td>
                       <td>{{ remark.remarks || 'No remarks provided' }}</td>
                     </tr>
                   </tbody>
                 </table>
+              </div>
+              <div class="d-flex justify-content-end pagination-container"
+                *ngIf="entity.remarks.length > remarksPageSize">
+                <ngb-pagination [collectionSize]="entity.remarks.length" [(page)]="remarksPage"
+                  [pageSize]="remarksPageSize" [maxSize]="5" [rotate]="true" [boundaryLinks]="true">
+                </ngb-pagination>
               </div>
             </div>
           </div>

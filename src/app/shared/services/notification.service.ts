@@ -4,10 +4,11 @@ import { VendorPortalDashboardCountVM } from "app/dashboard/dashboard1/dashboard
 import { environment } from "environments/environment";
 import { Observable } from "rxjs";
 export enum ReferenceType {
-    PR = 1,
-    RFQ = 2,
-    PO = 3,
-    Default = 99
+  PR = 1,
+  RFQ = 2,
+  PO = 3,
+  VendorCompany = 4,
+  Default = 99
 }
 @Injectable({
   providedIn: 'root'
@@ -15,23 +16,23 @@ export enum ReferenceType {
 
 
 export class NotifcationService {
-     private apiUrl = `${environment.apiUrl}`;
+  private apiUrl = `${environment.apiUrl}`;
 
-     constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) { }
 
-    getNotification(): Observable<any[]> {
+  getNotification(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/System/get-notifications`);
   }
 
-    markAsRead(id: number): Observable<any> {
+  markAsRead(id: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/System/mark-notification-as-read/${id}`);
   }
 
-      markAllAsRead(): Observable<any[]> {
+  markAllAsRead(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/System/mark-all-notifications-as-read`);
   }
 
-    clearAllNotification(): Observable<any[]> {
+  clearAllNotification(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/System/clear-all-notifications`);
   }
 

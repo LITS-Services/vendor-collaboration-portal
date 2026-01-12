@@ -141,10 +141,10 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
     this.isSmallScreen = this.innerWidth < 1200;
   }
 
-  redirection(referenceType: any, referenceId: any, title?:string) {
+  redirection(referenceType: any, referenceId: any, title?: string) {
 
-      const isCommentNotif =
-    !!title && title.toLowerCase().includes('comment');
+    const isCommentNotif =
+      !!title && title.toLowerCase().includes('comment');
 
     switch (referenceType) {
       case ReferenceType.RFQ:
@@ -166,7 +166,11 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
           ["/purchase-order/purchase-order-details", referenceId],
           { skipLocationChange: true }
         );
-          break;
+        break;
+
+      case ReferenceType.VendorCompany:
+        this.router.navigate(["/company/company-list"], { skipLocationChange: true });
+        break;
 
       case ReferenceType.Default:
         return ReferenceType.Default;
@@ -200,52 +204,52 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-    clearAllNotification() {
-       Swal.fire({
-          title: 'Clear all notifications?',
-          text: 'This will delete all the notifications',
-          icon: 'question',
-          showCancelButton: true,
-          confirmButtonText: 'Yes, Delete',
-          cancelButtonText: 'Cancel',
-          confirmButtonColor: '#dc3741',
-          scrollbarPadding: false,
-        }).then((result) => {
-          if (result.isConfirmed) {  
-             this.notificationService.clearAllNotification().subscribe({
-              next: () => {
-                this.getNotification();
-              },
-              error: () => {
-                this.toaster.error('Something went wrong while creating PO.');
-              }
-            });
+  clearAllNotification() {
+    Swal.fire({
+      title: 'Clear all notifications?',
+      text: 'This will delete all the notifications',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, Delete',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#dc3741',
+      scrollbarPadding: false,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.notificationService.clearAllNotification().subscribe({
+          next: () => {
+            this.getNotification();
+          },
+          error: () => {
+            this.toaster.error('Something went wrong while creating PO.');
           }
         });
+      }
+    });
   }
 
 
   markAllAsRead() {
-      Swal.fire({
-          title: 'Mark all as read?',
-          text: 'This will mark all notifications as read',
-          icon: 'question',
-          showCancelButton: true,
-          confirmButtonText: 'Yes, Mark all as read',
-          cancelButtonText: 'Cancel',
-          confirmButtonColor:'#249d57',
-        }).then((result) => {
-          if (result.isConfirmed) {
-             this.notificationService.markAllAsRead().subscribe({
-              next: () => {
-                this.getNotification();
-              },
-              error: () => {
-                this.toaster.error('Something went wrong while creating PO.');
-              }
-            });
+    Swal.fire({
+      title: 'Mark all as read?',
+      text: 'This will mark all notifications as read',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, Mark all as read',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#249d57',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.notificationService.markAllAsRead().subscribe({
+          next: () => {
+            this.getNotification();
+          },
+          error: () => {
+            this.toaster.error('Something went wrong while creating PO.');
           }
         });
+      }
+    });
   }
 
   togglePanel(): void {

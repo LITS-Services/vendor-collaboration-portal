@@ -97,8 +97,8 @@ export class CompanyService {
     );
   }
 
-  GetCompanyApproverLevel(vendorCompanyId: number): Observable<any> {
-    return this.http.get<any>(`${environment.apiUrl}/Company/get-company-approver-level?vendorCompanyId=${vendorCompanyId}`);
+  GetCompanyApproverLevel(vendorCompanyId: number, mainApproverId: string): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrl}/Company/get-company-approver-level?vendorCompanyId=${vendorCompanyId}&MainApproverId=${mainApproverId}`);
   }
 
 

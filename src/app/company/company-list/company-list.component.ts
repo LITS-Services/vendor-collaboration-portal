@@ -34,6 +34,8 @@ export class CompanyListComponent implements OnInit {
   showNoRemarksMessage: boolean = false; // Added for template flag
   showRegisterButton: boolean = false;
   datatableVisible: boolean = true;
+  remarksPage: number = 1;
+  remarksPageSize: number = 10;
 
   constructor(
     private router: Router,
@@ -60,7 +62,7 @@ export class CompanyListComponent implements OnInit {
   get isMobile(): boolean {
     return window.innerWidth <= 768;
   }
-  
+
 
   goBack() {
     this.router.navigate(['/company/company-list']);
@@ -121,6 +123,7 @@ export class CompanyListComponent implements OnInit {
           contactType: c.contactsVM?.[0]?.type || '',
           entity: c.vendorUseCompaniesVM?.map(vuc => vuc.procurementCompany).join(', ') || '',
           procurementCompanyId: c.vendorUseCompaniesVM?.[0]?.procurementCompanyId || null,
+          mainApproverId: c.mainapproverid, // Corrected: key is lowercase in response
           entityDetails: c.vendorUseCompaniesVM?.map(vuc => ({
             id: vuc.id, // Added: Use this as associationId for getsetuphistory
             entity: vuc.procurementCompany,
@@ -172,7 +175,7 @@ export class CompanyListComponent implements OnInit {
     this.companyData.forEach(company => {
       company.level = 'Loading...'; // Placeholder
 
-      this.companyService.GetCompanyApproverLevel(company.id).subscribe({
+      this.companyService.GetCompanyApproverLevel(company.id, company.mainApproverId).subscribe({
         next: (response: any) => {
           let approverLevel;
           if (response?.value?.approverLevel !== undefined) {
@@ -255,6 +258,7 @@ export class CompanyListComponent implements OnInit {
     this.loadingRemarks = true;
     this.selectedRemarksEntities = [];
     this.showNoRemarksMessage = false;
+    this.remarksPage = 1;
 
     console.log('Row data for remarks:', row);
 
