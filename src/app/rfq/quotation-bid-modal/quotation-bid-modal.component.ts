@@ -420,6 +420,35 @@ export class QuotationBidModalComponent implements OnInit {
     event.target.value = "";
   }
 
+  handleFileDrop(event: DragEvent, bid: BidSubmissionDetails) {
+    event.preventDefault();
+    const files = event.dataTransfer?.files;
+    if (!files || files.length === 0) return;
+
+    Array.from(files).forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.zone.run(() => {
+          bid.vendorBidAttachments!.push({
+            fileName: file.name,
+            content: (reader.result as string).split(",")[1],
+            contentType: file.type,
+            isNew: true
+          });
+        });
+        this.cdr.detectChanges();
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  triggerFileInput(itemId: number) {
+    const fileInput = document.getElementById('fileInput_' + itemId);
+    if (fileInput && fileInput instanceof HTMLInputElement) {
+      fileInput.click();
+    }
+  }
+
   removeAttachment(bid: BidSubmissionDetails, index: number) {
     bid.vendorBidAttachments!.splice(index, 1);
     this.cdr.detectChanges();
@@ -573,6 +602,11 @@ export class QuotationBidModalComponent implements OnInit {
     }
 
     return this.timeSince(createdOn);
+  }
+
+  getFormattedItemCount(): string {
+    const count = this.rfq?.quotationItems?.length || 0;
+    return count.toString().padStart(2, '0');
   }
 
   

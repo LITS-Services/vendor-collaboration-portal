@@ -67,11 +67,18 @@
             
                 <h2 ngbAccordionHeader>
                   <button ngbAccordionButton type="button" class="w-100">
-                    <div class="col-md-6 align-items-center w-100">
+                    <div class="col-md-12 d-flex align-items-center w-100">
+                      <div>
+
+                     
                       <span class="panel-icon">
                         <label class="mb-0">       Quotation Items</label>
                       </span>
+                      
                       <i class="ft ft-chevron-down accordion-chevron ms-1"></i>
+                    </div>
+
+                      <span class="items-count ms-2">Items listed: {{ getFormattedItemCount() }}</span>
                     </div>
                   </button>
                   
@@ -82,133 +89,126 @@
                 <div ngbAccordionCollapse>
                   <div ngbAccordionBody>
                     <ng-template>
+                      <div class="quotation-items-container">
+        
             
-                      <div *ngFor="let item of rfq?.quotationItems" class="quotation-item mb-2 p-3 rounded border">
-            
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                          <div>
-                            <div>
-                              <strong class="me-1">{{ item.itemName }}</strong> —
-                              <span class="small me-1">({{ item.itemType }})</span>
+                        <!-- EDIT MODE - Full Card View -->
+                        <div *ngFor="let item of rfq?.quotationItems" class="quotation-item-card mb-3"
+                          [class.has-bid]="bidMap.has(item.id) && !getBid(item.id).isDeleted"
+                          [class.editing]="editingBidItemId === item.id">
+                          
+                          <div class="item-card-content">
+                            <!-- Item Details Section -->
+                            <div class="item-details-section">
+                              <div class="item-header">
+                                <h6 class="item-name mb-1">{{ item.itemName }}</h6>
+                                <span class="item-type-badge">{{ item.itemType || 'INVENTORY' }}</span>
+                              </div>
+                              
+                              <div class="item-info">
+                                <span class="info-item">Qty: {{ item.orderQuantity }}</span>
+                                <span class="info-item">UoM: {{ item.unitOfMeasurementCode }}</span>
+                                <span class="info-item">Req. Date: {{ item.reqByDate | date:'yyyy-MM-dd' }}</span>
+                              </div>
+                              
+                              <button class="btn-view-specs" 
+                                (click)="openAttachmentsModal(item, attachmentsModal)"
+                                *ngIf="item.quotationItemAttachments && item.quotationItemAttachments.length > 0">
+                                <i class="fa fa-file-text me-1"></i>
+                                View Procurement Attachments ({{ item.quotationItemAttachments.length }})
+                              </button>
                             </div>
-            
-                            <div>
-                              <span class="fw-bold me-1">Quantity:</span>
-                              <span class="fw-semibold me-1">{{ item.orderQuantity }}</span> —
-                              <span class="fw-bold me-1">UoM:</span>
-                              <span class="fw-semibold me-1">{{ item.unitOfMeasurementCode }}</span> —
-                              <span class="fw-bold me-1">Request Date:</span>
-                              <span class="fw-semibold">{{ item.reqByDate | date:'yyyy-MM-dd' }}</span>
-                            </div>
-                          </div>
-            
-                          <!-- Only show Add Bid if no bids exist in backend -->
-                          <button *ngIf="!item.bidSubmissionDetails || item.bidSubmissionDetails.length === 0"
-                            class="btn btn-outline-primary btn-sm" (click)="addBid(item.id)">
-                            <i class="ft-plus me-1"></i> Add Bid
-                          </button>
-            
-                          <!-- Show "Bid already submitted" if backend has bid(s) -->
-                          <div *ngIf="item.bidSubmissionDetails && item.bidSubmissionDetails.length > 0"
-                            class="text-success small fw-semibold d-flex align-items-center">
-                            <i class="fa fa-check-circle me-1"></i> Bid already submitted
-                          </div>
-                        </div>
-            
-                        <!-- Attachments Button -->
-                        <div class="mb-2">
-                          <button class="btn btn-outline-secondary btn-sm d-flex align-items-center"
-                            (click)="openAttachmentsModal(item, attachmentsModal)">
-                            <i class="fa fa-paperclip me-2"></i>
-                            View Procurement Attachments
-                          </button>
-                        </div>
-            
-                        <!-- Bid Section -->
-                        <div *ngIf="bidMap.has(item.id) && !getBid(item.id).isDeleted"
-                          class="bid-section mt-3 border-top pt-3 rounded">
-            
-                          <!-- EDIT MODE -->
-                          <div *ngIf="editingBidItemId === item.id; else viewBidSection" class="row g-3">
-            
-                            <div class="col-md-4">
-                              <label class="form-label small">Bid Amount</label>
-                              <input type="number" class="form-control" [(ngModel)]="getBid(item.id).biddingAmount">
-                            </div>
-            
-                            <div class="col-md-8">
-                              <label class="form-label small">Comment</label>
-                              <textarea rows="1" class="form-control" [(ngModel)]="getBid(item.id).comment"></textarea>
-                            </div>
-            
-                            <div class="col-md-6">
-                              <label class="form-label small">Attachments</label>
-                              <input type="file" class="form-control" multiple (change)="onFileSelected($event, getBid(item.id))">
-            
-                              <!-- Attachment chips -->
-                              <div class="mt-2 d-flex flex-wrap gap-2">
-                                <div *ngFor="let att of getBid(item.id).vendorBidAttachments; let i = index"
-                                  class="badge bg-light text-dark border rounded-pill px-2 py-1 d-flex align-items-center">
-                                  <i class="fa fa-paperclip me-1 text-secondary"></i>
-            
-                                  <a href="javascript:void(0)" (click)="downloadVendorAttachment(att)"
-                                    class="small text-dark text-decoration-none">
-                                    {{ att.fileName }}
-                                  </a>
-            
-                                  <button type="button" class="btn btn-sm btn-link text-danger ms-2 p-0"
-                                    (click)="removeAttachment(getBid(item.id), i)">
-                                    <i class="fa fa-times small"></i>
+                            
+                            <!-- MY QUOTE Section (Right Side) -->
+                            <div *ngIf="bidMap.has(item.id) && !getBid(item.id).isDeleted && editingBidItemId !== item.id" 
+                              class="my-quote-section-inline">
+                              <div class="my-quote-box">
+                                <span class="my-quote-label">MY QUOTE</span>
+                                <div class="quote-price-actions">
+                                  <span class="quote-price">{{ getBid(item.id).biddingAmount | currency:'USD':'symbol':'1.2-2' }}</span>
+                                  <button class="btn-icon-edit" (click)="editBid(item.id)" title="Edit">
+                                    <i class="fa fa-edit"></i>
+                                  </button>
+                                  <button class="btn-icon-delete" (click)="deleteBid(item.id)" title="Delete">
+                                    <i class="fa fa-trash"></i>
                                   </button>
                                 </div>
                               </div>
                             </div>
-            
-                            <div class="col-md-12 text-end">
-                              <button class="btn btn-outline-success btn-sm mt-2 me-2" (click)="saveBid(item.id)">
-                                <i class="ft-check me-1"></i> Save
-                              </button>
-            
-                              <button class="btn btn-outline-danger btn-sm mt-2" (click)="deleteBid(item.id)">
-                                <i class="ft-trash me-1"></i> Delete Bid
+                            
+                            <!-- Place Bid Button (Right Side) -->
+                            <div *ngIf="(!bidMap.has(item.id) || getBid(item.id).isDeleted) && editingBidItemId !== item.id" 
+                              class="place-bid-section-inline">
+                              <button class="btn btn-primary" (click)="addBid(item.id)">
+                               <i class="ft-plus me-1"></i> Place Bid
                               </button>
                             </div>
                           </div>
             
-                          <!-- VIEW MODE -->
-                          <ng-template #viewBidSection>
-                            <div class="d-flex justify-content-between align-items-center p-2 rounded"
-                              style="background-color: #dbdbdb;">
-                              <div>
-                                <strong>Bid:</strong> {{ getBid(item.id).biddingAmount | currency }} <br>
-                                <small>Comment: {{ getBid(item.id).comment || '—' }}</small>
-            
-                                <div class="mt-1 d-flex flex-wrap gap-2">
-                                  <div *ngFor="let att of getBid(item.id).vendorBidAttachments"
-                                    class="badge bg-light text-dark border rounded-pill px-2 py-1 d-flex align-items-center">
-                                    <i class="fa fa-paperclip me-1 text-secondary"></i>
-                                    <a href="javascript:void(0)" (click)="downloadVendorAttachment(att)"
-                                      class="small text-dark text-decoration-none">
-                                      {{ att.fileName }}
-                                    </a>
-                                  </div>
-                                </div>
+                          <!-- EDIT MODE -->
+                          <div *ngIf="editingBidItemId === item.id" class="edit-quotation-section">
+                            <h6 class="edit-section-title">Edit Your Quotation</h6>
+                            
+                            <div class="edit-form-row">
+                              <div class="edit-form-col">
+                                <label class="form-label">UNIT PRICE ($)</label>
+                                <input type="number" 
+                                  class="form-control unit-price-input" 
+                                  [(ngModel)]="getBid(item.id).biddingAmount"
+                                  step="0.01"
+                                  placeholder="0.00">
                               </div>
-            
-                              <div>
-                                <button class="btn btn-sm btn-outline-primary me-2" (click)="editBid(item.id)">
-                                  <i class="fa fa-edit me-1"></i> Edit
-                                </button>
-                                <button class="btn btn-sm btn-outline-danger" (click)="deleteBid(item.id)">
-                                  <i class="fa fa-trash me-1"></i> Delete
-                                </button>
+                              
+                              <div class="edit-form-col">
+                                <label class="form-label">DESCRIPTION / NOTES</label>
+                                <textarea rows="4" 
+                                  class="form-control description-textarea" 
+                                  [(ngModel)]="getBid(item.id).comment"
+                                  placeholder="Enter description or notes..."></textarea>
                               </div>
                             </div>
-                          </ng-template>
+                            
+                            <div class="attachments-upload-section">
+                              <label class="form-label">VENDOR ATTACHMENTS</label>
+                              <div class="upload-area" 
+                                (click)="triggerFileInput(item.id)"
+                                (dragover)="$event.preventDefault()"
+                                (drop)="handleFileDrop($event, getBid(item.id))">
+                                <input 
+                                  [id]="'fileInput_' + item.id"
+                                  type="file" 
+                                  class="d-none" 
+                                  multiple 
+                                  (change)="onFileSelected($event, getBid(item.id))">
+                                <i class="fa fa-cloud-upload upload-icon"></i>
+                                <p class="upload-text">Click to upload catalog or quote</p>
+                              </div>
+                              
+                              <!-- Attachment chips -->
+                              <div class="attachments-list mt-2" *ngIf="getBid(item.id).vendorBidAttachments && getBid(item.id).vendorBidAttachments.length > 0">
+                                <div *ngFor="let att of getBid(item.id).vendorBidAttachments; let i = index"
+                                  class="attachment-chip">
+                                  <i class="fa fa-paperclip me-1"></i>
+                                  <a href="javascript:void(0)" (click)="downloadVendorAttachment(att)" class="attachment-link">
+                                    {{ att.fileName }}
+                                  </a>
+                                  <button type="button" class="btn-remove-attachment" (click)="removeAttachment(getBid(item.id), i)">
+                                    <i class="fa fa-times"></i>
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div class="edit-actions">
+                              <button class="btn-cancel" (click)="editingBidItemId = null">Cancel</button>
+                              <button class="btn btn-primary" (click)="saveBid(item.id)">
+                                <i class="ft-check me-1"></i> Submit Bid
+                              </button>
+                            </div>
+                          </div>
             
                         </div>
                       </div>
-            
                     </ng-template>
                   </div>
                 </div>
