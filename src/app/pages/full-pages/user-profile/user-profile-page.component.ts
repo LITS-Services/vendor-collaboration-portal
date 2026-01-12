@@ -182,7 +182,6 @@ export class UserProfilePageComponent implements OnInit, AfterViewInit, OnDestro
         .pipe(finalize(() => this.spinner.hide()))
         .subscribe({
           next: (res: string) => {
-            this.toastr.success('Profile picture updated successfully!');
             this.userService.updateProfilePicture(this.profileImage);
             this.cdr.detectChanges();
           },

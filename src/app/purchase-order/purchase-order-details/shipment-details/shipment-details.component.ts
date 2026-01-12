@@ -3,6 +3,7 @@ import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PurchaseOrderService } from 'app/shared/services/purchase-order.service';
 import { ShipmentService } from 'app/shared/services/shipment.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 
@@ -21,6 +22,7 @@ export class ShipmentDetailsComponent implements OnInit {
   purchaseOrderNo?: string;
   vendorName?: string;
   itemsExpanded: boolean = true;
+  loading = true;
 
   addressList: any[] = []; // for primary dropdown
   address2List: any[] = []; // for secondary dropdown
@@ -33,7 +35,8 @@ export class ShipmentDetailsComponent implements OnInit {
     private shipmentService: ShipmentService,
     private toastr: ToastrService,
     private cdr: ChangeDetectorRef,
-    private purchaseOrderService: PurchaseOrderService
+    private purchaseOrderService: PurchaseOrderService,
+    private spinner: NgxSpinnerService
   ) { }
 
   ngOnInit(): void {
@@ -59,6 +62,8 @@ export class ShipmentDetailsComponent implements OnInit {
   }
 
   loadPurchaseOrder() {
+    this.loading = true;
+    this.spinner.show();
     this.purchaseOrderService.getPurchaseOrderById(this.poId).subscribe({
       next: (po) => {
         if (po) {
@@ -98,11 +103,14 @@ export class ShipmentDetailsComponent implements OnInit {
             this.form.patchValue({ postCode: postCode });
           }
         }
+        this.spinner.hide();
       }
     });
   }
 
   checkIfShipmentExists() {
+    this.loading = true;
+    this.spinner.show();
     this.shipmentService.getShipmentDetailById(this.poId).subscribe({
       next: (res) => {
         const data = res;
@@ -126,7 +134,7 @@ export class ShipmentDetailsComponent implements OnInit {
             notes: data.notes
           });
         }
-
+        this.spinner.hide();
         this.itemsForm.clear();
 
         data.items?.forEach(item => {

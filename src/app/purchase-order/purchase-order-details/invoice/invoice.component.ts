@@ -5,6 +5,7 @@ import { PurchaseOrderService } from 'app/shared/services/purchase-order.service
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 import { formatDate } from '@angular/common';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-invoice',
@@ -24,13 +25,15 @@ export class InvoiceComponent implements OnInit {
   vendorName: string = '';
   grNumber: string = '';
   invoiceExists = false;
+  loading = true;
 
   constructor(
     private fb: FormBuilder,
     private cdr: ChangeDetectorRef,
     private router: Router,
     private purchaseOrderService: PurchaseOrderService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private spinner: NgxSpinnerService
   ) { }
 
   ngOnInit(): void {
@@ -57,6 +60,8 @@ export class InvoiceComponent implements OnInit {
   }
 
   private loadPurchaseOrder() {
+    this.loading = true;
+    this.spinner.show();
     this.purchaseOrderService.getPurchaseOrderById(this.poId).subscribe({
       next: (po) => {
         if (!po) return;
@@ -74,7 +79,8 @@ export class InvoiceComponent implements OnInit {
         if (po.items?.length) {
           po.items.forEach(item => this.itemsForm.push(this.createItemGroup(item, true)));
         }
-
+        this.loading = false;
+        this.spinner.hide();
         this.cdr.markForCheck();
       },
       error: (err) => console.error(err)
@@ -82,6 +88,8 @@ export class InvoiceComponent implements OnInit {
   }
 
   private checkInvoice() {
+    this.loading = true;
+    this.spinner.show();
     this.purchaseOrderService.getInvoiceByPoId(this.poId).subscribe({
       next: (invoice) => {
         if (invoice && invoice.id) {
@@ -106,6 +114,8 @@ export class InvoiceComponent implements OnInit {
 
           this.form.disable();
         }
+        this.loading = false;
+        this.spinner.hide();
         this.cdr.detectChanges();
       },
       error: () => {
@@ -117,6 +127,7 @@ export class InvoiceComponent implements OnInit {
 
   private createItemGroup(item: any, isPOItem: boolean): FormGroup {
     return this.fb.group({
+      purchaseOrderLineId: [item.purchaseOrderLineId],
       itemName: [{ value: item.itemName, disabled: true }],
       acceptedQuantity: [{ value: item.acceptedQuantity, disabled: true }],
       unitPrice: [{ value: isPOItem ? item.unitPrice : item.amount, disabled: true }],
@@ -151,6 +162,7 @@ export class InvoiceComponent implements OnInit {
           dueDate: this.form.get('dueDate')?.value,
           remarks: this.form.get('remarks')?.value,
           invoiceItems: this.itemsForm.getRawValue().map((item: any) => ({
+            purchaseOrderLineId: item.purchaseOrderLineId,
             totalAmount: item.totalAmount
           }))
         }
