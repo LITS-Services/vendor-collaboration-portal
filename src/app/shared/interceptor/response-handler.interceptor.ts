@@ -72,31 +72,42 @@ export class responseHandlerInterceptor implements HttpInterceptor {
       }
     },
     error: (err: any) => {
-      if (skip || err?.status === 401) return;
+      try {
+        if (skip || err?.status === 401) return;
 
-      if(err?.error?.[0]?.ErrorMessage.includes('token expired')){
-        return;
-      }
+        // Safe token-expired check (prevents "cannot read .includes of undefined" on 500s)
+        const tokenMsg = (err as any)?.error?.[0]?.ErrorMessage as string | undefined;
+        if (typeof tokenMsg === 'string' && tokenMsg.includes('token expired')) {
+          return;
+        }
 
-      if (err instanceof HttpErrorResponse) {
-            const maybeEnvelope = err.error as Partial<responseDTO> | undefined;
+        if (err instanceof HttpErrorResponse) {
+          let msg = '';
+
+          const raw = err.error;
+          if (raw && typeof raw === 'object') {
+            const maybeEnvelope = raw as Partial<responseDTO>;
 
             // only toast if it *looks like* your envelope
-            const looksLikeEnvelope =
-              maybeEnvelope && typeof maybeEnvelope === 'object' &&
-              ('isSuccess' in maybeEnvelope && 'errors' in maybeEnvelope);
-
+            const looksLikeEnvelope = 'isSuccess' in maybeEnvelope && 'errors' in maybeEnvelope;
             if (looksLikeEnvelope) {
-              const msg = this.extractErrorMessage(maybeEnvelope as responseDTO);
-              if (msg) this.toastr.error(msg);
+              msg = this.extractErrorMessage(maybeEnvelope as responseDTO);
             }
-
-            // else: do nothing → error will still propagate (good for console/network)
-          } else {
-            // Non-HttpErrorResponse: ignore toast so it still bubbles up
           }
-          // Important: RETURN nothing here; tap won't swallow it—the error continues downstream.
+
+          // Fallback only for 500 errors when response isn't your envelope
+          if (!msg && err.status === 500) {
+            msg = 'API failed, please check API/DB.';
+          }
+
+          if (msg) this.toastr.error(msg);
         }
+      } catch (e) {
+        // Last-resort: never let the interceptor crash the app
+        if (!skip) this.toastr.error('API failed, please check API/DB.');
+      }
+      // Important: RETURN nothing here; tap won't swallow it—the error continues downstream.
+    }
       }),
 
   // pass value on successful responses
