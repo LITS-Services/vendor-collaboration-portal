@@ -123,7 +123,10 @@ export class CompanyListComponent implements OnInit {
           contactType: c.contactsVM?.[0]?.type || '',
           entity: c.vendorUseCompaniesVM?.map(vuc => vuc.procurementCompany).join(', ') || '',
           procurementCompanyId: c.vendorUseCompaniesVM?.[0]?.procurementCompanyId || null,
-          mainApproverId: c.mainapproverid, // Corrected: key is lowercase in response
+          isAssigned: c.isAssigned, // Store assignment status
+          mainApproverId: (c.status?.toLowerCase() === 'rejected' && c.rejectedApproverId)
+            ? c.rejectedApproverId
+            : c.mainapproverid, // Use rejectedApproverId if status is Rejected
           entityDetails: c.vendorUseCompaniesVM?.map(vuc => ({
             id: vuc.id, // Added: Use this as associationId for getsetuphistory
             entity: vuc.procurementCompany,
@@ -173,6 +176,12 @@ export class CompanyListComponent implements OnInit {
     if (!this.companyData || this.companyData.length === 0) return;
 
     this.companyData.forEach(company => {
+      // If company is assigned, it should show Level 0
+      if (company.isAssigned === true) {
+        company.level = 'Level 0';
+        return;
+      }
+
       company.level = 'Loading...'; // Placeholder
 
       this.companyService.GetCompanyApproverLevel(company.id, company.mainApproverId).subscribe({
