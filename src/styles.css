@@ -557,6 +557,19 @@ datatable-scroller {
   width: 100%;
 }
 
+body.modal-open {
+  padding-right: 0 !important;
+  overflow: hidden !important;
+}
+
+
+html.modal-open {
+  padding-right: 0 !important;
+}
+
+html.modal-open {
+  scrollbar-gutter: stable;
+}
 
 /* html.swal2-shown,
 body.swal2-shown {

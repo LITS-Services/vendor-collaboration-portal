@@ -253,38 +253,91 @@
     opacity: 1;
   }
 
-  .custom-modern-table {
-    border-collapse: separate;
-    border-spacing: 0 6px;
-    width: 100%;
-    font-size: 0.9rem;
-  }
-
-  .custom-modern-table thead tr {
-    background: #f3f8f3;
-    border-radius: 8px;
-  }
-
-  .custom-modern-table thead th {
-    font-weight: 600;
-    color: #2a3d2a;
-    border-bottom: 2px solid #b5d4b5;
-    padding: 10px;
-  }
-
-  .custom-modern-table tbody tr {
+  // === Modern Table Styles (matching history-master) ===
+  .table-card {
+    border: 1px solid #eef2f6;
     background: #ffffff;
-    border-radius: 6px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    font-size: 12px;
+    overflow: hidden;
   }
 
-  .custom-modern-table tbody td {
-    padding: 10px;
+  .table__row {
+    display: grid;
+    gap: 12px;
+    padding: 10px 14px;
+    align-items: center;
+
+    &:not(.table__row--head) {
+      border-top: 1px solid #f1f5f9;
+    }
   }
 
-  .custom-modern-table tbody tr:hover {
-    background: #f4fff4;
-    transition: 0.2s ease-in-out;
+  .table__row--head {
+    background: #F4F4F4 !important;
+    color: #606060 !important;
+    font-size: 12px !important;
+    letter-spacing: 0.06em !important;
+    font-weight: 600;
+  }
+
+  .table__row > div {
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .table-cell-description {
+    white-space: normal !important;
+    word-wrap: break-word;
+  }
+
+  .table-scroll {
+    max-height: 260px;
+    overflow-y: auto;
+  }
+
+  .table-scroll::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .table-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .table-scroll::-webkit-scrollbar-thumb {
+    background-color: rgba(148, 163, 184, 0.7);
+    border-radius: 999px;
+  }
+
+  .table-scroll::-webkit-scrollbar-button {
+    display: none;
+  }
+
+  // Items table layout (5 columns)
+  .table__row--items {
+    grid-template-columns:
+      minmax(0, 1.5fr)  /* Item */
+      minmax(0, 2.0fr)  /* Description */
+      minmax(0, 1.0fr)  /* Qty */
+      minmax(0, 1.2fr)  /* Unit Price */
+      minmax(0, 1.2fr); /* Amount */
+  }
+
+  .table-scroll--items {
+    max-height: 230px;
+  }
+
+  .mono {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .text-end {
+    text-align: right;
+  }
+
+  .text-center {
+    text-align: center;
   }
 
   .item-title {

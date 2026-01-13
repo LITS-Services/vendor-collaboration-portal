@@ -127,28 +127,24 @@
       </div>
 
       <div class="expand-wrapper" [ngClass]="{ 'expanded': itemsExpanded }">
-        <div class="table-responsive">
-          <table class="table custom-modern-table">
-            <thead>
-              <tr>
-                <th>Item</th>
-                <th>Description</th>
-                <th class="text-center">Qty</th>
-                <th class="text-end">Unit Price</th>
-                <th class="text-end">Amount</th>
-              </tr>
-            </thead>
+        <div class="table-card table-card--items">
+          <div class="table__row table__row--head table__row--items">
+            <div>ITEM</div>
+            <div>DESCRIPTION</div>
+            <div class="text-center">QTY</div>
+            <div class="text-end">UNIT PRICE</div>
+            <div class="text-end">AMOUNT</div>
+          </div>
 
-            <tbody>
-              <tr *ngFor="let item of poDetails?.items">
-                <td><span class="item-title">{{ item.itemName }}</span></td>
-                <td class="small" style="max-width: 250px;">{{ item.itemDescription }}</td>
-                <td class="text-center">{{ item.quantity }}</td>
-                <td class="text-end">{{ item.unitPrice | number:'1.2-2' }}</td>
-                <td class="text-end fw-semibold">{{ item.amount | number:'1.2-2' }}</td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="table-scroll table-scroll--items">
+            <div class="table__row table__row--items" *ngFor="let item of poDetails?.items">
+              <div><span class="item-title">{{ item.itemName }}</span></div>
+              <div class="small table-cell-description">{{ item.itemDescription }}</div>
+              <div class="text-center mono">{{ item.quantity }}</div>
+              <div class="text-end mono">{{ item.unitPrice | number:'1.2-2' }}</div>
+              <div class="text-end mono fw-semibold">{{ item.amount | number:'1.2-2' }}</div>
+            </div>
+          </div>
         </div>
       </div>
 

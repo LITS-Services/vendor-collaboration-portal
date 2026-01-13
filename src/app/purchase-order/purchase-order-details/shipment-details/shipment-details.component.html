@@ -109,35 +109,30 @@
 
         <!-- Expandable Content -->
         <div class="expand-wrapper" [ngClass]="{ 'expanded': itemsExpanded }" [formGroup]="form">
+            <div class="table-card table-card--shipment">
+                <div class="table__row table__row--head table__row--shipment">
+                    <div>ITEM</div>
+                    <div class="text-center">ORDERED QTY</div>
+                    <div class="text-center">SHIPPING QTY</div>
+                    <div class="text-center">DELIVERY DATE</div>
+                </div>
 
-            <div class="table-responsive">
-                <table class="table custom-modern-table">
-                    <thead>
-                        <tr>
-                            <th>Item</th>
-                            <th class="text-center">Ordered Qty</th>
-                            <th class="text-center">Shipping Qty</th>
-                            <th class="text-center">Delivery Date</th>
-                        </tr>
-                    </thead>
-
-                    <tbody formArrayName="items">
-                        <tr *ngFor="let item of itemsForm.controls; let i = index" [formGroupName]="i">
-                            <td>
-                                <span class="item-title">{{ item.get('itemName')?.value }}</span>
-                            </td>
-                            <td class="text-center">
-                                {{ item.get('orderedQty')?.value }}
-                            </td>
-                            <td class="text-center">
-                                <input type="number" class="form-control form-control-sm" formControlName="shippingQuantity">
-                            </td>
-                            <td class="text-center">
-                                <input type="date" class="form-control form-control-sm" formControlName="deliveryDate">
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="table-scroll table-scroll--shipment" formArrayName="items">
+                    <div class="table__row table__row--shipment" *ngFor="let item of itemsForm.controls; let i = index" [formGroupName]="i">
+                        <div>
+                            <span class="item-title">{{ item.get('itemName')?.value }}</span>
+                        </div>
+                        <div class="text-center mono">
+                            {{ item.get('orderedQty')?.value }}
+                        </div>
+                        <div class="text-center">
+                            <input type="number" class="form-control form-control-sm" formControlName="shippingQuantity">
+                        </div>
+                        <div class="text-center">
+                            <input type="date" class="form-control form-control-sm" formControlName="deliveryDate">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

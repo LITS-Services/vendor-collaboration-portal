@@ -59,23 +59,20 @@
     </div>
 
     <div class="expand-wrapper" [ngClass]="{ 'expanded': itemsExpanded }">
-      <div class="table-responsive">
-        <table class="table custom-modern-table">
-          <thead>
-            <tr>
-              <th>Item</th>
-              <th class="text-center">Accepted Qty</th>
-              <th class="text-end">Amount</th>
-            </tr>
-          </thead>
-          <tbody formArrayName="items">
-            <tr *ngFor="let item of itemsForm.controls; let i = index" [formGroupName]="i">
-              <td>{{ item.get('itemName')?.value }}</td>
-              <td class="text-center">{{ item.get('acceptedQuantity')?.value }}</td>
-              <td class="text-end fw-bold">{{ item.get('totalAmount')?.value | number:'1.2-2' }}</td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="table-card table-card--invoice-items">
+        <div class="table__row table__row--head table__row--invoice-items">
+          <div>ITEM</div>
+          <div class="text-center">ACCEPTED QTY</div>
+          <div class="text-end">AMOUNT</div>
+        </div>
+
+        <div class="table-scroll table-scroll--invoice-items" formArrayName="items">
+          <div class="table__row table__row--invoice-items" *ngFor="let item of itemsForm.controls; let i = index" [formGroupName]="i">
+            <div>{{ item.get('itemName')?.value }}</div>
+            <div class="text-center mono">{{ item.get('acceptedQuantity')?.value }}</div>
+            <div class="text-end mono fw-bold">{{ item.get('totalAmount')?.value | number:'1.2-2' }}</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
