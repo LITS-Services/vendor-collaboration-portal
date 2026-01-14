@@ -559,6 +559,9 @@ export class QuotationBidModalComponent implements OnInit {
       this.toastr.info("Bid submission is closed for this RFQ.");
       return;
     }
+
+    this.spinner.show();
+
     const bids = Array.from(this.bidMap.values()).filter(
       (b) => {
         if (b.isDeleted) return false; 
@@ -569,9 +572,13 @@ export class QuotationBidModalComponent implements OnInit {
 
     this.rfqService.updateBids(bids).subscribe({
       next: () => {
+        this.spinner.hide();
         this.router.navigate(["/rfq/rfq-list"]);
       },
-      error: (err) => console.error(err),
+      error: (err) => {
+        this.spinner.hide();
+        console.error(err)
+      }
     });
   }
 
