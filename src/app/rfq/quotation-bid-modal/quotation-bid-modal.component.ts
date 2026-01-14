@@ -398,8 +398,12 @@ export class QuotationBidModalComponent implements OnInit {
   }
 
   onFileSelected(event: any, bid: BidSubmissionDetails) {
+    this.spinner.show();
     const files: FileList = event.target.files;
-    if (!files || files.length === 0) return;
+    if (!files || files.length === 0) {
+      this.spinner.hide();
+      return;
+    }
 
     Array.from(files).forEach((file) => {
       const reader = new FileReader();
@@ -413,6 +417,7 @@ export class QuotationBidModalComponent implements OnInit {
             isNew: true
           });
         });
+        this.spinner.hide();
         this.cdr.detectChanges();
       };
       reader.readAsDataURL(file);
@@ -493,6 +498,18 @@ export class QuotationBidModalComponent implements OnInit {
     }
   }
 
+  cancelBid(itemId: number) {
+    const bid = this.bidMap.get(itemId);
+
+    if (bid && !bid.id) {
+      this.bidMap.delete(itemId);
+    }
+  
+    this.editingBidItemId = null;
+    this.cdr.detectChanges();
+  }
+
+
   downloadProcurementAttachment(attachment: any) {
     if (!attachment) return;
     const fileName = attachment.fileName || 'download';
@@ -537,7 +554,11 @@ export class QuotationBidModalComponent implements OnInit {
       return;
     }
     const bids = Array.from(this.bidMap.values()).filter(
-      (b) => b.id || !b.isDeleted
+      (b) => {
+        if (b.isDeleted) return false; 
+        if (b.id) return true;                         
+        return (b.biddingAmount ?? 0) > 0;  
+      }
     ); // include existing bids even if deleted
 
     this.rfqService.updateBids(bids).subscribe({
@@ -607,6 +628,12 @@ export class QuotationBidModalComponent implements OnInit {
   getFormattedItemCount(): string {
     const count = this.rfq?.quotationItems?.length || 0;
     return count.toString().padStart(2, '0');
+  }
+
+  isBidEditable(itemId: number): boolean {
+    const bid = this.getBid(itemId);
+    // Enable if bid is not saved (no id) OR if saved and RFQ status is "Revise"
+    return !bid.id || (bid.id && this.rfq?.requestStatus === 'Revise');
   }
 
   

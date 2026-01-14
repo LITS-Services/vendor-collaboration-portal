@@ -125,11 +125,14 @@
                               <div class="my-quote-box">
                                 <span class="my-quote-label">MY QUOTE</span>
                                 <div class="quote-price-actions">
-                                  <span class="quote-price">{{ getBid(item.id).biddingAmount | currency:'USD':'symbol':'1.2-2' }}</span>
+                                  <span class="quote-price">{{ getBid(item.id).biddingAmount | number:'1.2-2' }}</span>
                                   <button class="btn-icon-edit" (click)="editBid(item.id)" title="Edit">
-                                    <i class="fa fa-edit"></i>
+                                    <i [ngClass]="!isBidEditable(item.id) ? 'fa fa-eye' : 'fa fa-edit'"></i>
                                   </button>
-                                  <button class="btn-icon-delete" (click)="deleteBid(item.id)" title="Delete">
+                                  <button class="btn-icon-delete" 
+                                    [disabled]="!isBidEditable(item.id)"
+                                    (click)="deleteBid(item.id)" 
+                                    title="Delete">
                                     <i class="fa fa-trash"></i>
                                   </button>
                                 </div>
@@ -147,38 +150,42 @@
             
                           <!-- EDIT MODE -->
                           <div *ngIf="editingBidItemId === item.id" class="edit-quotation-section">
-                            <h6 class="edit-section-title">Edit Your Quotation</h6>
+                            <h6 class="edit-section-title">Your Quotation</h6>
                             
                             <div class="edit-form-row">
                               <div class="edit-form-col">
-                                <label class="form-label">UNIT PRICE ($)</label>
+                                <label class="form-label">UNIT PRICE</label>
                                 <input type="number" 
                                   class="form-control unit-price-input" 
                                   [(ngModel)]="getBid(item.id).biddingAmount"
                                   step="0.01"
-                                  placeholder="0.00">
+                                  placeholder="0.00"
+                                  [disabled]="!isBidEditable(item.id)">
                               </div>
                               
                               <div class="edit-form-col">
-                                <label class="form-label">DESCRIPTION / NOTES</label>
+                                <label class="form-label">Comments</label>
                                 <textarea rows="4" 
                                   class="form-control description-textarea" 
                                   [(ngModel)]="getBid(item.id).comment"
-                                  placeholder="Enter description or notes..."></textarea>
+                                  placeholder="Enter comments..."
+                                  [disabled]="!isBidEditable(item.id)"></textarea>
                               </div>
                             </div>
                             
                             <div class="attachments-upload-section">
                               <label class="form-label">VENDOR ATTACHMENTS</label>
                               <div class="upload-area" 
-                                (click)="triggerFileInput(item.id)"
-                                (dragover)="$event.preventDefault()"
-                                (drop)="handleFileDrop($event, getBid(item.id))">
+                                [class.disabled]="!isBidEditable(item.id)"
+                                (click)="isBidEditable(item.id) && triggerFileInput(item.id)"
+                                (dragover)="isBidEditable(item.id) && $event.preventDefault()"
+                                (drop)="isBidEditable(item.id) && handleFileDrop($event, getBid(item.id))">
                                 <input 
                                   [id]="'fileInput_' + item.id"
                                   type="file" 
                                   class="d-none" 
                                   multiple 
+                                  [disabled]="!isBidEditable(item.id)"
                                   (change)="onFileSelected($event, getBid(item.id))">
                                 <i class="fa fa-cloud-upload upload-icon"></i>
                                 <p class="upload-text">Click to upload attachments</p>
@@ -192,7 +199,10 @@
                                   <a href="javascript:void(0)" (click)="downloadVendorAttachment(att)" class="attachment-link">
                                     {{ att.fileName }}
                                   </a>
-                                  <button type="button" class="btn-remove-attachment" (click)="removeAttachment(getBid(item.id), i)">
+                                  <button type="button" 
+                                    class="btn-remove-attachment" 
+                                    [disabled]="!isBidEditable(item.id)"
+                                    (click)="isBidEditable(item.id) && removeAttachment(getBid(item.id), i)">
                                     <i class="fa fa-times"></i>
                                   </button>
                                 </div>
@@ -200,9 +210,11 @@
                             </div>
                             
                             <div class="edit-actions">
-                              <button class="btn-cancel" (click)="editingBidItemId = null">Cancel</button>
-                              <button class="btn btn-primary" (click)="saveBid(item.id)">
-                                <i class="ft-check me-1"></i> Submit Bid
+                              <button class="btn-cancel" (click)="cancelBid(item.id)">Cancel</button>
+                              <button class="btn btn-primary" 
+                                [disabled]="!isBidEditable(item.id)  || !(getBid(item.id)?.biddingAmount > 0)"
+                                (click)="saveBid(item.id)">
+                                <i [ngClass]="getBid(item.id)?.id ? 'ft-check me-1' : 'ft-plus me-1'"></i> {{ getBid(item.id)?.id ? 'Update Bid' : 'Add Bid' }}
                               </button>
                             </div>
                           </div>
