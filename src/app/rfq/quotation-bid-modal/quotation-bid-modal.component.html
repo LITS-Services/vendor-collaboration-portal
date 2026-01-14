@@ -123,7 +123,12 @@
                             <div *ngIf="bidMap.has(item.id) && !getBid(item.id).isDeleted && editingBidItemId !== item.id" 
                               class="my-quote-section-inline">
                               <div class="my-quote-box">
-                                <span class="my-quote-label">MY QUOTE</span>
+                                <span class="my-quote-label">MY QUOTE <span 
+                                  *ngIf="bidMap.has(item.id) && !getBid(item.id)?.id" 
+                                  class="draft-pill ms-2">
+                                  Pending Submit
+                                </span>
+                              </span>
                                 <div class="quote-price-actions">
                                   <span class="quote-price">{{ getBid(item.id).biddingAmount | number:'1.2-2' }}</span>
                                   <button class="btn-icon-edit" (click)="editBid(item.id)" title="Edit">

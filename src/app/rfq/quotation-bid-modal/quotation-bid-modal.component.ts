@@ -499,6 +499,12 @@ export class QuotationBidModalComponent implements OnInit {
   }
 
   cancelBid(itemId: number) {
+
+    if(this.bidMap.get(itemId)?.biddingAmount > 0) {
+      this.editingBidItemId = null;
+      return;
+    }
+
     const bid = this.bidMap.get(itemId);
 
     if (bid && !bid.id) {
