@@ -25,7 +25,7 @@ import {
 
 export interface VendorDashboardHistoryVM {
   totalRFQs: number;
-  totalAcceptedQuantity: number;
+  totalReceivedQuantity: number;
   totalPurchaseOrders: number;
   successfulOrders: number;
   rejectedOrders: number;
@@ -129,7 +129,7 @@ export class HistoryMasterComponent implements OnInit {
         const data = res; // Ardalis.Result => value
 
         this.metrics.totalRfqs = data.totalRFQs;
-        this.metrics.totalItemsSold = data.totalAcceptedQuantity;
+        this.metrics.totalItemsSold = data.totalReceivedQuantity;
         this.metrics.totalPurchaseOrders = data.totalPurchaseOrders;
         this.metrics.poSuccessCount = data.successfulOrders;
         this.metrics.poRejectedCount = data.rejectedOrders;

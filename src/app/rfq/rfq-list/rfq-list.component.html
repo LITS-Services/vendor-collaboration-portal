@@ -39,7 +39,13 @@
         </ngx-datatable-column>
       
         <!-- RFQ No -->
-        <ngx-datatable-column name="RFQ No." prop="rfqNo" [flexGrow]="2" [minWidth]="140" [sortable]="false"></ngx-datatable-column>
+        <ngx-datatable-column name="RFQ No." prop="rfqNo" [flexGrow]="2" [minWidth]="140" [sortable]="false">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <a href="javascript:void(0)" (click)="openBidModal(row)">
+              {{ row.rfqNo }}
+            </a>
+          </ng-template>
+        </ngx-datatable-column>
       
         <!-- Status -->
       

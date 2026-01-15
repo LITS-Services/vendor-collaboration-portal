@@ -38,7 +38,7 @@ export class InvoiceComponent implements OnInit {
 
   ngOnInit(): void {
     this.initForm();
-    this.loadPurchaseOrder();
+    this.loadGrnDetails();
     this.checkInvoice();
     this.cdr.detectChanges();
   }
@@ -59,25 +59,24 @@ export class InvoiceComponent implements OnInit {
     this.itemsForm = this.form.get('items') as FormArray;
   }
 
-  private loadPurchaseOrder() {
+  private loadGrnDetails() {
     this.loading = true;
     this.spinner.show();
-    this.purchaseOrderService.getPurchaseOrderById(this.poId).subscribe({
-      next: (po) => {
-        if (!po) return;
+    this.purchaseOrderService.getGoodsReceiptNoteById(this.poId).subscribe({
+      next: (res) => {
+        if (!res) return;
+        this.purchaseOrderNo = res.purchaseOrderNo;
+        this.vendorName = res.vendorName;
+        this.grNumber = res.grNumber;
 
-        this.purchaseOrderNo = po.purchaseOrderNo;
-        this.vendorName = po.vendorName;
-        this.grNumber = po.grNumber;
-
-        this.form.patchValue({
-          purchaseOrderNo: po.purchaseOrderNo,
-          vendorName: po.vendorName,
-          grNumber: po.grNumber
+      this.form.patchValue({
+          purchaseOrderNo: res.purchaseOrderNo,
+          vendorName: res.vendorName,
+          grNumber: res.grNumber
         });
 
-        if (po.items?.length) {
-          po.items.forEach(item => this.itemsForm.push(this.createItemGroup(item, true)));
+        if (res.goodsReceiptItems?.length) {
+          res.goodsReceiptItems.forEach(item => this.itemsForm.push(this.createItemGroup(item, true)));
         }
         this.loading = false;
         this.spinner.hide();
@@ -86,6 +85,33 @@ export class InvoiceComponent implements OnInit {
       error: (err) => console.error(err)
     });
   }
+  // private loadPurchaseOrder() {
+  //   this.loading = true;
+  //   this.spinner.show();
+  //   this.purchaseOrderService.getPurchaseOrderById(this.poId).subscribe({
+  //     next: (po) => {
+  //       if (!po) return;
+
+  //       this.purchaseOrderNo = po.purchaseOrderNo;
+  //       this.vendorName = po.vendorName;
+  //       this.grNumber = po.grNumber;
+
+  //       this.form.patchValue({
+  //         purchaseOrderNo: po.purchaseOrderNo,
+  //         vendorName: po.vendorName,
+  //         grNumber: po.grNumber
+  //       });
+
+  //       if (po.items?.length) {
+  //         po.items.forEach(item => this.itemsForm.push(this.createItemGroup(item, true)));
+  //       }
+  //       this.loading = false;
+  //       this.spinner.hide();
+  //       this.cdr.markForCheck();
+  //     },
+  //     error: (err) => console.error(err)
+  //   });
+  // }
 
   private checkInvoice() {
     this.loading = true;
@@ -98,9 +124,9 @@ export class InvoiceComponent implements OnInit {
 
           this.form.patchValue({
             invoiceNo: invoice.invoiceNo,
-            invoiceDate: this.formatDate(invoice.invoiceDate),
+            invoiceDate: this.toDateInputValue(invoice.invoiceDate),
             paymentTerms: invoice.paymentTerms,
-            dueDate: this.formatDate(invoice.dueDate),
+            dueDate: this.toDateInputValue(invoice.dueDate),
             remarks: invoice.remarks
           });
 
@@ -128,8 +154,8 @@ export class InvoiceComponent implements OnInit {
   private createItemGroup(item: any, isPOItem: boolean): FormGroup {
     return this.fb.group({
       purchaseOrderLineId: [item.purchaseOrderLineId],
-      itemName: [{ value: item.itemName, disabled: true }],
-      acceptedQuantity: [{ value: item.acceptedQuantity, disabled: true }],
+      itemCode: [{ value: item.itemCode, disabled: true }],
+      receivedQuantity: [{ value: item.receivedQuantity, disabled: true }],
       unitPrice: [{ value: isPOItem ? item.unitPrice : item.amount, disabled: true }],
       totalAmount: [{ value: isPOItem ? item.amount : item.totalAmount, disabled: this.isEdit }]
     });
@@ -173,6 +199,7 @@ export class InvoiceComponent implements OnInit {
           if (res) {
             this.purchaseOrderService.downloadInvoicePdf(res).subscribe(blob => {
               const url = window.URL.createObjectURL(blob);
+              window.open(url, '_blank');
               const link = document.createElement('a');
               link.href = url;
               link.download = `Invoice_${this.form.get('invoiceNo')?.value}.pdf`;
@@ -199,8 +226,8 @@ export class InvoiceComponent implements OnInit {
     this.router.navigate(['/purchase-order/purchase-order-list']);
   }
 
-  private formatDate(date?: string | Date): string {
+  private toDateInputValue(date?: string | Date): string {
     if (!date) return '';
-    return formatDate(date, 'MM-dd-yyyy', 'en-US');
+    return formatDate(date, 'yyyy-MM-dd', 'en-US');
   }
 }

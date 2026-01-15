@@ -7,7 +7,7 @@
                 <h5 class="mt-2 fw-bold">Good Receiving Notes</h5>
             </div>
         </div> -->
-
+@if (grnDetails?.grNumber) {
 <div class="card shadow-sm p-3 border border-success rounded mb-3">
     <div class="row">
         <div class="col-md-4 mb-2">
@@ -74,8 +74,6 @@
             <div>ITEM</div>
             <div class="text-center">ORDERED QTY</div>
             <div class="text-center">RECEIVED QTY</div>
-            <div class="text-center">ACCEPTED QTY</div>
-            <div class="text-center">REJECTED QTY</div>
             <div class="text-center">RECEIVED DATE</div>
             <div>REMARKS</div>
         </div>
@@ -85,11 +83,13 @@
                 <div class="mono">{{ item.itemCode }}</div>
                 <div class="text-center mono">{{ item.orderedQuantity }}</div>
                 <div class="text-center mono">{{ item.receivedQuantity }}</div>
-                <div class="text-center mono">{{ item.acceptedQuantity }}</div>
-                <div class="text-center mono">{{ item.rejectedQuantity }}</div>
                 <div class="text-center mono">{{ item.receivedDate | date:'yyyy-MM-dd' }}</div>
                 <div class="table-cell-remarks">{{ item.remarks }}</div>
             </div>
         </div>
     </div>
 </div>
+}
+@else {
+    <div>GRN isn't received yet.</div>
+}

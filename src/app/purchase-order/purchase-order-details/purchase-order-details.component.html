@@ -132,7 +132,6 @@
             <div>ITEM</div>
             <div>DESCRIPTION</div>
             <div class="text-center">QTY</div>
-            <div class="text-end">UNIT PRICE</div>
             <div class="text-end">AMOUNT</div>
           </div>
 
@@ -141,7 +140,6 @@
               <div><span class="item-title">{{ item.itemName }}</span></div>
               <div class="small table-cell-description">{{ item.itemDescription }}</div>
               <div class="text-center mono">{{ item.quantity }}</div>
-              <div class="text-end mono">{{ item.unitPrice | number:'1.2-2' }}</div>
               <div class="text-end mono fw-semibold">{{ item.amount | number:'1.2-2' }}</div>
             </div>
           </div>

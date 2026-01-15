@@ -37,8 +37,13 @@
                 </ngx-datatable-column>
 
                 <ngx-datatable-column name="PO No." prop="purchaseOrderNo" [sortable]="false">
-
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        <a href="javascript:void(0)">
+                            {{ row.purchaseOrderNo }}
+                        </a>
+                    </ng-template>
                 </ngx-datatable-column>
+                
                 <ngx-datatable-column name="Requisition No." prop="requisitionNo" [sortable]="false">
 
                 </ngx-datatable-column>

@@ -1,3 +1,4 @@
+@if (grNumber) {
 <div class="card shadow-sm p-3 border border-success rounded mb-3" [formGroup]="form">
 
   <!-- HEADER ROW -->
@@ -17,9 +18,9 @@
 
     <div *ngIf="invoiceExists" class="col-md-4 mb-2">
       <label class="form-label small">Invoice Date</label>
-      <input class="form-control form-control-sm" formControlName="invoiceDate" disabled>
+      <input type="date" class="form-control form-control-sm" formControlName="invoiceDate" disabled>
     </div>
-
+    
     <div class="col-md-4 mb-2">
       <label class="form-label small">PO No</label>
       <input class="form-control form-control-sm" [value]="purchaseOrderNo" disabled>
@@ -77,3 +78,7 @@
     </div>
   </div>
 </div>
+}
+@else {
+  <div>Before creating an invoice, please create a GRN.</div>
+}
