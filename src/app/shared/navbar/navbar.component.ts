@@ -15,6 +15,7 @@ import { FirebaseMessagingService } from 'app/firebase-messaging.service';
 import { NotifcationService, ReferenceType } from '../services/notification.service';
 import { UserServiceService } from '../services/user-service.service';
 import Swal from 'sweetalert2';
+import { AuthService } from 'app/shared/auth/auth.service';
 
 @Component({
   selector: "app-navbar",
@@ -75,7 +76,8 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
     private messagingService: FirebaseMessagingService,
     private toaster: ToastrService,
     private notificationService: NotifcationService,
-    private userService: UserServiceService
+    private userService: UserServiceService,
+    private authService: AuthService
   ) {
     const browserLang: string = translate.getBrowserLang();
     translate.use(browserLang.match(/en|es|pt|de/) ? browserLang : "en");
@@ -300,10 +302,8 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   logout() {
-    localStorage.clear();
-    sessionStorage.clear();
+    this.authService.logout();
     this.toastr.success("You have been logged out successfully", "Logout");
-    this.router.navigate(["/pages/login"]);
   }
 
   // =========================

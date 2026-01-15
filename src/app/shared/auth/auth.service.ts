@@ -48,10 +48,10 @@ export class AuthService {
   }
   set accessToken(token: string | null) {
     if (token) {
-      
+
       localStorage.setItem('token', token);
     } else {
-      
+
       localStorage.removeItem('token');
     }
   }
@@ -61,10 +61,10 @@ export class AuthService {
   }
   set refreshToken(token: string | null) {
     if (token) {
-      
+
       localStorage.setItem('refreshToken', token);
     } else {
-      
+
       localStorage.removeItem('refreshToken');
     }
   }
@@ -98,10 +98,10 @@ export class AuthService {
     return this.http.get(`${this.baseUrl}/Auth/sso/login-url?returnUrl=${encodeURIComponent(returnUrl)}`);
   }
 
-   GoogleSSOLogin(returnUrl: string = '/dashboard/dashboard1'): Observable<any> {
+  GoogleSSOLogin(returnUrl: string = '/dashboard/dashboard1'): Observable<any> {
     return this.http.get(`${this.baseUrl}/Auth/google/login?returnUrl=${encodeURIComponent(returnUrl)}`);
   }
-   FacebookSSOLogin(returnUrl: string = '/dashboard/dashboard1'): Observable<any> {
+  FacebookSSOLogin(returnUrl: string = '/dashboard/dashboard1'): Observable<any> {
     return this.http.get(`${this.baseUrl}/Auth/facebook/login?returnUrl=${encodeURIComponent(returnUrl)}`);
   }
 
@@ -154,17 +154,30 @@ export class AuthService {
   //   return this.http.post(`${this.baseUrl}/register-company`, payload);
   // }
   registerCompany(payload: any): Observable<any> {
-    
+
     return this.http.post(`${this.baseUrl}/register-company`, payload); // <-- use correct API endpoint
   }
 
+  vendorLogout(): Observable<any> {
+    return this.http.post(`${this.baseUrl}/Auth/Vendorlogout`, {});
+  }
+
   logout() {
+    this.vendorLogout().subscribe({
+      next: () => {
+        this.performLogout();
+      },
+      error: (err) => {
+        console.error('Logout API failed:', err);
+        this.performLogout();
+      }
+    });
     this._firebaseAuth.signOut();
-    this.router.navigate(['YOUR_LOGOUT_URL']);
   }
 
   performLogout(): void {
     localStorage.clear();
+    sessionStorage.clear();
     this.router.navigate(['/pages/login']);
   }
   //   isAuthenticated() {
