@@ -101,15 +101,17 @@
                             <!-- Item Details Section -->
                             <div class="item-details-section">
                               <div class="item-header">
-                                <h6 class="item-name mb-1">{{ item.itemName }}</h6>
+                                <h6 class="item-name">{{ item.itemName }}</h6>
                                 <span class="item-type-badge">{{ item.itemType || 'INVENTORY' }}</span>
+                                            <div class="info-divider bg-slate-300"></div>
+                                   <div class="item-info-left">
+                                  <span class="info-item">Qty: {{ item.orderQuantity }}</span>
+                                  <span class="info-item">UoM: {{ item.unitOfMeasurementCode }}</span>
+                                  <span class="info-item">Req. Date: {{ item.reqByDate | date:'yyyy-MM-dd' }}</span>
+                                </div>
                               </div>
                               
-                              <div class="item-info">
-                                <span class="info-item">Qty: {{ item.orderQuantity }}</span>
-                                <span class="info-item">UoM: {{ item.unitOfMeasurementCode }}</span>
-                                <span class="info-item">Req. Date: {{ item.reqByDate | date:'yyyy-MM-dd' }}</span>
-                              </div>
+                            
                               
                               <button class="btn-view-specs" 
                                 (click)="openAttachmentsModal(item, attachmentsModal)"
@@ -117,6 +119,44 @@
                                 <i class="fa fa-file-text me-1"></i>
                                 View Procurement Attachments ({{ item.quotationItemAttachments.length }})
                               </button>
+
+                                <div class="item-info">
+                             
+                                <div class="item-info-right" *ngIf="editingBidItemId === item.id">
+                                  <div class="upload-area-compact-inline" 
+                                    [class.disabled]="!isBidEditable(item.id)"
+                                    (click)="isBidEditable(item.id) && triggerFileInput(item.id)"
+                                    (dragover)="isBidEditable(item.id) && $event.preventDefault()"
+                                    (drop)="isBidEditable(item.id) && handleFileDrop($event, getBid(item.id))">
+                                    <input 
+                                      [id]="'fileInput_' + item.id"
+                                      type="file" 
+                                      class="d-none" 
+                                      multiple 
+                                      [disabled]="!isBidEditable(item.id)"
+                                      (change)="onFileSelected($event, getBid(item.id))">
+                                    <i class="fa fa-cloud-upload upload-icon-compact"></i>
+                                    <span class="upload-text-compact">Upload Attachments</span>
+                                  </div>
+                                  <div class="item-attachments-inline" *ngIf="getBid(item.id).vendorBidAttachments && getBid(item.id).vendorBidAttachments.length > 0">
+                                    <!-- Attachment chips -->
+                                    <div class="attachment-chip" 
+                                      *ngFor="let att of getBid(item.id).vendorBidAttachments; let i = index">
+                                      <i class="fa fa-paperclip me-1"></i>
+                                      <a href="javascript:void(0)" (click)="downloadVendorAttachment(att)" class="attachment-link">
+                                        {{ att.fileName }}
+                                      </a>
+                                      <button type="button" 
+                                        class="btn-remove-attachment" 
+                                        [disabled]="!isBidEditable(item.id)"
+                                        (click)="isBidEditable(item.id) && removeAttachment(getBid(item.id), i)">
+                                        <i class="fa fa-times"></i>
+                                      </button>
+                                    </div>
+                                  </div>
+                                  
+                                </div>
+                              </div>
                             </div>
                             
                             <!-- MY QUOTE Section (Right Side) -->
@@ -155,11 +195,9 @@
             
                           <!-- EDIT MODE -->
                           <div *ngIf="editingBidItemId === item.id" class="edit-quotation-section">
-                            <h6 class="edit-section-title">Your Quotation</h6>
-                            
                             <div class="edit-form-row">
                               <div class="edit-form-col">
-                                <label class="form-label">UNIT PRICE</label>
+                                <label class="form-label">Bidding Amount</label>
                                 <input type="number" 
                                   class="form-control unit-price-input" 
                                   [(ngModel)]="getBid(item.id).biddingAmount"
@@ -170,58 +208,41 @@
                               
                               <div class="edit-form-col">
                                 <label class="form-label">Comments</label>
-                                <textarea rows="4" 
+                                <textarea rows="3" 
                                   class="form-control description-textarea" 
                                   [(ngModel)]="getBid(item.id).comment"
                                   placeholder="Enter comments..."
                                   [disabled]="!isBidEditable(item.id)"></textarea>
                               </div>
-                            </div>
-                            
-                            <div class="attachments-upload-section">
-                              <label class="form-label">VENDOR ATTACHMENTS</label>
-                              <div class="upload-area" 
-                                [class.disabled]="!isBidEditable(item.id)"
-                                (click)="isBidEditable(item.id) && triggerFileInput(item.id)"
-                                (dragover)="isBidEditable(item.id) && $event.preventDefault()"
-                                (drop)="isBidEditable(item.id) && handleFileDrop($event, getBid(item.id))">
-                                <input 
-                                  [id]="'fileInput_' + item.id"
-                                  type="file" 
-                                  class="d-none" 
-                                  multiple 
-                                  [disabled]="!isBidEditable(item.id)"
-                                  (change)="onFileSelected($event, getBid(item.id))">
-                                <i class="fa fa-cloud-upload upload-icon"></i>
-                                <p class="upload-text">Click to upload attachments</p>
-                              </div>
                               
-                              <!-- Attachment chips -->
-                              <div class="attachments-list mt-2" *ngIf="getBid(item.id).vendorBidAttachments && getBid(item.id).vendorBidAttachments.length > 0">
-                                <div *ngFor="let att of getBid(item.id).vendorBidAttachments; let i = index"
-                                  class="attachment-chip">
-                                  <i class="fa fa-paperclip me-1"></i>
-                                  <a href="javascript:void(0)" (click)="downloadVendorAttachment(att)" class="attachment-link">
-                                    {{ att.fileName }}
-                                  </a>
-                                  <button type="button" 
-                                    class="btn-remove-attachment" 
-                                    [disabled]="!isBidEditable(item.id)"
-                                    (click)="isBidEditable(item.id) && removeAttachment(getBid(item.id), i)">
-                                    <i class="fa fa-times"></i>
+                              <div class="edit-form-col actions-col">
+                                <div class="edit-actions-compact">
+                                  <button class="btn-cancel" (click)="cancelBid(item.id)">Cancel</button>
+                                  <button class="btn btn-primary" 
+                                    [disabled]="!isBidEditable(item.id)  || !(getBid(item.id)?.biddingAmount > 0)"
+                                    (click)="saveBid(item.id)">
+                                    <i [ngClass]="getBid(item.id)?.id ? 'ft-check me-1' : 'ft-plus me-1'"></i> {{ getBid(item.id)?.id ? 'Update Bid' : 'Add Bid' }}
                                   </button>
                                 </div>
                               </div>
                             </div>
                             
-                            <div class="edit-actions">
-                              <button class="btn-cancel" (click)="cancelBid(item.id)">Cancel</button>
-                              <button class="btn btn-primary" 
-                                [disabled]="!isBidEditable(item.id)  || !(getBid(item.id)?.biddingAmount > 0)"
-                                (click)="saveBid(item.id)">
-                                <i [ngClass]="getBid(item.id)?.id ? 'ft-check me-1' : 'ft-plus me-1'"></i> {{ getBid(item.id)?.id ? 'Update Bid' : 'Add Bid' }}
-                              </button>
-                            </div>
+                            <!-- Attachment chips -->
+                            <!-- <div class="attachments-list-inline" *ngIf="getBid(item.id).vendorBidAttachments && getBid(item.id).vendorBidAttachments.length > 0">
+                              <div *ngFor="let att of getBid(item.id).vendorBidAttachments; let i = index"
+                                class="attachment-chip">
+                                <i class="fa fa-paperclip me-1"></i>
+                                <a href="javascript:void(0)" (click)="downloadVendorAttachment(att)" class="attachment-link">
+                                  {{ att.fileName }}
+                                </a>
+                                <button type="button" 
+                                  class="btn-remove-attachment" 
+                                  [disabled]="!isBidEditable(item.id)"
+                                  (click)="isBidEditable(item.id) && removeAttachment(getBid(item.id), i)">
+                                  <i class="fa fa-times"></i>
+                                </button>
+                              </div>
+                            </div> -->
                           </div>
             
                         </div>

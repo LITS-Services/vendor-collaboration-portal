@@ -334,6 +334,33 @@ export class QuotationBidModalComponent implements OnInit {
     return this.bidMap.get(itemId)!;
   }
 
+  private cleanupEmptyBids(excludeItemId: number): void {
+    // Remove bids that are new (no id) and have no data
+    const itemsToRemove: number[] = [];
+    
+    this.bidMap.forEach((bid, itemId) => {
+      // Skip the item we're currently editing
+      if (itemId === excludeItemId) return;
+      
+      // If bid is new (no id) and has no meaningful data, mark for removal
+      if (!bid.id && !bid.isDeleted) {
+        const hasAmount = bid.biddingAmount && bid.biddingAmount > 0;
+        const hasComment = bid.comment && bid.comment.trim().length > 0;
+        const hasAttachments = bid.vendorBidAttachments && bid.vendorBidAttachments.length > 0;
+        
+        // If no data at all, remove it
+        if (!hasAmount && !hasComment && !hasAttachments) {
+          itemsToRemove.push(itemId);
+        }
+      }
+    });
+    
+    // Remove empty bids
+    itemsToRemove.forEach(itemId => {
+      this.bidMap.delete(itemId);
+    });
+  }
+
   private isBidClosed(): boolean {
     if (!this.rfq) return false;
     const today = new Date();
@@ -346,6 +373,10 @@ export class QuotationBidModalComponent implements OnInit {
       this.toastr.info("Bid submission is closed for this RFQ.");
       return;
     }
+    
+    // Clean up any empty bids from other items before creating a new one
+    this.cleanupEmptyBids(itemId);
+    
     // Ensure the bid object exists in the map
     this.getBid(itemId);
 
@@ -362,6 +393,10 @@ export class QuotationBidModalComponent implements OnInit {
       this.toastr.info("Bid submission is closed for this RFQ.");
       return;
     }
+    
+    // Clean up any empty bids from other items before editing this one
+    this.cleanupEmptyBids(itemId);
+    
     this.editingBidItemId = itemId;
   }
 
