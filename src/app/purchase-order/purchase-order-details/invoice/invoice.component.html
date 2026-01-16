@@ -63,14 +63,14 @@
       <div class="table-card table-card--invoice-items">
         <div class="table__row table__row--head table__row--invoice-items">
           <div>ITEM</div>
-          <div class="text-center">ACCEPTED QTY</div>
+          <div class="text-center">TOTAL QTY</div>
           <div class="text-end">AMOUNT</div>
         </div>
 
         <div class="table-scroll table-scroll--invoice-items" formArrayName="items">
           <div class="table__row table__row--invoice-items" *ngFor="let item of itemsForm.controls; let i = index" [formGroupName]="i">
-            <div>{{ item.get('itemName')?.value }}</div>
-            <div class="text-center mono">{{ item.get('acceptedQuantity')?.value }}</div>
+            <div>{{ item.get('itemCode')?.value }}</div>
+            <div class="text-center mono">{{ item.get('receivedQuantity')?.value }}</div>
             <div class="text-end mono fw-bold">{{ item.get('totalAmount')?.value | number:'1.2-2' }}</div>
           </div>
         </div>
@@ -79,6 +79,11 @@
   </div>
 </div>
 }
+
 @else {
-  <div>Before creating an invoice, please create a GRN.</div>
+  <div class="empty-state">
+    <i class="fa fa-receipt empty-icon"></i>
+    <h5 class="empty-message">Invoice creation unavailable</h5>
+    <p class="empty-submessage">The GRN for this purchase order has not been received yet. Please wait until it is processed.</p>
+  </div>
 }

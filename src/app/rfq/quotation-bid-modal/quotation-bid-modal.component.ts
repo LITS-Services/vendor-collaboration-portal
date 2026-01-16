@@ -173,6 +173,7 @@ export class QuotationBidModalComponent implements OnInit {
               vendorUserId: existingBid.vendorUserId,
               biddingAmount: existingBid.biddingAmount,
               comment: existingBid.comment,
+              requestStatus: existingBid.requestStatus,
               vendorBidAttachments: existingBid.vendorBidAttachments || [],
             });
           }
@@ -681,7 +682,7 @@ export class QuotationBidModalComponent implements OnInit {
   isBidEditable(itemId: number): boolean {
     const bid = this.getBid(itemId);
     // Enable if bid is not saved (no id) OR if saved and RFQ status is "Revise"
-    return !bid.id || (bid.id && this.rfq?.requestStatus === 'Revise');
+    return !bid.id || (bid.id && bid.requestStatus === 'Revised');
   }
 
   
