@@ -114,10 +114,14 @@
 
                                                         <!-- Your existing Name input -->
                                                         <div class="col-12 form-group">
-                                                            <label>Name</label>
+                                                            <label>Company Name
+                                                                <i class="fa fa-info-circle text-muted ms-1"
+                                                                    ngbTooltip="The company name must match your trade license name."
+                                                                    placement="right"></i>
+                                                            </label>
                                                             <input type="text" class="form-control w-cstm"
                                                                 [(ngModel)]="companyName" [disabled]="isReadOnly"
-                                                                placeholder="Enter company name">
+                                                                placeholder="Enter trade license name">
                                                         </div>
 
                                                         <!-- NEW: Website URL -->
