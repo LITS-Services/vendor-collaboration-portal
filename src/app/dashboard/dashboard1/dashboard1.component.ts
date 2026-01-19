@@ -73,7 +73,7 @@ type AreaChartOptions = {
   tooltip: ApexTooltip;
   markers: ApexMarkers;
   legend: ApexLegend;
-    colors?: string[];
+  colors?: string[];
 };
 
 type RadialChartOptions = {
@@ -93,8 +93,7 @@ export interface VendorTopItemVM {
   pct: number; // static for now
 }
 
-export interface VendorDashboardAndHistoryInvoicesVM
-{
+export interface VendorDashboardAndHistoryInvoicesVM {
   invoiceNo: string;
   purchaseOrderNo: string;
   entityName: string;
@@ -131,12 +130,12 @@ export class Dashboard1Component implements OnInit {
   incomeRange: IncomeRange = 'year';
 
   // ---------- Figma panels data ----------
-  pendingInvoices: Array<{ no: string; customer:string; amount: number; due: Date }> = [
-    { no: 'INV-198', customer:'Alpha Traders', amount: 1380, due: new Date('2025-12-20') },
-    { no: 'INV-201', customer:'Al Manal Developers', amount: 2000, due: new Date('2025-12-26') },
-    { no: 'INV-302', customer:'Al Manal ET-01', amount: 1257, due: new Date('2025-12-28') },
-    { no: 'INV-504', customer:'Al Manal ET-02', amount: 1500, due: new Date('2025-12-31') },
-    { no: 'INV-200', customer:'Alpha Traders', amount: 500, due: new Date('2025-12-06') },
+  pendingInvoices: Array<{ no: string; customer: string; amount: number; due: Date }> = [
+    { no: 'INV-198', customer: 'Alpha Traders', amount: 1380, due: new Date('2025-12-20') },
+    { no: 'INV-201', customer: 'Al Manal Developers', amount: 2000, due: new Date('2025-12-26') },
+    { no: 'INV-302', customer: 'Al Manal ET-01', amount: 1257, due: new Date('2025-12-28') },
+    { no: 'INV-504', customer: 'Al Manal ET-02', amount: 1500, due: new Date('2025-12-31') },
+    { no: 'INV-200', customer: 'Alpha Traders', amount: 500, due: new Date('2025-12-06') },
   ];
 
   topItems: VendorTopItemVM[] = [];
@@ -146,7 +145,7 @@ export class Dashboard1Component implements OnInit {
   deliveryRadial!: Partial<RadialChartOptions>;
 
 
-  companyStatusKey: 'new' | 'in-progress' | 'onboarded' = 'onboarded';
+  companyStatusKey: 'new' | 'in-progress' | 'onboarded' | 'none' = 'none';
   companyStatusPercent: number = 33;
   companyStatusLabel: string = 'Onboarded';
   logoUrl: string = "assets/img/icons/vp-color.svg";
@@ -165,9 +164,9 @@ export class Dashboard1Component implements OnInit {
     private messagingService: FirebaseMessagingService,
     private toaster: ToastrService,
     private cdr: ChangeDetectorRef,
-    private dashboardService:DashboardService,
+    private dashboardService: DashboardService,
     private authService: AuthService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.incomeArea = this.buildIncomeAreaFromApi([], [], []);
@@ -295,26 +294,33 @@ export class Dashboard1Component implements OnInit {
     this.dashboardService.getVendorDashboardLogoAndStatus(vendorId).subscribe({
       next: (res) => {
         const data = res;
-        if (data) {
+        if (data && data.vendorCompanyName) {
           this.vendorCompanyName = data.vendorCompanyName || '';
           this.vendorStatus = data.status || '';
           //this.vendorLogo = data.logo.startsWith('data:') ? data.logo : `data:image/png;base64,${data.logo}`;
           if (data.logo) {
-        // Logo exists → show image
-        this.vendorLogo = data.logo.startsWith('data:')
-          ? data.logo
-          : `data:image/png;base64,${data.logo}`;
+            // Logo exists → show image
+            this.vendorLogo = data.logo.startsWith('data:')
+              ? data.logo
+              : `data:image/png;base64,${data.logo}`;
 
-        this.vendorInitials = '';
-      } else {
-        // No logo → show initials
-        this.vendorLogo = null;
-        this.vendorInitials = this.getInitials(this.vendorCompanyName);
-      }
+            this.vendorInitials = '';
+          } else {
+            // No logo → show initials
+            this.vendorLogo = null;
+            this.vendorInitials = this.getInitials(this.vendorCompanyName);
+          }
           this.setCompanyStatus(this.mapStatus(data.status));
-          this.cdr.detectChanges();
+        } else {
+          // No company found
+          this.vendorCompanyName = '';
+          this.vendorStatus = '';
+          this.vendorLogo = null;
+          this.vendorInitials = '';
+          this.setCompanyStatus('none');
         }
-        
+        this.cdr.detectChanges();
+
       },
       error: (err) => {
         console.error('Logo API error:', err);
@@ -380,21 +386,25 @@ export class Dashboard1Component implements OnInit {
   }
 
 
-get statusPillClass(): string {
-  switch (this.companyStatusKey) {
-    case 'onboarded':
-      this.companyStatusLabel = 'Onboarded';
-      return 'status-pill--green';
+  get statusPillClass(): string {
+    switch (this.companyStatusKey) {
+      case 'onboarded':
+        this.companyStatusLabel = 'Onboarded';
+        return 'status-pill--green';
 
-    case 'new':
-      this.companyStatusLabel = 'New';
-      return 'status-pill--blue';
+      case 'new':
+        this.companyStatusLabel = 'New';
+        return 'status-pill--blue';
 
-    default:
-      this.companyStatusLabel = 'In Progress';
-      return 'status-pill--orange';
+      case 'none':
+        this.companyStatusLabel = 'Status';
+        return 'status-pill--orange';
+
+      default:
+        this.companyStatusLabel = 'In Progress';
+        return 'status-pill--orange';
+    }
   }
-}
 
   loadVendorPortalDashboardCount(): void {
     const userId = localStorage.getItem('userId');
@@ -407,7 +417,7 @@ get statusPillClass(): string {
     });
   }
 
-  setCompanyStatus(status: 'new' | 'in-progress' | 'onboarded') {
+  setCompanyStatus(status: 'new' | 'in-progress' | 'onboarded' | 'none') {
     this.companyStatusKey = status;
 
     if (status === 'new') {
@@ -416,21 +426,24 @@ get statusPillClass(): string {
     } else if (status === 'in-progress') {
       this.companyStatusPercent = 66;
       this.companyStatusLabel = 'In Progress';
-    } else { // onboarded
+    } else if (status === 'onboarded') {
       this.companyStatusPercent = 100;
       this.companyStatusLabel = 'Onboarded';
+    } else {
+      this.companyStatusPercent = 0;
+      this.companyStatusLabel = 'Status';
     }
   }
 
-  private mapStatus(status: string | null): 'new' | 'in-progress' | 'onboarded' {
-    if (!status) return 'new';
+  private mapStatus(status: string | null): 'new' | 'in-progress' | 'onboarded' | 'none' {
+    if (!status) return 'none';
     status = status.toLowerCase();
 
     if (status === 'new') return 'new';
-    if (status === 'in progress' || status === 'in-progress') return 'in-progress';
-    if (status === 'onboarded') return 'onboarded';
+    if (status === 'in progress' || status === 'in-progress' || status === 'inprocess' || status === 'sendback') return 'in-progress';
+    if (status === 'onboarded' || status === 'approve') return 'onboarded';
 
-    return 'new';
+    return 'none';
   }
 
 
@@ -464,128 +477,128 @@ get statusPillClass(): string {
     this.cdr.detectChanges();
   }
 
-setIncomeRange(range: IncomeRange): void {
-  this.incomeRange = range;
+  setIncomeRange(range: IncomeRange): void {
+    this.incomeRange = range;
 
-  const userId = localStorage.getItem('userId') || '';
-  const filterType = range === 'month' ? 1 : range === 'quarter' ? 2 : 3;
+    const userId = localStorage.getItem('userId') || '';
+    const filterType = range === 'month' ? 1 : range === 'quarter' ? 2 : 3;
 
-  this.dashboardService.getPurchaseOrderAmountGraphData(userId, filterType).subscribe({
-    next: (rows: any[]) => {
-      const { labels, values, rawDates } = this.mapIncomeApiToChart(range, rows);
-      this.incomeArea = this.buildIncomeAreaFromApi(labels, values, rawDates);
-      setTimeout(() => window.dispatchEvent(new Event('resize')), 50);
-      this.cdr.detectChanges();
-    },
-    error: (err) => console.error('Income graph error:', err)
-  });
-}
-
-private mapIncomeApiToChart(
-  range: IncomeRange,
-  rows: Array<{ groupData: string; totalAmount: number | null }>
-): { labels: string[]; values: number[]; rawDates: string[] } {
-
-  const labels: string[] = [];
-  const values: number[] = [];
-  const rawDates: string[] = [];
-
-  for (const r of rows || []) {
-    rawDates.push(r.groupData);
-    labels.push(this.formatIncomeLabel(range, r.groupData));
-    values.push(Number(r.totalAmount ?? 0));
+    this.dashboardService.getPurchaseOrderAmountGraphData(userId, filterType).subscribe({
+      next: (rows: any[]) => {
+        const { labels, values, rawDates } = this.mapIncomeApiToChart(range, rows);
+        this.incomeArea = this.buildIncomeAreaFromApi(labels, values, rawDates);
+        setTimeout(() => window.dispatchEvent(new Event('resize')), 50);
+        this.cdr.detectChanges();
+      },
+      error: (err) => console.error('Income graph error:', err)
+    });
   }
 
-  return { labels, values, rawDates };
-}
+  private mapIncomeApiToChart(
+    range: IncomeRange,
+    rows: Array<{ groupData: string; totalAmount: number | null }>
+  ): { labels: string[]; values: number[]; rawDates: string[] } {
+
+    const labels: string[] = [];
+    const values: number[] = [];
+    const rawDates: string[] = [];
+
+    for (const r of rows || []) {
+      rawDates.push(r.groupData);
+      labels.push(this.formatIncomeLabel(range, r.groupData));
+      values.push(Number(r.totalAmount ?? 0));
+    }
+
+    return { labels, values, rawDates };
+  }
 
 
-private buildIncomeAreaFromApi(labels: string[], values: number[],  rawDates: string[]): Partial<AreaChartOptions> {
-  const compareValues: number[] = []; // keep empty if you don't have prev period
+  private buildIncomeAreaFromApi(labels: string[], values: number[], rawDates: string[]): Partial<AreaChartOptions> {
+    const compareValues: number[] = []; // keep empty if you don't have prev period
 
-  return {
-    series: [
-      { name: 'Income', data: values },
-      { name: 'Income (Prev)', data: compareValues }
-    ],
+    return {
+      series: [
+        { name: 'Income', data: values },
+        { name: 'Income (Prev)', data: compareValues }
+      ],
 
-    chart: {
-      type: 'area',
-      height: 240,
-      toolbar: { show: false },
-      animations: { enabled: false },
-      zoom: { enabled: false },
-      fontFamily: 'Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial'
-    },
-
-    colors: [
-      'rgba(102, 199, 155, 0.55)',
-      'rgba(154, 164, 160, 0.8)'
-    ],
-
-    stroke: {
-      curve: 'smooth',
-      width: [1.5, 2],
-      dashArray: [0, 6],
-      lineCap: 'round'
-    },
-
-    fill: {
-      type: ['gradient', 'solid'],
-      gradient: {
-        shadeIntensity: 0,
-        opacityFrom: 0.40,
-        opacityTo: 0.06,
-        stops: [0, 85, 100]
-      }
-    },
-
-    markers: {
-      size: [0, 0],
-      strokeWidth: 0,
-      hover: { size: 6 },
-      discrete: []
-    },
-
-    grid: {
-      borderColor: '#E7EFEA',
-      strokeDashArray: 4,
-      xaxis: { lines: { show: false } },
-      yaxis: { lines: { show: true } },
-      padding: { left: 8, right: 8 }
-    },
-
-    xaxis: {
-      categories: labels,
-      axisBorder: { show: false },
-      axisTicks: { show: false },
-      labels: { style: { colors: '#8B9B93', fontSize: '12px' } },
-      crosshairs: {
-        show: true,
-        stroke: { color: '#2B2F2D', width: 1, dashArray: 4 }
+      chart: {
+        type: 'area',
+        height: 240,
+        toolbar: { show: false },
+        animations: { enabled: false },
+        zoom: { enabled: false },
+        fontFamily: 'Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial'
       },
-      tooltip: { enabled: false }
-    },
 
-    yaxis: {
-      tickAmount: 4,
-      labels: {
-        style: { colors: '#8B9B93', fontSize: '12px' },
-        formatter: (v: number) => `${Math.round(v)}`
-      }
-    },
+      colors: [
+        'rgba(102, 199, 155, 0.55)',
+        'rgba(154, 164, 160, 0.8)'
+      ],
 
-    dataLabels: { enabled: false },
-    legend: { show: false },
+      stroke: {
+        curve: 'smooth',
+        width: [1.5, 2],
+        dashArray: [0, 6],
+        lineCap: 'round'
+      },
 
-  tooltip: {
-      shared: true,
-      intersect: false,
-      custom: ({ series, dataPointIndex }) => {
-        const fullDate = this.formatFullDate(rawDates?.[dataPointIndex] ?? labels?.[dataPointIndex] ?? '', this.incomeRange);
-        const income = series?.[0]?.[dataPointIndex] ?? 0;
+      fill: {
+        type: ['gradient', 'solid'],
+        gradient: {
+          shadeIntensity: 0,
+          opacityFrom: 0.40,
+          opacityTo: 0.06,
+          stops: [0, 85, 100]
+        }
+      },
 
-        return `
+      markers: {
+        size: [0, 0],
+        strokeWidth: 0,
+        hover: { size: 6 },
+        discrete: []
+      },
+
+      grid: {
+        borderColor: '#E7EFEA',
+        strokeDashArray: 4,
+        xaxis: { lines: { show: false } },
+        yaxis: { lines: { show: true } },
+        padding: { left: 8, right: 8 }
+      },
+
+      xaxis: {
+        categories: labels,
+        axisBorder: { show: false },
+        axisTicks: { show: false },
+        labels: { style: { colors: '#8B9B93', fontSize: '12px' } },
+        crosshairs: {
+          show: true,
+          stroke: { color: '#2B2F2D', width: 1, dashArray: 4 }
+        },
+        tooltip: { enabled: false }
+      },
+
+      yaxis: {
+        tickAmount: 4,
+        labels: {
+          style: { colors: '#8B9B93', fontSize: '12px' },
+          formatter: (v: number) => `${Math.round(v)}`
+        }
+      },
+
+      dataLabels: { enabled: false },
+      legend: { show: false },
+
+      tooltip: {
+        shared: true,
+        intersect: false,
+        custom: ({ series, dataPointIndex }) => {
+          const fullDate = this.formatFullDate(rawDates?.[dataPointIndex] ?? labels?.[dataPointIndex] ?? '', this.incomeRange);
+          const income = series?.[0]?.[dataPointIndex] ?? 0;
+
+          return `
           <div class="income-tooltip">
             <div class="income-tooltip__title">Revenue on ${fullDate}</div>
             <div class="income-tooltip__row">
@@ -593,10 +606,10 @@ private buildIncomeAreaFromApi(labels: string[], values: number[],  rawDates: st
             </div>
           </div>
         `;
+        }
       }
-    }
-  };
-}
+    };
+  }
 
 
 
@@ -606,38 +619,38 @@ private buildIncomeAreaFromApi(labels: string[], values: number[],  rawDates: st
   //   else this.router.navigate(['/rfq/rfq-list']);
   // }
   navigateToStatusFilteredQuotations(
-  status: string | null,
-  forPending: boolean = false
-): void {
-  const queryParams: any = {};
+    status: string | null,
+    forPending: boolean = false
+  ): void {
+    const queryParams: any = {};
 
-  if (status) {
-    queryParams.status = status;
+    if (status) {
+      queryParams.status = status;
+    }
+
+    if (forPending) {
+      queryParams.forPending = true;
+    }
+
+    this.router.navigate(['/rfq/rfq-list'], { queryParams });
   }
-
-  if (forPending) {
-    queryParams.forPending = true;
-  }
-
-  this.router.navigate(['/rfq/rfq-list'], { queryParams });
-}
 
   navigateToStatusFilteredPOs(
-  status: string | null,
-  forPending: boolean = false
-): void {
-  const queryParams: any = {};
+    status: string | null,
+    forPending: boolean = false
+  ): void {
+    const queryParams: any = {};
 
-  if (status) {
-    queryParams.status = status;
+    if (status) {
+      queryParams.status = status;
+    }
+
+    if (forPending) {
+      queryParams.forPending = true;
+    }
+
+    this.router.navigate(['/purchase-order/purchase-order-list'], { queryParams });
   }
-
-  if (forPending) {
-    queryParams.forPending = true;
-  }
-
-  this.router.navigate(['/purchase-order/purchase-order-list'], { queryParams });
-}
 
 
   goToPOs(): void {
@@ -669,51 +682,51 @@ private buildIncomeAreaFromApi(labels: string[], values: number[],  rawDates: st
   }
 
   private formatIncomeLabel(range: IncomeRange, raw: string): string {
-  if (range === 'quarter') return raw;
+    if (range === 'quarter') return raw;
 
-  const d = new Date(raw);
-  if (Number.isNaN(d.getTime())) return raw;
+    const d = new Date(raw);
+    if (Number.isNaN(d.getTime())) return raw;
 
-  if (range === 'month') {
-    // 1,2,3,... (day of month)
-    return String(d.getDate());
+    if (range === 'month') {
+      // 1,2,3,... (day of month)
+      return String(d.getDate());
+    }
+
+    // year: Jan, Feb, Mar...
+    return d.toLocaleDateString(undefined, { month: 'short' });
   }
 
-  // year: Jan, Feb, Mar...
-  return d.toLocaleDateString(undefined, { month: 'short' });
-}
+  private formatFullDate(raw: string, range: IncomeRange): string {
+    // QUARTER → "Q4 (Oct – Dec), 2025"
+    if (range === 'quarter') {
+      const quarterMonths: Record<string, string> = {
+        Q1: 'Jan – Mar',
+        Q2: 'Apr – Jun',
+        Q3: 'Jul – Sep',
+        Q4: 'Oct – Dec'
+      };
 
-private formatFullDate(raw: string, range: IncomeRange): string {
-  // QUARTER → "Q4 (Oct – Dec), 2025"
-  if (range === 'quarter') {
-    const quarterMonths: Record<string, string> = {
-      Q1: 'Jan – Mar',
-      Q2: 'Apr – Jun',
-      Q3: 'Jul – Sep',
-      Q4: 'Oct – Dec'
-    };
+      const year = new Date().getFullYear(); // or derive later
+      const months = quarterMonths[raw] ?? '';
+      return `${raw} (${months}), ${year}`;
+    }
 
-    const year = new Date().getFullYear(); // or derive later
-    const months = quarterMonths[raw] ?? '';
-    return `${raw} (${months}), ${year}`;
-  }
+    const d = new Date(raw);
+    if (Number.isNaN(d.getTime())) return raw;
 
-  const d = new Date(raw);
-  if (Number.isNaN(d.getTime())) return raw;
+    if (range === 'year') {
+      const month = d.toLocaleDateString(undefined, { month: 'short' });
+      const year = d.getFullYear();
+      return `${month}, ${year}`;
+    }
 
-  if (range === 'year') {
-    const month = d.toLocaleDateString(undefined, { month: 'short' });
+    // MONTH
+    const monthDay = d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    const weekday = d.toLocaleDateString(undefined, { weekday: 'long' });
     const year = d.getFullYear();
-    return `${month}, ${year}`;
+
+    return `${monthDay}, ${weekday}, ${year}`;
   }
-
-  // MONTH
-  const monthDay = d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-  const weekday = d.toLocaleDateString(undefined, { weekday: 'long' });
-  const year = d.getFullYear();
-
-  return `${monthDay}, ${weekday}, ${year}`;
-}
 
 
 

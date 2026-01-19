@@ -22,135 +22,131 @@
   <!-- Stat Cards -->
   <div class="dash__cards">
     <a class="stat-card" role="button" (click)="navigateToStatusFilteredQuotations(null)">
-  <div class="stat-card__icon">
-    <img src="assets/img/icons/total-rfq.svg">
-  </div>
+      <div class="stat-card__icon">
+        <img src="assets/img/icons/total-rfq.svg">
+      </div>
 
-  <div class="stat-card__main">
-    <div class="stat-card__label">Total RFQ</div>
-    <!-- <div class="stat-card__value">{{dashboardCounts?.totalRfqs}}</div> -->
+      <div class="stat-card__main">
+        <div class="stat-card__label">Total RFQ</div>
+        <!-- <div class="stat-card__value">{{dashboardCounts?.totalRfqs}}</div> -->
         <div class="stat-card__value">{{ formatNumber(metrics.totalRfqs) }}</div>
-  </div>
+      </div>
 
-  <div class="stat-card__footer">
-    <div class="stat-card__details">View details</div>
-    <div class="stat-card__arrow"><i class="ft-arrow-right"></i></div>
-  </div>
-  </a>
+      <div class="stat-card__footer">
+        <div class="stat-card__details">View details</div>
+        <div class="stat-card__arrow"><i class="ft-arrow-right"></i></div>
+      </div>
+    </a>
 
 
 
     <a class="stat-card" role="button" (click)="navigateToStatusFilteredQuotations(null, true)">
-  <div class="stat-card__icon">
-     <img src="assets/img/icons/total-pending.svg">
-  </div>
+      <div class="stat-card__icon">
+        <img src="assets/img/icons/total-pending.svg">
+      </div>
 
-  <div class="stat-card__main">
-    <div class="stat-card__label">Total Pending Quotes</div>
-    <div class="stat-card__value">{{ formatNumber(metrics.totalPendingQuotes) }}</div>
-     <!-- <div class="stat-card__value">{{dashboardCounts?.totalPendingQuotes}}</div> -->
-  </div>
+      <div class="stat-card__main">
+        <div class="stat-card__label">Total Pending Quotes</div>
+        <div class="stat-card__value">{{ formatNumber(metrics.totalPendingQuotes) }}</div>
+        <!-- <div class="stat-card__value">{{dashboardCounts?.totalPendingQuotes}}</div> -->
+      </div>
 
-  <div class="stat-card__footer">
-    <div class="stat-card__details">View details</div>
-    <div class="stat-card__arrow"><i class="ft-arrow-right"></i></div>
-  </div>
+      <div class="stat-card__footer">
+        <div class="stat-card__details">View details</div>
+        <div class="stat-card__arrow"><i class="ft-arrow-right"></i></div>
+      </div>
     </a>
-    
+
 
     <a class="stat-card" role="button" (click)="navigateToStatusFilteredPOs(null, true)">
-  <div class="stat-card__icon">
-     <img src="assets/img/icons/pending-delivery.svg">
-  </div>
+      <div class="stat-card__icon">
+        <img src="assets/img/icons/pending-delivery.svg">
+      </div>
 
-  <div class="stat-card__main">
-    <div class="stat-card__label">Total Pending Deliveries</div>
-    <div class="stat-card__value">{{ formatNumber(metrics.totalPendingDeliveries) }}</div>
-     <!-- <div class="stat-card__value">{{dashboardCounts?.totalPendingDeliveries}}</div> -->
-  </div>
+      <div class="stat-card__main">
+        <div class="stat-card__label">Total Pending Deliveries</div>
+        <div class="stat-card__value">{{ formatNumber(metrics.totalPendingDeliveries) }}</div>
+        <!-- <div class="stat-card__value">{{dashboardCounts?.totalPendingDeliveries}}</div> -->
+      </div>
 
-  <div class="stat-card__footer">
-    <div class="stat-card__details">View details</div>
-    <div class="stat-card__arrow"><i class="ft-arrow-right"></i></div>
-  </div>
+      <div class="stat-card__footer">
+        <div class="stat-card__details">View details</div>
+        <div class="stat-card__arrow"><i class="ft-arrow-right"></i></div>
+      </div>
     </a>
 
     <a class="stat-card" role="button" (click)="goToIncome()">
-  <div class="stat-card__icon">
-     <img src="assets/img/icons/total-income.svg">
-  </div>
+      <div class="stat-card__icon">
+        <img src="assets/img/icons/total-income.svg">
+      </div>
 
-  <div class="stat-card__main">
-    <div class="stat-card__label">Total Income</div>
-    <div class="stat-card__value">{{ formatNumber(metrics.totalIncome) }}</div>
-     <!-- <div class="stat-card__value">{{dashboardCounts?.totalIncome}}</div> -->
-  </div>
+      <div class="stat-card__main">
+        <div class="stat-card__label">Total Income</div>
+        <div class="stat-card__value">{{ formatNumber(metrics.totalIncome) }}</div>
+        <!-- <div class="stat-card__value">{{dashboardCounts?.totalIncome}}</div> -->
+      </div>
 
-  <div class="stat-card__footer">
-    <div class="stat-card__details">View details</div>
-    <div class="stat-card__arrow"><i class="ft-arrow-right"></i></div>
-  </div>
+      <div class="stat-card__footer">
+        <div class="stat-card__details">View details</div>
+        <div class="stat-card__arrow"><i class="ft-arrow-right"></i></div>
+      </div>
     </a>
 
 
-  
+
   </div>
 
   <!-- Middle Grid -->
   <div class="dash__grid dash__grid--mid">
 
     <!-- Company Status -->
-  <div class="panel">
-    <div class="panel__head">
-      <div class="d-flex justify-content-between w-100 align-items-center">
-        <div class="panel__title">Company Status</div>
-        <span class="status-pill" [ngClass]="statusPillClass">
-          <span class="status-pill__dot"></span>
-          {{ companyStatusLabel }}
-        </span>
-      </div>
-    </div>
-  
-    <div class="panel__body panel__body--center">
-  <div class="company-status-layout">
-
-    <!-- MID: ring stays centered -->
-    <div class="company-status-mid">
-      <div class="company-status">
-        <div class="company-status__chip">
-          {{ companyStatusPercent }}%
+    <div class="panel">
+      <div class="panel__head">
+        <div class="d-flex justify-content-between w-100 align-items-center">
+          <div class="panel__title">{{ vendorCompanyName ? 'Company Status' : 'Status' }}</div>
+          <span class="status-pill" [ngClass]="statusPillClass">
+            <span class="status-pill__dot"></span>
+            {{ companyStatusLabel }}
+          </span>
         </div>
+      </div>
 
-        <!-- keep your original stack -->
-        <div class="company-status__stack">
-          <div
-            class="company-status__ring"
-             [style.--p]="companyStatusPercent || 0"
-            [ngClass]="companyStatusKey"
-          >
-            <div class="company-status__inner">
-              <!-- <img class="company-status__logo" [src]="vendorLogo" alt="Logo" /> -->
-              <!-- Logo -->
-              <img *ngIf="vendorLogo" class="company-status__logo" [src]="vendorLogo" alt="Logo" />
-            
-              <!-- Initials fallback -->
-              <div *ngIf="!vendorLogo" class="company-status__avatar">
-                {{ vendorInitials }}
+      <div class="panel__body panel__body--center">
+        <div class="company-status-layout">
+
+          <!-- MID: ring stays centered -->
+          <div class="company-status-mid">
+            <div class="company-status">
+              <div class="company-status__chip">
+                {{ companyStatusPercent }}%
+              </div>
+
+              <!-- keep your original stack -->
+              <div class="company-status__stack">
+                <div class="company-status__ring" [style.--p]="companyStatusPercent || 0" [ngClass]="companyStatusKey">
+                  <div class="company-status__inner">
+                    <!-- <img class="company-status__logo" [src]="vendorLogo" alt="Logo" /> -->
+                    <!-- Logo -->
+                    <img *ngIf="vendorLogo" class="company-status__logo" [src]="vendorLogo" alt="Logo" />
+
+                    <!-- Initials fallback -->
+                    <div *ngIf="!vendorLogo" class="company-status__avatar">
+                      {{ vendorInitials }}
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
+
+          <!-- FOOTER: title always at bottom -->
+          <div class="company-status-footer">
+            <div class="company-title">{{ vendorCompanyName || 'Status' }}</div>
+          </div>
+
         </div>
       </div>
     </div>
-
-    <!-- FOOTER: title always at bottom -->
-    <div class="company-status-footer">
-      <div class="company-title">{{ vendorCompanyName || 'Company Name' }}</div>
-    </div>
-
-  </div>
-</div>
-  </div>
 
     <!-- Income -->
     <div class="panel panel--wide">
@@ -160,27 +156,20 @@
         </div>
 
         <div class="segmented">
-          <button type="button" class="segmented__btn" [class.is-active]="incomeRange==='month'" (click)="setIncomeRange('month')">Month</button>
-          <button type="button" class="segmented__btn" [class.is-active]="incomeRange==='quarter'" (click)="setIncomeRange('quarter')">Quarter</button>
-          <button type="button" class="segmented__btn" [class.is-active]="incomeRange==='year'" (click)="setIncomeRange('year')">Year</button>
+          <button type="button" class="segmented__btn" [class.is-active]="incomeRange==='month'"
+            (click)="setIncomeRange('month')">Month</button>
+          <button type="button" class="segmented__btn" [class.is-active]="incomeRange==='quarter'"
+            (click)="setIncomeRange('quarter')">Quarter</button>
+          <button type="button" class="segmented__btn" [class.is-active]="incomeRange==='year'"
+            (click)="setIncomeRange('year')">Year</button>
         </div>
       </div>
 
       <div class="panel__body">
-        <apx-chart
-          class="apx apx--income"
-          [series]="incomeArea.series"
-          [chart]="incomeArea.chart"
-          [xaxis]="incomeArea.xaxis"
-          [yaxis]="incomeArea.yaxis"
-          [dataLabels]="incomeArea.dataLabels"
-          [stroke]="incomeArea.stroke"
-          [fill]="incomeArea.fill"
-          [grid]="incomeArea.grid"
-          [tooltip]="incomeArea.tooltip"
-          [markers]="incomeArea.markers"
-           [colors]="incomeArea.colors" 
-          [legend]="incomeArea.legend">
+        <apx-chart class="apx apx--income" [series]="incomeArea.series" [chart]="incomeArea.chart"
+          [xaxis]="incomeArea.xaxis" [yaxis]="incomeArea.yaxis" [dataLabels]="incomeArea.dataLabels"
+          [stroke]="incomeArea.stroke" [fill]="incomeArea.fill" [grid]="incomeArea.grid" [tooltip]="incomeArea.tooltip"
+          [markers]="incomeArea.markers" [colors]="incomeArea.colors" [legend]="incomeArea.legend">
         </apx-chart>
       </div>
     </div>
@@ -188,7 +177,7 @@
 
   <!-- Bottom Grid -->
   <div class="dash__grid dash__grid--bottom">
-  
+
     <!-- Delivery Performance -->
     <div class="panel">
       <div class="panel__head">
@@ -196,19 +185,19 @@
           <div class="panel__title">Delivery Performance</div>
         </div>
       </div>
-  
+
       <div class="panel__body panel__body--center2">
         <div class="delivery-radial">
           <apx-chart class="delivery-radial__chart" [series]="deliveryRadial.series" [chart]="deliveryRadial.chart"
             [plotOptions]="deliveryRadial.plotOptions" [stroke]="deliveryRadial.stroke" [fill]="deliveryRadial.fill"
             [colors]="deliveryRadial.colors" [tooltip]="deliveryRadial.tooltip">
           </apx-chart>
-  
+
           <!-- Figma-like center content -->
           <div class="delivery-radial__center">
             <div class="delivery-radial__value">{{ completedPercent }}%</div>
             <div class="delivery-radial__label">Completed</div>
-  
+
             <div class="delivery-radial__legend">
               <div class="delivery-radial__legend-item">
                 <span class="dot dot--primary"></span> Completed
@@ -221,54 +210,54 @@
         </div>
       </div>
     </div>
-  
+
     <!-- Pending Invoices -->
     <div class="panel panel--wide">
       <div class="panel__head panel__head--split">
         <div class="panel__title">Pending Invoices</div>
         <a class="panel__link" role="button" (click)="goToInvoices()">View All</a>
       </div>
-  
+
       <div>
-          <div class="table-card">
+        <div class="table-card">
 
-      <div class="table__row table__row--head">
-        <div>INVOICE NO.</div>
-        <div>CUSTOMER</div>
-        <div class="text-end">AMOUNT</div>
-        <div class="text-end">DUE DATE</div>
-      </div>
+          <div class="table__row table__row--head">
+            <div>INVOICE NO.</div>
+            <div>CUSTOMER</div>
+            <div class="text-end">AMOUNT</div>
+            <div class="text-end">DUE DATE</div>
+          </div>
 
-        <div class="table-scroll">
-          @if(vendorDashboardAndHistoryInvoices.length > 0) {
-      <div class="table__row" *ngFor="let inv of vendorDashboardAndHistoryInvoices">
-        <div class="mono">{{ inv.invoiceNo }}</div>
-         <div>{{ inv.entityName }}</div>
-        <div class="text-end">{{ formatCurrency(inv.totalAmount) }}</div>
-        <div class="text-end">{{ inv.dueDate | date:'MMM d, y' }}</div>
+          <div class="table-scroll">
+            @if(vendorDashboardAndHistoryInvoices.length > 0) {
+            <div class="table__row" *ngFor="let inv of vendorDashboardAndHistoryInvoices">
+              <div class="mono">{{ inv.invoiceNo }}</div>
+              <div>{{ inv.entityName }}</div>
+              <div class="text-end">{{ formatCurrency(inv.totalAmount) }}</div>
+              <div class="text-end">{{ inv.dueDate | date:'MMM d, y' }}</div>
+            </div>
+            }
+            @else {
+            <div class="p-3">
+              No data available.
+            </div>
+            }
+          </div>
+
+        </div>
       </div>
-    }
-    @else {
-      <div class="p-3" >
-        No data available.
-      </div>
-    }
     </div>
 
-    </div>
-      </div>
-    </div>
-  
     <!-- Top Items -->
     <div class="panel">
       <div class="panel__head">
         <div class="panel__title">Top Items</div>
       </div>
-  
+
       <div class="panel__body">
         @if (topItems.length > 0) {
-          
-        
+
+
         <div class="top-items">
           <div class="top-item" *ngFor="let item of topItems">
             <div class="top-item__row">
@@ -283,14 +272,14 @@
             </div>
           </div>
         </div>
-      }
-      @else {
+        }
+        @else {
         <div>
           No data available.
         </div>
-      }
+        }
       </div>
     </div>
-  
+
   </div>
 </div>
