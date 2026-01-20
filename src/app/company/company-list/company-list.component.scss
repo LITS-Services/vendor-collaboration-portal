@@ -158,6 +158,12 @@ input:checked+.slider:before {
   background: rgba(97, 109, 137, 0.08);
 }
 
+.status-pill--sendback {
+  color: #aeac12;
+  border-color: #fffc6f;
+  background: rgb(255 255 226);
+}
+
 .level-badge {
   padding: 6px 12px;
   border: 1px solid #D7D7D7;
