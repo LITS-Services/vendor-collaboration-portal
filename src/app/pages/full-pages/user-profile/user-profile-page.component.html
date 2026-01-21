@@ -180,9 +180,9 @@
                       (click)="togglePasswordVisibility('password')"></i>
                   </div>
                   <small class="text-danger"
-                    *ngIf="passwordResetForm.get('newPassword')?.invalid && passwordResetForm.get('newPassword')?.touched">
-                    Password must be at least 6 characters, include 1 uppercase letter and 1 number, and must not match
-                    old password.
+                    *ngIf="(passwordResetForm.get('newPassword')?.invalid || passwordResetForm.hasError('sameAsOld')) && passwordResetForm.get('newPassword')?.touched">
+                    Password must be at least 6 characters, include 1 uppercase letter and 1 number, and 1
+                    special characters(!@#$%^&*?) and must not match old password.
                   </small>
                 </div>
 
@@ -255,10 +255,9 @@
             <i class="fas" [ngClass]="showNewPassword ? 'fa-eye-slash' : 'fa-eye'" (click)="togglePassword('new')"
               style="position:absolute; top:35px; right:10px; cursor:pointer;"></i>
             <div class="text-danger mt-1"
-              *ngIf="passwordResetForm.get('newPassword')?.touched && passwordResetForm.get('newPassword')?.errors">
-              <div *ngIf="passwordResetForm.get('newPassword')?.errors?.['required']">New password is required.</div>
-              <div *ngIf="passwordResetForm.get('newPassword')?.errors?.['minlength']">Password must be at least 6
-                characters.</div>
+              *ngIf="(passwordResetForm.get('newPassword')?.touched && passwordResetForm.get('newPassword')?.invalid) || passwordResetForm.hasError('sameAsOld')">
+              Password must be at least 6 characters, include 1 uppercase letter and 1 number, and 1
+              special characters(!@#$%^&*?) and must not match old password.
             </div>
           </div>
 

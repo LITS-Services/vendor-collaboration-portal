@@ -73,9 +73,28 @@ export class UserProfilePageComponent implements OnInit, AfterViewInit, OnDestro
 
     this.passwordResetForm = this.fb.group({
       oldPassword: ['', Validators.required],
-      newPassword: ['', [Validators.required, Validators.minLength(6)]],
+      newPassword: ['', [
+        Validators.required,
+        Validators.minLength(6),
+        Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*?]).{6,}$/)
+      ]],
       confirmPassword: ['', Validators.required]
-    });
+    }, { validator: this.passwordMatchValidator });
+  }
+
+  passwordMatchValidator(g: FormGroup) {
+    const oldPassword = g.get('oldPassword')?.value;
+    const newPassword = g.get('newPassword')?.value;
+    const confirmPassword = g.get('confirmPassword')?.value;
+
+    const errors: any = {};
+    if (newPassword && oldPassword && newPassword === oldPassword) {
+      errors.sameAsOld = true;
+    }
+    if (newPassword && confirmPassword && newPassword !== confirmPassword) {
+      errors.passwordMismatch = true;
+    }
+    return Object.keys(errors).length > 0 ? errors : null;
   }
 
   ngOnInit() {
@@ -283,12 +302,20 @@ export class UserProfilePageComponent implements OnInit, AfterViewInit, OnDestro
         })
       )
       .subscribe({
-        next: () => {
-          this.toastr.success('Password reset successful!');
+        next: (res: any) => {
+          const successMsg = res?.message || 'Password reset successful!';
+          this.toastr.success(successMsg);
+
+          this.passwordResetForm.reset();
+          this.activeTab = 'details';
           this.closePasswordResetPopup();
+          this.cdr.detectChanges();
         },
-        error: () => {
-          this.toastr.error('Failed to reset password. Please try again.');
+        error: (err) => {
+          console.error('Password reset error:', err);
+          const errorMsg = err?.error?.message || err?.message || 'Failed to reset password. Please try again.';
+          this.toastr.error(errorMsg);
+          this.cdr.detectChanges();
         }
       });
   }
