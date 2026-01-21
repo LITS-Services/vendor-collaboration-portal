@@ -50,6 +50,7 @@ export class InvoiceComponent implements OnInit {
       vendorName: [{ value: '', disabled: true }],
       invoiceDate: [{ value: '', disabled: true }],
       grNumber: [{ value: '', disabled: true }],
+      requestStatus: [{ value: '', disabled: true }],
       paymentTerms: [''],
       dueDate: [''],
       remarks: [''],
@@ -76,6 +77,7 @@ export class InvoiceComponent implements OnInit {
         });
 
         if (res.goodsReceiptItems?.length) {
+          this.itemsForm.clear();
           res.goodsReceiptItems.forEach(item => this.itemsForm.push(this.createItemGroup(item, true)));
         }
         this.loading = false;
@@ -127,7 +129,8 @@ export class InvoiceComponent implements OnInit {
             invoiceDate: this.toDateInputValue(invoice.invoiceDate),
             paymentTerms: invoice.paymentTerms,
             dueDate: this.toDateInputValue(invoice.dueDate),
-            remarks: invoice.remarks
+            remarks: invoice.remarks,
+            requestStatus: invoice.requestStatus
           });
 
           // Patch invoice items
@@ -154,9 +157,8 @@ export class InvoiceComponent implements OnInit {
   private createItemGroup(item: any, isPOItem: boolean): FormGroup {
     return this.fb.group({
       purchaseOrderLineId: [item.purchaseOrderLineId],
-      itemCode: [{ value: item.itemCode, disabled: true }],
-      receivedQuantity: [{ value: item.receivedQuantity, disabled: true }],
-      unitPrice: [{ value: isPOItem ? item.unitPrice : item.amount, disabled: true }],
+      itemName: [{ value: item.itemName, disabled: true }],
+      totalQuantity: [{ value: isPOItem ? item.receivedQuantity : item.totalQuantity, disabled: true }],
       totalAmount: [{ value: isPOItem ? item.amount : item.totalAmount, disabled: this.isEdit }]
     });
   }
@@ -193,7 +195,8 @@ export class InvoiceComponent implements OnInit {
           }))
         }
       };
-
+      this.loading = true;
+      this.spinner.show();
       this.purchaseOrderService.createInvoice(payload).subscribe({
         next: (res: any) => {
           if (res) {
@@ -209,6 +212,8 @@ export class InvoiceComponent implements OnInit {
 
             this.form.disable();
             this.isEdit = true;
+            this.loading = false;
+            this.spinner.hide();
             this.cdr.detectChanges();
             this.checkInvoice();
           }

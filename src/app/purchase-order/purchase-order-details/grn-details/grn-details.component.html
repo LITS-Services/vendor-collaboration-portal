@@ -9,6 +9,11 @@
         </div> -->
 @if (grnDetails?.grNumber) {
 <div class="card shadow-sm p-3 border border-success rounded mb-3">
+    <div class="d-flex justify-content-between align-items-start mb-2">
+    <h5 class="mt-2 fw-bold">
+            Goods Receipt Note
+        </h5>
+        </div>
     <div class="row">
         <div class="col-md-4 mb-2">
             <label class="form-label small">GRN No</label>
@@ -80,7 +85,7 @@
 
         <div class="table-scroll table-scroll--grn">
             <div class="table__row table__row--grn" *ngFor="let item of grnDetails.goodsReceiptItems">
-                <div class="mono">{{ item.itemCode }}</div>
+                <div class="mono">{{ item.itemName }}</div>
                 <div class="text-center mono">{{ item.orderedQuantity }}</div>
                 <div class="text-center mono">{{ item.receivedQuantity }}</div>
                 <div class="text-center mono">{{ item.receivedDate | date:'yyyy-MM-dd' }}</div>

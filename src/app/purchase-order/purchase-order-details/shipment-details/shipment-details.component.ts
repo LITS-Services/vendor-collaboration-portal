@@ -259,7 +259,7 @@ export class ShipmentDetailsComponent implements OnInit {
       if (result.isConfirmed) {
         this.shipmentService.deleteShipment(this.shipmentId).subscribe({
           next: () => {
-            Swal.fire('Deleted!', 'Shipment has been deleted.', 'success');
+            //Swal.fire('Deleted!', 'Shipment has been deleted.', 'success');
             this.form.patchValue({
               shipmentDate: null,
               notes: ''
@@ -275,8 +275,9 @@ export class ShipmentDetailsComponent implements OnInit {
 
             this.isEdit = false;
             this.shipmentId = undefined;
-            this.cdr.detectChanges();
-          },
+            this.checkIfShipmentExists();
+            //this.cdr.detectChanges();
+        },
           error: () => {
             Swal.fire('Error!', 'Failed to delete shipment.', 'error');
           }

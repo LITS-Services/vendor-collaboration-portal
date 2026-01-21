@@ -2,7 +2,7 @@
 <div class="card shadow-sm p-3 border border-success rounded mb-3" [formGroup]="form">
 
   <!-- HEADER ROW -->
-  <div class="d-flex justify-content-between align-items-start mb-3">
+  <div class="d-flex justify-content-between align-items-start mb-2">
     <h5 class="mt-2 fw-bold">Invoice Details</h5>
     <button class="btn btn-primary btn-sm" (click)="sendForPayment()" [disabled]="isEdit">
       Send for Payment
@@ -46,6 +46,11 @@
       <input type="date" class="form-control form-control-sm" formControlName="dueDate" [disabled]="isEdit">
     </div>
 
+    <div *ngIf="invoiceExists" class="col-md-4 mb-2">
+      <label class="form-label small">Status</label>
+      <input class="form-control form-control-sm" formControlName="requestStatus" [disabled]="isEdit">
+    </div>
+
     <div class="col-8 mb-2">
       <label class="form-label small">Remarks</label>
       <textarea class="form-control form-control-sm" formControlName="remarks" rows="2" [disabled]="isEdit"></textarea>
@@ -69,8 +74,8 @@
 
         <div class="table-scroll table-scroll--invoice-items" formArrayName="items">
           <div class="table__row table__row--invoice-items" *ngFor="let item of itemsForm.controls; let i = index" [formGroupName]="i">
-            <div>{{ item.get('itemCode')?.value }}</div>
-            <div class="text-center mono">{{ item.get('receivedQuantity')?.value }}</div>
+            <div>{{ item.get('itemName')?.value }}</div>
+            <div class="text-center mono">{{ item.get('totalQuantity')?.value }}</div>
             <div class="text-end mono fw-bold">{{ item.get('totalAmount')?.value | number:'1.2-2' }}</div>
           </div>
         </div>
