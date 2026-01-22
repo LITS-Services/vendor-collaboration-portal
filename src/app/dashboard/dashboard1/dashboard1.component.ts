@@ -29,7 +29,7 @@ import { AuthService } from 'app/shared/auth/auth.service';
 export interface QuotationRequestsCountVM {
   totalQuotations: number;
   newQuotations: number;
-  inProcessQuotations: number;
+  inProgressQuotations: number;
   completedQuotations: number;
 }
 
@@ -196,12 +196,12 @@ export class Dashboard1Component implements OnInit {
 
         this.totalCompaniesCount = vendorCompanies.filter(c => {
           const s = (c.status || '').toLowerCase();
-          return s === 'approve' || s === 'inprocess' || s === 'sendback';
+          return s === 'approve' || s === 'inprogress' || s === 'sendback';
         }).length;
 
         this.inprogressCount = vendorCompanies.filter(c => {
           const s = (c.status || '').toLowerCase();
-          return s === 'inprocess' || s === 'sendback';
+          return s === 'inprogress' || s === 'sendback';
         }).length;
 
         const now = new Date();
@@ -440,7 +440,7 @@ export class Dashboard1Component implements OnInit {
     status = status.toLowerCase();
 
     if (status === 'new') return 'new';
-    if (status === 'in progress' || status === 'in-progress' || status === 'inprocess' || status === 'sendback') return 'in-progress';
+    if (status === 'in progress' || status === 'in-progress' || status === 'inprogress' || status === 'sendback') return 'in-progress';
     if (status === 'onboarded' || status === 'approve') return 'onboarded';
 
     return 'none';

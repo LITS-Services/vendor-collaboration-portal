@@ -54,7 +54,7 @@ export class CompanyListComponent implements OnInit {
       if (['completed', 'approve', 'new'].includes(this.status)) {
         this.loadCompanies('completed');
       } else {
-        this.loadCompanies('inprocess');
+        this.loadCompanies('inprogress');
       }
     });
   }
@@ -216,7 +216,7 @@ export class CompanyListComponent implements OnInit {
   getOverallStatus(entityList: any[]): string {
     if (!entityList || entityList.length === 0) return '';
     const statuses = entityList.map(e => e.status?.toLowerCase());
-    if (statuses.includes('inprocess')) return 'InProcess';
+    if (statuses.includes('inprogress')) return 'InProgress';
     if (statuses.includes('sendback')) return 'SendBack';
     if (statuses.includes('rejected')) return 'Rejected';
     if (statuses.every(s => s === 'completed')) return 'Completed';
@@ -321,7 +321,7 @@ export class CompanyListComponent implements OnInit {
 
   getMainStatus(vendorUseCompaniesVM: any[]): string {
     if (!vendorUseCompaniesVM || vendorUseCompaniesVM.length === 0) {
-      return 'InProcess'; // Default status if no entities
+      return 'InProgress'; // Default status if no entities
     }
 
     // Check if ALL entities have status 'Completed'
@@ -329,20 +329,20 @@ export class CompanyListComponent implements OnInit {
       entity => entity.status?.toLowerCase() === 'completed'
     );
 
-    // Check if ANY entity has status 'InProcess' or 'SendBack'
-    const hasInProcessOrSendBack = vendorUseCompaniesVM.some(
+    // Check if ANY entity has status 'InProgress' or 'SendBack'
+    const hasInProgressOrSendBack = vendorUseCompaniesVM.some(
       entity =>
-        entity.status?.toLowerCase() === 'inprocess' ||
+        entity.status?.toLowerCase() === 'inprogress' ||
         entity.status?.toLowerCase() === 'sendback'
     );
 
     if (allCompleted) {
       return 'Onboarded';
-    } else if (hasInProcessOrSendBack) {
-      return 'InProcess';
+    } else if (hasInProgressOrSendBack) {
+      return 'InProgress';
     } else {
-      // If there are other statuses (like Rejected) but no InProcess/SendBack
-      return 'InProcess'; // Default fallback
+      // If there are other statuses (like Rejected) but no InProgress/SendBack
+      return 'InProgress'; // Default fallback
     }
   }
 
@@ -350,7 +350,7 @@ export class CompanyListComponent implements OnInit {
     const s = (status ?? '').toString().trim().toLowerCase();
 
     if (s === 'new') return 'status-pill--new';
-    if (s === 'inprocess' || s === 'in process' || s === 'in_process' || s === 'rejected') return 'status-pill--inprocess';
+    if (s === 'inprogress' || s === 'in progress' || s === 'in_progress' || s === 'rejected') return 'status-pill--inprogress';
     if (s === 'sendback') return 'status-pill--sendback';
     if (s === 'onboarded' || s === 'completed' || 'completed') return 'status-pill--completed';
 

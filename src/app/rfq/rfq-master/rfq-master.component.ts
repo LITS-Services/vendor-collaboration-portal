@@ -59,7 +59,7 @@ export interface Chart {
 export interface QuotationRequestsCountVM {
   totalQuotations: number;
   newQuotations: number;
-  inProcessQuotations: number;
+  inProgressQuotations: number;
   completedQuotations: number;
 }
 

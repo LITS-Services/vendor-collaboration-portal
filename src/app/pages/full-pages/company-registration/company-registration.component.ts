@@ -315,12 +315,12 @@ export class CompanyRegistrationComponent implements OnInit {
             return;
           }
 
-          // Check for ReadOnly Status (InProcess or Rejected)
+          // Check for ReadOnly Status (InProgress or Rejected)
           // Matching logic from company-list.component.ts
           const status = (company.status || company.requestStatus || '').toLowerCase();
-          // requestStatusId: 0 or null is often pending/inprocess, but let's rely on string status if available or map it.
+          // requestStatusId: 0 or null is often pending/inprogress, but let's rely on string status if available or map it.
           // If status string is available:
-          if (['inprocess', 'rejected'].includes(status)) {
+          if (['inprogress', 'rejected'].includes(status)) {
             this.isReadOnly = true;
           } else {
             this.isReadOnly = false;

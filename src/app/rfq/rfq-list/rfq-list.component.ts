@@ -100,7 +100,7 @@ export class RfqListComponent implements OnInit {
   const s = (status ?? '').toString().trim().toLowerCase();
 
   if (s === 'new') return 'status-pill--new';
-  if (s === 'inprocess' || s === 'in process' || s === 'in_process') return 'status-pill--inprocess';
+  if (s === 'inprogress' || s === 'in progress' || s === 'in_progress') return 'status-pill--inprogress';
   if (s === 'completed') return 'status-pill--completed';
 
   return 'status-pill--default';
