@@ -102,6 +102,7 @@ export class RfqListComponent implements OnInit {
   if (s === 'new') return 'status-pill--new';
   if (s === 'inprogress' || s === 'in progress' || s === 'in_progress') return 'status-pill--inprogress';
   if (s === 'completed') return 'status-pill--completed';
+  if (s === 'rejected') return 'status-pill--rejected';
 
   return 'status-pill--default';
 }

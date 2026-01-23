@@ -97,6 +97,12 @@
   background: rgba(46, 175, 94, 0.07);
 }
 
+.status-pill--rejected {
+  background: #fef2f2;
+  border-color: #fecaca;
+  color: #b91c1c;
+}
+
 /* Fallback */
 .status-pill--default{
   color: #616d89;
