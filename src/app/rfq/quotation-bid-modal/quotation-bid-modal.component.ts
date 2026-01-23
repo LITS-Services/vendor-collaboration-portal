@@ -10,6 +10,7 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { SignalRService } from 'app/shared/services/signalr.service';
 import { SystemService } from 'app/shared/services/system.service';
 import { NgxSpinnerService } from 'ngx-spinner';
+import Swal from 'sweetalert2';
 
 enum CreatedByType {
   Procurement = 1,
@@ -590,33 +591,88 @@ export class QuotationBidModalComponent implements OnInit {
     this.showAttachments[itemId] = !this.showAttachments[itemId];
   }
 
+  // submitBids() {
+  //   if (this.isBidClosed()) {
+  //     this.toastr.info("Bid submission is closed for this RFQ.");
+  //     return;
+  //   }
+
+  //   this.spinner.show();
+
+  //   const bids = Array.from(this.bidMap.values()).filter(
+  //     (b) => {
+  //       if (b.isDeleted) return false; 
+  //       if (b.id) return true;                         
+  //       return (b.biddingAmount ?? 0) > 0;  
+  //     }
+  //   ); // include existing bids even if deleted
+
+  //   this.rfqService.updateBids(bids).subscribe({
+  //     next: () => {
+  //       this.spinner.hide();
+  //       this.router.navigate(["/rfq/rfq-list"]);
+  //     },
+  //     error: (err) => {
+  //       this.spinner.hide();
+  //       console.error(err)
+  //     }
+  //   });
+  // }
   submitBids() {
     if (this.isBidClosed()) {
-      this.toastr.info("Bid submission is closed for this RFQ.");
+      this.toastr.info('Bid submission is closed for this RFQ.');
       return;
     }
 
-    this.spinner.show();
-
-    const bids = Array.from(this.bidMap.values()).filter(
-      (b) => {
-        if (b.isDeleted) return false; 
-        if (b.id) return true;                         
-        return (b.biddingAmount ?? 0) > 0;  
+    Swal.fire({
+      title: 'Submit Bids?',
+      text: 'Once submitted, you may not be able to modify the bids until revised.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, submit',
+      cancelButtonText: 'Cancel',
+      reverseButtons: true,
+    }).then((result) => {
+      if (!result.isConfirmed) {
+        return;
       }
-    ); // include existing bids even if deleted
 
-    this.rfqService.updateBids(bids).subscribe({
-      next: () => {
-        this.spinner.hide();
-        this.router.navigate(["/rfq/rfq-list"]);
-      },
-      error: (err) => {
-        this.spinner.hide();
-        console.error(err)
-      }
+      this.spinner.show();
+
+      const bids = Array.from(this.bidMap.values()).filter((b) => {
+        if (b.isDeleted) return false;
+        if (b.id) return true;
+        return (b.biddingAmount ?? 0) > 0;
+      });
+
+      this.rfqService.updateBids(bids).subscribe({
+        next: () => {
+          this.spinner.hide();
+
+          Swal.fire({
+            title: 'Submitted!',
+            text: 'Your bids have been submitted successfully.',
+            icon: 'success',
+            timer: 1500,
+            showConfirmButton: false
+          });
+
+          this.router.navigate(['/rfq/rfq-list']);
+        },
+        error: (err) => {
+          this.spinner.hide();
+          console.error(err);
+
+          Swal.fire({
+            title: 'Error',
+            text: 'Failed to submit bids. Please try again.',
+            icon: 'error'
+          });
+        }
+      });
     });
   }
+
 
   openAttachmentsModal(item: any, modalTemplate: TemplateRef<any>) {
     this.selectedItem = item;
