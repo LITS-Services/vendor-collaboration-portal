@@ -90,7 +90,7 @@ type RadialChartOptions = {
 export interface VendorTopItemVM {
   itemName: string;
   totalSoldQuantity: number;
-  pct: number; // static for now
+  percentage: number; // static for now
 }
 
 export interface VendorDashboardAndHistoryInvoicesVM {
@@ -255,7 +255,7 @@ export class Dashboard1Component implements OnInit {
         this.topItems = res.map(i => ({
           itemName: i.itemName,
           totalSoldQuantity: i.totalSoldQuantity,
-          pct: 30 // static percentage for all items
+          percentage: i.percentage // static percentage for all items
         }));
 
         this.cdr.detectChanges();

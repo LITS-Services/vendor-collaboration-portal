@@ -80,7 +80,7 @@
             <div class="text-center">ORDERED QTY</div>
             <div class="text-center">RECEIVED QTY</div>
             <div class="text-center">RECEIVED DATE</div>
-            <div>REMARKS</div>
+            <div class="text-end mono">REMARKS</div>
         </div>
 
         <div class="table-scroll table-scroll--grn">
@@ -89,7 +89,7 @@
                 <div class="text-center mono">{{ item.orderedQuantity }}</div>
                 <div class="text-center mono">{{ item.receivedQuantity }}</div>
                 <div class="text-center mono">{{ item.receivedDate | date:'yyyy-MM-dd' }}</div>
-                <div class="table-cell-remarks">{{ item.remarks }}</div>
+                <div class="text-end">{{ item.remarks }}</div>
             </div>
         </div>
     </div>

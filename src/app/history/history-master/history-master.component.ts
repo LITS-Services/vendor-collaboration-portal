@@ -255,17 +255,20 @@ export class HistoryMasterComponent implements OnInit {
       });
   }
 
-  private mapStatusKey(status: string): 'success' | 'pending' | 'rejected' | 'pending for payment' | 'paid'{
+  private mapStatusKey(status: string): 'chip--success' | 'chip--pending' | 'chip--rejected' | 'chip--approved' {
     const s = status?.toLowerCase();
 
     if (s === 'completed' || s === 'successful' || s === 'accepted'  || s === 'paid')
-      return 'success';
+      return 'chip--success';
 
     if (s === 'rejected')
-      return 'rejected';
+      return 'chip--rejected';
 
-    if (s === 'pending for payment' || s === 'pending')
-    return 'pending';
+    if (s === 'pending for payment' || s === 'pending' || s === 'on hold')
+    return 'chip--pending';
+
+    if (s === 'approved for payment' || s === 'approved' || s === 'new')
+    return 'chip--approved';
   }
 
   formatNumber(value: number | null | undefined): string {

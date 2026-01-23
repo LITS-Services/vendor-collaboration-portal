@@ -70,7 +70,9 @@ export class InvoiceList implements OnInit {
   getStatusClass(status: string) {
     switch (status?.toLowerCase()) {
       case 'new': return 'status-pill--new';
+      case 'approved for payment': return 'status-pill--new';
       case 'pending for payment': return 'status-pill--inprogress';
+      case 'on hold': return 'status-pill--inprogress';
       case 'paid': return 'status-pill--completed';
       default: return 'status-pill--default';
     }

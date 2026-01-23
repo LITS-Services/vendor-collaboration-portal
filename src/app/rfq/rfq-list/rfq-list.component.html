@@ -29,7 +29,7 @@
     <div class="col-12">
       <div  class="pr-table-wrapper" appDatatableAutoResize [datatable]="datatable">
       <ngx-datatable #datatable class="bootstrap core-bootstrap" [rows]="quotations"
-        [columnMode]="'force'" [headerHeight]="42" [footerHeight]="50" [scrollbarH]="isMobile"  [rowHeight]="42">
+        [columnMode]="'force'" [headerHeight]="42" [footerHeight]="50" [scrollbarH]="isMobile"  [rowHeight]="42" [limit]="10">
       
         <!-- Sr. No Column -->
         <ngx-datatable-column name="Sr. No." [width]="50" [sortable]="false">

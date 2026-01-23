@@ -9,18 +9,18 @@
     <div class="col-12">
       <div class="pr-table-wrapper" appDatatableAutoResize [datatable]="datatable">
         <ngx-datatable #datatable class="bootstrap core-bootstrap" [rows]="invoices" [columnMode]="'force'"
-          [headerHeight]="42" [footerHeight]="50" [scrollbarH]="true" [rowHeight]="42" [loadingIndicator]="loading"
+          [headerHeight]="42" [footerHeight]="50" [scrollbarH]="false" [rowHeight]="42" [loadingIndicator]="loading"
           [count]="totalItems" [offset]="query.currentPage - 1" [limit]="query.pageSize" (page)='onPageChange($event)'>
 
           <!-- Sr. No Column -->
-          <ngx-datatable-column name="Sr. No." [width]="50" [sortable]="false">
+          <ngx-datatable-column name="Sr. No." [width]="50" [sortable]="false" [maxWidth]="100">
             <ng-template let-rowIndex="rowIndex" ngx-datatable-cell-template>
               <span class="ms-1">{{ rowIndex + 1 }}</span>
             </ng-template>
           </ngx-datatable-column>
 
           <!-- Invoice No -->
-          <ngx-datatable-column name="Invoice No" prop="invoiceNo" [flexGrow]="2" [minWidth]="140"
+          <ngx-datatable-column name="Invoice No" prop="invoiceNo" [flexGrow]="1" [minWidth]="140"
             [sortable]="false"></ngx-datatable-column>
 
           <!-- PO No -->
@@ -40,14 +40,14 @@
           </ngx-datatable-column>
 
           <!-- Due Date -->
-          <ngx-datatable-column name="Due Date" prop="dueDate" [flexGrow]="1" [minWidth]="120" [sortable]="false">
+          <ngx-datatable-column name="Due Date" prop="dueDate" [flexGrow]="1" [minWidth]="50" [sortable]="false">
             <ng-template let-row="row" ngx-datatable-cell-template>
               {{ row.dueDate | date: 'yyyy-MM-dd' }}
             </ng-template>
           </ngx-datatable-column>
 
           <!-- Status -->
-          <ngx-datatable-column name="Status" prop="requestStatus" [sortable]="false">
+          <ngx-datatable-column name="Status" prop="requestStatus" [flexGrow]="1" [minWidth]="200" [sortable]="false">
             <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
               <span class="status-pill" [ngClass]="getStatusClass(value)">
                 {{ value }}

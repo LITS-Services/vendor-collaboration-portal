@@ -51,9 +51,9 @@ export class InvoiceComponent implements OnInit {
       invoiceDate: [{ value: '', disabled: true }],
       grNumber: [{ value: '', disabled: true }],
       requestStatus: [{ value: '', disabled: true }],
-      paymentTerms: [''],
-      dueDate: [''],
-      remarks: [''],
+      paymentTerms: ['', Validators.required],
+      dueDate: ['', Validators.required],
+      remarks: ['', Validators.required],
       items: this.fb.array([])
     });
 

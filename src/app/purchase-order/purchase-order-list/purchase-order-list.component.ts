@@ -5,6 +5,7 @@ import { ColumnMode, DatatableComponent, SelectionType } from '@swimlane/ngx-dat
 import { NewPurchaseOrderComponent } from '../new-purchase-order/new-purchase-order.component';
 import { PurchaseOrderService } from 'app/shared/services/purchase-order.service';
 import { ToastrService } from 'ngx-toastr';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-purchase-order-list',
@@ -40,7 +41,8 @@ export class PurchaseOrderListComponent implements OnInit {
     private poService: PurchaseOrderService,
     private toastr: ToastrService,
     private router: Router, private route: ActivatedRoute,
-    private modalService: NgbModal, public cdr: ChangeDetectorRef
+    private modalService: NgbModal, public cdr: ChangeDetectorRef,
+    private spinner: NgxSpinnerService
   ) { }
 
   ngOnInit(): void {
@@ -53,6 +55,7 @@ export class PurchaseOrderListComponent implements OnInit {
 
   loadPurchaseOrders(): void {
     this.loading = true;
+    this.spinner.show();
     const vendorUserId = localStorage.getItem('userId');
     if (!vendorUserId) {
       this.toastr.error('Vendor user not found. Please login again.');
@@ -60,9 +63,15 @@ export class PurchaseOrderListComponent implements OnInit {
     }
     this.poService.getPurchaseOrdersByVendorAndStatus(vendorUserId, this.selectedStatus, this.forPending)
       .subscribe(res => {
-        this.purchaseOrders = res;
-        this.cdr.detectChanges();
-      });
+        this.purchaseOrders = res.map(po => ({
+        ...po,
+        statusClass: this.mapStatusKey(po.status) // Add a new property 'statusClass'
+      }));
+
+      this.cdr.detectChanges();
+      this.loading = false;
+      this.spinner.hide();
+    });
   }
   // RFQ List filteration on the basis of QueryParams
   loadFilteredRFQs(status: string) {
@@ -131,5 +140,21 @@ export class PurchaseOrderListComponent implements OnInit {
       console.log(event.row);
       this.router.navigate(['/purchase-order/purchase-order-details', id], { skipLocationChange: true });
     }
+  }
+
+  private mapStatusKey(status: string): 'chip--success' | 'chip--pending' | 'chip--rejected' | 'chip--approved' {
+    const s = status?.toLowerCase();
+
+    if (s === 'completed' || s === 'successful' || s === 'accepted'  || s === 'paid' || s === 'delivered')
+      return 'chip--success';
+
+    if (s === 'rejected')
+      return 'chip--rejected';
+
+    if (s === 'pending for payment' || s === 'pending' || s === 'on hold')
+    return 'chip--pending';
+
+    if (s === 'approved for payment' || s === 'approved' || s === 'new' || s === 'awarded')
+    return 'chip--approved';
   }
 }

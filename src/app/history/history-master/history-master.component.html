@@ -105,11 +105,7 @@
             </div>
             <div class="mono">
               <span class="chip"
-                    [ngClass]="{
-                      'chip--success': row.statusKey === 'success',
-                      'chip--pending': row.statusKey === 'pending',
-                      'chip--rejected': row.statusKey === 'rejected'
-                    }">
+                    [ngClass]="mapStatusKey(row.status)">
                 {{ row.status }}
               </span>
             </div>
@@ -156,10 +152,7 @@
               <div class="text-center">{{ formatCurrency(inv.totalAmount) }}</div>
               <div class="text-center">
                 <span class="chip"
-                      [ngClass]="{
-                        'chip--success': inv.statusKey === 'paid',
-                        'chip--pending': inv.statusKey === 'pending'
-                      }">
+                      [ngClass]="mapStatusKey(inv.status)">
                   {{ inv.status }}
                 </span>
               </div>
