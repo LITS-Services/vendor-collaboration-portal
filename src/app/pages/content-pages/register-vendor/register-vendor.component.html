@@ -21,10 +21,10 @@
           </div>
         </div>
         <div class="form-group mb-2">
-          <input type="text" formControlName="businessName" class="form-control" placeholder="Enter Business Name"
-            [ngClass]="{ 'is-invalid': registerVendorFormSubmitted && lf.businessName.invalid, 'is-valid': registerVendorFormSubmitted && !lf.businessName.invalid }"
+          <input type="text" formControlName="fullname" class="form-control" placeholder="Enter Full Name"
+            [ngClass]="{ 'is-invalid': registerVendorFormSubmitted && lf.fullname.invalid, 'is-valid': registerVendorFormSubmitted && !lf.fullname.invalid }"
             required>
-          <div *ngIf="registerVendorFormSubmitted && (lf.businessName.invalid || lf.businessName.errors?.required)"
+          <div *ngIf="registerVendorFormSubmitted && (lf.fullname.invalid || lf.fullname.errors?.required)"
             class="help-block mt-1 text-danger">
             <i class="ft-alert-circle align-middle"></i> This is required
           </div>
@@ -39,21 +39,21 @@
                     <i class="ft-alert-circle align-middle"></i> This is required
                   </div>
                 </div> -->
-            <div class="form-group mb-2">
-              <ngx-intl-tel-input class="vendor-phone" name="phone" formControlName="phone"
-                [preferredCountries]="preferredCountries" [enableAutoCountrySelect]="true" [searchCountryFlag]="true"
-                [searchCountryField]="[SearchCountryField.All]" [selectFirstCountry]="true" [separateDialCode]="true"
-                [numberFormat]="PhoneNumberFormat.International" [maxLength]="20">
-              </ngx-intl-tel-input>
-            
-              <div class="help-block mt-1 text-danger" *ngIf="registerVendorFormSubmitted && lf['phone']?.invalid">
-                <i class="ft-alert-circle align-middle me-1"></i>
-                <ng-container *ngIf="lf['phone']?.hasError('required'); else invalidMsg">
-                  Phone is required
-                </ng-container>
-                <ng-template #invalidMsg>Invalid phone number</ng-template>
-              </div>
-              </div>
+        <div class="form-group mb-2">
+          <ngx-intl-tel-input class="vendor-phone" name="phone" formControlName="phone"
+            [preferredCountries]="preferredCountries" [enableAutoCountrySelect]="true" [searchCountryFlag]="true"
+            [searchCountryField]="[SearchCountryField.All]" [selectFirstCountry]="true" [separateDialCode]="true"
+            [numberFormat]="PhoneNumberFormat.International" [maxLength]="20">
+          </ngx-intl-tel-input>
+
+          <div class="help-block mt-1 text-danger" *ngIf="registerVendorFormSubmitted && lf['phone']?.invalid">
+            <i class="ft-alert-circle align-middle me-1"></i>
+            <ng-container *ngIf="lf['phone']?.hasError('required'); else invalidMsg">
+              Phone is required
+            </ng-container>
+            <ng-template #invalidMsg>Invalid phone number</ng-template>
+          </div>
+        </div>
 
         <!-- <div class="form-group d-flex align-items-center mb-2">
               
@@ -150,10 +150,10 @@
         </div>
         <div class="col-md-6">
           <div class="form-group mb-2">
-            <input type="text" formControlName="businessName" class="form-control" placeholder="Enter Business Name"
-              [ngClass]="{ 'is-invalid': registerVendorFormSubmitted && lf.businessName.invalid, 'is-valid': registerVendorFormSubmitted && !lf.businessName.invalid }"
+            <input type="text" formControlName="fullname" class="form-control" placeholder="Enter Full Name"
+              [ngClass]="{ 'is-invalid': registerVendorFormSubmitted && lf.fullname.invalid, 'is-valid': registerVendorFormSubmitted && !lf.fullname.invalid }"
               required>
-            <div *ngIf="registerVendorFormSubmitted && (lf.businessName.invalid || lf.businessName.errors?.required)"
+            <div *ngIf="registerVendorFormSubmitted && (lf.fullname.invalid || lf.fullname.errors?.required)"
               class="help-block mt-1 text-danger">
               <i class="ft-alert-circle align-middle"></i> This is required
             </div>

@@ -243,6 +243,14 @@ export class CompanyRegistrationComponent implements OnInit {
 
 
   onContactSubmit(contact: any) {
+    if (contact.primary) {
+      const hasPrimary = this.contactList.some((c, i) => c.primary && i !== this.editingContactIndex);
+      if (hasPrimary) {
+        this.toastr.error('A primary contact already exists. You can only have one primary contact.', 'Validation Error');
+        return;
+      }
+    }
+
     if (this.editingContactIndex === null) {
       this.contactList = [...this.contactList, { ...contact }];
       this.editingContact = this.createEmptyContact();
@@ -275,6 +283,14 @@ export class CompanyRegistrationComponent implements OnInit {
   }
 
   onAddressSubmit(address: any) {
+    if (address.primary) {
+      const hasPrimary = this.addressList.some((a, i) => a.primary && i !== this.editingAddressIndex);
+      if (hasPrimary) {
+        this.toastr.error('A primary address already exists. You can only have one primary address.', 'Validation Error');
+        return;
+      }
+    }
+
     if (this.editingAddressIndex === null) {
       // ===== ADD MODE =====
       this.addressList = [...this.addressList, { ...address }];
@@ -512,7 +528,7 @@ export class CompanyRegistrationComponent implements OnInit {
       type: c.type,
       contactNumber: c.contactNumber,
       extension: c.extension || '',
-      isPrimary: c.isPrimary || false
+      isPrimary: (c.isPrimary !== undefined ? c.isPrimary : c.primary) || false
     }));
   }
 

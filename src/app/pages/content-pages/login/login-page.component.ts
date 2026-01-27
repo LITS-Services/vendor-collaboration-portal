@@ -95,7 +95,7 @@ export class LoginPageComponent implements OnInit, OnDestroy {
     document.body.classList.remove('login-page');
   }
 
-  onSubmit() {  
+  onSubmit() {
     this.loginFormSubmitted = true;
     // if (this.loginForm.controls['recaptcha'].invalid) {
     //   this.toastr.warning('Please verify the CAPTCHA to proceed.');
@@ -128,18 +128,18 @@ export class LoginPageComponent implements OnInit, OnDestroy {
 
           localStorage.setItem('username', username);
 
-          
+
           this.router.navigate(['/dashboard/dashboard1']);
           this.cdr.detectChanges();
         },
         error: (err) => {
           this.isLoginFailed = true;
-            if(err?.error?.includes('Invalid username or password')){
-              this.errorMessage = 'Invalid username or password';
-            }
-            else{
-              this.errorMessage = 'Login failed. Check your credentials.';
-            }
+          if (err?.error?.includes('Invalid username or password')) {
+            this.errorMessage = 'Invalid username or password';
+          }
+          else {
+            this.errorMessage = 'Login failed. Check your credentials.';
+          }
           this.toastr.error(this.errorMessage);
           console.error(' Login failed:', err);
           this.cdr.detectChanges();

@@ -143,10 +143,19 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
     this.isSmallScreen = this.innerWidth < 1200;
   }
 
-  redirection(referenceType: any, referenceId: any, title?: string) {
+  redirection(referenceType: any, referenceId: any, title?: string, message?: string) {
 
     const isCommentNotif =
       !!title && title.toLowerCase().includes('comment');
+
+    const isWelcomeNotif =
+      (!!title && title.toLowerCase().includes('welcome')) ||
+      (!!message && message.toLowerCase().includes('welcome'));
+
+    if (isWelcomeNotif) {
+      this.router.navigate(["/company/company-list"], { skipLocationChange: true });
+      return;
+    }
 
     switch (referenceType) {
       case ReferenceType.RFQ:
@@ -190,7 +199,7 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.notificationService.markAsRead(n.id).subscribe({
       next: () => {
-        var a = this.redirection(n.referenceType, n.referenceId, n.title);
+        var a = this.redirection(n.referenceType, n.referenceId, n.title, n.message);
         if (a == ReferenceType.Default) {
           this.notifications.filter((m: any) => m.id === n.id)[0].status = 1;
         }

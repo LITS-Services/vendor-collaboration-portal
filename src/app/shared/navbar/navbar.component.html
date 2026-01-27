@@ -55,9 +55,8 @@
 
             <div class="panel-body">
               <ng-container *ngIf="notifications?.length; else emptyState">
-                <div class="notif-item" [ngClass]="{ 'unread-notif': n.status === 0 }"
-                 *ngFor="let n of notifications"
-                 (click)="onNotifClick(n)">
+                <div class="notif-item" [ngClass]="{ 'unread-notif': n.status === 0 }" *ngFor="let n of notifications"
+                  (click)="onNotifClick(n)">
                   <div class="row-1">
                     <div class="title text-ellipsis d-flex align-items-center">{{ n.title }}
                       <span *ngIf="n.status === 0" class="dot-unread ms-1"></span>
@@ -75,14 +74,16 @@
             </div>
 
             <div class="panel-footer">
-                              <button class="btn btn-markasread" (click)="markAllAsRead()"><i class="ft ft-check ml-2"></i>Mark all as read</button>
-                              <button class="btn btn-clearall" (click)="clearAllNotification()"><i class="ft ft-trash-2 ml-2"></i>Clear All</button>
+              <button class="btn btn-markasread" (click)="markAllAsRead()"><i class="ft ft-check ml-2"></i>Mark all as
+                read</button>
+              <button class="btn btn-clearall" (click)="clearAllNotification()"><i class="ft ft-trash-2 ml-2"></i>Clear
+                All</button>
             </div>
           </div>
         </div>
         <!-- User dropdown (kept from your code) -->
-        <div class="dropdown" container="body"  ngbDropdown placement="bottom-right">
-          <a class="user-btn" ngbDropdownToggle >
+        <div class="dropdown" container="body" ngbDropdown placement="bottom-right">
+          <a class="user-btn" ngbDropdownToggle>
             <!-- <span class="user-name d-none d-md-inline">{{ username }}</span> -->
             <img class="avatar" [ngbTooltip]="username"
               [ngClass]="{ 'default-avatar': profilePicture === 'assets/img/profile/user.png' || !profilePicture }"

@@ -35,7 +35,7 @@ export class RegisterVendorComponent implements OnInit {
 
   registerVendorForm = new UntypedFormGroup({
     username: new UntypedFormControl('', [Validators.required]),
-    businessName: new UntypedFormControl('', [Validators.required]),
+    fullname: new UntypedFormControl('', [Validators.required]),
     phone: new UntypedFormControl(undefined, [Validators.required]),
     //phoneNo: new UntypedFormControl('', [Validators.required]),
     //phoneExtension: new UntypedFormControl('', [Validators.required]),
@@ -94,7 +94,7 @@ export class RegisterVendorComponent implements OnInit {
     const phoneObj = this.registerVendorForm.value.phone;
     const payload = {
       Username: this.lf.username.value,
-      FullName: this.lf.businessName.value,
+      FullName: this.lf.fullname.value,
       PhoneNo: phoneObj?.e164Number ?? null,
       Email: this.lf.email.value,
       Password: this.lf.password.value,
