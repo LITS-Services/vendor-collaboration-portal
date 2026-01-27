@@ -150,8 +150,9 @@ export class UserProfilePageComponent implements OnInit, AfterViewInit, OnDestro
             fullName: userData.fullName,
             email: userData.email
           });
-          if (res.profilePicture) {
-            this.profileImage = res.profilePicture;
+
+          if (userData.profilePicture) {
+            this.profileImage = this.formatBase64Image(userData.profilePicture);
           }
           this.cdr.detectChanges();
         },
@@ -332,5 +333,13 @@ export class UserProfilePageComponent implements OnInit, AfterViewInit, OnDestro
         this.hideConfirmPassword = !this.hideConfirmPassword;
         break;
     }
+  }
+
+  private formatBase64Image(base64: string): string {
+    if (!base64 || base64.startsWith('data:image') || base64.startsWith('assets/')) {
+      return base64 || 'assets/img/profile/user.png';
+    }
+    // Default to png, but browser usually auto-detects if it's actually jpeg/etc
+    return `data:image/png;base64,${base64}`;
   }
 }

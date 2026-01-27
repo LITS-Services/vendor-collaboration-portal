@@ -326,8 +326,7 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
       next: (res: any) => {
         const userData = res.$values ? res.$values[0] : res;
         this.username = userData.userName || "";
-        this.profilePicture =
-          userData.profilePicture || "assets/img/profile/user.png";
+        this.profilePicture = this.formatBase64Image(userData.profilePicture);
         this.cdr.detectChanges(); // update UI immediately
       },
       error: (err) => {
@@ -433,5 +432,12 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     // Fallback: seconds level shows as "1m ago" minimum; we handled <30s above
     return "1m ago";
+  }
+
+  private formatBase64Image(base64: string): string {
+    if (!base64 || base64.startsWith('data:image') || base64.startsWith('assets/')) {
+      return base64 || 'assets/img/profile/user.png';
+    }
+    return `data:image/png;base64,${base64}`;
   }
 }
