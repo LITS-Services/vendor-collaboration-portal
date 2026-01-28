@@ -218,9 +218,12 @@ export class ShipmentDetailsComponent implements OnInit {
         shipmentDetailId: this.shipmentId,
         shipmentDetail: shipmentDetailPayload
       };
-
+      this.loading = true;
+      this.spinner.show();
       this.shipmentService.updateShipment(updatePayload).subscribe({
         next: () => {
+          this.loading = true;
+          this.spinner.hide();
           this.router.navigate([`/purchase-order/purchase-order-details/${this.poId}`], { skipLocationChange: true });
           this.checkIfShipmentExists();
         }
@@ -232,9 +235,12 @@ export class ShipmentDetailsComponent implements OnInit {
       purchaseOrderId: this.poId,
       shipmentDetail: shipmentDetailPayload
     };
-
+    this.loading = true;
+    this.spinner.show();
     this.shipmentService.createShipment(createPayload).subscribe({
       next: () => {
+        this.loading = false;
+        this.spinner.hide();
         this.router.navigate([`/purchase-order/purchase-order-details/${this.poId}`], { skipLocationChange: true });
         this.checkIfShipmentExists();
       }
