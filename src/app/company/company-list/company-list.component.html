@@ -26,7 +26,7 @@
           </ngx-datatable-column>
 
           <!-- Main Status Column (NEW) -->
-          <ngx-datatable-column name="Main Status" prop="mainStatus" [flexGrow]="1" [minWidth]="140">
+          <ngx-datatable-column name="Status" prop="mainStatus" [flexGrow]="1" [minWidth]="140">
             <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
               <span class="status-pill" [ngClass]="getStatusClass(value)">
                 {{ value }}

@@ -197,13 +197,13 @@
                           <div *ngIf="editingBidItemId === item.id" class="edit-quotation-section">
                             <div class="edit-form-row">
                               <div class="edit-form-col">
-                                <label class="form-label">Bidding Amount</label>
+                                <label class="form-label">Bidding Amount<span class="text-danger">*</span></label>
                                 <input type="number" 
                                   class="form-control unit-price-input" 
                                   [(ngModel)]="getBid(item.id).biddingAmount"
                                   step="0.01"
                                   placeholder="0.00"
-                                  [disabled]="!isBidEditable(item.id)">
+                                  [disabled]="!isBidEditable(item.id)" required>
                               </div>
                               
                               <div class="edit-form-col">

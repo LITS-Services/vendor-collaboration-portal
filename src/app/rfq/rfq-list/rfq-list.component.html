@@ -48,7 +48,13 @@
         </ngx-datatable-column>
       
         <!-- Status -->
-      
+              <ngx-datatable-column name="Status" prop="requestStatus" [sortable]="false">
+                <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                  <span class="status-pill" [ngClass]="getStatusClass(value)">
+                    {{ value }}
+                  </span>
+                </ng-template>
+              </ngx-datatable-column>
       
         <!-- Start Date -->
         <ngx-datatable-column name="Start Date" prop="startDate" [flexGrow]="1" [minWidth]="120" [sortable]="false">
@@ -66,15 +72,6 @@
       
         <!-- Owner -->
         <ngx-datatable-column name="Owner" prop="owner"  [flexGrow]="1" [minWidth]="120" [sortable]="false"></ngx-datatable-column>
-      
-        <ngx-datatable-column name="Status" prop="requestStatus" [sortable]="false">
-          <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
-            <span class="status-pill" [ngClass]="getStatusClass(value)">
-              {{ value }}
-            </span>
-          </ng-template>
-      
-        </ngx-datatable-column>
       
         <!-- Total Amount -->
         <!-- <ngx-datatable-column name="Total Amount" prop="totalAmount" [sortable]="false">

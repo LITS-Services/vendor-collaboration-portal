@@ -23,6 +23,15 @@
           <ngx-datatable-column name="Invoice No" prop="invoiceNo" [flexGrow]="1" [minWidth]="140"
             [sortable]="false"></ngx-datatable-column>
 
+          <!-- Status -->
+          <ngx-datatable-column name="Status" prop="requestStatus" [flexGrow]="1" [minWidth]="200" [sortable]="false">
+            <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+              <span class="status-pill" [ngClass]="getStatusClass(value)">
+                {{ value }}
+              </span>
+            </ng-template>
+          </ngx-datatable-column>
+
           <!-- PO No -->
           <ngx-datatable-column name="PO No" prop="purchaseOrderNo" [flexGrow]="1" [minWidth]="120"
             [sortable]="false"></ngx-datatable-column>
@@ -43,15 +52,6 @@
           <ngx-datatable-column name="Due Date" prop="dueDate" [flexGrow]="1" [minWidth]="50" [sortable]="false">
             <ng-template let-row="row" ngx-datatable-cell-template>
               {{ row.dueDate | date: 'yyyy-MM-dd' }}
-            </ng-template>
-          </ngx-datatable-column>
-
-          <!-- Status -->
-          <ngx-datatable-column name="Status" prop="requestStatus" [flexGrow]="1" [minWidth]="200" [sortable]="false">
-            <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
-              <span class="status-pill" [ngClass]="getStatusClass(value)">
-                {{ value }}
-              </span>
             </ng-template>
           </ngx-datatable-column>
 

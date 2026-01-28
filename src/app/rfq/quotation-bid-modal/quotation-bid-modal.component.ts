@@ -624,6 +624,17 @@ export class QuotationBidModalComponent implements OnInit {
       return;
     }
 
+    const missingBids = this.rfq.quotationItems.filter(item => {
+      const bid = this.bidMap.get(item.id);
+      // If no bid exists or bid amount is 0 and it's not a previously saved bid
+      return !bid || (!bid.id && (!bid.biddingAmount || bid.biddingAmount <= 0));
+    });
+
+    if (missingBids.length > 0) {
+      this.toastr.warning('Please place bids against all items before submitting.');
+      return; 
+    }
+
     Swal.fire({
       title: 'Submit Bids?',
       text: 'Once submitted, you may not be able to modify the bids until revised.',
