@@ -425,29 +425,50 @@
                                             <form [formGroup]="bankForm">
                                                 <div class="row mb-3 cstm-vertical-gap">
                                                     <div class="col-md-3 mt-1 form-group">
-                                                        <label>Bank Name</label>
+                                                        <label>Bank Name <span class="text-danger">*</span></label>
                                                         <input type="text" class="form-control"
-                                                            formControlName="bankName" placeholder="Enter bank name">
+                                                            formControlName="bankName" placeholder="Enter bank name"
+                                                            [ngClass]="{'is-invalid': bankForm.get('bankName').invalid && bankForm.get('bankName').touched}">
+                                                        <div *ngIf="bankForm.get('bankName').invalid && bankForm.get('bankName').touched"
+                                                            class="text-danger small">
+                                                            Bank name is required.
+                                                        </div>
                                                     </div>
 
                                                     <div class="col-md-3 mt-1 form-group">
-                                                        <label>Account Holder Name</label>
+                                                        <label>Account Holder Name <span
+                                                                class="text-danger">*</span></label>
                                                         <input type="text" class="form-control"
                                                             formControlName="accountHolderName"
-                                                            placeholder="Enter account holder name">
+                                                            placeholder="Enter account holder name"
+                                                            [ngClass]="{'is-invalid': bankForm.get('accountHolderName').invalid && bankForm.get('accountHolderName').touched}">
+                                                        <div *ngIf="bankForm.get('accountHolderName').invalid && bankForm.get('accountHolderName').touched"
+                                                            class="text-danger small">
+                                                            Account holder name is required.
+                                                        </div>
                                                     </div>
 
                                                     <div class="col-md-3 mt-1 form-group">
-                                                        <label>Account Number</label>
+                                                        <label>Account Number <span class="text-danger">*</span></label>
                                                         <input type="text" class="form-control"
                                                             formControlName="accountNumber"
-                                                            placeholder="Enter account number">
+                                                            placeholder="Enter account number"
+                                                            [ngClass]="{'is-invalid': bankForm.get('accountNumber').invalid && bankForm.get('accountNumber').touched}">
+                                                        <div *ngIf="bankForm.get('accountNumber').invalid && bankForm.get('accountNumber').touched"
+                                                            class="text-danger small">
+                                                            Account number is required.
+                                                        </div>
                                                     </div>
 
                                                     <div class="col-md-3 mt-1 form-group">
-                                                        <label>IBAN</label>
+                                                        <label>IBAN <span class="text-danger">*</span></label>
                                                         <input type="text" class="form-control" formControlName="iban"
-                                                            placeholder="Enter IBAN">
+                                                            placeholder="Enter IBAN"
+                                                            [ngClass]="{'is-invalid': bankForm.get('iban').invalid && bankForm.get('iban').touched}">
+                                                        <div *ngIf="bankForm.get('iban').invalid && bankForm.get('iban').touched"
+                                                            class="text-danger small">
+                                                            IBAN is required.
+                                                        </div>
                                                     </div>
 
                                                     <div class="col-md-3 mt-1 form-group">
@@ -472,8 +493,9 @@
                                                     </div>
 
                                                     <div class="col-md-3 mt-1 form-group">
-                                                        <label>Country</label>
-                                                        <select class="form-control" formControlName="bankCountry">
+                                                        <label>Country <span class="text-danger">*</span></label>
+                                                        <select class="form-control" formControlName="bankCountry"
+                                                            [ngClass]="{'is-invalid': bankForm.get('bankCountry').invalid && bankForm.get('bankCountry').touched}">
                                                             <option value="">Select country</option>
                                                             <option>Pakistan</option>
                                                             <option>United Arab Emirates</option>
@@ -481,11 +503,16 @@
                                                             <option>United States</option>
                                                             <option>Saudi Arabia</option>
                                                         </select>
+                                                        <div *ngIf="bankForm.get('bankCountry').invalid && bankForm.get('bankCountry').touched"
+                                                            class="text-danger small">
+                                                            Country is required.
+                                                        </div>
                                                     </div>
 
                                                     <div class="col-md-3 mt-1 form-group">
-                                                        <label>Currency</label>
-                                                        <select class="form-control" formControlName="bankCurrency">
+                                                        <label>Currency <span class="text-danger">*</span></label>
+                                                        <select class="form-control" formControlName="bankCurrency"
+                                                            [ngClass]="{'is-invalid': bankForm.get('bankCurrency').invalid && bankForm.get('bankCurrency').touched}">
                                                             <option value="">Select currency</option>
                                                             <option>PKR</option>
                                                             <option>AED</option>
@@ -493,12 +520,16 @@
                                                             <option>GBP</option>
                                                             <option>EUR</option>
                                                         </select>
+                                                        <div *ngIf="bankForm.get('bankCurrency').invalid && bankForm.get('bankCurrency').touched"
+                                                            class="text-danger small">
+                                                            Currency is required.
+                                                        </div>
                                                     </div>
 
                                                     <div class="d-flex justify-content-end mt-3">
                                                         <button type="button" class="btn btn-primary"
                                                             *ngIf="!isReadOnly" (click)="addBank()">
-                                                            Add Bank
+                                                            {{ editingBankIndex === null ? 'Add Bank' : 'Update Bank' }}
                                                         </button>
                                                     </div>
                                                 </div>
