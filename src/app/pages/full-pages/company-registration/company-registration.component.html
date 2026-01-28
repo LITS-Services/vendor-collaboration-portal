@@ -114,7 +114,7 @@
 
                                                         <!-- Your existing Name input -->
                                                         <div class="col-12 form-group">
-                                                            <label>Company Name
+                                                            <label>Company Name <span class="text-danger">*</span>
                                                                 <i class="fa fa-info-circle text-muted ms-1"
                                                                     ngbTooltip="The company name must match your trade license name."
                                                                     placement="right"></i>
@@ -122,6 +122,10 @@
                                                             <input type="text" class="form-control w-cstm"
                                                                 [(ngModel)]="companyName" [disabled]="isReadOnly"
                                                                 placeholder="Enter trade license name">
+                                                            <small class="text-danger"
+                                                                *ngIf="!companyName && isLastTab()">
+                                                                Company name is required.
+                                                            </small>
                                                         </div>
 
                                                         <!-- NEW: Website URL -->
@@ -130,8 +134,22 @@
                                                             <input type="url" class="form-control w-cstm"
                                                                 [(ngModel)]="websiteUrl" [disabled]="isReadOnly"
                                                                 placeholder="https://www.example.com">
-                                                            <small class="text-danger" *ngIf="websiteUrlError">{{
-                                                                websiteUrlError }}</small>
+                                                        </div>
+
+                                                        <!-- TRN (Tax Registration Number) -->
+                                                        <div class="col-12 form-group">
+                                                            <label>TRN (Tax Registration Number) <span
+                                                                    class="text-danger">*</span>
+                                                                <i class="fa fa-info-circle text-muted ms-1"
+                                                                    ngbTooltip="Enter your 15-digit Tax Registration Number"
+                                                                    placement="right"></i>
+                                                            </label>
+                                                            <input type="text" class="form-control w-cstm"
+                                                                [(ngModel)]="trn" [disabled]="isReadOnly"
+                                                                placeholder="e.g., 100xxxxxxxxxxxx" maxlength="15">
+                                                            <small class="text-danger" *ngIf="trn && trn.length !== 15">
+                                                                TRN must be exactly 15 digits.
+                                                            </small>
                                                         </div>
 
                                                     </div>

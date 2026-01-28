@@ -38,6 +38,7 @@ export class CompanyRegistrationComponent implements OnInit {
   isLoading: boolean = false;
   companyId: number | null = null;
   remarks: string = '';
+  trn: string = ''; // Added TRN field
 
   showContactDeletePopup: boolean = false;
   showAddressDeletePopup: boolean = false;
@@ -253,13 +254,13 @@ export class CompanyRegistrationComponent implements OnInit {
 
     if (contact.primary || contact.isPrimary) {
       const hasPrimary = this.contactList.some((c, i) => (c.primary || c.isPrimary) && i !== this.editingContactIndex);
-      if (hasPrimary) {
-        const msg = 'A primary contact already exists. You can only have one primary contact.';
-        this.validationError = msg;
-        this.toastr.error(msg, 'Validation Error');
-        this.cdr.detectChanges();
-        return;
-      }
+      // if (hasPrimary) {
+      //   const msg = 'A primary contact already exists. You can only have one primary contact.';
+      //   this.validationError = msg;
+      //   this.toastr.error(msg, 'Validation Error');
+      //   this.cdr.detectChanges();
+      //   return;
+      // }
     }
 
     if (this.editingContactIndex === null) {
@@ -364,7 +365,8 @@ export class CompanyRegistrationComponent implements OnInit {
 
           // General Info
           this.companyName = company.name || '';
-          this.websiteUrl = company.websiteUrl || ''; // Map websiteUrl from API
+          this.websiteUrl = company.websiteUrl || '';
+          this.trn = company.TRN || company.trn || '';
           this.remarks = company.remarks || '';
           this.companyType = company.companyType || 'Organization';
 
@@ -801,6 +803,35 @@ export class CompanyRegistrationComponent implements OnInit {
       return;
     }
 
+    // Check for Duplicate TRN
+    if (this.trn && this.trn.length === 15) {
+      this.isLoading = true;
+      this.spinner.show();
+
+      try {
+        const companiesRes = await this.companyService.getCompanyByVendorId(this.userId).toPromise();
+        const existingCompanies = Array.isArray(companiesRes) ? companiesRes : companiesRes?.$values || [];
+
+        const isDuplicateTRN = existingCompanies.some((c: any) =>
+          c.trn === this.trn && c.id !== this.companyId
+        );
+
+        if (isDuplicateTRN) {
+          this.toastr.error('This TRN is already registered with another company.', 'Duplicate TRN');
+          this.isLoading = false;
+          this.spinner.hide();
+          return;
+        }
+      } catch (err) {
+        console.error('Error checking duplicate TRN:', err);
+        // Continue if API fails, or show error? Let's show error and stop to be safe.
+        // this.toastr.warning('Could not verify TRN uniqueness. Please try again.');
+        // this.isLoading = false;
+        // this.spinner.hide();
+        // return;
+      }
+    }
+
     // Convert attachments to base64
     this.attachedFiles = await Promise.all(this.attachedFiles.map(async f => {
       if (f.file && !f.fileContent) {
@@ -835,6 +866,7 @@ export class CompanyRegistrationComponent implements OnInit {
     const vendorCompanyPayload = {
       name: this.companyName,
       websiteUrl: this.websiteUrl,
+      TRN: this.trn, // Include TRN in payload
       logo: logoBase64,
       requestStatusId: 1,
 
@@ -941,13 +973,25 @@ export class CompanyRegistrationComponent implements OnInit {
 
   addBank(): void {
     if (this.bankForm.valid) {
+      const newBank = this.bankForm.value;
+
+      // Check for duplicates (IBAN or Account Number)
+      const isDuplicate = this.bankList.some((b, i) =>
+        (b.iban === newBank.iban || b.accountNumber === newBank.accountNumber) && i !== this.editingBankIndex
+      );
+
+      if (isDuplicate) {
+        this.toastr.error('A bank card with the same IBAN or Account Number already exists.', 'Duplicate Detected');
+        return;
+      }
+
       if (this.editingBankIndex === null) {
         // ADD NEW
-        this.bankList = [...this.bankList, this.bankForm.value];
+        this.bankList = [...this.bankList, newBank];
       } else {
         // EDIT EXISTING
         this.bankList = this.bankList.map((b, i) =>
-          i === this.editingBankIndex ? { ...this.bankForm.value } : b
+          i === this.editingBankIndex ? { ...newBank } : b
         );
 
         // reset edit state

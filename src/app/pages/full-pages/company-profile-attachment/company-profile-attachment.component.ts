@@ -19,7 +19,8 @@ export class CompanyProfileAttachmentComponent implements OnInit {
     format: '',
     attachedBy: '',
     remarks: '',
-    attachedAt: ''
+    attachedAt: '',
+    expiryDate: '' // Added expiry date
   };
 
   editIndex: number | null = null;
@@ -47,6 +48,18 @@ export class CompanyProfileAttachmentComponent implements OnInit {
     if (!this.attachment.file || !this.attachment.fileName || !this.attachment.remarks) {
       alert('Please select a file and fill out all fields before attaching.');
       return;
+    }
+
+    // Manual validation for trade license expiry
+    if (this.attachment.expiryDate) {
+      const expiry = new Date(this.attachment.expiryDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (expiry < today) {
+        if (!confirm('The document appears to be expired. Do you still want to attach it?')) {
+          return;
+        }
+      }
     }
 
     const now = new Date();
@@ -105,6 +118,7 @@ export class CompanyProfileAttachmentComponent implements OnInit {
       attachedBy: '',
       remarks: '',
       attachedAt: '',
+      expiryDate: '',
     };
 
     if (this.fileInput) {

@@ -23,6 +23,13 @@
         placeholder="Enter your name" />
     </div>
 
+    <!-- Expiry Date -->
+    <div class="col-6 mb-3">
+      <label for="expiryDate" class="form-label">Expiry Date</label>
+      <input type="date" id="expiryDate" class="form-control" [(ngModel)]="attachment.expiryDate"
+        [disabled]="readonly" />
+    </div>
+
     <!-- Remarks -->
     <div class="col-12 mb-3">
       <label for="remarks" class="form-label">Remarks</label>
@@ -44,6 +51,7 @@
             <tr>
               <th>File Name</th>
               <th>File Format</th>
+              <th>Expiry Date</th>
               <th>Attached By</th>
               <th>Remarks</th>
               <th>Actions</th>
@@ -53,6 +61,7 @@
             <tr *ngFor="let file of attachedFiles; let i = index">
               <td>{{ file.fileName }}</td>
               <td>{{ file.format }}</td>
+              <td>{{ file.expiryDate | date:'mediumDate' }}</td>
               <td>{{ file.attachedBy }}</td>
               <td>{{ file.remarks }}</td>
               <td>
