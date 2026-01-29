@@ -145,7 +145,7 @@ export class Dashboard1Component implements OnInit {
   deliveryRadial!: Partial<RadialChartOptions>;
 
 
-  companyStatusKey: 'new' | 'in-progress' | 'onboarded' | 'none' = 'none';
+  companyStatusKey: 'new' | 'in-progress' | 'onboarded' | 'none' | 'sent-back' | 'rejected' = 'none';
   companyStatusPercent: number = 33;
   companyStatusLabel: string = 'Onboarded';
   logoUrl: string = "assets/img/icons/vp-color.svg";
@@ -396,8 +396,16 @@ export class Dashboard1Component implements OnInit {
         this.companyStatusLabel = 'New';
         return 'status-pill--blue';
 
+      case 'sent-back':
+        this.companyStatusLabel = 'Sent Back';
+        return 'status-pill--red';
+
+      case 'rejected':
+        this.companyStatusLabel = 'Rejected';
+        return 'status-pill--red';
+
       case 'none':
-        this.companyStatusLabel = 'Status';
+        this.companyStatusLabel = 'Not Registered';
         return 'status-pill--orange';
 
       default:
@@ -417,7 +425,7 @@ export class Dashboard1Component implements OnInit {
     });
   }
 
-  setCompanyStatus(status: 'new' | 'in-progress' | 'onboarded' | 'none') {
+  setCompanyStatus(status: 'new' | 'in-progress' | 'onboarded' | 'none' | 'sent-back' | 'rejected') {
     this.companyStatusKey = status;
 
     if (status === 'new') {
@@ -426,21 +434,29 @@ export class Dashboard1Component implements OnInit {
     } else if (status === 'in-progress') {
       this.companyStatusPercent = 66;
       this.companyStatusLabel = 'In Progress';
+    } else if (status === 'sent-back') {
+      this.companyStatusPercent = 66;
+      this.companyStatusLabel = 'Sent Back';
+    } else if (status === 'rejected') {
+      this.companyStatusPercent = 100;
+      this.companyStatusLabel = 'Rejected';
     } else if (status === 'onboarded') {
       this.companyStatusPercent = 100;
       this.companyStatusLabel = 'Onboarded';
     } else {
       this.companyStatusPercent = 0;
-      this.companyStatusLabel = 'Status';
+      this.companyStatusLabel = 'Not Registered';
     }
   }
 
-  private mapStatus(status: string | null): 'new' | 'in-progress' | 'onboarded' | 'none' {
+  private mapStatus(status: string | null): 'new' | 'in-progress' | 'onboarded' | 'none' | 'sent-back' | 'rejected' {
     if (!status) return 'none';
     status = status.toLowerCase();
 
     if (status === 'new') return 'new';
-    if (status === 'in progress' || status === 'in-progress' || status === 'inprogress' || status === 'sendback') return 'in-progress';
+    if (status === 'in progress' || status === 'in-progress' || status === 'inprogress') return 'in-progress';
+    if (status === 'sendback') return 'sent-back';
+    if (status === 'rejected') return 'rejected';
     if (status === 'onboarded' || status === 'approve') return 'onboarded';
 
     return 'none';

@@ -514,6 +514,12 @@
   --bd: #bfdbfe; // blue-200
 }
 
+.status-pill--red {
+  --bg: #fef2f2; // red-50
+  --fg: #b91c1c; // red-700
+  --bd: #fecaca; // red-200
+}
+
 /* main layout: middle expands, footer sticks bottom */
 .company-status-layout {
   height: 100%;
@@ -653,6 +659,18 @@
   --ring-color: #3b82f6;
   /* blue */
   --ring-bg-color: #e9f1ff;
+}
+
+.company-status__ring.sent-back {
+  --ring-color: #ef4444;
+  /* red */
+  --ring-bg-color: #fef2f2;
+}
+
+.company-status__ring.rejected {
+  --ring-color: #ef4444;
+  /* red */
+  --ring-bg-color: #fef2f2;
 }
 
 
