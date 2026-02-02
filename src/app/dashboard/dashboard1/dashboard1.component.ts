@@ -35,7 +35,7 @@ export interface QuotationRequestsCountVM {
 
 export interface PurchaseOrdersCountVM {
   totalPurchaseOrders: number;
-  awardedPurchaseOrders: number;
+  openPurchaseOrders: number;
   rejectedPurchaseOrders: number;
   deliveredPurchaseOrders: number;
 }

@@ -145,16 +145,16 @@ export class PurchaseOrderListComponent implements OnInit {
   private mapStatusKey(status: string): 'chip--success' | 'chip--pending' | 'chip--rejected' | 'chip--approved' {
     const s = status?.toLowerCase();
 
-    if (s === 'completed' || s === 'successful' || s === 'accepted'  || s === 'paid' || s === 'delivered')
+    if (s === 'completed' || s === 'successful' || s === 'accepted'  || s === 'paid' || s === 'closed')
       return 'chip--success';
 
     if (s === 'rejected')
       return 'chip--rejected';
 
-    if (s === 'pending for payment' || s === 'pending' || s === 'on hold')
+    if (s === 'pending for payment' || s === 'pending' || s === 'on hold' || s === 'delivered')
     return 'chip--pending';
 
-    if (s === 'approved for payment' || s === 'approved' || s === 'new' || s === 'awarded')
+    if (s === 'approved for payment' || s === 'approved' || s === 'new' || s === 'open')
     return 'chip--approved';
   }
 }

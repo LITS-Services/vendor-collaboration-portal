@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PurchaseOrderService } from 'app/shared/services/purchase-order.service';
 import { ShipmentService } from 'app/shared/services/shipment.service';
@@ -142,8 +142,8 @@ export class ShipmentDetailsComponent implements OnInit {
             purchaseOrderLineId: [item.purchaseOrderLineId],
             itemName: [item.itemName],
             orderedQty: [item.orderedQty],
-            deliveryDate: [item.deliveryDate ? item.deliveryDate.split('T')[0] : null],
-            shippingQuantity: [item.shippingQuantity]
+            deliveryDate: [item.deliveryDate ? item.deliveryDate.split('T')[0] : null, Validators.required],
+            shippingQuantity: [item.shippingQuantity, Validators.required]
           });
 
           row.get('shippingQuantity')?.valueChanges.subscribe(value => {
@@ -172,7 +172,7 @@ export class ShipmentDetailsComponent implements OnInit {
 
   save() {
     if (this.form.invalid) {
-      this.toastr.warning("Fill required fields.");
+      this.toastr.warning("Please fill all the required fields.");
       return;
     }
 
