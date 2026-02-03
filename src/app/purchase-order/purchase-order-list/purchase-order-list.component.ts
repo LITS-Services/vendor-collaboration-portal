@@ -63,15 +63,11 @@ export class PurchaseOrderListComponent implements OnInit {
     }
     this.poService.getPurchaseOrdersByVendorAndStatus(vendorUserId, this.selectedStatus, this.forPending)
       .subscribe(res => {
-        this.purchaseOrders = res.map(po => ({
-        ...po,
-        statusClass: this.mapStatusKey(po.status) // Add a new property 'statusClass'
-      }));
-
-      this.cdr.detectChanges();
-      this.loading = false;
-      this.spinner.hide();
-    });
+        this.purchaseOrders = res;
+        this.loading = false;
+        this.spinner.hide();
+        this.cdr.detectChanges();
+      });
   }
   // RFQ List filteration on the basis of QueryParams
   loadFilteredRFQs(status: string) {
@@ -142,19 +138,21 @@ export class PurchaseOrderListComponent implements OnInit {
     }
   }
 
-  private mapStatusKey(status: string): 'chip--success' | 'chip--pending' | 'chip--rejected' | 'chip--approved' {
-    const s = status?.toLowerCase();
+  mapStatusKey(status: any): string {
+    const s = (status ?? '').toString().trim().toLowerCase();
 
-    if (s === 'completed' || s === 'successful' || s === 'accepted'  || s === 'paid' || s === 'closed')
-      return 'chip--success';
+    if (s === 'completed' || s === 'successful' || s === 'accepted' || s === 'paid' || s === 'closed')
+      return 'status-pill--completed';
 
     if (s === 'rejected')
-      return 'chip--rejected';
+      return 'status-pill--rejected';
 
     if (s === 'pending for payment' || s === 'pending' || s === 'on hold' || s === 'delivered')
-    return 'chip--pending';
+      return 'status-pill--inprogress';
 
     if (s === 'approved for payment' || s === 'approved' || s === 'new' || s === 'open')
-    return 'chip--approved';
+      return 'status-pill--new';
+
+    return 'status-pill--default';
   }
 }

@@ -44,13 +44,13 @@
                     </ng-template>
                 </ngx-datatable-column>
 
-                <ngx-datatable-column name="Status" [sortable]="false">
-                        <ng-template let-row="row" ngx-datatable-cell-template>
-                            <span class="chip" [ngClass]="mapStatusKey(row.requestStatus)">
-                                {{ row.requestStatus }}
-                            </span>
-                        </ng-template>
-                    </ngx-datatable-column>
+                <ngx-datatable-column name="Status" prop="requestStatus" [sortable]="false">
+                    <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+                        <span class="status-pill" [ngClass]="mapStatusKey(value)">
+                            {{ value }}
+                        </span>
+                    </ng-template>
+                </ngx-datatable-column>
                 
                 <ngx-datatable-column name="Requisition No." prop="requisitionNo" [sortable]="false">
                 </ngx-datatable-column>

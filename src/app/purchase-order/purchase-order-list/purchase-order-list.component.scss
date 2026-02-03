@@ -1,35 +1,48 @@
-.chip {
+.status-pill{
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 3px 10px;
+  padding: 7px 12px;
   border-radius: 999px;
-  font-size: 11px;
+  font-size: 12px;
+  line-height: 1;
+  font-weight: 500;
   border: 1px solid transparent;
+  background: transparent;
   white-space: nowrap;
 }
 
-.chip--success {
-  background: #ecfdf5;
-  border-color: #bbf7d0;
-  color: #047857;
+.status-pill--new{
+  color: #3B82F6;
+  border-color: #3B82F6;
+  background: rgba(59, 130, 246, 0.07);
+
 }
 
-.chip--pending {
-  background: #fffbeb;
-  border-color: #fed7aa;
-  color: #b45309;
+/* In Process (orange outline) */
+.status-pill--inprogress{
+  color: #DA8900;
+  border-color: #DA8900;
+  background: rgba(218, 137, 0, 0.07);
+
 }
 
-.chip--rejected {
+/* Completed (green outline) */
+.status-pill--completed{
+  color: #2EAF5E;
+  border-color: #2EAF5E;
+  background: rgba(46, 175, 94, 0.07);
+}
+
+.status-pill--rejected {
   background: #fef2f2;
   border-color: #fecaca;
   color: #b91c1c;
 }
 
-.chip--approved{
-  color: #3B82F6;
-  border-color: #3B82F6;
-  background: rgba(59, 130, 246, 0.07);
-
+/* Fallback */
+.status-pill--default{
+  color: #616d89;
+  border-color: #cfd6e4;
+  background: rgba(97, 109, 137, 0.08);
 }
