@@ -678,7 +678,7 @@ export class Dashboard1Component implements OnInit {
   // }
   goToIncome(): void {
     // optional route
-    // this.router.navigate(['/reports/income']);
+    this.router.navigate(['/invoices/invoice-list']);
   }
 
   goToInvoices(): void {

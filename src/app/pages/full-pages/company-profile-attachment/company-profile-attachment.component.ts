@@ -1,5 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { ToastrService } from 'ngx-toastr';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-company-profile-attachment',
@@ -27,7 +29,7 @@ export class CompanyProfileAttachmentComponent implements OnInit {
   deleteIndex: number | null = null;
   showAttachmentDeletePopup: boolean = false;
 
-  constructor() { }
+  constructor(private toastr: ToastrService) { }
 
   ngOnInit(): void {
     console.log('Initial Attached Files in Modal:', this.attachedFiles);
@@ -46,7 +48,7 @@ export class CompanyProfileAttachmentComponent implements OnInit {
     if (this.readonly) return;
 
     if (!this.attachment.file || !this.attachment.fileName || !this.attachment.remarks) {
-      alert('Please select a file and fill out all fields before attaching.');
+      this.toastr.error('Please fill all fields before attaching.');
       return;
     }
 
@@ -55,13 +57,32 @@ export class CompanyProfileAttachmentComponent implements OnInit {
       const expiry = new Date(this.attachment.expiryDate);
       const today = new Date();
       today.setHours(0, 0, 0, 0);
+
       if (expiry < today) {
-        if (!confirm('The document appears to be expired. Do you still want to attach it?')) {
-          return;
-        }
+        // Ask confirmation through Swal
+        Swal.fire({
+          title: 'Trade license expiry date is in the past',
+          text: 'Do you still want to attach this document?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Yes, attach it',
+          cancelButtonText: 'No, cancel'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.proceedWithAttachment(); // attach only if confirmed
+          } else {
+            this.toastr.info('Attachment cancelled');
+          }
+        });
+        return; // exit so attachment doesn't happen yet
       }
     }
 
+    // If expiry is fine or not set, proceed normally
+    this.proceedWithAttachment();
+  }
+
+  proceedWithAttachment = () => {
     const now = new Date();
 
     const newAttachment = {
@@ -80,7 +101,7 @@ export class CompanyProfileAttachmentComponent implements OnInit {
     this.resetAttachmentForm();
     this.emitChange();
   }
-
+  
   private emitChange(): void {
     this.saveAttachment.emit([...this.attachedFiles]);
   }

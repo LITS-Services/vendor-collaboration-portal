@@ -659,15 +659,6 @@ export class QuotationBidModalComponent implements OnInit {
       this.rfqService.updateBids(bids).subscribe({
         next: () => {
           this.spinner.hide();
-
-          Swal.fire({
-            title: 'Submitted!',
-            text: 'Your bids have been submitted successfully.',
-            icon: 'success',
-            timer: 1500,
-            showConfirmButton: false
-          });
-
           this.router.navigate(['/rfq/rfq-list']);
         },
         error: (err) => {

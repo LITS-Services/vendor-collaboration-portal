@@ -111,7 +111,7 @@ export class RegisterVendorComponent implements OnInit {
         // Handle string response
         const message = typeof res === 'string' ? res : res?.message || '';
         if (message.toLowerCase().includes('otp sent')) {
-          this.toastr.success('OTP verified successfully');
+          this.toastr.success('OTP verified successfully.');
 
           localStorage.setItem('pendingRegistration', JSON.stringify({
             Username: payload.Username,
