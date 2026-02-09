@@ -1,13 +1,32 @@
 <section>
+      <div class="row">
+        <div class="col-12">
+
   <div class="row mb-3">
-    <div class="col-12 d-flex align-items-center justify-content-between">
+    <div class="col-md-12 d-flex align-items-center justify-content-between">
       <h5 class="mb-0">Invoices</h5>
+    
+      <div ngbDropdown class="d-inline-block">
+        <button class="btn btn-outline-secondary" id="filterDropdown" ngbDropdownToggle ngbTooltip="Filter"
+          container="body">
+          <i class="bi bi-sliders"></i>
+        </button>
+    
+        <div ngbDropdownMenu class="dropdown-menu-end p-3 shadow filter-dropdown" aria-labelledby="filterDropdown"
+          style="min-width: 220px;" placement="bottom-end" container="body">
+          <label for="statusFilter" class="form-label fw-semibold mb-2">Status:</label>
+          <select id="statusFilter" [(ngModel)]="selectedStatus" (change)="loadInvoices()"
+            class="form-select form-select-sm">
+            <option value="">All</option>
+            <option value="Approved for Payment">Approved for Payment</option>
+            <option value="Pending for Payment">Pending for Payment</option>
+            <option value="Paid">Paid</option>
+          </select>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-12">
-      <div class="pr-table-wrapper" appDatatableAutoResize [datatable]="datatable">
         <ngx-datatable #datatable class="bootstrap core-bootstrap" [rows]="invoices" [columnMode]="'force'"
           [headerHeight]="42" [footerHeight]="50" [scrollbarH]="false" [rowHeight]="42" [loadingIndicator]="loading"
           [count]="totalItems" [offset]="query.currentPage - 1" [limit]="query.pageSize" (page)='onPageChange($event)'>
@@ -67,5 +86,5 @@
         </ngx-datatable>
       </div>
     </div>
-  </div>
+
 </section>

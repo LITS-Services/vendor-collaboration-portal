@@ -54,13 +54,13 @@ export class PurchaseOrderListComponent implements OnInit {
   }
 
   loadPurchaseOrders(): void {
-    this.loading = true;
-    this.spinner.show();
     const vendorUserId = localStorage.getItem('userId');
     if (!vendorUserId) {
       this.toastr.error('Vendor user not found. Please login again.');
       return;
     }
+    this.loading = true;
+    this.spinner.show();
     this.poService.getPurchaseOrdersByVendorAndStatus(vendorUserId, this.selectedStatus, this.forPending)
       .subscribe(res => {
         this.purchaseOrders = res;
@@ -69,11 +69,7 @@ export class PurchaseOrderListComponent implements OnInit {
         this.cdr.detectChanges();
       });
   }
-  // RFQ List filteration on the basis of QueryParams
-  loadFilteredRFQs(status: string) {
-    // TODO: Call API or filter data based on status
-    console.log('Filter RFQs by status:', status);
-  }
+  
   homePage() {
     this.router.navigate(['/dashboard/dashboard1']);
   }

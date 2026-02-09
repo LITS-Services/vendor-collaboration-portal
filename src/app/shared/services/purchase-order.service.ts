@@ -7,7 +7,8 @@ import { Observable } from 'rxjs';
 export interface InvoiceQuery {
   currentPage: number,
   pageSize: number,
-  vendorId: string | null
+  vendorId: string | null,
+  status?: string | null;
 }
 
 @Injectable({
@@ -16,11 +17,6 @@ export interface InvoiceQuery {
 export class PurchaseOrderService {
   private baseUrl = `${environment.apiUrl}/PurchaseOrder`;
   constructor(private http: HttpClient) { }
-
-  // getPurchaseOrdersByVendor(vendorUserId: string): Observable<any> {
-  //   const params = new HttpParams().set('vendorUserId', vendorUserId);
-  //   return this.http.get<any>(`${this.baseUrl}/get-purchase-orders-by-vendor`, { params });
-  // }
 
   getPurchaseOrderById(id: number) {
     return this.http.get<any>(`${this.baseUrl}/get-purchase-order-by-id?id=${id}`);
@@ -64,20 +60,14 @@ export class PurchaseOrderService {
     return this.http.get(`${this.baseUrl}/download-pdf/${invoiceId}`, { responseType: 'blob' });
   }
 
-  getAllInvoices(q: {
-    currentPage: number,
-    pageSize: number,
-    vendorId?: string | null
-  }): Observable<any> {
-
-
+  getAllInvoices(q: InvoiceQuery): Observable<any> {
     let params = new HttpParams()
       .set("currentPage", q.currentPage)
-      .set("pageSize", q.pageSize)
-    if (q.vendorId) params = params.set("vendorId", q.vendorId);
-    return this.http.get<any>(
-      `${this.baseUrl}/get-all-invoices`, { params }
-    );
-  }
+      .set("pageSize", q.pageSize);
 
+    if (q.vendorId) params = params.set("vendorId", q.vendorId);
+    if (q.status) params = params.set("status", q.status);
+
+    return this.http.get<any>(`${this.baseUrl}/get-all-invoices`, { params });
+  }
 }

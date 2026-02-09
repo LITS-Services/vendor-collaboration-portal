@@ -3,10 +3,11 @@ import { CommonModule } from '@angular/common';
 
 import { InvoiceListRoutingModule } from './invoice-list-routing-module';
 import { InvoiceList } from './invoice-list/invoice-list';
-import { DatatableComponent, NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { NgbAccordionModule, NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { NgbAccordionModule, NgbDatepickerModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AutoResizeDatatableDirective } from 'app/shared/directives/table-auto-resize.directive';
 import { DatatableAutoResizeDirective } from 'app/shared/directives/datatable-auto-resize.directive';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -19,7 +20,9 @@ import { DatatableAutoResizeDirective } from 'app/shared/directives/datatable-au
     NgbAccordionModule,
     NgbDatepickerModule,
     AutoResizeDatatableDirective,
-        DatatableAutoResizeDirective
+    DatatableAutoResizeDirective,
+    FormsModule,
+    NgbModule
   ]
 })
 export class InvoiceListModule { }

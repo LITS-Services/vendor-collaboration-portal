@@ -24,7 +24,9 @@ export class InvoiceList implements OnInit {
     currentPage: 1,
     pageSize: 10,
     vendorId: this.authService.getUserId(),
+    status: this.selectedStatus
   };
+
 
   constructor(
     private purchaseOrderService: PurchaseOrderService,
@@ -36,6 +38,7 @@ export class InvoiceList implements OnInit {
 
   ngOnInit(): void {
     this.loadInvoices();
+    this.cdr.detectChanges();
   }
 
   onAutoResize(): void {
@@ -50,14 +53,15 @@ export class InvoiceList implements OnInit {
     });
   }
   loadInvoices() {
+    this.query.status = this.selectedStatus;
     this.loading = true;
-  
-
+    this.spinner.show();
     this.purchaseOrderService.getAllInvoices(this.query).subscribe({
       next: (res: any) => {
         this.invoices = res?.result;
         this.totalItems = res.totalItems;
         this.loading = false;
+        this.spinner.hide();
         this.cdr.detectChanges();
       },
       error: (err) => {

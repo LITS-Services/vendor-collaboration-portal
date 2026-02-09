@@ -4,9 +4,27 @@
 
             <!-- Header -->
             <div class="row mb-3">
-                <div class="col-md-12">
+                <div class="col-md-12 d-flex align-items-center justify-content-between">
                     <h5 class="mb-0">{{ title }}</h5>
-                    
+            
+                    <div ngbDropdown class="d-inline-block">
+                        <button class="btn btn-outline-secondary" id="filterDropdown" ngbDropdownToggle ngbTooltip="Filter"
+                            container="body">
+                            <i class="bi bi-sliders"></i>
+                        </button>
+            
+                        <div ngbDropdownMenu class="dropdown-menu-end p-3 shadow filter-dropdown" aria-labelledby="filterDropdown"
+                            style="min-width: 220px;" placement="bottom-end" container="body">
+                            <label for="statusFilter" class="form-label fw-semibold mb-2">Status:</label>
+                            <select id="statusFilter" [(ngModel)]="selectedStatus" (change)="loadPurchaseOrders()"
+                                class="form-select form-select-sm">
+                                <option value="">All</option>
+                                <option value="Open">Open</option>
+                                <option value="Delivered">Delivered</option>
+                                <option value="Closed">Closed</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
 
