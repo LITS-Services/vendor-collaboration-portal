@@ -243,24 +243,18 @@ export class CompanyRegistrationComponent implements OnInit {
   }
 
 
-  validationError: string | null = null;
 
-  dismissValidationError() {
-    this.validationError = null;
-  }
 
   onContactSubmit(contact: any) {
-    this.validationError = null; // Reset error on new submit attempt
 
     if (contact.primary || contact.isPrimary) {
       const hasPrimary = this.contactList.some((c, i) => (c.primary || c.isPrimary) && i !== this.editingContactIndex);
-      // if (hasPrimary) {
-      //   const msg = 'A primary contact already exists. You can only have one primary contact.';
-      //   this.validationError = msg;
-      //   this.toastr.error(msg, 'Validation Error');
-      //   this.cdr.detectChanges();
-      //   return;
-      // }
+      if (hasPrimary) {
+        const msg = 'A primary contact already exists. You can only have one primary contact.';
+        this.toastr.error(msg, 'Validation Error');
+        this.cdr.detectChanges();
+        return;
+      }
     }
 
     if (this.editingContactIndex === null) {
@@ -281,7 +275,6 @@ export class CompanyRegistrationComponent implements OnInit {
   }
 
   openAddressEditor(index?: number) {
-    this.validationError = null; // Clear error when opening editor
     if (index !== undefined && index !== null) {
       // EDIT MODE – clone so changes don't touch the grid until submit
       this.editingAddressIndex = index;
@@ -296,13 +289,10 @@ export class CompanyRegistrationComponent implements OnInit {
   }
 
   onAddressSubmit(address: any) {
-    this.validationError = null; // Reset error on new submit attempt
-
     if (address.primary || address.isPrimary) {
       const hasPrimary = this.addressList.some((a, i) => (a.primary || a.isPrimary) && i !== this.editingAddressIndex);
       if (hasPrimary) {
         const msg = 'A primary address already exists. You can only have one primary address.';
-        this.validationError = msg;
         this.toastr.error(msg, 'Validation Error');
         this.cdr.detectChanges();
         return;

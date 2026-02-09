@@ -208,15 +208,6 @@
                                         <div *ngIf="selectedTab === 'addresses'">
                                             <div class="address-table-container">
 
-                                                <!-- Fallback Error Message -->
-                                                <div *ngIf="validationError"
-                                                    class="alert alert-danger mb-2 position-relative" role="alert">
-                                                    <i class="fa fa-exclamation-triangle me-2"></i> {{ validationError
-                                                    }}
-                                                    <button type="button"
-                                                        class="btn-close position-absolute top-50 end-0 translate-middle-y me-2"
-                                                        aria-label="Close" (click)="dismissValidationError()"></button>
-                                                </div>
 
                                                 <app-company-address-modal [address]="editingAddress"
                                                     [isEditAddressMode]="editingAddressIndex !== null"
@@ -262,14 +253,6 @@
 
                                         <div *ngIf="selectedTab === 'contacts'">
 
-                                            <!-- Fallback Error Message -->
-                                            <div *ngIf="validationError"
-                                                class="alert alert-danger mb-2 position-relative" role="alert">
-                                                <i class="fa fa-exclamation-triangle me-2"></i> {{ validationError }}
-                                                <button type="button"
-                                                    class="btn-close position-absolute top-50 end-0 translate-middle-y me-2"
-                                                    aria-label="Close" (click)="dismissValidationError()"></button>
-                                            </div>
 
                                             <app-company-contact-modal [contact]="editingContact"
                                                 [isEditMode]="editingContactIndex !== null" *ngIf="!isReadOnly"
