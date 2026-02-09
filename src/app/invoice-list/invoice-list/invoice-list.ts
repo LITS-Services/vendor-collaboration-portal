@@ -37,7 +37,7 @@ export class InvoiceList implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.loadInvoices();
+    //this.loadInvoices();
     this.cdr.detectChanges();
   }
 
