@@ -29,7 +29,7 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
   selectedLanguageFlag = "./assets/img/flags/us.png";
   toggleClass = "ft-maximize";
   placement = "bottom-right";
-  logoUrl = "assets/img/icons/vp.png";
+  logoUrl = "assets/img/LITS Procurement and Sourcing.png";
   menuPosition = "Side";
   isSmallScreen = false;
   username: string = "";
@@ -303,7 +303,7 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
       this.menuPosition = this.config.layout.menuPosition;
     }
 
-    this.logoUrl = "assets/img/icons/vp.png"; // same for light/dark in your setup
+    this.logoUrl = "assets/img/LITS Procurement and Sourcing.png"; // same for light/dark in your setup
     this.transparentBGClass =
       this.config.layout.variant === "Transparent"
         ? this.config.layout.sidebar.backgroundColor

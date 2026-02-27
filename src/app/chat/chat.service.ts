@@ -30,7 +30,7 @@ export class ChatService {
       '30 minutes ago',
       [
         'To get started, please provide your company details and business category.',
-        'We’ll then send you a registration link to our vendor portal.'
+        'We’ll then send you a registration link to our sourcing portal.'
       ],
       'text'
     ),
@@ -64,11 +64,11 @@ export class ChatService {
       'text'
     ),
   ];
-  
+
 
 
   public usersChat: UsersChat[] = [
-   
+
     {
       userId: "3",
       name: "Sarah Woods",
@@ -82,7 +82,7 @@ export class ChatService {
       lastChatMessage: "Hello John!",
       chats: this.chat3
     },
-    
+
   ]
 
 
