@@ -8,9 +8,7 @@
         <img [src]="logoUrl" alt="Procurement and Sourcing Portal" />
       </a>
 
-      <button class="icon-btn" appToggleFullscreen (click)="ToggleClass()">
-        <i class="{{ toggleClass }}"></i>
-      </button>
+
 
       <!-- Center: Rounded Tabs (scrollable if overflow) -->
       <div class="vp-pill">
@@ -32,7 +30,9 @@
 
       <!-- Right: Actions -->
       <div class="vp-actions">
-        <!-- Fullscreen / any quick action -->
+        <button class="icon-btn" appToggleFullscreen (click)="ToggleClass()">
+          <i class="{{ toggleClass }}"></i>
+        </button>
 
         <div class="notification-wrapper" #notifRoot>
           <button class="icon-btn notification-bell" (click)="togglePanel()" aria-haspopup="true"
