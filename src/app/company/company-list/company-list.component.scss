@@ -102,6 +102,15 @@ input:checked+.slider:before {
   border-radius: 22px;
 }
 
+.csm-remarks-btn:hover,
+.csm-remarks-btn:focus,
+.csm-remarks-btn:active {
+  box-shadow: none !important;
+  background-color: rgba(60, 60, 60, 0.071);
+  transition-duration: 0.2s;
+}
+
+
 :host ::ng-deep .ngx-datatable.fixed-row .datatable-scroll .datatable-body-row .datatable-body-cell.action-cell {
   justify-content: flex-end !important;
   /* horizontal right */

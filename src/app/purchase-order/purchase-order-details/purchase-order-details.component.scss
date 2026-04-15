@@ -417,6 +417,14 @@
     font-size: 12px;
   }
 
+  .csm-remarks-btn:hover,
+  .csm-remarks-btn:focus,
+  .csm-remarks-btn:active {
+    box-shadow: none !important;
+    background-color: rgba(60, 60, 60, 0.071);
+    transition-duration: 0.2s;
+  }
+
   .status-pill {
     display: inline-flex;
     align-items: center;

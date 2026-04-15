@@ -277,9 +277,9 @@
         </button>
       </ng-container>
       <ng-container *ngIf="selectedInvoicePoId">
-        <button class="btn btn-primary modal-action-btn" [disabled]="!modalInvoiceReady || modalInvoiceIsEdit" (click)="sendInvoiceFromModal()">
-          <i class="ft-send me-1"></i>
-          <span>Send for Payment</span>
+        <button class="btn btn-primary modal-action-btn" [disabled]="!modalInvoiceReady || !modalInvoiceIsEdit" (click)="downloadInvoiceFromModal()">
+          <i class="ft-download me-1"></i>
+          <span>Download PDF</span>
         </button>
       </ng-container>
     </div>

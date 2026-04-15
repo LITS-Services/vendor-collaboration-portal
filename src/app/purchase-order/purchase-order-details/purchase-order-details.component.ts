@@ -209,8 +209,8 @@ export class PurchaseOrderDetailsComponent implements OnInit {
     this.shipmentDetailComp?.deleteShipment();
   }
 
-  sendInvoiceFromModal() {
-    this.invoiceDetailComp?.sendForPayment();
+  downloadInvoiceFromModal() {
+    this.invoiceDetailComp?.downloadInvoice();
   }
 
   requestInvoiceFromGrn() {

@@ -145,6 +145,7 @@ export class InvoiceComponent implements OnInit {
         if (invoice && invoice.id) {
           this.invoiceExists = true;
           this.isEdit = true;
+          this.invoiceId = invoice.id;
 
           this.form.patchValue({
             invoiceNo: invoice.invoiceNo,
@@ -251,6 +252,23 @@ export class InvoiceComponent implements OnInit {
       });
 
 
+    });
+  }
+
+  downloadInvoice() {
+    if (!this.invoiceId) {
+      this.toastr.warning('Invoice is not available for download.');
+      return;
+    }
+
+    const invoiceNo = this.form.get('invoiceNo')?.value || this.invoiceId;
+    this.purchaseOrderService.downloadInvoicePdf(this.invoiceId).subscribe(blob => {
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `Invoice_${invoiceNo}.pdf`;
+      link.click();
+      window.URL.revokeObjectURL(url);
     });
   }
 
