@@ -1,6 +1,11 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { GrnDetailsComponent } from 'app/purchase-order/purchase-order-details/grn-details/grn-details.component';
+import { InvoiceComponent } from 'app/purchase-order/purchase-order-details/invoice/invoice.component';
+import { ShipmentDetailsComponent } from 'app/purchase-order/purchase-order-details/shipment-details/shipment-details.component';
 import { PurchaseOrderService } from 'app/shared/services/purchase-order.service';
+import { ShipmentService } from 'app/shared/services/shipment.service';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { finalize } from 'rxjs/operators';
@@ -13,19 +18,41 @@ import Swal from 'sweetalert2';
   standalone: false
 })
 export class PurchaseOrderDetailsComponent implements OnInit {
+  @ViewChild('detailModal') detailModal!: TemplateRef<any>;
+  @ViewChild('shipmentDetailComp') shipmentDetailComp?: ShipmentDetailsComponent;
+  @ViewChild('grnDetailComp') grnDetailComp?: GrnDetailsComponent;
+  @ViewChild('invoiceDetailComp') invoiceDetailComp?: InvoiceComponent;
   poDetails: any;
   loading = true;
   poId!: number;
   itemsExpanded: boolean = true;
   selectedTab: any = 'po-details';
+  shipments: any[] = [];
+  grnList: any[] = [];
+  invoiceList: any[] = [];
+  selectedShipmentId?: number;
+  selectedGrnId?: number;
+  selectedInvoicePoId?: number;
+  modalTitle = '';
+  modalRef?: NgbModalRef;
+  shipmentLoaded = false;
+  grnLoaded = false;
+  invoiceLoaded = false;
+  modalShipmentReady = false;
+  modalShipmentIsEdit = false;
+  modalInvoiceReady = false;
+  modalInvoiceIsEdit = false;
+  modalGrnReady = false;
 
   constructor(
     private route: ActivatedRoute,
     private purchaseOrderService: PurchaseOrderService,
+    private shipmentService: ShipmentService,
     private toastr: ToastrService,
     private router: Router,
     public cdr: ChangeDetectorRef,
-    private spinner: NgxSpinnerService
+    private spinner: NgxSpinnerService,
+    private modalService: NgbModal
   ) { }
 
   ngOnInit(): void {
@@ -62,6 +89,180 @@ export class PurchaseOrderDetailsComponent implements OnInit {
 
   selectTab(tab: any) {
     this.selectedTab = tab;
+    this.cdr.detectChanges();
+
+    if (tab === 'shipment-details' && !this.shipmentLoaded) {
+      this.loadShipments();
+    }
+
+    if (tab === 'grn-details' && !this.grnLoaded) {
+      this.loadGrnList();
+    }
+
+    if (tab === 'invoice-details' && !this.invoiceLoaded) {
+      this.loadInvoiceList();
+    }
+  }
+
+  loadShipments() {
+    this.loading = true;
+    this.spinner.show();
+    this.shipmentService.getAllShipmentDetailByPurchaseOrder(this.poId).subscribe({
+      next: (res) => {
+        this.shipments = this.extractRows(res);
+        this.shipmentLoaded = true;
+        this.loading = false;
+        this.spinner.hide();
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.shipments = [];
+        this.shipmentLoaded = true;
+        this.loading = false;
+        this.spinner.hide();
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  loadGrnList() {
+    this.loading = true;
+    this.spinner.show();
+    this.purchaseOrderService.getAllGoodsReceiptNotes(this.poId).subscribe({
+      next: (res) => {
+        this.grnList = this.extractRows(res);
+        this.grnLoaded = true;
+        this.loading = false;
+        this.spinner.hide();
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.grnList = [];
+        this.grnLoaded = true;
+        this.loading = false;
+        this.spinner.hide();
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  loadInvoiceList() {
+    this.loading = true;
+    this.spinner.show();
+    this.purchaseOrderService.getAllPoInvoices(this.poId, 1, 200).subscribe({
+      next: (res) => {
+        const rows = this.extractRows(res);
+        this.invoiceList =rows;
+        this.invoiceLoaded = true;
+        this.loading = false;
+        this.spinner.hide();
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.invoiceList = [];
+        this.invoiceLoaded = true;
+        this.loading = false;
+        this.spinner.hide();
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  openShipmentDetail(row: any) {
+    this.selectedShipmentId = row.id;
+    this.selectedGrnId = undefined;
+    this.selectedInvoicePoId = undefined;
+    this.modalShipmentReady = false;
+    this.modalShipmentIsEdit = false;
+    this.modalTitle = 'Shipment Detail';
+    this.modalRef = this.modalService.open(this.detailModal, { size: 'xl', centered: true, scrollable: true });
+  }
+
+  openGrnDetail(row: any) {
+    this.selectedGrnId = row.id;
+    this.selectedShipmentId = undefined;
+    this.selectedInvoicePoId = undefined;
+    this.modalGrnReady = false;
+    this.modalTitle = 'Goods Receipt Note';
+    this.modalRef = this.modalService.open(this.detailModal, { size: 'xl', centered: true, scrollable: true });
+  }
+
+  openInvoiceDetail(row: any) {
+    this.selectedInvoicePoId = Number(row.purchaseOrderId);
+    this.selectedShipmentId = undefined;
+    this.selectedGrnId = undefined;
+    this.modalInvoiceReady = false;
+    this.modalInvoiceIsEdit = false;
+    this.modalTitle = 'Invoice Detail';
+    this.modalRef = this.modalService.open(this.detailModal, { size: 'xl', centered: true, scrollable: true });
+  }
+
+  closeModal() {
+    this.modalRef?.close();
+  }
+
+  saveShipmentFromModal() {
+    this.shipmentDetailComp?.save();
+  }
+
+  cancelShipmentFromModal() {
+    this.shipmentDetailComp?.deleteShipment();
+  }
+
+  sendInvoiceFromModal() {
+    this.invoiceDetailComp?.sendForPayment();
+  }
+
+  requestInvoiceFromGrn() {
+    this.closeModal();
+    this.selectTab('invoice-details');
+  }
+
+  onShipmentStateChange(event: { ready: boolean; isEdit: boolean }) {
+    this.modalShipmentReady = event.ready;
+    this.modalShipmentIsEdit = event.isEdit;
+    this.cdr.detectChanges();
+  }
+
+  onGrnStateChange(event: { ready: boolean }) {
+    this.modalGrnReady = event.ready;
+    this.cdr.detectChanges();
+  }
+
+  onInvoiceStateChange(event: { ready: boolean; isEdit: boolean }) {
+    this.modalInvoiceReady = event.ready;
+    this.modalInvoiceIsEdit = event.isEdit;
+    this.cdr.detectChanges();
+  }
+
+  mapStatusKey(status: any): string {
+    const s = (status ?? '').toString().trim().toLowerCase();
+
+    if (s === 'completed' || s === 'successful' || s === 'accepted' || s === 'paid' || s === 'closed') {
+      return 'status-pill--completed';
+    }
+
+    if (s === 'rejected') {
+      return 'status-pill--rejected';
+    }
+
+    if (s === 'pending for payment' || s === 'pending' || s === 'on hold' || s === 'delivered' || s === 'in process') {
+      return 'status-pill--inprogress';
+    }
+
+    if (s === 'approved for payment' || s === 'approved' || s === 'new' || s === 'open') {
+      return 'status-pill--new';
+    }
+
+    return 'status-pill--default';
+  }
+
+  private extractRows(res: any): any[] {
+    if (Array.isArray(res)) {
+      return res;
+    }
+
+    return res?.result || res?.items || res?.data?.items || res?.value?.items || [];
   }
 
   rejectPurchaseOrder() {

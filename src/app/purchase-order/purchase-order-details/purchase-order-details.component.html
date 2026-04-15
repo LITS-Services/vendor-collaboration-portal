@@ -152,16 +152,136 @@
     </div>
 
     <div *ngIf="selectedTab === 'shipment-details'">
-      <app-shipment-details [poId]="poId"></app-shipment-details>
+      <ngx-datatable class="bootstrap core-bootstrap" [rows]="shipments" [columnMode]="'force'" [headerHeight]="50"
+        [footerHeight]="50" rowHeight="50" [limit]="10" [scrollbarH]="true" [loadingIndicator]="loading">
+        <ngx-datatable-column name="Sr. No." [sortable]="false">
+          <ng-template let-rowIndex="rowIndex" ngx-datatable-cell-template>
+            <span>{{ rowIndex + 1 }}</span>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Shipment No" prop="shipmentDetailNo" [sortable]="false"></ngx-datatable-column>
+        <ngx-datatable-column name="Shipment Date" prop="shipmentDate" [sortable]="false">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.shipmentDate | date:'yyyy-MM-dd' }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Status" prop="requestStatus" [sortable]="false">
+          <ng-template ngx-datatable-cell-template let-value="value">
+            <span class="status-pill" [ngClass]="mapStatusKey(value)">
+              {{ value }}
+            </span>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Action" [sortable]="false">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <button class="btn btn-sm csm-remarks-btn d-inline-flex align-items-center gap-1" (click)="openShipmentDetail(row)">
+              <i class="ft-eye"></i>
+              <span>View</span>
+            </button>
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
     </div>
 
     <div *ngIf="selectedTab === 'grn-details'">
-      <app-grn-details [poId]="poId"></app-grn-details>
+      <ngx-datatable class="bootstrap core-bootstrap" [rows]="grnList" [columnMode]="'force'" [headerHeight]="50"
+        [footerHeight]="50" rowHeight="50" [limit]="10" [scrollbarH]="true" [loadingIndicator]="loading">
+        <ngx-datatable-column name="Sr. No." [sortable]="false">
+          <ng-template let-rowIndex="rowIndex" ngx-datatable-cell-template>
+            <span>{{ rowIndex + 1 }}</span>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="GRN No" prop="grNumber" [sortable]="false"></ngx-datatable-column>
+        <ngx-datatable-column name="Receiver" prop="receiverName" [sortable]="false"></ngx-datatable-column>
+        <ngx-datatable-column name="Status" prop="requestStatus" [sortable]="false">
+          <ng-template ngx-datatable-cell-template let-value="value">
+            <span class="status-pill" [ngClass]="mapStatusKey(value)">
+              {{ value }}
+            </span>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Action" [sortable]="false">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <button class="btn btn-sm csm-remarks-btn d-inline-flex align-items-center gap-1" (click)="openGrnDetail(row)">
+              <i class="ft-eye"></i>
+              <span>View</span>
+            </button>
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
     </div>
 
     <div *ngIf="selectedTab === 'invoice-details'">
-      <app-invoice [poId]="poId"></app-invoice>
+      <ngx-datatable class="bootstrap core-bootstrap" [rows]="invoiceList" [columnMode]="'force'" [headerHeight]="50"
+        [footerHeight]="50" rowHeight="50" [limit]="10" [scrollbarH]="true" [loadingIndicator]="loading">
+        <ngx-datatable-column name="Sr. No." [sortable]="false">
+          <ng-template let-rowIndex="rowIndex" ngx-datatable-cell-template>
+            <span>{{ rowIndex + 1 }}</span>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Invoice No" prop="invoiceNo" [sortable]="false"></ngx-datatable-column>
+        <ngx-datatable-column name="Invoice Date" prop="invoiceDate" [sortable]="false">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.invoiceDate | date:'yyyy-MM-dd' }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="GRN No" prop="grNumber" [sortable]="false"></ngx-datatable-column>
+        <ngx-datatable-column name="Status" prop="requestStatus" [sortable]="false">
+          <ng-template ngx-datatable-cell-template let-value="value">
+            <span class="status-pill" [ngClass]="mapStatusKey(value)">
+              {{ value }}
+            </span>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Action" [sortable]="false">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <button class="btn btn-sm csm-remarks-btn d-inline-flex align-items-center gap-1" (click)="openInvoiceDetail(row)">
+              <i class="ft-eye"></i>
+              <span>View</span>
+            </button>
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
     </div>
 
   </div>
+
+  <ng-template #detailModal>
+    <div class="modal-header modal-header-soft">
+      <h5 class="modal-title">{{ modalTitle }}</h5>
+      <button type="button" class="btn-close" aria-label="Close" (click)="closeModal()"></button>
+    </div>
+    <div class="modal-body modal-body-soft">
+      <app-shipment-details #shipmentDetailComp *ngIf="selectedShipmentId" [poId]="poId" [shipmentId]="selectedShipmentId"
+        [inModal]="true" (stateChange)="onShipmentStateChange($event)"></app-shipment-details>
+      <app-grn-details #grnDetailComp *ngIf="selectedGrnId" [poId]="poId" [grnId]="selectedGrnId"
+        [inModal]="true" (stateChange)="onGrnStateChange($event)"></app-grn-details>
+      <app-invoice #invoiceDetailComp *ngIf="selectedInvoicePoId" [poId]="selectedInvoicePoId"
+        [inModal]="true" (stateChange)="onInvoiceStateChange($event)"></app-invoice>
+    </div>
+    <div class="modal-footer modal-footer-soft">
+      <ng-container *ngIf="selectedShipmentId">
+        <button *ngIf="modalShipmentIsEdit" class="btn modal-action-btn modal-cancel-shipment-btn" (click)="cancelShipmentFromModal()">
+          <i class="ft-alert-triangle me-1"></i>
+          <span>Cancel Shipment</span>
+        </button>
+        <button class="btn btn-primary modal-action-btn" [disabled]="!modalShipmentReady" (click)="saveShipmentFromModal()">
+          <i class="ft-check-circle me-1"></i>
+          <span>{{ modalShipmentIsEdit ? 'Update Shipment Details' : 'Submit Shipment Details' }}</span>
+        </button>
+      </ng-container>
+      <ng-container *ngIf="selectedGrnId">
+        <button class="btn btn-primary modal-action-btn" [disabled]="!modalGrnReady" (click)="requestInvoiceFromGrn()">
+          <i class="ft-file-text me-1"></i>
+          <span>Request for Invoice</span>
+        </button>
+      </ng-container>
+      <ng-container *ngIf="selectedInvoicePoId">
+        <button class="btn btn-primary modal-action-btn" [disabled]="!modalInvoiceReady || modalInvoiceIsEdit" (click)="sendInvoiceFromModal()">
+          <i class="ft-send me-1"></i>
+          <span>Send for Payment</span>
+        </button>
+      </ng-container>
+    </div>
+  </ng-template>
 </section>

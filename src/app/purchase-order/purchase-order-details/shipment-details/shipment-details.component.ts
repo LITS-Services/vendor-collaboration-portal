@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PurchaseOrderService } from 'app/shared/services/purchase-order.service';
@@ -15,10 +15,13 @@ import Swal from 'sweetalert2';
 })
 export class ShipmentDetailsComponent implements OnInit {
   @Input() poId: number;
+  @Input() shipmentId?: number;
+  @Input() inModal = false;
+  @Output() stateChange = new EventEmitter<{ ready: boolean; isEdit: boolean }>();
   form!: FormGroup;
   itemsForm!: FormArray;
   isEdit = false;
-  shipmentId?: number;
+  selectedShipmentId?: number;
   purchaseOrderNo?: string;
   vendorName?: string;
   itemsExpanded: boolean = true;
@@ -56,7 +59,7 @@ export class ShipmentDetailsComponent implements OnInit {
 
     this.itemsForm = this.form.get('items') as FormArray;
     this.loadPurchaseOrder();
-    this.checkIfShipmentExists();
+    this.loadShipmentDetails();
     this.cdr.detectChanges();
     
   }
@@ -108,17 +111,19 @@ export class ShipmentDetailsComponent implements OnInit {
     });
   }
 
-  checkIfShipmentExists() {
+  loadShipmentDetails() {
     this.loading = true;
     this.spinner.show();
-    this.shipmentService.getShipmentDetailById(this.poId).subscribe({
+    const shipmentId = this.shipmentId ?? 0;
+    this.shipmentService.getShipmentDetailById(shipmentId, this.poId).subscribe({
       next: (res) => {
         const data = res;
+        console.log("shupment", data)
 
         if (data && data.id) {
           this.isEdit = true;
 
-          this.shipmentId = data.id;
+          this.selectedShipmentId = data.id;
           this.purchaseOrderNo = data.purchaseOrderNo;
           this.vendorName = data.vendorName;
 
@@ -163,8 +168,12 @@ export class ShipmentDetailsComponent implements OnInit {
         });
 
         this.cdr.detectChanges();
+        this.stateChange.emit({ ready: true, isEdit: this.isEdit });
       },
       error: () => {
+        this.spinner.hide();
+        this.loading = false;
+        this.stateChange.emit({ ready: true, isEdit: false });
         console.log("No existing shipment - Add mode");
       }
     });
@@ -213,9 +222,9 @@ export class ShipmentDetailsComponent implements OnInit {
       items: itemsPayload
     };
 
-    if (this.isEdit && this.shipmentId) {
+    if (this.isEdit && this.selectedShipmentId) {
       const updatePayload = {
-        shipmentDetailId: this.shipmentId,
+        shipmentDetailId: this.selectedShipmentId,
         shipmentDetail: shipmentDetailPayload
       };
       this.loading = true;
@@ -225,7 +234,7 @@ export class ShipmentDetailsComponent implements OnInit {
           this.loading = true;
           this.spinner.hide();
           this.router.navigate([`/purchase-order/purchase-order-details/${this.poId}`], { skipLocationChange: true });
-          this.checkIfShipmentExists();
+          this.loadShipmentDetails();
         }
       });
       return;
@@ -242,14 +251,14 @@ export class ShipmentDetailsComponent implements OnInit {
         this.loading = false;
         this.spinner.hide();
         this.router.navigate([`/purchase-order/purchase-order-details/${this.poId}`], { skipLocationChange: true });
-        this.checkIfShipmentExists();
+        this.loadShipmentDetails();
       }
     });
     });
   }
 
   deleteShipment() {
-    if (!this.shipmentId) {
+    if (!this.selectedShipmentId) {
       this.toastr.warning('No shipment to delete.');
       return;
     }
@@ -263,7 +272,7 @@ export class ShipmentDetailsComponent implements OnInit {
       cancelButtonText: 'Cancel'
     }).then((result) => {
       if (result.isConfirmed) {
-        this.shipmentService.deleteShipment(this.shipmentId).subscribe({
+        this.shipmentService.deleteShipment(this.selectedShipmentId).subscribe({
           next: () => {
             //Swal.fire('Deleted!', 'Shipment has been deleted.', 'success');
             this.form.patchValue({
@@ -280,8 +289,8 @@ export class ShipmentDetailsComponent implements OnInit {
             });
 
             this.isEdit = false;
-            this.shipmentId = undefined;
-            this.checkIfShipmentExists();
+            this.selectedShipmentId = undefined;
+            this.loadShipmentDetails();
             //this.cdr.detectChanges();
         },
           error: () => {

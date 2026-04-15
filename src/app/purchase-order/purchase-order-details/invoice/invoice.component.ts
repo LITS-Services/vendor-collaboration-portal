@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PurchaseOrderService } from 'app/shared/services/purchase-order.service';
@@ -15,6 +15,8 @@ import { NgxSpinnerService } from 'ngx-spinner';
 })
 export class InvoiceComponent implements OnInit {
   @Input() poId!: number;
+  @Input() inModal = false;
+  @Output() stateChange = new EventEmitter<{ ready: boolean; isEdit: boolean }>();
 
   form!: FormGroup;
   itemsForm!: FormArray;
@@ -63,28 +65,48 @@ export class InvoiceComponent implements OnInit {
   private loadGrnDetails() {
     this.loading = true;
     this.spinner.show();
-    this.purchaseOrderService.getGoodsReceiptNoteById(this.poId).subscribe({
-      next: (res) => {
-        if (!res) return;
-        this.purchaseOrderNo = res.purchaseOrderNo;
-        this.vendorName = res.vendorName;
-        this.grNumber = res.grNumber;
+    this.purchaseOrderService.getAllGoodsReceiptNotes(this.poId).subscribe({
+      next: (listRes) => {
+        const grnRows = listRes?.result || listRes?.items || listRes?.data?.items || listRes?.value?.items || [];
+        const grnId = grnRows?.[0]?.id;
 
-      this.form.patchValue({
-          purchaseOrderNo: res.purchaseOrderNo,
-          vendorName: res.vendorName,
-          grNumber: res.grNumber
-        });
-
-        if (res.goodsReceiptItems?.length) {
-          this.itemsForm.clear();
-          res.goodsReceiptItems.forEach(item => this.itemsForm.push(this.createItemGroup(item, true)));
+        if (!grnId) {
+          this.loading = false;
+          this.spinner.hide();
+          return;
         }
+
+        this.purchaseOrderService.getGoodsReceiptNoteById(grnId).subscribe({
+          next: (res) => {
+            if (!res) return;
+            this.purchaseOrderNo = res.purchaseOrderNo;
+            this.vendorName = res.vendorName;
+            this.grNumber = res.grNumber;
+
+            this.form.patchValue({
+              purchaseOrderNo: res.purchaseOrderNo,
+              vendorName: res.vendorName,
+              grNumber: res.grNumber
+            });
+
+            if (res.goodsReceiptItems?.length) {
+              this.itemsForm.clear();
+              res.goodsReceiptItems.forEach(item => this.itemsForm.push(this.createItemGroup(item, true)));
+            }
+            this.loading = false;
+            this.spinner.hide();
+            this.cdr.markForCheck();
+          },
+          error: () => {
+            this.loading = false;
+            this.spinner.hide();
+          }
+        });
+      },
+      error: () => {
         this.loading = false;
         this.spinner.hide();
-        this.cdr.markForCheck();
-      },
-      error: (err) => console.error(err)
+      }
     });
   }
   // private loadPurchaseOrder() {
@@ -146,10 +168,14 @@ export class InvoiceComponent implements OnInit {
         this.loading = false;
         this.spinner.hide();
         this.cdr.detectChanges();
+        this.stateChange.emit({ ready: true, isEdit: this.isEdit });
       },
       error: () => {
         this.invoiceExists = false;
         this.isEdit = false;
+        this.loading = false;
+        this.spinner.hide();
+        this.stateChange.emit({ ready: true, isEdit: false });
       }
     });
   }
@@ -216,6 +242,7 @@ export class InvoiceComponent implements OnInit {
             this.spinner.hide();
             this.cdr.detectChanges();
             this.checkInvoice();
+            this.stateChange.emit({ ready: true, isEdit: this.isEdit });
           }
         },
         error: (err) => {

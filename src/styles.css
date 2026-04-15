@@ -142,6 +142,50 @@ a:hover {
      font-weight: 600;
      border-bottom: none !important;
   }
+
+/* Purchase order details modal sections */
+.modal-header.modal-header-soft {
+  background: linear-gradient(180deg, #f9f9f9 0%, #f4f4f4 100%) !important;
+  border-bottom: 1px solid #e5e5e5 !important;
+  padding: 0.9rem 1.1rem !important;
+}
+
+.modal-body.modal-body-soft {
+  background-color: #ffffff !important;
+  padding: 1rem 1.1rem !important;
+}
+
+.modal-footer.modal-footer-soft {
+  background: #f7f7f7 !important;
+  border-top: 1px solid #e5e5e5 !important;
+  padding: 0.85rem 1.1rem !important;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+}
+
+.modal-action-btn {
+  min-width: 160px;
+  font-weight: 600;
+  border-radius: 0.4rem;
+  padding: 0.5rem 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.modal-cancel-shipment-btn {
+  background-color: #fff4e8 !important;
+  border: 1px solid #f2c48d !important;
+  color: #a15a00 !important;
+}
+
+.modal-cancel-shipment-btn:hover {
+  background-color: #ffe8d0 !important;
+  border-color: #eba75a !important;
+  color: #8a4d00 !important;
+}
   
   .form-control:focus {
     color: #75787d;

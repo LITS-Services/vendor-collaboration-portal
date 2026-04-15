@@ -13,10 +13,10 @@
         </div>  -->
 
 <!-- Shipment Form (MAIN CARD) -->
-<div class="card shadow-sm p-3 border border-success rounded mb-3" [formGroup]="form">
+<div [class]="inModal ? 'px-1 py-2' : 'card shadow-sm p-3 border border-success rounded mb-3'" [formGroup]="form">
 
     <!-- HEADER ROW: Title + Top-right buttons -->
-    <div class="d-flex justify-content-between align-items-start mb-3">
+    <div class="d-flex justify-content-between align-items-start mb-3" *ngIf="!inModal">
 
         <h5 class="mt-2 fw-bold">
             {{ isEdit ? 'Update Shipment Details' : 'Add Shipment Details' }}
