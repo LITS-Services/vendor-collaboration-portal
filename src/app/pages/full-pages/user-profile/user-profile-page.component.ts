@@ -148,7 +148,8 @@ export class UserProfilePageComponent implements OnInit, AfterViewInit, OnDestro
           const userData = res.$values ? res.$values[0] : res;
           this.userProfileForm.patchValue({
             fullName: userData.fullName,
-            email: userData.email
+            email: userData.email,
+            vendorNo: userData.vendorNo
           });
 
           if (userData.profilePicture) {

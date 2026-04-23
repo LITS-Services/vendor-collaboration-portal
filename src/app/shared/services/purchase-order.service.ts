@@ -45,6 +45,10 @@ export class PurchaseOrderService {
     return this.http.get<any>(`${this.baseUrl}/get-grn?id=${purchaseOrderId}`);
   }
 
+  requestForPayment(purchaseOrderId: number) {
+    return this.http.post<any>(`${this.baseUrl}/request-for-payment`, { purchaseOrderId: purchaseOrderId });
+  }
+
   getAllGoodsReceiptNotes(purchaseOrderId: number, currentPage = 1, pageSize = 100): Observable<any> {
     return this.http.get<any>(
       `${this.baseUrl}/get-all-grn?purchaseOrderId=${purchaseOrderId}&currentPage=${currentPage}&pageSize=${pageSize}`

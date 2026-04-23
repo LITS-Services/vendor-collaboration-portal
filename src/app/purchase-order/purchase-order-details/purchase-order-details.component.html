@@ -116,6 +116,26 @@
               <label class="form-label small mb-1">Date</label>
               <input class="form-control form-control-sm" [value]="poDetails?.createdDate | date:'yyyy-MM-dd'" disabled>
             </div>
+
+            <div class="col-lg-4 col-md-6 mb-3">
+              <label class="form-label small mb-1">Location Code</label>
+              <input class="form-control form-control-sm" [value]="poDetails?.locationCode" disabled>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-3">
+              <label class="form-label small mb-1">Ship To Country</label>
+              <input class="form-control form-control-sm" [value]="poDetails?.shipToCountry" disabled>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-3">
+              <label class="form-label small mb-1">Ship To City</label>
+              <input class="form-control form-control-sm" [value]="poDetails?.shipToCity" disabled>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-3">
+              <label class="form-label small mb-1">Ship To PostCode</label>
+              <input class="form-control form-control-sm" [value]="poDetails?.shipToPostCode" disabled>
+            </div>
           </div>
         </div>
       </div>
@@ -184,6 +204,9 @@
     </div>
 
     <div *ngIf="selectedTab === 'grn-details'">
+      <div class="d-flex justify-content-end mb-2">
+        <button class="btn btn-primary" (click)="requestForPayment()"><i class="ft-file-text me-1"></i>Request for Payment</button>
+      </div>
       <ngx-datatable class="bootstrap core-bootstrap" [rows]="grnList" [columnMode]="'force'" [headerHeight]="50"
         [footerHeight]="50" rowHeight="50" [limit]="10" [scrollbarH]="true" [loadingIndicator]="loading">
         <ngx-datatable-column name="Sr. No." [sortable]="false">
@@ -268,12 +291,6 @@
         <button class="btn btn-primary modal-action-btn" [disabled]="!modalShipmentReady" (click)="saveShipmentFromModal()">
           <i class="ft-check-circle me-1"></i>
           <span>{{ modalShipmentIsEdit ? 'Update Shipment Details' : 'Submit Shipment Details' }}</span>
-        </button>
-      </ng-container>
-      <ng-container *ngIf="selectedGrnId">
-        <button class="btn btn-primary modal-action-btn" [disabled]="!modalGrnReady" (click)="requestInvoiceFromGrn()">
-          <i class="ft-file-text me-1"></i>
-          <span>Request for Invoice</span>
         </button>
       </ng-container>
       <ng-container *ngIf="selectedInvoicePoId">

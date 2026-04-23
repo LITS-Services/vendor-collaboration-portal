@@ -152,6 +152,98 @@
                                                             </small>
                                                         </div>
 
+                                                       
+                                                                <div class="row mt-2">
+                                                                    <div class="col-6 form-group">
+                                                                        <label>Payment Method <span class="text-danger">*</span></label>
+                                                                        <select class="form-control w-cstm"
+                                                                            [(ngModel)]="paymentMethod"
+                                                                            [disabled]="isReadOnly">
+                                                                            <option value="">Select payment method</option>
+                                                                            <option *ngFor="let option of paymentMethodOptions"
+                                                                                [ngValue]="option.desc">
+                                                                                {{ option.desc }}
+                                                                            </option>
+                                                                        </select>
+                                                                        <small class="text-danger" *ngIf="!paymentMethod && isLastTab()">
+                                                                            Payment Method is required.
+                                                                        </small>
+                                                                    </div>
+    
+                                                                    <div class="col-6 form-group" style="margin-left: -14px !important;">
+                                                                        <label>Payment Term <span class="text-danger">*</span></label>
+                                                                        <select class="form-control w-cstm"
+                                                                            [(ngModel)]="paymentTerm"
+                                                                            [disabled]="isReadOnly">
+                                                                            <option value="">Select payment term</option>
+                                                                            <option *ngFor="let option of paymentTermOptions"
+                                                                                [ngValue]="option.desc">
+                                                                                {{ option.desc }}
+                                                                            </option>
+                                                                        </select>
+                                                                        <small class="text-danger" *ngIf="!paymentTerm && isLastTab()">
+                                                                            Payment Term is required.
+                                                                        </small>
+                                                                    </div>
+                                                                </div>
+                                                            
+                                                                <div class="row mt-2">
+                                                                    <div class="col-6 form-group">
+                                                                        <label>Vendor Posting Group <span class="text-danger">*</span></label>
+                                                                        <select class="form-control w-cstm"
+                                                                            [(ngModel)]="vendorPostingGroup"
+                                                                            [disabled]="isReadOnly">
+                                                                            <option value="">Select vendor posting group</option>
+                                                                            <option *ngFor="let option of vendorPostingGroupOptions"
+                                                                                [ngValue]="option.desc">
+                                                                                {{ option.desc }}
+                                                                            </option>
+                                                                        </select>
+                                                                        <small class="text-danger" *ngIf="!vendorPostingGroup && isLastTab()">
+                                                                            Vendor Posting Group is required.
+                                                                        </small>
+                                                                    </div>
+    
+                                                                    <div class="col-6 form-group" style="margin-left: -14px !important;">
+                                                                        <label>VAT Business Posting Group <span class="text-danger">*</span></label>
+                                                                        <select class="form-control w-cstm"
+                                                                            [(ngModel)]="vatBusinessPostingGroup"
+                                                                            [disabled]="isReadOnly">
+                                                                            <option value="">Select VAT business posting group</option>
+                                                                            <option *ngFor="let option of vatBusinessPostingGroupOptions"
+                                                                                [ngValue]="option.desc">
+                                                                                {{ option.desc }}
+                                                                            </option>
+                                                                        </select>
+                                                                        <small class="text-danger" *ngIf="!vatBusinessPostingGroup && isLastTab()">
+                                                                            VAT Business Posting Group is required.
+                                                                        </small>
+                                                                    </div>
+                                                                </div>
+                                                            
+                                                                <div class="row mt-2">
+                                                                    <div class="col-6 form-group">
+                                                                        <label>General Bus Posting Group <span class="text-danger">*</span></label>
+                                                                        <select class="form-control w-cstm"
+                                                                            [(ngModel)]="generalBusinessPostingGroup"
+                                                                            [disabled]="isReadOnly">
+                                                                            <option value="">Select general bus posting group</option>
+                                                                            <option *ngFor="let option of generalBusinessPostingGroupOptions"
+                                                                                [ngValue]="option.desc">
+                                                                                {{ option.desc }}
+                                                                            </option>
+                                                                        </select>
+                                                                        <small class="text-danger" *ngIf="!generalBusinessPostingGroup && isLastTab()">
+                                                                            General Bus Posting Group is required.
+                                                                        </small>
+                                                                    </div>
+
+                                                                    <div class="col-lg col-md-6 form-group"></div>
+                                                                </div>
+                                                           
+                                                           
+                                                       
+
                                                     </div>
                                                 </div>
 

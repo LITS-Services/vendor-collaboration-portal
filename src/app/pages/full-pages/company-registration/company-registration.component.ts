@@ -14,6 +14,7 @@ import { ToastrService } from 'ngx-toastr';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-company-registration',
@@ -39,6 +40,16 @@ export class CompanyRegistrationComponent implements OnInit {
   companyId: number | null = null;
   remarks: string = '';
   trn: string = ''; // Added TRN field
+  paymentMethod: string = '';
+  paymentTerm: string = '';
+  vendorPostingGroup: string = '';
+  vatBusinessPostingGroup: string = '';
+  generalBusinessPostingGroup: string = '';
+  paymentMethodOptions: Array<{ id: string | number; desc: string }> = [];
+  paymentTermOptions: Array<{ id: string | number; desc: string }> = [];
+  vendorPostingGroupOptions: Array<{ id: string | number; desc: string }> = [];
+  vatBusinessPostingGroupOptions: Array<{ id: string | number; desc: string }> = [];
+  generalBusinessPostingGroupOptions: Array<{ id: string | number; desc: string }> = [];
 
   showContactDeletePopup: boolean = false;
   showAddressDeletePopup: boolean = false;
@@ -180,6 +191,7 @@ export class CompanyRegistrationComponent implements OnInit {
       }
     });
 
+    this.loadAccountingLookups();
     this.generateVendorAccountNumber();
 
     this.layoutSub = this.configService.templateConf$.subscribe((templateConf) => {
@@ -322,6 +334,47 @@ export class CompanyRegistrationComponent implements OnInit {
 
   isReadOnly: boolean = false;
 
+  private normalizeLookupOptions(res: any): Array<{ id: string | number; desc: string }> {
+    const list = res?.data || res?.result || res?.$values || res || [];
+    if (!Array.isArray(list)) return [];
+
+    return list.map((item: any) => ({
+      id: item?.id ?? item?.Id ?? item?.value ?? item?.code ?? '',
+      desc: item?.desc ?? item?.description ?? item?.name ?? item?.label ?? ''
+    })).filter((item: any) => item.desc);
+  }
+
+  private resolveLookupDesc(
+    selectedValue: string | number,
+    options: Array<{ id: string | number; desc: string }>
+  ): string {
+    if (selectedValue === null || selectedValue === undefined || selectedValue === '') return '';
+    const match = options.find((o) => o.id === selectedValue || o.desc === selectedValue);
+    return match?.desc || String(selectedValue);
+  }
+
+  loadAccountingLookups(): void {
+    forkJoin({
+      vendorPostingGroup: this.companyService.getLookupByCode('vendor-posting-group'),
+      vatBusinessPostingGroup: this.companyService.getLookupByCode('vat-business-posting-group'),
+      generalBusinessPostingGroup: this.companyService.getLookupByCode('general-bus-posting-group'),
+      paymentMethod: this.companyService.getLookupByCode('payment-method'),
+      paymentTerm: this.companyService.getLookupByCode('payment-term')
+    }).subscribe({
+      next: (res) => {
+        this.vendorPostingGroupOptions = this.normalizeLookupOptions(res.vendorPostingGroup);
+        this.vatBusinessPostingGroupOptions = this.normalizeLookupOptions(res.vatBusinessPostingGroup);
+        this.generalBusinessPostingGroupOptions = this.normalizeLookupOptions(res.generalBusinessPostingGroup);
+        this.paymentMethodOptions = this.normalizeLookupOptions(res.paymentMethod);
+        this.paymentTermOptions = this.normalizeLookupOptions(res.paymentTerm);
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.toastr.warning('Unable to load accounting lookups.');
+      }
+    });
+  }
+
   loadCompanyById(companyId: number) {
     this.isLoading = true;
     this.spinner.show();
@@ -357,6 +410,12 @@ export class CompanyRegistrationComponent implements OnInit {
           this.companyName = company.name || '';
           this.websiteUrl = company.websiteUrl || '';
           this.trn = company.TRN || company.trn || '';
+          this.paymentMethod = company.paymentMethod || company.PaymentMethod || '';
+          this.paymentTerm = company.paymentTerm || company.PaymentTerm || '';
+          this.vendorPostingGroup = company.vendorPostingGroup || company.VendorPostingGroup || '';
+          this.vatBusinessPostingGroup = company.vatBusinessPostingGroup || company.VATBusinessPostingGroup || '';
+          this.generalBusinessPostingGroup = company.generalBusinessPostingGroup ||
+            '';
           this.remarks = company.remarks || '';
           this.companyType = company.companyType || 'Organization';
 
@@ -793,6 +852,17 @@ export class CompanyRegistrationComponent implements OnInit {
       return;
     }
 
+    if (
+      !this.paymentMethod ||
+      !this.paymentTerm ||
+      !this.vendorPostingGroup ||
+      !this.vatBusinessPostingGroup ||
+      !this.generalBusinessPostingGroup
+    ) {
+      this.toastr.error('Please fill all required accounting fields.');
+      return;
+    }
+
     // Check for Duplicate TRN
     if (this.trn && this.trn.length === 15) {
       this.isLoading = true;
@@ -857,6 +927,11 @@ export class CompanyRegistrationComponent implements OnInit {
       name: this.companyName,
       websiteUrl: this.websiteUrl,
       TRN: this.trn, // Include TRN in payload
+      paymentMethod: this.resolveLookupDesc(this.paymentMethod, this.paymentMethodOptions),
+      paymentTerm: this.resolveLookupDesc(this.paymentTerm, this.paymentTermOptions),
+      vendorPostingGroup: this.resolveLookupDesc(this.vendorPostingGroup, this.vendorPostingGroupOptions),
+      vatBusinessPostingGroup: this.resolveLookupDesc(this.vatBusinessPostingGroup, this.vatBusinessPostingGroupOptions),
+      generalBusinessPostingGroup: this.resolveLookupDesc(this.generalBusinessPostingGroup, this.generalBusinessPostingGroupOptions),
       logo: logoBase64,
       requestStatusId: 1,
 

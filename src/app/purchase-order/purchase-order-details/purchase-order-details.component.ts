@@ -218,6 +218,19 @@ export class PurchaseOrderDetailsComponent implements OnInit {
     this.selectTab('invoice-details');
   }
 
+  requestForPayment() {
+    this.purchaseOrderService.requestForPayment(this.poId).subscribe({
+      next: () => {
+        this.toastr.success('Payment request sent successfully');
+      },
+      error: () => {
+        this.toastr.error('Failed to send payment request');
+      }
+    });
+  }
+
+
+
   onShipmentStateChange(event: { ready: boolean; isEdit: boolean }) {
     this.modalShipmentReady = event.ready;
     this.modalShipmentIsEdit = event.isEdit;

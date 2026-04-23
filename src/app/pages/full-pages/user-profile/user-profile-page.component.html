@@ -29,7 +29,7 @@
         </div>
 
         <h2 class="profile-name text-truncate px-2">{{ userProfileForm.get('fullName')?.value || 'Guest User' }}</h2>
-        <p class="profile-email text-truncate px-2">{{ userProfileForm.get('email')?.value || 'no-email@example.com' }}
+        <p class="profile-email text-truncate px-2">{{ userProfileForm.get('vendorNo')?.value || '' }} <span *ngIf="userProfileForm.get('vendorNo')?.value && userProfileForm.get('email')?.value"> - </span>  {{ userProfileForm.get('email')?.value || 'no-email@example.com' }}
         </p>
 
         <!-- <div class="role-badge">

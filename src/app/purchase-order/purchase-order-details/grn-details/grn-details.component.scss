@@ -156,20 +156,45 @@ input[disabled] {
     display: none;
   }
 
-  // GRN table layout (7 columns)
+  // GRN table layout (11 columns)
   .table__row--grn {
     grid-template-columns:
-      minmax(0, 1.5fr)  /* Item */
-      minmax(0, 1.0fr)  /* Ordered Qty */
-      minmax(0, 1.0fr)  /* Received Qty */
-      minmax(0, 1.0fr)  /* Accepted Qty */
-      minmax(0, 1.0fr)  /* Rejected Qty */
-      minmax(0, 1.2fr)  /* Received Date */
-      minmax(0, 1.5fr); /* Remarks */
+      minmax(120px, 1.0fr)  /* Item No */
+      minmax(220px, 2.0fr)  /* Item Desc */
+      minmax(130px, 1.0fr)  /* Location Code */
+      minmax(180px, 1.2fr)  /* Planned Receipt Date */
+      minmax(180px, 1.2fr)  /* Expected Receipt Date */
+      minmax(120px, 0.9fr)  /* Ordered Qty */
+      minmax(120px, 0.9fr)  /* Quantity */
+      minmax(150px, 1.0fr)  /* Unit Cost Excl Vat */
+      minmax(120px, 0.9fr)  /* Received Qty */
+      minmax(150px, 1.0fr)  /* Received Date */
+      minmax(180px, 1.2fr); /* Remarks */
+    min-width: 1770px;
   }
 
   .table-scroll--grn {
     max-height: 230px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .table-card--grn {
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .table-card--grn::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  .table-card--grn::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .table-card--grn::-webkit-scrollbar-thumb {
+    background-color: rgba(148, 163, 184, 0.7);
+    border-radius: 999px;
   }
 
   .mono {

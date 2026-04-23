@@ -22,6 +22,7 @@ export interface Company {
 export class CompanyService {
 
   private apiUrl = `${environment.apiUrl}/Company`; // dynamically use environment API URL
+  private systemBaseUrl = `${environment.apiUrl}/System`;
 
   constructor(private http: HttpClient) { }
 
@@ -109,6 +110,10 @@ export class CompanyService {
 
   getVendorCompanyById(id: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/get-vendor-company-by-id`, { params: { id: id.toString() } });
+  }
+
+  getLookupByCode(code: string): Observable<any> {
+    return this.http.get<any>(`${this.systemBaseUrl}/dropdowns`, { params: { name: code } });
   }
 
 }
