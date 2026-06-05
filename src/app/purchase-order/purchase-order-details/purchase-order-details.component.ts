@@ -40,6 +40,7 @@ export class PurchaseOrderDetailsComponent implements OnInit {
   invoiceLoaded = false;
   modalShipmentReady = false;
   modalShipmentIsEdit = false;
+  modalShipmentReadyForPosting = false;
   modalInvoiceReady = false;
   modalInvoiceIsEdit = false;
   modalGrnReady = false;
@@ -174,6 +175,7 @@ export class PurchaseOrderDetailsComponent implements OnInit {
     this.selectedInvoicePoId = undefined;
     this.modalShipmentReady = false;
     this.modalShipmentIsEdit = false;
+    this.modalShipmentReadyForPosting = false;
     this.modalTitle = 'Shipment Detail';
     this.modalRef = this.modalService.open(this.detailModal, { size: 'xl', centered: true, scrollable: true });
   }
@@ -231,9 +233,10 @@ export class PurchaseOrderDetailsComponent implements OnInit {
 
 
 
-  onShipmentStateChange(event: { ready: boolean; isEdit: boolean }) {
+  onShipmentStateChange(event: { ready: boolean; isEdit: boolean; readyForPosting: boolean }) {
     this.modalShipmentReady = event.ready;
     this.modalShipmentIsEdit = event.isEdit;
+    this.modalShipmentReadyForPosting = event.readyForPosting;
     this.cdr.detectChanges();
   }
 
@@ -275,7 +278,7 @@ export class PurchaseOrderDetailsComponent implements OnInit {
       return res;
     }
 
-    return res?.result || res?.items || res?.data?.items || res?.value?.items || [];
+    return res?.value?.result || res?.result || res?.items || res?.data?.items || res?.value?.items || [];
   }
 
   rejectPurchaseOrder() {

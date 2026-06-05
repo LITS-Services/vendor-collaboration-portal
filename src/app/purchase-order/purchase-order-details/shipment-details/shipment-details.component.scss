@@ -176,13 +176,12 @@
     display: none;
   }
 
-  // Shipment table layout (4 columns)
+  // Shipment table layout (3 columns)
   .table__row--shipment {
     grid-template-columns:
-      minmax(0, 2.0fr)  /* Item */
-      minmax(0, 1.2fr)  /* Ordered Qty */
-      minmax(0, 1.2fr)  /* Shipping Qty */
-      minmax(0, 1.4fr); /* Delivery Date */
+      minmax(0, 2.2fr)  /* Item */
+      minmax(0, 1fr)    /* Quantity */
+      minmax(0, 1.3fr); /* Delivery Date */
   }
 
   .table-scroll--shipment {

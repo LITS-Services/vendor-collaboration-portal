@@ -179,17 +179,19 @@
             <span>{{ rowIndex + 1 }}</span>
           </ng-template>
         </ngx-datatable-column>
-        <ngx-datatable-column name="Shipment No" prop="shipmentDetailNo" [sortable]="false"></ngx-datatable-column>
+        <ngx-datatable-column name="Shipment No" prop="shipmentNo" [sortable]="false"></ngx-datatable-column>
+        <ngx-datatable-column name="PR No" prop="prNo" [sortable]="false"></ngx-datatable-column>
+        <ngx-datatable-column name="PO No" prop="poNo" [sortable]="false"></ngx-datatable-column>
+        <ngx-datatable-column name="Transfer From" prop="transferFromCode" [sortable]="false"></ngx-datatable-column>
+        <ngx-datatable-column name="Transfer To" prop="transferToCode" [sortable]="false"></ngx-datatable-column>
+        <ngx-datatable-column name="Posting Date" prop="postingDate" [sortable]="false">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.postingDate | date:'yyyy-MM-dd' }}
+          </ng-template>
+        </ngx-datatable-column>
         <ngx-datatable-column name="Shipment Date" prop="shipmentDate" [sortable]="false">
           <ng-template let-row="row" ngx-datatable-cell-template>
             {{ row.shipmentDate | date:'yyyy-MM-dd' }}
-          </ng-template>
-        </ngx-datatable-column>
-        <ngx-datatable-column name="Status" prop="requestStatus" [sortable]="false">
-          <ng-template ngx-datatable-cell-template let-value="value">
-            <span class="status-pill" [ngClass]="mapStatusKey(value)">
-              {{ value }}
-            </span>
           </ng-template>
         </ngx-datatable-column>
         <ngx-datatable-column name="Action" [sortable]="false">
@@ -283,7 +285,7 @@
         [inModal]="true" (stateChange)="onInvoiceStateChange($event)"></app-invoice>
     </div>
     <div class="modal-footer modal-footer-soft">
-      <ng-container *ngIf="selectedShipmentId">
+      <ng-container *ngIf="selectedShipmentId && !modalShipmentReadyForPosting">
         <button *ngIf="modalShipmentIsEdit" class="btn modal-action-btn modal-cancel-shipment-btn" (click)="cancelShipmentFromModal()">
           <i class="ft-alert-triangle me-1"></i>
           <span>Cancel Shipment</span>

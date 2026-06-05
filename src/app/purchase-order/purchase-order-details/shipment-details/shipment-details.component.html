@@ -24,12 +24,12 @@
 
         <div class="d-flex align-items-center gap-2 flex-wrap">
             <!-- DELETE button only on update -->
-            <button *ngIf="isEdit" class="btn btn-danger btn-sm" (click)="deleteShipment()">
+            <button *ngIf="isEdit && !readyForPosting" class="btn btn-danger btn-sm" (click)="deleteShipment()">
                 Cancel
             </button>
 
             <!-- SAVE / UPDATE button -->
-            <button class="btn btn-primary btn-sm" (click)="save()">
+            <button *ngIf="!readyForPosting" class="btn btn-primary btn-sm" (click)="save()">
                 {{ isEdit ? 'Update Shipment Details' : 'Submit Shipment Details' }}
             </button>
         </div>
@@ -37,63 +37,39 @@
 
     <!-- SHIPMENT FORM FIELDS -->
     <div class="row">
-
-        <!-- Show PO + Vendor only in edit -->
-        <div *ngIf="isEdit" class="row mb-3">
-            <div class="col-md-4">
-                <label class="form-label small">Purchase Order No</label>
-                <input class="form-control form-control-sm" [value]="purchaseOrderNo" disabled>
-            </div>
-
-            <div class="col-md-4">
-                <label class="form-label small">Vendor Name</label>
-                <input class="form-control form-control-sm" [value]="vendorName" disabled>
-            </div>
+        <div class="col-md-4 mb-3">
+            <label class="form-label small">Shipment No</label>
+            <input class="form-control form-control-sm" formControlName="shipmentNo" disabled>
         </div>
 
         <div class="col-md-4 mb-3">
-            <label class="form-label small">Ship To Name</label>
-            <input class="form-control form-control-sm" formControlName="shipToName" disabled>
+            <label class="form-label small">PR No</label>
+            <input class="form-control form-control-sm" formControlName="prNo" disabled>
         </div>
 
         <div class="col-md-4 mb-3">
-            <label class="form-label small">Country</label>
-            <input class="form-control form-control-sm" formControlName="country">
+            <label class="form-label small">PO No</label>
+            <input class="form-control form-control-sm" formControlName="poNo" disabled>
         </div>
 
         <div class="col-md-4 mb-3">
-            <label class="form-label small">City</label>
-            <input class="form-control form-control-sm" formControlName="city">
+            <label class="form-label small">Transfer From</label>
+            <input class="form-control form-control-sm" formControlName="transferFromCode" disabled>
         </div>
 
         <div class="col-md-4 mb-3">
-            <label class="form-label small">Region</label>
-            <input class="form-control form-control-sm" formControlName="region">
+            <label class="form-label small">Transfer To</label>
+            <input class="form-control form-control-sm" formControlName="transferToCode" disabled>
         </div>
 
         <div class="col-md-4 mb-3">
-            <label class="form-label small">Ship To Address</label>
-            <input class="form-control form-control-sm" formControlName="shipToAddress">
-        </div>
-
-        <div class="col-md-4 mb-3">
-            <label class="form-label small">Ship To Address 2</label>
-            <input class="form-control form-control-sm" formControlName="shipToAddress2">
-        </div>
-
-        <div class="col-md-4 mb-3">
-            <label class="form-label small">Post Code</label>
-            <input class="form-control form-control-sm" formControlName="postCode">
+            <label class="form-label small">Posting Date</label>
+            <input type="date" class="form-control form-control-sm" formControlName="postingDate" disabled>
         </div>
 
         <div class="col-md-4 mb-3">
             <label class="form-label small">Shipment Date</label>
-            <input type="date" class="form-control form-control-sm" formControlName="shipmentDate">
-        </div>
-
-        <div class="col-md-8 mb-3">
-            <label class="form-label small">Notes</label>
-            <textarea class="form-control form-control-sm" rows="2" formControlName="notes"></textarea>
+            <input type="date" class="form-control form-control-sm" formControlName="shipmentDate" [attr.readonly]="readyForPosting ? true : null">
         </div>
     </div>
 
@@ -112,8 +88,7 @@
             <div class="table-card table-card--shipment">
                 <div class="table__row table__row--head table__row--shipment">
                     <div>ITEM</div>
-                    <div class="text-center">ORDERED QTY</div>
-                    <div class="text-center">SHIPPING QTY</div>
+                    <div class="text-center">QUANTITY</div>
                     <div class="text-center">DELIVERY DATE</div>
                 </div>
 
@@ -122,25 +97,14 @@
                         <div>
                             <span class="item-title">{{ item.get('itemName')?.value }}</span>
                         </div>
-                        <div class="text-center mono">
-                            {{ item.get('orderedQty')?.value }}
-                        </div>
-                        <!-- <div class="text-center">
-                            <input type="number" class="form-control form-control-sm" formControlName="shippingQuantity">
-                        </div>
-                        <div class="text-center">
-                            <input type="date" class="form-control form-control-sm" formControlName="deliveryDate">
-                        </div> -->
                         <div class="text-center d-flex justify-content-center gap-1">
-    <input type="number" class="form-control form-control-sm" formControlName="shippingQuantity">
-    <span class="required-star">*</span>
-</div>
-
-<div class="text-center d-flex justify-content-center gap-1">
-    <input type="date" class="form-control form-control-sm" formControlName="deliveryDate">
-    <span class="required-star">*</span>
-</div>
-
+                            <input type="number" min="0" class="form-control form-control-sm" formControlName="quantity">
+                            <span class="required-star" *ngIf="!readyForPosting">*</span>
+                        </div>
+                        <div class="text-center d-flex justify-content-center gap-1">
+                            <input type="date" class="form-control form-control-sm" formControlName="deliveryDate">
+                            <span class="required-star" *ngIf="!readyForPosting">*</span>
+                        </div>
                     </div>
                 </div>
             </div>
