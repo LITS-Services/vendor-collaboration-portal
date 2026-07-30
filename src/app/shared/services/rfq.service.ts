@@ -38,8 +38,8 @@ export class RfqService {
     return this.http.post(`${environment.apiUrl}/Quotation/submit-bid`, { bids });
   }
 
-  updateBids(bids: BidSubmissionDetails[]) {
-    return this.http.put(`${environment.apiUrl}/Quotation/update-bid`, { bids });
+  updateBids(bids: BidSubmissionDetails[], deliveryDate?: string) {
+    return this.http.put(`${environment.apiUrl}/Quotation/update-bid`, { bids, deliveryDate });
   }
 
   getRfqById(rfqId: number, isVendor: boolean, vendorId?: string): Observable<QuotationRequestWithDetailsResponse> {

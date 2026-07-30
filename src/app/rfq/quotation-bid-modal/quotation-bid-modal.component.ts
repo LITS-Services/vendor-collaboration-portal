@@ -40,6 +40,7 @@ export class QuotationBidModalComponent implements OnInit {
   activeIds = ["static-1", "static-2", "static-3"];
 
   quotationId: number;
+  deliveryDate: string = '';
 
   private focusComments = false;
 
@@ -175,8 +176,14 @@ export class QuotationBidModalComponent implements OnInit {
               biddingAmount: existingBid.biddingAmount,
               comment: existingBid.comment,
               requestStatus: existingBid.requestStatus,
+              deliveryDate: existingBid.deliveryDate,
               vendorBidAttachments: existingBid.vendorBidAttachments || [],
             });
+
+            // Populate header-level delivery date from existing bid
+            if (!this.deliveryDate && existingBid.deliveryDate) {
+              this.deliveryDate = existingBid.deliveryDate.substring(0, 10);
+            }
           }
         });
         this.loadRfqComments();
@@ -656,7 +663,7 @@ export class QuotationBidModalComponent implements OnInit {
         return (b.biddingAmount ?? 0) > 0;
       });
 
-      this.rfqService.updateBids(bids).subscribe({
+      this.rfqService.updateBids(bids, this.deliveryDate || null).subscribe({
         next: () => {
           this.spinner.hide();
           this.router.navigate(['/rfq/rfq-list']);

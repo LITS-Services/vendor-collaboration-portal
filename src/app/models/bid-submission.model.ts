@@ -9,6 +9,7 @@ export interface BidSubmissionDetails {
   biddingAmount?: number;
   comment?: string;
   requestStatus?: string;
+  deliveryDate?: string;
   vendorBidAttachments?: VendorBidAttachment[];
 }
 
