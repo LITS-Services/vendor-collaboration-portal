@@ -49,7 +49,7 @@ export class ShipmentDetailsComponent implements OnInit {
     });
 
     this.itemsForm = this.form.get('items') as FormArray;
-    this.loadShipmentDetails();
+    //this.loadShipmentDetails();
     this.cdr.detectChanges();
     
   }

@@ -32,4 +32,12 @@ export class ShipmentService {
   deleteShipment(shipmentDetailId: number) {
     return this.http.post(`${this.baseUrl}/delete-shipment-detail?id=${shipmentDetailId}`, null);
   }
+
+  getShipmentLinesByPoLineId(purchaseOrderLineId: number): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/shipment-lines-by-po-line-id?purchaseOrderLineId=${purchaseOrderLineId}`);
+  }
+
+  saveShipmentLines(payload: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/save-shipment-lines`, payload);
+  }
 }

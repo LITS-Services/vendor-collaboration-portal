@@ -26,6 +26,7 @@ import { GoogleMapsModule } from "@angular/google-maps";
 import { ShipmentDetailsComponent } from './purchase-order-details/shipment-details/shipment-details.component';
 import { GrnDetailsComponent } from './purchase-order-details/grn-details/grn-details.component';
 import { InvoiceComponent } from './purchase-order-details/invoice/invoice.component';
+import { ShipmentLinesModalComponent } from './purchase-order-details/shipment-lines-modal/shipment-lines-modal.component';
 
 
 @NgModule({
@@ -37,7 +38,8 @@ import { InvoiceComponent } from './purchase-order-details/invoice/invoice.compo
     PurchaseOrderDetailsComponent,
     ShipmentDetailsComponent,
     GrnDetailsComponent,
-    InvoiceComponent
+    InvoiceComponent,
+    ShipmentLinesModalComponent
   ],
   imports: [
     CommonModule,

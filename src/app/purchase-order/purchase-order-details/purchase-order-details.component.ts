@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { GrnDetailsComponent } from 'app/purchase-order/purchase-order-details/grn-details/grn-details.component';
 import { InvoiceComponent } from 'app/purchase-order/purchase-order-details/invoice/invoice.component';
 import { ShipmentDetailsComponent } from 'app/purchase-order/purchase-order-details/shipment-details/shipment-details.component';
+import { ShipmentLinesModalComponent } from 'app/purchase-order/purchase-order-details/shipment-lines-modal/shipment-lines-modal.component';
 import { PurchaseOrderService } from 'app/shared/services/purchase-order.service';
 import { ShipmentService } from 'app/shared/services/shipment.service';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
@@ -93,7 +94,7 @@ export class PurchaseOrderDetailsComponent implements OnInit {
     this.cdr.detectChanges();
 
     if (tab === 'shipment-details' && !this.shipmentLoaded) {
-      this.loadShipments();
+      //this.loadShipments();
     }
 
     if (tab === 'grn-details' && !this.grnLoaded) {
@@ -250,6 +251,38 @@ export class PurchaseOrderDetailsComponent implements OnInit {
     this.modalInvoiceIsEdit = event.isEdit;
     this.cdr.detectChanges();
   }
+
+  // --- Shipment Lines Modal Logic ---
+  @ViewChild('shipmentLinesModalComp') shipmentLinesModalComp?: ShipmentLinesModalComponent;
+  selectedPoLineId?: number;
+  selectedOrderedQty = 0;
+  selectedItemName = '';
+  modalShipmentLinesReady = false;
+
+  openShipmentLineDetail(row: any) {
+    this.selectedPoLineId = row.id || row.purchaseOrderLineId;
+    this.selectedOrderedQty = row.quantity ?? row.orderedQuantity ?? row.qty ?? 0;
+    this.selectedItemName = row.itemName ?? row.item ?? '-';
+    
+    // Reset other modal selections
+    this.selectedShipmentId = undefined;
+    this.selectedGrnId = undefined;
+    this.selectedInvoicePoId = undefined;
+    
+    this.modalShipmentLinesReady = false;
+    this.modalTitle = 'Shipment Details';
+    this.modalRef = this.modalService.open(this.detailModal, { size: 'lg', centered: true, scrollable: true });
+  }
+
+  onShipmentLinesStateChange(event: { ready: boolean }) {
+    this.modalShipmentLinesReady = event.ready;
+    this.cdr.detectChanges();
+  }
+
+  saveShipmentLinesFromModal() {
+    this.shipmentLinesModalComp?.save();
+  }
+  // ----------------------------------
 
   mapStatusKey(status: any): string {
     const s = (status ?? '').toString().trim().toLowerCase();
