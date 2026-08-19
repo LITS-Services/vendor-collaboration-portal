@@ -4,6 +4,7 @@ import {
 import { Subscription } from 'rxjs';
 import { DOCUMENT } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { newPasswordValidators } from 'app/shared/auth/password.validators';
 import { ConfigService } from 'app/shared/services/config.service';
 import { LayoutService } from 'app/shared/services/layout.service';
 import { SwiperDirective, SwiperConfigInterface } from 'ngx-swiper-wrapper';
@@ -73,11 +74,7 @@ export class UserProfilePageComponent implements OnInit, AfterViewInit, OnDestro
 
     this.passwordResetForm = this.fb.group({
       oldPassword: ['', Validators.required],
-      newPassword: ['', [
-        Validators.required,
-        Validators.minLength(6),
-        Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*?]).{6,}$/)
-      ]],
+      newPassword: ['', newPasswordValidators],
       confirmPassword: ['', Validators.required]
     }, { validator: this.passwordMatchValidator });
   }

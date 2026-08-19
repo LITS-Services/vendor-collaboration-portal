@@ -1,11 +1,14 @@
 import { Routes, RouterModule } from '@angular/router';
+import { PermissionGuard } from '../auth/permission.guard';
 
 //Route for content layout with sidebar, navbar and footer.
 
 export const Full_ROUTES: Routes = [
   {
     path: 'dashboard',
-    loadChildren: () => import('../../dashboard/dashboard.module').then(m => m.DashboardModule)
+    loadChildren: () => import('../../dashboard/dashboard.module').then(m => m.DashboardModule),
+    canActivate: [PermissionGuard],
+    data: { permission: 'rfq.view' }
   },
   {
     path: 'calendar',
@@ -17,15 +20,21 @@ export const Full_ROUTES: Routes = [
   },
   {
     path: 'rfq',
-    loadChildren: () => import('../../rfq/rfq.module').then(m => m.RfqModule)
+    loadChildren: () => import('../../rfq/rfq.module').then(m => m.RfqModule),
+    canActivate: [PermissionGuard],
+    data: { permission: 'rfq.view' }
   },
   {
     path: 'company',
-    loadChildren: () => import('../../company/company.module').then(m => m.CompanyModule)
+    loadChildren: () => import('../../company/company.module').then(m => m.CompanyModule),
+    canActivate: [PermissionGuard],
+    data: { permission: 'vendor-companies.view' }
   },
   {
     path: 'purchase-order',
-    loadChildren: () => import('../../purchase-order/purchase-order.module').then(m => m.PurchaseOrderModule)
+    loadChildren: () => import('../../purchase-order/purchase-order.module').then(m => m.PurchaseOrderModule),
+    canActivate: [PermissionGuard],
+    data: { permission: 'purchase-order.view' }
   },
   {
     path: 'tendering',
@@ -33,11 +42,15 @@ export const Full_ROUTES: Routes = [
   },
   {
     path: 'reports',
-    loadChildren: () => import('../../reports/reports.module').then(m => m.ReportsModule)
+    loadChildren: () => import('../../reports/reports.module').then(m => m.ReportsModule),
+    canActivate: [PermissionGuard],
+    data: { permission: 'purchase-order.view' }
   },
   {
     path: 'history',
-    loadChildren: () => import('../../history/history.module').then(m => m.HistoryModule)
+    loadChildren: () => import('../../history/history.module').then(m => m.HistoryModule),
+    canActivate: [PermissionGuard],
+    data: { permission: 'rfq.view' }
   },
    {
     path: 'forms',
@@ -93,6 +106,8 @@ export const Full_ROUTES: Routes = [
   },
   {
     path: 'invoices',
-    loadChildren: () => import('../../invoice-list/invoice-list-module').then(m => m.InvoiceListModule)
+    loadChildren: () => import('../../invoice-list/invoice-list-module').then(m => m.InvoiceListModule),
+    canActivate: [PermissionGuard],
+    data: { permission: 'purchase-order.view' }
   },
  ];

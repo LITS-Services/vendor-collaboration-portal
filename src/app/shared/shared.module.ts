@@ -30,6 +30,7 @@ import { TopMenuDirective } from './directives/topmenu.directive';
 import { TopMenuLinkDirective } from './directives/topmenu-link.directive';
 import { TopMenuDropdownDirective } from './directives/topmenu-dropdown.directive';
 import { TopMenuAnchorToggleDirective } from './directives/topmenu-anchor-toggle.directive';
+import { HasPermissionDirective } from './auth/has-permission.directive';
 
 
 @NgModule({
@@ -51,6 +52,7 @@ import { TopMenuAnchorToggleDirective } from './directives/topmenu-anchor-toggle
         TopMenuDropdownDirective,
         TopMenuAnchorToggleDirective,
         TopMenuDirective,
+        HasPermissionDirective,
         NgbModule,
         TranslateModule,
         FormsModule,
@@ -67,7 +69,8 @@ import { TopMenuAnchorToggleDirective } from './directives/topmenu-anchor-toggle
         // PerfectScrollbarModule, // Not compatible with Angular Ivy
         // ClickOutsideModule, // Not compatible with Angular Ivy
         AutocompleteModule,
-        PipeModule
+        PipeModule,
+        HasPermissionDirective
     ],
     declarations: [
         FooterComponent,

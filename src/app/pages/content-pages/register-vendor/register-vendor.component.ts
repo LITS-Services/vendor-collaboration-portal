@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'app/shared/auth/auth.service';
+import { newPasswordValidators, confirmPasswordMatchValidator } from 'app/shared/auth/password.validators';
 import { CountryISO, PhoneNumberFormat, SearchCountryField } from 'ngx-intl-tel-input';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
@@ -40,11 +41,11 @@ export class RegisterVendorComponent implements OnInit {
     //phoneNo: new UntypedFormControl('', [Validators.required]),
     //phoneExtension: new UntypedFormControl('', [Validators.required]),
     email: new UntypedFormControl('', [Validators.required, Validators.email]),
-    password: new UntypedFormControl('', [Validators.required, Validators.minLength(6)]),
+    password: new UntypedFormControl('', newPasswordValidators),
     confirmPassword: new UntypedFormControl('', [Validators.required]),
     termsAndConditions: new UntypedFormControl(true, Validators.requiredTrue),
     // Removed selectedCompanies control
-  });
+  }, { validators: confirmPasswordMatchValidator() });
 
   constructor(
     private router: Router,

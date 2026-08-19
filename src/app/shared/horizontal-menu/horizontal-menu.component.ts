@@ -4,6 +4,7 @@ import { LayoutService } from '../services/layout.service';
 import { ConfigService } from '../services/config.service';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
+import { AuthService } from '../auth/auth.service';
 
 
 @Component({
@@ -25,12 +26,13 @@ export class HorizontalMenuComponent implements OnInit, AfterViewInit, OnDestroy
   constructor(private layoutService: LayoutService,
     private configService: ConfigService,
     private cdr: ChangeDetectorRef,
-    private router: Router) {
+    private router: Router,
+    private auth: AuthService) {
     this.config = this.configService.templateConf;
   }
 
   ngOnInit() {
-    this.menuItems = HROUTES;
+    this.menuItems = HROUTES.filter(item => !item.permission || this.auth.hasPermission(item.permission));
   }
 
   ngAfterViewInit() {

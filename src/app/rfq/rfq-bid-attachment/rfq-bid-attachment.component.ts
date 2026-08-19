@@ -4,6 +4,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { SystemService } from 'app/shared/services/system.service';
 import { ToastrService } from 'ngx-toastr';
+import { FileValidationService } from 'app/shared/auth/file-validation.service';
 
 @Component({
   selector: 'app-rfq-bid-attachment',
@@ -30,7 +31,8 @@ export class RfqBidAttachmentComponent implements OnInit {
 
   constructor(private fb: FormBuilder, public activeModal: NgbActiveModal,
     private systemService: SystemService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private fileValidation: FileValidationService
   ) {
     this.AttachmentForm = this.fb.group({});
   }
@@ -52,6 +54,11 @@ export class RfqBidAttachmentComponent implements OnInit {
     if (!input.files?.length) return;
 
     for (const file of Array.from(input.files)) {
+      const check = this.fileValidation.validate(file, 'rfqbid');
+      if (!check.valid) {
+        this.toastr.error(check.error || 'Invalid file.');
+        continue;
+      }
       const base64 = await this.toBase64(file);
       this.vendorAttachments.push({
         fileName: file.name,

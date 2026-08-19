@@ -40,7 +40,8 @@ export class SignalRService {
   startConnection(): Promise<void> {
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(this.signalRUrl, {
-        accessTokenFactory: () => this.authService.accessToken || ''
+        accessTokenFactory: () => this.authService.accessToken || '',
+        withCredentials: true
       })
       .withAutomaticReconnect()
       .build();

@@ -1,6 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
+import { FileValidationService } from 'app/shared/auth/file-validation.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -29,7 +30,7 @@ export class CompanyProfileAttachmentComponent implements OnInit {
   deleteIndex: number | null = null;
   showAttachmentDeletePopup: boolean = false;
 
-  constructor(private toastr: ToastrService) { }
+  constructor(private toastr: ToastrService, private fileValidation: FileValidationService) { }
 
   ngOnInit(): void {
     console.log('Initial Attached Files in Modal:', this.attachedFiles);
@@ -38,6 +39,12 @@ export class CompanyProfileAttachmentComponent implements OnInit {
   onFileChange(event: any): void {
     const file = event.target.files[0];
     if (file) {
+      const check = this.fileValidation.validate(file, 'companydocument');
+      if (!check.valid) {
+        this.toastr.error(check.error || 'Invalid file.');
+        event.target.value = '';
+        return;
+      }
       this.attachment.file = file;                  // ✅ store file
       this.attachment.fileName = file.name;
       this.attachment.format = file.type || 'Unknown Format';

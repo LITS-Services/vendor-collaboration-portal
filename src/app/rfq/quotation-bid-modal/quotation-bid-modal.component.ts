@@ -10,6 +10,7 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { SignalRService } from 'app/shared/services/signalr.service';
 import { SystemService } from 'app/shared/services/system.service';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { FileValidationService } from 'app/shared/auth/file-validation.service';
 import Swal from 'sweetalert2';
 
 enum CreatedByType {
@@ -61,7 +62,8 @@ export class QuotationBidModalComponent implements OnInit {
     private modalService: NgbModal,
     private signalRService: SignalRService,
     private systemService: SystemService,
-    private spinner: NgxSpinnerService
+    private spinner: NgxSpinnerService,
+    private fileValidation: FileValidationService
   ) { }
 
   ngOnInit(): void {
@@ -450,6 +452,12 @@ export class QuotationBidModalComponent implements OnInit {
     }
 
     Array.from(files).forEach((file) => {
+      const check = this.fileValidation.validate(file, 'rfqbid');
+      if (!check.valid) {
+        this.toastr.error(check.error || 'Invalid file.');
+        this.spinner.hide();
+        return;
+      }
       const reader = new FileReader();
       reader.onload = () => {
         // Ensure UI updates immediately
@@ -475,6 +483,12 @@ export class QuotationBidModalComponent implements OnInit {
     if (!files || files.length === 0) return;
 
     Array.from(files).forEach((file) => {
+      const check = this.fileValidation.validate(file, 'rfqbid');
+      if (!check.valid) {
+        this.toastr.error(check.error || 'Invalid file.');
+        this.spinner.hide();
+        return;
+      }
       const reader = new FileReader();
       reader.onload = () => {
         this.zone.run(() => {

@@ -21,8 +21,6 @@ export class FirebaseMessagingService {
   requestPermission(userId: string) {
     this.afMessaging.requestToken.subscribe(
       token => {
-        
-        debugger;
         this.sendTokenToBackend(userId, token);
         // Send this token to your backend to send push messages
       },

@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/fo
 import { ToastrService } from 'ngx-toastr';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from 'app/shared/auth/auth.service';
+import { newPasswordValidators, confirmPasswordMatchValidator } from 'app/shared/auth/password.validators';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { finalize } from 'rxjs/operators';
 
@@ -45,14 +46,10 @@ export class VerifyForgotPasswordOtpComponent implements OnInit {
     // OTP field kept but no validation (optional)
     this.verifyOtpForm = this.fb.group({
       otp: [''],
-      password: ['', [
-        Validators.required,
-        Validators.minLength(6),
-        Validators.pattern(/^(?=.*[A-Z])(?=.*\d).+$/) // At least 1 uppercase, 1 number
-      ]],
+      password: ['', newPasswordValidators],
       confirmPassword: ['', Validators.required]
     }, {
-      validators: this.mustMatch('password', 'confirmPassword')
+      validators: confirmPasswordMatchValidator()
     });
   }
 

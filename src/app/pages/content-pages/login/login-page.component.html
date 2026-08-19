@@ -6,7 +6,12 @@
     </div>
 
     <ngb-alert type="light-danger" class="my-2" *ngIf="isLoginFailed" (close)="isLoginFailed = false">
-      <p class="mb-0">Login failed!</p>
+      <p class="mb-0">
+        <ng-container *ngIf="isLocked; else loginFailedText">
+          Account is locked. Try again in <strong>{{ lockoutRemainingText || '—' }}</strong>
+        </ng-container>
+        <ng-template #loginFailedText>{{ errorMessage || 'Login failed!' }}</ng-template>
+      </p>
     </ngb-alert>
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
@@ -54,16 +59,26 @@
         </div>
       </div>
 
-      <!-- <div class="mb-2">
-        <ng-hcaptcha formControlName="recaptcha"></ng-hcaptcha>
+      <div class="mb-3" *ngIf="isLocked">
+        <p class="text-danger mb-0">
+          This account is temporarily locked. Try again in
+          <strong>{{ lockoutRemainingText || '—' }}</strong>
+        </p>
+      </div>
 
-        <div *ngIf="loginFormSubmitted && loginForm.get('recaptcha')?.invalid" class="invalid-feedback">
-          Please verify that you are not a robot.
-        </div>
-      </div> -->
+      <div class="mb-3 turnstile-wrap" *ngIf="turnstileVisible">
+        <div id="turnstile-container" aria-live="polite"></div>
+        <p class="text-muted small mt-2 mb-0" *ngIf="!turnstileToken && !turnstileLoadError">
+          Complete the captcha to continue.
+        </p>
+        <p class="text-danger small mt-2 mb-0" *ngIf="turnstileLoadError">{{ turnstileLoadError }}</p>
+        <button *ngIf="turnstileLoadError" type="button" class="btn btn-link btn-sm px-0 mt-1" (click)="retryCaptcha()">
+          Retry captcha
+        </button>
+      </div>
 
       <div class="d-flex justify-content-between">
-        <button type="submit" class="btn btn-primary login-btn w-100">Login</button>
+        <button type="submit" class="btn btn-primary login-btn w-100" [disabled]="isLocked">Login</button>
       </div>
     </form>
 

@@ -73,7 +73,7 @@ export class responseHandlerInterceptor implements HttpInterceptor {
     },
     error: (err: any) => {
       try {
-        if (skip || err?.status === 401) return;
+        if (skip || err?.status === 401 || err?.status === 429) return;
 
         // Safe token-expired check (prevents "cannot read .includes of undefined" on 500s)
         const tokenMsg = (err as any)?.error?.[0]?.ErrorMessage as string | undefined;

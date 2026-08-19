@@ -1,4 +1,4 @@
-import { NgModule } from "@angular/core";
+import { APP_INITIALIZER, NgModule } from "@angular/core";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 import { AngularFireModule } from "@angular/fire/compat";
@@ -27,10 +27,12 @@ import { AppComponent } from "./app.component";
 import { ContentLayoutComponent } from "./layouts/content/content-layout.component";
 import { FullLayoutComponent } from "./layouts/full/full-layout.component";
 
-import { AuthService } from "./shared/auth/auth.service";
-import { AuthGuard } from "./shared/auth/auth-guard.service";
 import { WINDOW_PROVIDERS } from './shared/services/window.service';
 import { AuthInterceptor } from "./shared/auth/auth.interceptor";
+import { CsrfInterceptor } from "./shared/auth/csrf.interceptor";
+import { HttpRetryTimeoutInterceptor } from "./shared/auth/http-retry-timeout.interceptor";
+import { sessionInitializer } from "./shared/auth/session.init";
+import { AuthService } from "./shared/auth/auth.service";
 import { NgSelectModule } from "@ng-select/ng-select";
 import { responseHandlerInterceptor } from "./shared/interceptor/response-handler.interceptor";
 import { environment } from "environments/environment";
@@ -74,11 +76,17 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
       provide: TRANSLATE_HTTP_LOADER_CONFIG,
       useValue: { prefix: './assets/i18n/', suffix: '.json' }
     },
-    AuthService,
-    AuthGuard,
     DragulaService,
+    { provide: HTTP_INTERCEPTORS, useClass: CsrfInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: HttpRetryTimeoutInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: responseHandlerInterceptor, multi: true },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: sessionInitializer,
+      deps: [AuthService],
+      multi: true
+    },
     { provide: PERFECT_SCROLLBAR_CONFIG, useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG },
     WINDOW_PROVIDERS
   ],

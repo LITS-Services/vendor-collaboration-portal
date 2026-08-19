@@ -1,13 +1,37 @@
+import './runtime-config';
+
+function isIpHostname(hostname: string): boolean {
+  return /^\d{1,3}(\.\d{1,3}){3}$/.test(hostname);
+}
+
+const FALLBACK_FIREBASE = {
+  apiKey: '',
+  authDomain: '',
+  projectId: '',
+  storageBucket: '',
+  messagingSenderId: '',
+  appId: '',
+  measurementId: ''
+};
+
 export const environment = {
   production: true,
-  apiUrl: 'https://localhost:7188/api', // TODO: Update with production API URL
-  firebaseConfig: {
-    apiKey: "AIzaSyBxm2YZhRXkQNU9kpK33SFYIrmW-rqTTcI",
-    authDomain: "portal-1d075.firebaseapp.com",
-    projectId: "portal-1d075",
-    storageBucket: "portal-1d075.firebasestorage.app",
-    messagingSenderId: "552612021319",
-    appId: "1:552612021319:web:8aecc40c6bb250f342dd62",
-    measurementId: "G-RP9QMZ2758"
-  }
+  configPath: 'assets/config.json',
+  configPathIp: 'assets/config.ip.json',
+  turnstileEnabled: true,
+  turnstileSiteKey: '',
+  get apiUrl() {
+    if (window.config?.apiUrl) return window.config.apiUrl;
+    return isIpHostname(window.location.hostname)
+      ? 'http://192.168.7.105:8084/api'
+      : 'https://procurement-portal.lits.services:8087/api';
+  },
+  get firebaseConfig() { return window.config?.firebaseConfig || FALLBACK_FIREBASE; },
+  get resolvedTurnstileSiteKey() { return window.config?.turnstileSiteKey || this.turnstileSiteKey || ''; },
+  get resolvedTurnstileEnabled() {
+    if (typeof window.config?.turnstileEnabled === 'boolean') {
+      return window.config.turnstileEnabled;
+    }
+    return this.turnstileEnabled;
+  },
 };

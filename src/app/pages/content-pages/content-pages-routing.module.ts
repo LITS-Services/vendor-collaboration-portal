@@ -12,6 +12,7 @@ import { RegisterVendorComponent } from './register-vendor/register-vendor.compo
 import { OtpComponent } from './otp/otp.component';
 import { VerifyForgotPasswordOtpComponent } from './verify-forgot-password-otp/verify-forgot-password-otp.component';
 import { MainLayoutComponent } from './main-layout/main-layout.component';
+import { GuestGuard } from 'app/shared/auth/guest.guard';
 
 
 const routes: Routes = [
@@ -36,6 +37,7 @@ const routes: Routes = [
       {
         path: 'forgotpassword',
         component: ForgotPasswordPageComponent,
+        canActivate: [GuestGuard],
         data: {
           title: 'Forgot Password Page'
         }
@@ -43,6 +45,7 @@ const routes: Routes = [
       {
         path: 'NewPassword',
         component: VerifyForgotPasswordOtpComponent,
+        canActivate: [GuestGuard],
         data: {
           title: 'New Password'
         }
@@ -57,6 +60,7 @@ const routes: Routes = [
       {
         path: 'login',
         component: LoginPageComponent,
+        canActivate: [GuestGuard],
         data: {
           title: 'Login Page'
         }
@@ -71,6 +75,7 @@ const routes: Routes = [
       {
         path: 'register',
         component: RegisterPageComponent,
+        canActivate: [GuestGuard],
         data: {
           title: 'Register Page'
         }
@@ -78,6 +83,7 @@ const routes: Routes = [
       {
         path: 'registeration',
         component: RegisterVendorComponent,
+        canActivate: [GuestGuard],
         data: {
           title: 'Vendor Registeration'
         }
@@ -85,6 +91,7 @@ const routes: Routes = [
       {
         path: 'otp',
         component: OtpComponent,
+        canActivate: [GuestGuard],
         data: {
           title: 'OTP Verification'
         }

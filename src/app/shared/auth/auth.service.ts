@@ -1,287 +1,436 @@
 import { Router } from '@angular/router';
-import { Injectable } from '@angular/core';
-import { AngularFireAuth } from "@angular/fire/compat/auth";
-import firebase from 'firebase/compat/app'
-import { Observable, of, ReplaySubject } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { Injectable, Injector } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import firebase from 'firebase/compat/app';
+import { Observable, of, Subject } from 'rxjs';
 import { environment } from 'environments/environment';
-import { catchError, finalize, map, tap } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 import { AuthUtils } from './auth.util';
+import { catchError, finalize, map, tap } from 'rxjs/operators';
+import { TokenStorageService } from './token-storage.service';
+import { SessionIdleService } from './session-idle.service';
+import { vendorWebLoginHeaders } from './vendor-client.headers';
+import { withSkipToast } from '../interceptor/response-handler.interceptor';
 
-@Injectable()
+const HTTP_CREDENTIALS = { withCredentials: true } as const;
+const PERMISSIONS_KEY = 'permissions';
+
+@Injectable({ providedIn: 'root' })
 export class AuthService {
   private user: Observable<firebase.User | null>;
   private userDetails: firebase.User | null = null;
-  private baseUrl = environment.apiUrl;
+  private _authState = new Subject<boolean>();
+  private accessExpiresAt: string | null = null;
+  private refreshExpiresAt: string | null = null;
+  private sessionExpiryTimer: ReturnType<typeof setTimeout> | null = null;
+  private loggingOut = false;
 
-  private _refreshInProgress = false;
-  private _refreshSubject = new ReplaySubject<string | null>(1);
-
-  constructor(public _firebaseAuth: AngularFireAuth, public router: Router, private http: HttpClient,) {
+  constructor(
+    public _firebaseAuth: AngularFireAuth,
+    private router: Router,
+    private http: HttpClient,
+    private tokenStorage: TokenStorageService,
+    private injector: Injector
+  ) {
     this.user = _firebaseAuth.authState as unknown as Observable<firebase.User | null>;
-    this.user.subscribe(
-      (user) => {
-        if (user) {
-          this.userDetails = user;
-        }
-        else {
-          this.userDetails = null;
-        }
-      }
-    );
-    //Get all Entites 
+    this.user.subscribe(user => this.userDetails = user || null);
+    this.tokenStorage.clearLegacyStorage();
   }
 
-  forgetPassword(email: string): Observable<any> {
-    return this.http.post(`${environment.apiUrl}/Auth/VendorForgotPassword`, { email });
+  private get baseUrl(): string {
+    return environment.apiUrl;
   }
 
-  ConfirmForgotOtp(payload: any): Observable<any> {
-    return this.http.post<any>(`${environment.apiUrl}/Auth/VendorResetPassword`, payload);
+  useCookieAuth(): boolean {
+    return !!window.config?.authUseCookies;
   }
-
-
-
 
   get accessToken(): string | null {
-    return localStorage.getItem('token');
+    if (this.useCookieAuth()) return null;
+    const token = this.tokenStorage.getAccessToken();
+    if (!token) return null;
+    return AuthUtils.isTokenExpired(token) ? null : token;
   }
+
   set accessToken(token: string | null) {
     if (token) {
-
-      localStorage.setItem('token', token);
-    } else {
-
-      localStorage.removeItem('token');
+      this.tokenStorage.setTokens(token, this.tokenStorage.getRefreshToken() || '');
     }
   }
 
   get refreshToken(): string | null {
-    return localStorage.getItem('refreshToken');
+    return this.tokenStorage.getRefreshToken();
   }
+
   set refreshToken(token: string | null) {
     if (token) {
-
-      localStorage.setItem('refreshToken', token);
-    } else {
-
-      localStorage.removeItem('refreshToken');
+      this.tokenStorage.setTokens(this.tokenStorage.getAccessToken() || '', token);
     }
   }
 
-  // getProCompanies(): Observable<any[]> {
-  //   return this.http.get<any[]>(`${this.baseUrl}/Company/get-all-procurement-companies`);
-  // }
-
-  // getSSOCallbackUrl() {
-  //   return this.http.get<any>('https://localhost:7188/api/Auth/sso/callback');
-  // }
-
-  // ssoCallback(code: string): Observable<any> {
-  //   return new Observable((observer) => {
-  //     this.http.get<any>(`${this.baseUrl}/Auth/sso/callback?code=${encodeURIComponent(code)}`)
-  //       .subscribe({
-  //         next: (res) => {
-  //           if (res && res.token) {
-  //             // Store JWT & user info
-  //             this._applySessionFromAny(res);
-  //           }
-  //           observer.next(res);
-  //           observer.complete();
-  //         },
-  //         error: (err) => observer.error(err)
-  //       });
-  //   });
-  // }
-
-  initiateSSOLogin(returnUrl: string = '/dashboard/dashboard1'): Observable<any> {
-    return this.http.get(`${this.baseUrl}/Auth/sso/login-url?returnUrl=${encodeURIComponent(returnUrl)}`);
-  }
-
-  GoogleSSOLogin(returnUrl: string = '/dashboard/dashboard1'): Observable<any> {
-    return this.http.get(`${this.baseUrl}/Auth/google/login?returnUrl=${encodeURIComponent(returnUrl)}`);
-  }
-  FacebookSSOLogin(returnUrl: string = '/dashboard/dashboard1'): Observable<any> {
-    return this.http.get(`${this.baseUrl}/Auth/facebook/login?returnUrl=${encodeURIComponent(returnUrl)}`);
-  }
-
-
-  // 🔹 Vendor Login API
-  sgninUser(username: string, password: string): Observable<any> {
-    const body = { username, password };
-    return this.http.post(`${this.baseUrl}/Auth/VendorLogin`, body)
+  getCaptchaConfig(): Observable<{ enabled: boolean; siteKey: string }> {
+    return this.http
+      .get<Record<string, unknown>>(`${this.baseUrl}/Auth/captcha-config`, {
+        ...HTTP_CREDENTIALS,
+        headers: vendorWebLoginHeaders(),
+        context: withSkipToast(),
+      })
       .pipe(
-        tap((response: any) => {
-          this._applySessionFromAny(response);
-        })
+        map(cfg => ({
+          enabled: !!(cfg && (cfg['enabled'] === true || cfg['Enabled'] === true)),
+          siteKey: String(cfg?.['siteKey'] ?? cfg?.['SiteKey'] ?? '').trim(),
+        })),
+        catchError(() => of({ enabled: false, siteKey: '' })),
       );
   }
 
+  isCaptchaEnabled(): Observable<boolean> {
+    return this.getCaptchaConfig().pipe(map(cfg => cfg.enabled));
+  }
 
-  resendOtp(username: string, portalType: string) {
-    return this.http.post(`${this.baseUrl}/Auth/ResendOtp`, {
-      username,
-      portalType
+  setSSOSession(data: any): void {
+    const roles = data.roles
+      ? (Array.isArray(data.roles) ? data.roles : data.roles.split(','))
+      : [];
+
+    this._setSessionFromLogin({
+      token: data.token,
+      refreshToken: data.refreshToken || '',
+      userId: data.id || data.userId || '',
+      userName: data.username || data.userName || '',
+      email: data.email || '',
+      roles,
+      vendorCompanyIds: data.vendorCompanyIds || data.companyIds || [],
+      permissions: data.permissions || [],
     });
   }
 
-  verifyOtp(otp: string, email: string, resetOtp: boolean = false) {
-    const body = {
-      otp: Number(otp),
-      email,
-      resetOtp
-    };
+  forgetPassword(email: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/Auth/VendorForgotPassword`, { email }, HTTP_CREDENTIALS);
+  }
 
-    return this.http.post(
-      `${this.baseUrl}/Auth/VerifyVendorOtp`,
-      body,
-      { responseType: 'text' }
+  ConfirmForgotOtp(payload: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/Auth/VendorResetPassword`, payload, HTTP_CREDENTIALS);
+  }
+
+  initiateSSOLogin(returnUrl: string = '/dashboard/dashboard1'): Observable<any> {
+    return this.http.get(`${this.baseUrl}/Auth/sso/login-url?returnUrl=${encodeURIComponent(returnUrl)}`, HTTP_CREDENTIALS);
+  }
+
+  GoogleSSOLogin(returnUrl: string = '/dashboard/dashboard1'): Observable<any> {
+    return this.http.get(`${this.baseUrl}/Auth/google/login?returnUrl=${encodeURIComponent(returnUrl)}`, HTTP_CREDENTIALS);
+  }
+
+  FacebookSSOLogin(returnUrl: string = '/dashboard/dashboard1'): Observable<any> {
+    return this.http.get(`${this.baseUrl}/Auth/facebook/login?returnUrl=${encodeURIComponent(returnUrl)}`, HTTP_CREDENTIALS);
+  }
+
+  sgninUser(username: string, password: string, turnstileToken?: string | null): Observable<any> {
+    return this.signinUser(username, password, turnstileToken);
+  }
+
+  signinUser(username: string, password: string, turnstileToken?: string | null): Observable<any> {
+    return this.http.post<any>(
+      `${this.baseUrl}/Auth/VendorLogin`,
+      { username, password, turnstileToken: turnstileToken || null },
+      { ...HTTP_CREDENTIALS, headers: vendorWebLoginHeaders() }
+    ).pipe(
+      tap((res) => {
+        const auth = unwrapAuthPayload(res);
+        if (auth && (authToken(auth) || this.useCookieAuth())) {
+          this._setSessionFromLogin(auth);
+        }
+      })
     );
   }
 
-  signinUser(email: string, password: string) {
-    //your code for checking credentials and getting tokens for for signing in user
-    return this._firebaseAuth.signInWithEmailAndPassword(email, password)
+  signinUserFirebase(email: string, password: string) {
+    return this._firebaseAuth.signInWithEmailAndPassword(email, password);
+  }
 
+  resendOtp(username: string, portalType: string) {
+    return this.http.post(`${this.baseUrl}/Auth/ResendOtp`, { username, portalType }, HTTP_CREDENTIALS);
+  }
+
+  verifyOtp(otp: string, email: string, resetOtp: boolean = false) {
+    return this.http.post(
+      `${this.baseUrl}/Auth/VerifyVendorOtp`,
+      { otp: Number(otp), email, resetOtp },
+      { responseType: 'text', ...HTTP_CREDENTIALS }
+    );
   }
 
   registerUser(registerData: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/Auth/VendorUserRegister`, registerData, {
-      responseType: 'text'
+      responseType: 'text',
+      ...HTTP_CREDENTIALS
     });
   }
-  // registerCompany(payload: any): Observable<any> {
-  //   return this.http.post(`${this.baseUrl}/register-company`, payload);
-  // }
-  registerCompany(payload: any): Observable<any> {
 
-    return this.http.post(`${this.baseUrl}/register-company`, payload); // <-- use correct API endpoint
+  registerCompany(payload: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/register-company`, payload, HTTP_CREDENTIALS);
   }
 
   vendorLogout(): Observable<any> {
-    return this.http.post(`${this.baseUrl}/Auth/Vendorlogout`, {});
+    const refreshToken = this.useCookieAuth() ? undefined : this.tokenStorage.getRefreshToken() ?? undefined;
+    const body = refreshToken ? { refreshToken } : {};
+    return this.http.post(`${this.baseUrl}/Auth/Vendorlogout`, body, HTTP_CREDENTIALS);
   }
 
-  logout() {
-    this.vendorLogout().subscribe({
-      next: () => {
-        this.performLogout();
-      },
-      error: (err) => {
-        console.error('Logout API failed:', err);
-        this.performLogout();
-      }
+  logout(): void {
+    this.performLogout();
+  }
+
+  performLogout(reason?: 'session-expired' | 'idle'): void {
+    if (this.loggingOut) return;
+    this.loggingOut = true;
+    this.vendorLogout().pipe(catchError(() => of(null))).subscribe({
+      complete: () => this.finishLogout(reason),
+      error: () => this.finishLogout(reason),
     });
-    this._firebaseAuth.signOut();
+    try { this._firebaseAuth.signOut(); } catch { /* ignore */ }
   }
-
-  performLogout(): void {
-    localStorage.clear();
-    sessionStorage.clear();
-    this.router.navigate(['/pages/login']);
-  }
-  //   isAuthenticated() {
-  //   return true;
-  // }
-
-  // isAuthenticated(): boolean {
-  //   const token = localStorage.getItem('token');
-  //   // basic check: token exists
-  //   if (!token) {
-  //     return false;
-  //   }
-
-  //   // optional: check if token is expired (if it’s a JWT)
-  //   try {
-  //     const payload = JSON.parse(atob(token.split('.')[1]));
-  //     const isExpired = Date.now() >= payload.exp * 1000;
-  //     return !isExpired;
-  //   } catch (e) {
-  //     return false;
-  //   }
-  // }
 
   isAuthenticated(): boolean {
-    const token = this.accessToken;
-    return !!token && !AuthUtils.isTokenExpired(token);
+    if (this.useCookieAuth()) {
+      return localStorage.getItem('isAuthenticated') === 'true' && !!localStorage.getItem('userId');
+    }
+    return !!this.accessToken;
   }
 
-  ensureValidAccessToken$(): Observable<string | null> {
-    const token = this.accessToken;
-
-    // still valid for at least 5s?
-    if (token && !AuthUtils.isTokenExpired(token, 5)) {
-      return of(token);
-    }
-
-    if (!this.refreshToken) {
-      return of(null);
-    }
-
-    // de-dupe concurrent refresh waves
-    if (this._refreshInProgress) {
-      return this._refreshSubject.asObservable();
-    }
-
-    this._refreshInProgress = true;
-
-    return this.http
-      .post<any>(`${this.baseUrl}/Auth/Vendor-Refresh`, { refreshToken: this.refreshToken })
-      .pipe(
-        tap((resp) => this._applySessionFromRefresh(resp)),
-        map((resp) => resp?.token ?? null),
-        tap((newToken) => this._refreshSubject.next(newToken)),
-        catchError((err) => {
-          console.error('[REFRESH] Refresh failed:', err);
-          this._refreshSubject.next(null);
-          return of(null);
-        }),
-        finalize(() => {
-          this._refreshInProgress = false;
-          this._refreshSubject.complete();
-          this._refreshSubject = new ReplaySubject<string | null>(1);
-        })
-      );
+  hasPermission(permission: string): boolean {
+    if (!permission) return true;
+    if (this.hasRole('Super Admin') || this.hasRole('Admin')) return true;
+    const permissions = this.getPermissions();
+    // Backward compatible: older sessions without JWT permissions stay usable until re-login.
+    if (!permissions.length) return this.isAuthenticated();
+    return permissions.includes(permission);
   }
 
-  private _applySessionFromAny(res: any): void {
-    if (!res) return;
-    if (res.token) this.accessToken = res.token;
-    if (res.refreshToken) this.refreshToken = res.refreshToken;
-
-    const user = res.user ?? {};
-    const userId = res.userId ?? user.id ?? null;
-    const username = res.username ?? user.username ?? user.email ?? null;
-    const roles = res.roles ?? user.roles ?? [];
-
-    if (userId) localStorage.setItem('userId', userId);
-    if (username) localStorage.setItem('username', username);
-    localStorage.setItem('roles', JSON.stringify(Array.isArray(roles) ? roles : []));
-
-    const companyIds = res.vendorCompanyIds ?? null;
-    if (companyIds) localStorage.setItem('companyIds', JSON.stringify(companyIds));
-
-    const firstCompanyId = companyIds?.[0] ?? null;
-    if (firstCompanyId) localStorage.setItem('company', firstCompanyId);
+  getPermissions(): string[] {
+    try {
+      const stored = JSON.parse(localStorage.getItem(PERMISSIONS_KEY) || '[]');
+      return Array.isArray(stored) ? stored : [];
+    } catch {
+      return [];
+    }
   }
 
-  private _applySessionFromRefresh(res: any): void {
-    if (!res) return;
-    if (res.token) this.accessToken = res.token;
-    if (res.refreshToken) this.refreshToken = res.refreshToken;
+  getUserRoles(): string[] {
+    try {
+      const stored = JSON.parse(localStorage.getItem('roles') || '[]');
+      return Array.isArray(stored) ? stored : [];
+    } catch {
+      return [];
+    }
+  }
 
-    if (res.userId) localStorage.setItem('userId', res.userId);
-    const username = res.username ?? res.user?.username ?? res.user?.email ?? null;
-    if (username) localStorage.setItem('username', username);
-    if (res.roles) localStorage.setItem('roles', JSON.stringify(res.roles));
-    const companyIds = res.vendorCompanyIds ?? null;
-    if (companyIds) localStorage.setItem('companyIds', JSON.stringify(companyIds));
-
-    const firstCompanyId = companyIds?.[0] ?? null;
-    if (firstCompanyId) localStorage.setItem('company', firstCompanyId);
+  hasRole(role: string): boolean {
+    return this.getUserRoles().some(r => r.toLowerCase() === role.toLowerCase());
   }
 
   getUserId(): string | null {
     return localStorage.getItem('userId');
   }
+
+  restoreSession$(): Observable<boolean> {
+    this.tokenStorage.clearLegacyStorage();
+    if (this.useCookieAuth()) {
+      this.tokenStorage.clear();
+    } else {
+      this.tokenStorage.restorePersistedRefreshToken();
+      if (!this.tokenStorage.getRefreshToken()) {
+        return of(false);
+      }
+    }
+
+    return this.refreshAccessToken$().pipe(
+      map(token => this.useCookieAuth() ? this.isAuthenticated() : !!token),
+      catchError(() => of(false)),
+    );
+  }
+
+  ensureValidAccessToken$(): Observable<string | null> {
+    const bufferSeconds = window.config?.accessTokenRefreshBufferSeconds ?? 5;
+
+    if (this.useCookieAuth()) {
+      if (this.accessExpiresAt && !AuthUtils.isUtcExpiredOrNear(this.accessExpiresAt, bufferSeconds)) {
+        return of(null);
+      }
+      return this.refreshAccessToken$();
+    }
+
+    const token = this.accessToken;
+    if (token && !AuthUtils.isTokenExpired(token, bufferSeconds)) {
+      return of(token);
+    }
+
+    if (!this.tokenStorage.getRefreshToken()) {
+      return of(null);
+    }
+
+    return this.refreshAccessToken$();
+  }
+
+  refreshAccessToken$(): Observable<string | null> {
+    if (!this.tokenStorage.tryBeginRefresh()) {
+      return this.tokenStorage.waitForRefresh();
+    }
+
+    const refreshToken = this.tokenStorage.getRefreshToken();
+    if (!this.useCookieAuth() && !refreshToken) {
+      this.tokenStorage.completeRefresh(null);
+      return of(null);
+    }
+
+    const body = this.useCookieAuth() ? {} : { refreshToken };
+
+    return this.http
+      .post<any>(`${this.baseUrl}/Auth/Vendor-Refresh`, body, {
+        ...HTTP_CREDENTIALS,
+        context: withSkipToast(),
+      })
+      .pipe(
+        tap((resp) => this._applySessionFromRefresh(resp)),
+        map((resp) => resp?.token ?? this.tokenStorage.getAccessToken()),
+        catchError(() => of(null)),
+        finalize(() => this.tokenStorage.completeRefresh(this.accessToken))
+      );
+  }
+
+  private _setSessionFromLogin(res: any): void {
+    this.tokenStorage.clearLegacyStorage();
+    const token = authToken(res);
+    const refresh = authRefreshToken(res);
+    if (this.useCookieAuth()) {
+      this.tokenStorage.clear();
+    } else if (token || refresh) {
+      this.tokenStorage.setTokens(token, refresh);
+    }
+
+    this.accessExpiresAt = res.expiresAt ?? res.ExpiresAt ?? null;
+    this.refreshExpiresAt = res.refreshExpiresAt ?? res.RefreshExpiresAt ?? null;
+
+    const userId = res.userId || res.UserId || res.id || '';
+    if (userId) localStorage.setItem('userId', userId);
+
+    const username = res.username ?? res.userName ?? res.UserName ?? res.email ?? '';
+    if (username) localStorage.setItem('username', username);
+
+    const email = res.email || res.Email || '';
+    if (email) localStorage.setItem('userEmail', email);
+
+    const roles = res.roles || res.Roles || [];
+    localStorage.setItem('roles', JSON.stringify(Array.isArray(roles) ? roles : []));
+
+    const companyIds = res.vendorCompanyIds ?? res.VendorCompanyIds ?? res.companyIds ?? [];
+    const ids = Array.isArray(companyIds) ? companyIds : [];
+    localStorage.setItem('companyIds', JSON.stringify(ids));
+    if (ids[0]) localStorage.setItem('company', ids[0]);
+
+    const permissions = res.permissions || res.Permissions || [];
+    localStorage.setItem(PERMISSIONS_KEY, JSON.stringify(Array.isArray(permissions) ? permissions : []));
+
+    localStorage.setItem('isAuthenticated', 'true');
+    this.scheduleSessionExpiry(this.refreshExpiresAt);
+    this.bumpIdleTimer();
+    this._authState.next(this.isAuthenticated());
+  }
+
+  private _applySessionFromRefresh(res: any): void {
+    if (!res) return;
+    if (this.useCookieAuth()) {
+      this.tokenStorage.clear();
+    } else if (res.token || res.refreshToken) {
+      this.tokenStorage.setTokens(
+        res.token || this.tokenStorage.getAccessToken() || '',
+        res.refreshToken || this.tokenStorage.getRefreshToken() || ''
+      );
+    }
+
+    this.accessExpiresAt = res.expiresAt ?? res.ExpiresAt ?? this.accessExpiresAt;
+    this.refreshExpiresAt = res.refreshExpiresAt ?? res.RefreshExpiresAt ?? this.refreshExpiresAt;
+
+    if (res.userId) localStorage.setItem('userId', res.userId);
+    const username = res.username ?? res.userName ?? res.user?.username ?? res.user?.email;
+    if (username) localStorage.setItem('username', username);
+    if (res.email) localStorage.setItem('userEmail', res.email);
+    if (res.roles) localStorage.setItem('roles', JSON.stringify(res.roles));
+
+    const companyIds = res.vendorCompanyIds ?? res.companyIds;
+    if (companyIds) {
+      const ids = Array.isArray(companyIds) ? companyIds : [];
+      localStorage.setItem('companyIds', JSON.stringify(ids));
+      if (ids[0]) localStorage.setItem('company', ids[0]);
+    }
+
+    if (res.permissions) {
+      localStorage.setItem(PERMISSIONS_KEY, JSON.stringify(res.permissions));
+    }
+
+    if (res.userId || res.token || this.useCookieAuth()) {
+      localStorage.setItem('isAuthenticated', 'true');
+    }
+
+    this.scheduleSessionExpiry(this.refreshExpiresAt);
+    this.bumpIdleTimer();
+    this._authState.next(this.isAuthenticated());
+  }
+
+  private scheduleSessionExpiry(isoUtc: string | null): void {
+    if (this.sessionExpiryTimer !== null) {
+      clearTimeout(this.sessionExpiryTimer);
+      this.sessionExpiryTimer = null;
+    }
+    if (!isoUtc) return;
+    const delay = Date.parse(isoUtc) - Date.now();
+    if (Number.isNaN(delay) || delay <= 0) return;
+    this.sessionExpiryTimer = setTimeout(() => {
+      if (this.isAuthenticated()) this.performLogout('session-expired');
+    }, delay);
+  }
+
+  private bumpIdleTimer(): void {
+    try { this.injector.get(SessionIdleService).start(); } catch { /* optional */ }
+  }
+
+  private finishLogout(reason?: 'session-expired' | 'idle'): void {
+    if (this.sessionExpiryTimer !== null) {
+      clearTimeout(this.sessionExpiryTimer);
+      this.sessionExpiryTimer = null;
+    }
+    try { this.injector.get(SessionIdleService).stop(); } catch { /* optional */ }
+    this.tokenStorage.clear();
+    this.accessExpiresAt = null;
+    this.refreshExpiresAt = null;
+    localStorage.clear();
+    this.loggingOut = false;
+    if (reason === 'session-expired') {
+      sessionStorage.setItem('authFlash', 'Your session has expired. Please sign in again.');
+    } else if (reason === 'idle') {
+      sessionStorage.setItem('authFlash', 'You were signed out due to inactivity.');
+    }
+    this.router.navigate(['/pages/login']);
+  }
+
+  get authState(): Observable<boolean> {
+    return this._authState.asObservable();
+  }
+}
+
+function unwrapAuthPayload(res: any): any {
+  if (!res || typeof res !== 'object') return res;
+  const inner = res.value ?? res.Value;
+  if (inner && typeof inner === 'object' && (authToken(inner) || authRefreshToken(inner) || inner.userId || inner.UserId)) {
+    return inner;
+  }
+  return res;
+}
+
+function authToken(res: any): string {
+  return (res?.token || res?.Token || '').toString();
+}
+
+function authRefreshToken(res: any): string {
+  return (res?.refreshToken || res?.RefreshToken || '').toString();
 }

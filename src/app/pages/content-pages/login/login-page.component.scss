@@ -198,6 +198,17 @@ p {
   font-size: 1.5rem;
 }
 
+.turnstile-wrap,
+#turnstile-container {
+  width: 100%;
+}
+
+:host ::ng-deep #turnstile-container > div,
+:host ::ng-deep #turnstile-container iframe {
+  width: 100% !important;
+  max-width: 100%;
+}
+
 .login-btn {
   background: linear-gradient(180deg, #249D57 0%, #187741 100%);
   padding: 16px 0px;
