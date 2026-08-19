@@ -1,0 +1,10 @@
+{
+  "apiUrl": "https://localhost:7188/api",
+  "authUseCookies": false,
+  "sessionIdleMinutes": 20,
+  "accessTokenRefreshBufferSeconds": 5,
+  "httpTimeoutMs": 30000,
+  "turnstileEnabled": true,
+  "turnstileSiteKey": "0x4AAAAAAEPCUfjKC4-JYIgU",
+  "googleMapsApiKey": ""
+}
