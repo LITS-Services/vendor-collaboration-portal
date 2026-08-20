@@ -1,3 +1,4 @@
+import { formatDate } from '@angular/common';
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { PurchaseOrderService } from 'app/shared/services/purchase-order.service';
@@ -44,6 +45,17 @@ export class GrnDetailsComponent implements OnInit {
         this.stateChange.emit({ ready: true });
       }
     });
+  }
+
+  formatDisplayDate(value: string | Date | null | undefined): string {
+    if (!value) {
+      return '';
+    }
+    const date = new Date(value);
+    if (isNaN(date.getTime()) || date.getFullYear() <= 1) {
+      return '';
+    }
+    return formatDate(date, 'yyyy-MM-dd', 'en-US');
   }
 
   toggleItems() {

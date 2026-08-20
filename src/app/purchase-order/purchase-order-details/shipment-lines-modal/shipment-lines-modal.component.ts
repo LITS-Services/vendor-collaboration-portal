@@ -8,6 +8,7 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-shipment-lines-modal',
   templateUrl: './shipment-lines-modal.component.html',
+  styleUrls: ['./shipment-lines-modal.component.scss'],
   standalone: false
 })
 export class ShipmentLinesModalComponent implements OnInit {

@@ -67,22 +67,22 @@
 
         <div class="col-md-4 mb-2">
             <label class="form-label small">Posting Date</label>
-            <input class="form-control form-control-sm" [value]="grnDetails.postingDate | date:'yyyy-MM-dd HH:mm:ss'" disabled>
+            <input class="form-control form-control-sm" [value]="formatDisplayDate(grnDetails.postingDate)" disabled>
         </div>
 
         <div class="col-md-4 mb-2">
             <label class="form-label small">Document Date</label>
-            <input class="form-control form-control-sm" [value]="grnDetails.documentDate | date:'yyyy-MM-dd HH:mm:ss'" disabled>
+            <input class="form-control form-control-sm" [value]="formatDisplayDate(grnDetails.documentDate)" disabled>
         </div>
 
         <div class="col-md-4 mb-2">
             <label class="form-label small">Due Date</label>
-            <input class="form-control form-control-sm" [value]="grnDetails.dueDate | date:'yyyy-MM-dd HH:mm:ss'" disabled>
+            <input class="form-control form-control-sm" [value]="formatDisplayDate(grnDetails.dueDate)" disabled>
         </div>
 
         <div class="col-md-4 mb-2">
             <label class="form-label small">Order Date</label>
-            <input class="form-control form-control-sm" [value]="grnDetails.orderDate | date:'yyyy-MM-dd HH:mm:ss'" disabled>
+            <input class="form-control form-control-sm" [value]="formatDisplayDate(grnDetails.orderDate)" disabled>
         </div>
 
         <div class="col-md-4 mb-2">
@@ -178,12 +178,8 @@
             <div class="text-center">LOCATION CODE</div>
             <div class="text-center">PLANNED RECEIPT DATE</div>
             <div class="text-center">EXPECTED RECEIPT DATE</div>
-            <div class="text-center">ORDERED QTY</div>
-            <div class="text-center">QUANTITY</div>
-            <div class="text-end">UNIT COST EXCL VAT</div>
             <div class="text-center">RECEIVED QTY</div>
-            <div class="text-center">RECEIVED DATE</div>
-            <div class="text-end mono">REMARKS</div>
+            <div class="text-end">UNIT COST EXCL VAT</div>
         </div>
 
         <div class="table-scroll table-scroll--grn">
@@ -191,14 +187,10 @@
                 <div class="mono">{{ item.itemNo }}</div>
                 <div class="mono">{{ item.itemName }}</div>
                 <div class="text-center mono">{{ item.locationCode }}</div>
-                <div class="text-center mono">{{ item.plannedReceiptDate | date:'yyyy-MM-dd HH:mm:ss' }}</div>
-                <div class="text-center mono">{{ item.expectedReceiptDate | date:'yyyy-MM-dd HH:mm:ss' }}</div>
-                <div class="text-center mono">{{ item.orderedQuantity }}</div>
+                <div class="text-center mono">{{ formatDisplayDate(item.plannedReceiptDate) }}</div>
+                <div class="text-center mono">{{ formatDisplayDate(item.expectedReceiptDate) }}</div>
                 <div class="text-center mono">{{ item.quantity | number:'1.2-2' }}</div>
                 <div class="text-end mono">{{ item.unitCostExclVat | number:'1.2-2' }}</div>
-                <div class="text-center mono">{{ item.receivedQuantity }}</div>
-                <div class="text-center mono">{{ item.receivedDate | date:'yyyy-MM-dd' }}</div>
-                <div class="text-end">{{ item.remarks }}</div>
             </div>
         </div>
     </div>

@@ -105,9 +105,12 @@ input[disabled] {
 
   .table__row {
     display: grid;
-    gap: 12px;
+    gap: 8px;
     padding: 10px 14px;
     align-items: center;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 
     &:not(.table__row--head) {
       border-top: 1px solid #f1f5f9;
@@ -117,8 +120,8 @@ input[disabled] {
   .table__row--head {
     background: #F4F4F4 !important;
     color: #606060 !important;
-    font-size: 12px !important;
-    letter-spacing: 0.06em !important;
+    font-size: 11px !important;
+    letter-spacing: 0.04em !important;
     font-weight: 600;
   }
 
@@ -127,6 +130,14 @@ input[disabled] {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .table__row--head > div {
+    background: #F4F4F4;
+    white-space: normal;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    line-height: 1.25;
   }
 
   .table-cell-remarks {
@@ -156,32 +167,26 @@ input[disabled] {
     display: none;
   }
 
-  // GRN table layout (11 columns)
   .table__row--grn {
     grid-template-columns:
-      minmax(120px, 1.0fr)  /* Item No */
-      minmax(220px, 2.0fr)  /* Item Desc */
-      minmax(130px, 1.0fr)  /* Location Code */
-      minmax(180px, 1.2fr)  /* Planned Receipt Date */
-      minmax(180px, 1.2fr)  /* Expected Receipt Date */
-      minmax(120px, 0.9fr)  /* Ordered Qty */
-      minmax(120px, 0.9fr)  /* Quantity */
-      minmax(150px, 1.0fr)  /* Unit Cost Excl Vat */
-      minmax(120px, 0.9fr)  /* Received Qty */
-      minmax(150px, 1.0fr)  /* Received Date */
-      minmax(180px, 1.2fr); /* Remarks */
-    min-width: 1770px;
+      minmax(0, 0.9fr)  /* Item No */
+      minmax(0, 1.6fr)  /* Item */
+      minmax(0, 0.9fr)  /* Location Code */
+      minmax(0, 1.1fr)  /* Planned Receipt Date */
+      minmax(0, 1.1fr)  /* Expected Receipt Date */
+      minmax(0, 0.8fr)  /* Received Qty */
+      minmax(0, 1.2fr); /* Unit Cost Excl Vat */
   }
 
   .table-scroll--grn {
     max-height: 230px;
-    overflow-y: auto;
     overflow-x: hidden;
+    overflow-y: auto;
   }
 
   .table-card--grn {
-    overflow-x: auto;
-    overflow-y: hidden;
+    overflow: hidden;
+    width: 100%;
   }
 
   .table-card--grn::-webkit-scrollbar {
