@@ -100,12 +100,12 @@
               ]
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "buildTarget": "vendor-collaboration-portal:build"
+            "buildTarget": "vendor-collaboration-portal:build:development"
           },
           "configurations": {
             "production": {
