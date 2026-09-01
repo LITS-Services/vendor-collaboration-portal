@@ -72,10 +72,16 @@ export class PurchaseOrderDetailsComponent implements OnInit {
         this.spinner.hide();
         this.cdr.detectChanges();
       },
-      error: () => { 
+      error: () => {
         this.spinner.hide();
-        this.loading = false; }
+        this.loading = false;
+      }
     });
+  }
+
+
+  goBacktoPOList() {
+    this.router.navigate(['/purchase-order/purchase-order-list']);
   }
 
   toggleItems() {
@@ -154,7 +160,7 @@ export class PurchaseOrderDetailsComponent implements OnInit {
     this.purchaseOrderService.getAllPoInvoices(this.poId, 1, 200).subscribe({
       next: (res) => {
         const rows = this.extractRows(res);
-        this.invoiceList =rows;
+        this.invoiceList = rows;
         this.invoiceLoaded = true;
         this.loading = false;
         this.spinner.hide();
@@ -263,12 +269,12 @@ export class PurchaseOrderDetailsComponent implements OnInit {
     this.selectedPoLineId = row.id || row.purchaseOrderLineId;
     this.selectedOrderedQty = row.quantity ?? row.orderedQuantity ?? row.qty ?? 0;
     this.selectedItemName = row.itemName ?? row.item ?? '-';
-    
+
     // Reset other modal selections
     this.selectedShipmentId = undefined;
     this.selectedGrnId = undefined;
     this.selectedInvoicePoId = undefined;
-    
+
     this.modalShipmentLinesReady = false;
     this.modalTitle = 'Shipment Details';
     this.modalRef = this.modalService.open(this.detailModal, { size: 'lg', centered: true, scrollable: true });
@@ -333,16 +339,16 @@ export class PurchaseOrderDetailsComponent implements OnInit {
         this.loading = true;
         this.spinner.show();
         this.purchaseOrderService.rejectPurchaseOrder(this.poId)
-        .pipe(finalize(() => { this.spinner.hide(); }))
-        .subscribe({
-          next: () => {
-            this.loadPurchaseOrder();
-          },
-          error: () => {
-            this.loading = false;
-            this.toastr.error('Failed to reject Purchase Order');
-          }
-        });
+          .pipe(finalize(() => { this.spinner.hide(); }))
+          .subscribe({
+            next: () => {
+              this.loadPurchaseOrder();
+            },
+            error: () => {
+              this.loading = false;
+              this.toastr.error('Failed to reject Purchase Order');
+            }
+          });
       }
     });
   }
