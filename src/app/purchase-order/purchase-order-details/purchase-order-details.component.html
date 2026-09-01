@@ -222,9 +222,9 @@
     </div>
 
     <div *ngIf="selectedTab === 'grn-details'">
-      <div class="d-flex justify-content-end mb-2">
+      <!-- <div class="d-flex justify-content-end mb-2">
         <button class="btn btn-primary" (click)="requestForPayment()"><i class="ft-file-text me-1"></i>Request for Payment</button>
-      </div>
+      </div> -->
       <ngx-datatable class="bootstrap core-bootstrap" [rows]="grnList" [columnMode]="'force'" [headerHeight]="50"
         [footerHeight]="50" rowHeight="50" [limit]="10" [scrollbarH]="true" [loadingIndicator]="loading">
         <ngx-datatable-column name="Sr. No." [sortable]="false">
