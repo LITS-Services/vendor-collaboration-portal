@@ -47,12 +47,7 @@ import { environment } from 'environments/environment';
     NgxIntlTelInputModule,
     BsDropdownModule.forRoot(),
     // NgxIntlTelInputModule,
-    TranslateModule.forChild({
-      loader: {
-        provide: TranslateLoader,
-        useClass: TranslateHttpLoader
-      }
-    }),
+    TranslateModule.forChild(),
     NgxSpinnerModule,
     NgHcaptchaModule.forRoot({ siteKey: '1b1afe16-c082-4211-accf-2921906c959b' }),
     NgOtpInputModule,

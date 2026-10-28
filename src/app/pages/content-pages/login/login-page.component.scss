@@ -203,7 +203,7 @@ p {
   width: 100%;
 }
 
-:host ::ng-deep #turnstile-container > div,
+:host ::ng-deep #turnstile-container>div,
 :host ::ng-deep #turnstile-container iframe {
   width: 100% !important;
   max-width: 100%;
@@ -346,16 +346,112 @@ p {
   }
 }
 
-.cstm-icons{
-    width: 30px;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center center;
-    height: 30px;
-    display: grid;
+.cstm-icons {
+  width: 30px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  height: 30px;
+  display: grid;
 }
 
 /* Toastr is appended to <body>; override global top offset only on login page */
 ::ng-deep body.login-page .toast-container {
   top: 16px !important;
+}
+
+.cstm-pass-div {
+  position: relative !important;
+}
+
+.cstm-pass-input-wrap {
+  position: relative;
+  display: block;
+
+  input {
+    padding-right: 36px;
+  }
+
+  /* Eye icon stays in its original place: right 14px */
+  .pass-icon,
+  .eye-icon {
+    position: absolute;
+    right: 12px !important;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: auto;
+    color: #707070;
+  }
+
+  .form-control.is-valid,
+  .form-control.is-invalid {
+    padding-right: 22px !important;
+  }
+}
+
+/* Align BOTH username and password validation ticks to each other at right: 32px */
+.form-control.is-valid,
+.form-control.is-invalid {
+  background-position: right 32px center !important;
+  padding-right: 22px !important;
+}
+
+/* RTL Mode Support for Login */
+:host-context([dir="rtl"]),
+:host-context(html.rtl) {
+
+  .custom-input,
+  .form-control {
+    text-align: right;
+  }
+
+  /* Eye icon stays in its original place: left 14px in RTL */
+  .pass-icon,
+  .eye-icon {
+    left: 12px !important;
+    right: auto !important;
+  }
+
+  .cstm-pass-input-wrap {
+    input {
+      padding-left: 22px !important;
+      padding-right: 14px !important;
+    }
+  }
+
+  /* Align BOTH username and password validation ticks to each other at left: 32px in RTL */
+  .form-control.is-valid,
+  .form-control.is-invalid {
+    background-position: left 32px center !important;
+    padding-left: 22px !important;
+    padding-right: 14px !important;
+  }
+
+  .text-end {
+    text-align: left !important;
+  }
+
+  ::ng-deep .checkbox label {
+    margin-right: 1.75rem !important;
+    margin-left: 0 !important;
+  }
+
+  ::ng-deep .checkbox input[type="checkbox"] {
+    right: 0 !important;
+    left: auto !important;
+  }
+
+  ::ng-deep .checkbox label:before,
+  ::ng-deep .checkbox label:after {
+    right: 0 !important;
+    left: auto !important;
+  }
 }

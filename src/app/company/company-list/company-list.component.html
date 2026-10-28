@@ -3,9 +3,9 @@
     <div class="col-12">
       <div class="row mb-3">
         <div class="col-md-12 gap-2 d-flex align-items-center justify-content-between">
-          <h5 class="mb-0">{{title}} </h5>
+          <h5 class="mb-0">{{ getTranslatedTitle() }}</h5>
           <button *ngIf="showRegisterButton" class="btn btn-primary" (click)="newCompany()" style="float: right;">
-            Register New Company
+            {{ 'COMPANY_MODULE.REGISTER_NEW_COMPANY' | translate }}
           </button>
         </div>
       </div>
@@ -17,7 +17,7 @@
           [selectionType]="SelectionType.checkbox" (sort)="onSort($event)" (select)="customChkboxOnSelect($event)">
 
           <!-- Company Name -->
-          <ngx-datatable-column [flexGrow]="2" [minWidth]="140" name="Company Name" prop="name">
+          <ngx-datatable-column [flexGrow]="2" [minWidth]="140" [name]="'COMPANY_MODULE.COMPANY_NAME' | translate" prop="name">
             <ng-template let-row="row" ngx-datatable-cell-template>
               <a href="javascript:void(0)" (click)="editCompany(row)" class="text-primary font-weight-bold">
                 {{ row.name }}
@@ -26,40 +26,40 @@
           </ngx-datatable-column>
 
           <!-- Main Status Column (NEW) -->
-          <ngx-datatable-column name="Status" prop="mainStatus" [flexGrow]="1" [minWidth]="140">
+          <ngx-datatable-column [name]="'COMMON.STATUS' | translate" prop="mainStatus" [flexGrow]="1" [minWidth]="140">
             <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
               <span class="status-pill" [ngClass]="getStatusClass(value)">
-                {{ value }}
+                {{ value | statusTranslate }}
               </span>
             </ng-template>
           </ngx-datatable-column>
 
           <!-- Created Date -->
-          <ngx-datatable-column name="Create Date" prop="createDate" [flexGrow]="1" [minWidth]="140">
+          <ngx-datatable-column [name]="'COMPANY_MODULE.CREATE_DATE' | translate" prop="createDate" [flexGrow]="1" [minWidth]="140">
             <ng-template let-row="row" ngx-datatable-cell-template>
               {{ row.createDate | date:'dd-MMM-yyyy' }}
             </ng-template>
           </ngx-datatable-column>
 
           <!-- Level Column (Renamed from Status) -->
-          <ngx-datatable-column name="Level" prop="level" [sortable]="false" [flexGrow]="1" [minWidth]="140">
+          <ngx-datatable-column [name]="'COMPANY_MODULE.LEVEL' | translate" prop="level" [sortable]="false" [flexGrow]="1" [minWidth]="140">
             <ng-template let-row="row" ngx-datatable-cell-template>
               <span class="badge bg-light text-dark border" *ngIf="row.level && row.level !== 'Loading...'">
                 {{ row.level }}
               </span>
               <div *ngIf="row.level === 'Loading...'" class="spinner-border spinner-border-sm text-primary"
                 role="status">
-                <span class="visually-hidden">Loading...</span>
+                <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
               </div>
             </ng-template>
           </ngx-datatable-column>
 
           <!-- Remarks (Popup Trigger) -->
-          <ngx-datatable-column name="Remarks" [sortable]="false" [flexGrow]="1" minWidth="180" [maxWidth]="200">
+          <ngx-datatable-column [name]="'COMPANY_MODULE.REMARKS' | translate" [sortable]="false" [flexGrow]="1" minWidth="180" [maxWidth]="200">
             <ng-template let-row="row" ngx-datatable-cell-template>
-              <button type="button" class="btn btn-sm csm-remarks-btn" title="View Remarks"
+              <button type="button" class="btn btn-sm csm-remarks-btn" [title]="'COMPANY_MODULE.VIEW_REMARKS' | translate"
                 (click)="openRemarksPopup(row)">
-                View
+                {{ 'COMMON.VIEW' | translate }}
               </button>
             </ng-template>
           </ngx-datatable-column>
@@ -71,15 +71,15 @@
   <!-- STATUS MODAL -->
   <ng-template #statusModal let-modal>
     <div class="modal-header bg-light ps-2">
-      <h5 class="modal-title text-dark">Company Status & Level Details</h5>
+      <h5 class="modal-title text-dark">{{ 'COMPANY_MODULE.STATUS_MODAL_TITLE' | translate }}</h5>
       <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
     </div>
     <div class="modal-body p-0">
       <div *ngIf="loadingStatus" class="text-center py-5">
         <div class="spinner-border text-primary" role="status">
-          <span class="visually-hidden">Loading status details...</span>
+          <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
         </div>
-        <p class="mt-2 text-muted">Loading status and level information...</p>
+        <p class="mt-2 text-muted">{{ 'COMMON.LOADING' | translate }}</p>
       </div>
 
       <div *ngIf="!loadingStatus">
@@ -87,11 +87,11 @@
           <table class="table app-table">
             <thead>
               <tr>
-                <th>Entity</th>
-                <th>Status</th>
-                <th>Level</th>
-                <th>Approver Name</th>
-                <th>Created Date</th>
+                <th>{{ 'COMMON.ENTITY' | translate }}</th>
+                <th>{{ 'COMMON.STATUS' | translate }}</th>
+                <th>{{ 'COMPANY_MODULE.LEVEL' | translate }}</th>
+                <th>{{ 'COMPANY_MODULE.APPROVER_NAME' | translate }}</th>
+                <th>{{ 'COMPANY_MODULE.CREATE_DATE' | translate }}</th>
               </tr>
             </thead>
             <tbody>
@@ -99,7 +99,7 @@
                 <td class="border-0">{{ e.entity }}</td>
                 <td class="border-0">
                   <span class="status-pill" [ngClass]="getStatusClass(e.status)">
-                    {{ e.status }}
+                    {{ e.status | statusTranslate }}
                   </span>
                 </td>
                 <td class="border-0">
@@ -113,24 +113,20 @@
         </div>
       </div>
     </div>
-
-    <!-- <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Close</button>
-    </div> -->
   </ng-template>
 
   <!-- REMARKS MODAL -->
   <ng-template #remarksModal let-modal>
     <div class="modal-header">
-      <h5 class="modal-title">Remarks Details</h5>
+      <h5 class="modal-title">{{ 'COMPANY_MODULE.REMARKS_MODAL_TITLE' | translate }}</h5>
       <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
     </div>
     <div class="modal-body py-0 px-4">
       <div *ngIf="loadingRemarks" class="text-center py-4">
         <div class="spinner-border text-primary" role="status">
-          <span class="visually-hidden">Loading remarks...</span>
+          <span class="visually-hidden">{{ 'COMMON.LOADING' | translate }}</span>
         </div>
-        <p class="mt-2 text-muted">Loading remarks...</p>
+        <p class="mt-2 text-muted">{{ 'COMMON.LOADING' | translate }}</p>
       </div>
 
       <div *ngIf="!loadingRemarks">
@@ -138,8 +134,8 @@
         <div *ngIf="showNoRemarksMessage" class="text-center py-4">
           <div class="text-muted">
             <i class="ft-file-text display-4 text-muted"></i>
-            <h6 class="mt-2">No Remarks Available</h6>
-            <p class="mb-0">There are no remarks available for any entities.</p>
+            <h6 class="mt-2">{{ 'COMPANY_MODULE.NO_REMARKS' | translate }}</h6>
+            <p class="mb-0">{{ 'COMPANY_MODULE.NO_REMARKS_DESC' | translate }}</p>
           </div>
         </div>
 
@@ -155,9 +151,9 @@
                 <table class="table app-table">
                   <thead>
                     <tr>
-                      <th>User</th>
-                      <th>Date</th>
-                      <th>Remarks</th>
+                      <th>{{ 'COMPANY_MODULE.USER' | translate }}</th>
+                      <th>{{ 'COMPANY_MODULE.DATE' | translate }}</th>
+                      <th>{{ 'COMPANY_MODULE.REMARKS' | translate }}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -183,7 +179,7 @@
       </div>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Close</button>
+      <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">{{ 'COMMON.CLOSE' | translate }}</button>
     </div>
   </ng-template>
 </section>

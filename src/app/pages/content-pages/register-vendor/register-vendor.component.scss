@@ -323,3 +323,49 @@ p{
 
 
   
+
+/* RTL Mode Support for Register Vendor */
+:host-context([dir="rtl"]),
+:host-context(html.rtl) {
+  .back-icon {
+    transform: rotate(180deg);
+  }
+
+  .form-control,
+  input.form-control {
+    text-align: right;
+  }
+
+  .pass-icon,
+  .eye-icon {
+    left: 12px !important;
+    right: auto !important;
+  }
+
+  .password-input {
+    padding-left: 36px !important;
+    padding-right: 14px !important;
+  }
+
+  .checkbox label {
+    margin-right: 1.75rem !important;
+    margin-left: 0 !important;
+    text-align: right;
+  }
+
+  .checkbox input[type="checkbox"] {
+    right: 0 !important;
+    left: auto !important;
+  }
+
+  .checkbox label:before,
+  .checkbox label:after {
+    right: 0 !important;
+    left: auto !important;
+  }
+
+  :host ::ng-deep ngx-intl-tel-input .iti__flag-container {
+    border-right: none;
+    border-left: 1px solid #e0e3e8;
+  }
+}

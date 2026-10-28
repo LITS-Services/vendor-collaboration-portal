@@ -5,144 +5,95 @@
       <button class="btn btn-outline-secondary rounded-circle" (click)="goBacktoPOList()"
         style="position: sticky; width: 40px; height: 40px; display: flex ; align-items: center; justify-content: center;">
         <i class="fa fa-arrow-left"></i>
-
       </button>
 
-      <h1 class="mb-0">Purchase Order Details</h1>
+      <h1 class="mb-0">{{ 'PO_MODULE.PO_DETAILS' | translate }}</h1>
     </div>
-
-
-    <!-- Tab Navigation -->
-    <!-- <div class="po-tabs mb-3">
-      <button (click)="selectTab('po-details')" [ngClass]="{ 'active': selectedTab === 'po-details' }" class="po-tab">
-        PURCHASE ORDER
-      </button>
-
-      <button (click)="selectTab('shipment-details')" [ngClass]="{ 'active': selectedTab === 'shipment-details' }"
-        class="po-tab">
-        SHIPMENT DETAILS
-      </button>
-
-      <button (click)="selectTab('grn-details')" [ngClass]="{ 'active': selectedTab === 'grn-details' }" class="po-tab">
-        GRN
-      </button>
-
-      <button (click)="selectTab('invoice-details')" [ngClass]="{ 'active': selectedTab === 'invoice-details' }"
-        class="po-tab">
-        INVOICING
-      </button>
-    </div> -->
-
 
     <div class="po-tabs mb-3 mt-3">
       <nav>
         <button (click)="selectTab('po-details')" [ngClass]="{ 'tab-current': selectedTab === 'po-details' }"
           class="po-style-tab">
-          <span>PURCHASE ORDER</span>
+          <span>{{ 'PO_MODULE.PURCHASE_ORDER' | translate }}</span>
         </button>
 
         <button (click)="selectTab('shipment-details')"
           [ngClass]="{ 'tab-current': selectedTab === 'shipment-details' }" class="po-style-tab">
-          <span>SHIPMENT DETAILS</span>
+          <span>{{ 'PO_MODULE.SHIPMENT_DETAILS' | translate }}</span>
         </button>
 
         <button (click)="selectTab('grn-details')" [ngClass]="{ 'tab-current': selectedTab === 'grn-details' }"
           class="po-style-tab">
-          <span>GRN</span>
+          <span>{{ 'PO_MODULE.GRN' | translate }}</span>
         </button>
 
         <button (click)="selectTab('invoice-details')" [ngClass]="{ 'tab-current': selectedTab === 'invoice-details' }"
           class="po-style-tab">
-          <span>INVOICING</span>
+          <span>{{ 'PO_MODULE.INVOICING' | translate }}</span>
         </button>
       </nav>
     </div>
 
-
     <div *ngIf="selectedTab === 'po-details'">
-      <!-- Action Bar -->
-      <!-- <div class="card cstm-ui-card mb-3 py-2 px-3 d-flex justify-content-start flex-wrap">
-        <div class="d-flex align-items-center">
-          <button class="btn btn-lg position-relative me-2" type="button" (click)="goBack()">
-            <i class="ft-arrow-left"></i>
-          </button>
-          <h5 class="mt-2 fw-bold">Purchase Order Details</h5>
-        </div>
-      </div> -->
-
-      <!-- Reject Button Above PO Info Card -->
-      <!-- <div class="mb-2 d-flex justify-content-end">
-      <button class="btn btn-danger" (click)="rejectPurchaseOrder()">
-        Reject Purchase Order
-      </button>
-    </div> -->
-
       <!-- PO Info -->
       <div class="card shadow-sm mb-3">
         <div class="card-body" style="border: 0.5px solid #53bd53; padding: 1rem; border-radius: 8px;">
           <div class="d-flex justify-content-between align-items-start mb-2">
-
             <h5 class="mt-2 fw-bold">
-              Purchase Order Details
+              {{ 'PO_MODULE.PO_DETAILS' | translate }}
             </h5>
 
             <div class="d-flex align-items-center gap-2 flex-wrap">
-              <!-- DELETE button only on update -->
               <button class="btn btn-danger" (click)="rejectPurchaseOrder()">
                 <i class="ft-x-circle me-1"></i>
-                Reject PO
+                {{ 'PO_MODULE.REJECT_PO' | translate }}
               </button>
-
-              <!-- SAVE / UPDATE button -->
-              <!-- <button class="btn btn-primary btn-sm" (click)="save()">
-                {{ isEdit ? 'Update Shipment Details' : 'Submit Shipment Details' }}
-            </button> -->
             </div>
           </div>
 
           <div class="row">
             <div class="col-lg-4 col-md-6 mb-3">
-              <label class="form-label small mb-1">PO No.</label>
+              <label class="form-label small mb-1">{{ 'PO_MODULE.PO_NUMBER' | translate }}</label>
               <input class="form-control form-control-sm" [value]="poDetails?.purchaseOrderNo" disabled>
             </div>
 
             <div class="col-lg-4 col-md-6 mb-3">
-              <label class="form-label small mb-1">Requisition No</label>
+              <label class="form-label small mb-1">{{ 'COMMON.REQUISITION_NO' | translate }}</label>
               <input class="form-control form-control-sm" [value]="poDetails?.requisitionNo || '-'" disabled>
             </div>
 
             <div class="col-lg-4 col-md-6 mb-3">
-              <label class="form-label small mb-1">RFQ No</label>
+              <label class="form-label small mb-1">{{ 'COMMON.RFQ_NO' | translate }}</label>
               <input class="form-control form-control-sm" [value]="poDetails?.rfqNo || '-'" disabled>
             </div>
 
             <div class="col-lg-4 col-md-6 mb-3">
-              <label class="form-label small mb-1">Status</label>
-              <input class="form-control form-control-sm" [value]="poDetails?.requestStatus" disabled>
+              <label class="form-label small mb-1">{{ 'COMMON.STATUS' | translate }}</label>
+              <input class="form-control form-control-sm" [value]="poDetails?.requestStatus | statusTranslate" disabled>
             </div>
 
             <div class="col-lg-4 col-md-6 mb-3">
-              <label class="form-label small mb-1">Date</label>
+              <label class="form-label small mb-1">{{ 'COMMON.DATE' | translate }}</label>
               <input class="form-control form-control-sm" [value]="poDetails?.createdDate | date:'yyyy-MM-dd'" disabled>
             </div>
 
             <div class="col-lg-4 col-md-6 mb-3">
-              <label class="form-label small mb-1">Location Code</label>
+              <label class="form-label small mb-1">{{ 'PO_MODULE.LOCATION_CODE' | translate }}</label>
               <input class="form-control form-control-sm" [value]="poDetails?.locationCode" disabled>
             </div>
 
             <div class="col-lg-4 col-md-6 mb-3">
-              <label class="form-label small mb-1">Ship To Country</label>
+              <label class="form-label small mb-1">{{ 'PO_MODULE.SHIP_TO_COUNTRY' | translate }}</label>
               <input class="form-control form-control-sm" [value]="poDetails?.shipToCountry" disabled>
             </div>
 
             <div class="col-lg-4 col-md-6 mb-3">
-              <label class="form-label small mb-1">Ship To City</label>
+              <label class="form-label small mb-1">{{ 'PO_MODULE.SHIP_TO_CITY' | translate }}</label>
               <input class="form-control form-control-sm" [value]="poDetails?.shipToCity" disabled>
             </div>
 
             <div class="col-lg-4 col-md-6 mb-3">
-              <label class="form-label small mb-1">Ship To PostCode</label>
+              <label class="form-label small mb-1">{{ 'PO_MODULE.SHIP_TO_POSTCODE' | translate }}</label>
               <input class="form-control form-control-sm" [value]="poDetails?.shipToPostCode" disabled>
             </div>
           </div>
@@ -151,17 +102,17 @@
 
       <!-- Items Section -->
       <div class="d-flex justify-content-between align-items-center mb-2 cursor-pointer" (click)="toggleItems()">
-        <h5 class="section-title m-0">Items</h5>
+        <h5 class="section-title m-0">{{ 'PO_MODULE.ITEMS' | translate }}</h5>
         <i class="ft-chevron-down transition-icon" [ngClass]="{ 'rotate-icon': itemsExpanded }"></i>
       </div>
 
       <div class="expand-wrapper" [ngClass]="{ 'expanded': itemsExpanded }">
         <div class="table-card table-card--items">
           <div class="table__row table__row--head table__row--items">
-            <div>ITEM</div>
-            <div>DESCRIPTION</div>
-            <div class="text-center">QTY</div>
-            <div class="text-end">AMOUNT</div>
+            <div>{{ 'PO_MODULE.ITEM' | translate }}</div>
+            <div>{{ 'PO_MODULE.DESCRIPTION' | translate }}</div>
+            <div class="text-center">{{ 'PO_MODULE.QTY' | translate }}</div>
+            <div class="text-end">{{ 'COMMON.AMOUNT' | translate }}</div>
           </div>
 
           <div class="table-scroll table-scroll--items">
@@ -176,7 +127,7 @@
       </div>
 
       <div class="text-end fw-bold mt-3">
-        Total: {{ poDetails?.totalAmount | number:'1.2-2' }}
+        {{ 'PO_MODULE.TOTAL' | translate }}: {{ poDetails?.totalAmount | number:'1.2-2' }}
       </div>
     </div>
 
@@ -185,44 +136,44 @@
         [headerHeight]="50" [footerHeight]="50" rowHeight="50" [limit]="10" [scrollbarH]="true"
         [loadingIndicator]="loading">
 
-        <ngx-datatable-column name="Sr. No." [sortable]="false" [width]="70">
+        <ngx-datatable-column [name]="'COMMON.SR_NO' | translate" [sortable]="false" [width]="70">
           <ng-template let-rowIndex="rowIndex" ngx-datatable-cell-template>
             <span>{{ rowIndex + 1 }}</span>
           </ng-template>
         </ngx-datatable-column>
 
-        <ngx-datatable-column name="Purchase Order No" prop="purchaseOrderNo" [sortable]="false">
+        <ngx-datatable-column [name]="'PO_MODULE.PURCHASE_ORDER' | translate" prop="purchaseOrderNo" [sortable]="false">
           <ng-template let-row="row" ngx-datatable-cell-template>
             {{ poDetails?.purchaseOrderNo || '-' }}
           </ng-template>
         </ngx-datatable-column>
 
-        <ngx-datatable-column name="Purchase Request No" prop="requisitionNo" [sortable]="false">
+        <ngx-datatable-column [name]="'COMMON.REQUISITION_NO' | translate" prop="requisitionNo" [sortable]="false">
           <ng-template let-row="row" ngx-datatable-cell-template>
             {{ poDetails?.requisitionNo ?? poDetails?.prNo ?? '-' }}
           </ng-template>
         </ngx-datatable-column>
 
-        <ngx-datatable-column name="RFQ No" prop="rfqNo" [sortable]="false">
+        <ngx-datatable-column [name]="'COMMON.RFQ_NO' | translate" prop="rfqNo" [sortable]="false">
           <ng-template let-row="row" ngx-datatable-cell-template>
             {{ poDetails?.rfqNo ?? poDetails?.rfqNumber ?? '-' }}
           </ng-template>
         </ngx-datatable-column>
 
-        <ngx-datatable-column name="Item Name" prop="itemName" [sortable]="false"></ngx-datatable-column>
+        <ngx-datatable-column [name]="'PO_MODULE.ITEM_NAME' | translate" prop="itemName" [sortable]="false"></ngx-datatable-column>
 
-        <ngx-datatable-column name="Ordered Qty" prop="quantity" [sortable]="false" [width]="110">
+        <ngx-datatable-column [name]="'PO_MODULE.ORDERED_QTY' | translate" prop="quantity" [sortable]="false" [width]="110">
           <ng-template let-row="row" ngx-datatable-cell-template>
             {{ row.quantity ?? row.orderedQuantity ?? row.qty ?? 0 }}
           </ng-template>
         </ngx-datatable-column>
 
-        <ngx-datatable-column name="Action" [sortable]="false" [width]="90">
+        <ngx-datatable-column [name]="'COMMON.ACTION' | translate" [sortable]="false" [width]="90">
           <ng-template let-row="row" ngx-datatable-cell-template>
             <button class="btn btn-sm csm-remarks-btn d-inline-flex align-items-center gap-1"
               (click)="openShipmentLineDetail(row)">
               <i class="ft-eye"></i>
-              <span>View</span>
+              <span>{{ 'COMMON.VIEW' | translate }}</span>
             </button>
           </ng-template>
         </ngx-datatable-column>
@@ -231,31 +182,28 @@
     </div>
 
     <div *ngIf="selectedTab === 'grn-details'">
-      <!-- <div class="d-flex justify-content-end mb-2">
-        <button class="btn btn-primary" (click)="requestForPayment()"><i class="ft-file-text me-1"></i>Request for Payment</button>
-      </div> -->
       <ngx-datatable class="bootstrap core-bootstrap" [rows]="grnList" [columnMode]="'force'" [headerHeight]="50"
         [footerHeight]="50" rowHeight="50" [limit]="10" [scrollbarH]="true" [loadingIndicator]="loading">
-        <ngx-datatable-column name="Sr. No." [sortable]="false">
+        <ngx-datatable-column [name]="'COMMON.SR_NO' | translate" [sortable]="false">
           <ng-template let-rowIndex="rowIndex" ngx-datatable-cell-template>
             <span>{{ rowIndex + 1 }}</span>
           </ng-template>
         </ngx-datatable-column>
-        <ngx-datatable-column name="GRN No" prop="grNumber" [sortable]="false"></ngx-datatable-column>
-        <ngx-datatable-column name="Receiver" prop="receiverName" [sortable]="false"></ngx-datatable-column>
-        <ngx-datatable-column name="Status" prop="requestStatus" [sortable]="false">
+        <ngx-datatable-column [name]="'PO_MODULE.GRN_NO' | translate" prop="grNumber" [sortable]="false"></ngx-datatable-column>
+        <ngx-datatable-column [name]="'PO_MODULE.RECEIVER' | translate" prop="receiverName" [sortable]="false"></ngx-datatable-column>
+        <ngx-datatable-column [name]="'COMMON.STATUS' | translate" prop="requestStatus" [sortable]="false">
           <ng-template ngx-datatable-cell-template let-value="value">
             <span class="status-pill" [ngClass]="mapStatusKey(value)">
-              {{ value }}
-            </span>
+            {{ value | statusTranslate }}
+          </span>
           </ng-template>
         </ngx-datatable-column>
-        <ngx-datatable-column name="Action" [sortable]="false">
+        <ngx-datatable-column [name]="'COMMON.ACTION' | translate" [sortable]="false">
           <ng-template let-row="row" ngx-datatable-cell-template>
             <button class="btn btn-sm csm-remarks-btn d-inline-flex align-items-center gap-1"
               (click)="openGrnDetail(row)">
               <i class="ft-eye"></i>
-              <span>View</span>
+              <span>{{ 'COMMON.VIEW' | translate }}</span>
             </button>
           </ng-template>
         </ngx-datatable-column>
@@ -265,31 +213,31 @@
     <div *ngIf="selectedTab === 'invoice-details'">
       <ngx-datatable class="bootstrap core-bootstrap" [rows]="invoiceList" [columnMode]="'force'" [headerHeight]="50"
         [footerHeight]="50" rowHeight="50" [limit]="10" [scrollbarH]="true" [loadingIndicator]="loading">
-        <ngx-datatable-column name="Sr. No." [sortable]="false">
+        <ngx-datatable-column [name]="'COMMON.SR_NO' | translate" [sortable]="false">
           <ng-template let-rowIndex="rowIndex" ngx-datatable-cell-template>
             <span>{{ rowIndex + 1 }}</span>
           </ng-template>
         </ngx-datatable-column>
-        <ngx-datatable-column name="Invoice No" prop="invoiceNo" [sortable]="false"></ngx-datatable-column>
-        <ngx-datatable-column name="Invoice Date" prop="invoiceDate" [sortable]="false">
+        <ngx-datatable-column [name]="'PO_MODULE.INVOICE_NO' | translate" prop="invoiceNo" [sortable]="false"></ngx-datatable-column>
+        <ngx-datatable-column [name]="'PO_MODULE.INVOICE_DATE' | translate" prop="invoiceDate" [sortable]="false">
           <ng-template let-row="row" ngx-datatable-cell-template>
             {{ row.invoiceDate | date:'yyyy-MM-dd' }}
           </ng-template>
         </ngx-datatable-column>
-        <ngx-datatable-column name="GRN No" prop="grNumber" [sortable]="false"></ngx-datatable-column>
-        <ngx-datatable-column name="Status" prop="requestStatus" [sortable]="false">
+        <ngx-datatable-column [name]="'PO_MODULE.GRN_NO' | translate" prop="grNumber" [sortable]="false"></ngx-datatable-column>
+        <ngx-datatable-column [name]="'COMMON.STATUS' | translate" prop="requestStatus" [sortable]="false">
           <ng-template ngx-datatable-cell-template let-value="value">
             <span class="status-pill" [ngClass]="mapStatusKey(value)">
-              {{ value }}
-            </span>
+            {{ value | statusTranslate }}
+          </span>
           </ng-template>
         </ngx-datatable-column>
-        <ngx-datatable-column name="Action" [sortable]="false">
+        <ngx-datatable-column [name]="'COMMON.ACTION' | translate" [sortable]="false">
           <ng-template let-row="row" ngx-datatable-cell-template>
             <button class="btn btn-sm csm-remarks-btn d-inline-flex align-items-center gap-1"
               (click)="openInvoiceDetail(row)">
               <i class="ft-eye"></i>
-              <span>View</span>
+              <span>{{ 'COMMON.VIEW' | translate }}</span>
             </button>
           </ng-template>
         </ngx-datatable-column>
@@ -300,7 +248,7 @@
 
   <ng-template #detailModal>
     <div class="modal-header modal-header-soft">
-      <h5 class="modal-title">{{ modalTitle }}</h5>
+      <h5 class="modal-title">{{ getTranslatedModalTitle() }}</h5>
       <button type="button" class="btn-close" aria-label="Close" (click)="closeModal()"></button>
     </div>
     <div class="modal-body modal-body-soft">
@@ -320,26 +268,26 @@
         <button *ngIf="modalShipmentIsEdit" class="btn modal-action-btn modal-cancel-shipment-btn"
           (click)="cancelShipmentFromModal()">
           <i class="ft-alert-triangle me-1"></i>
-          <span>Cancel Shipment</span>
+          <span>{{ 'COMMON.CANCEL' | translate }}</span>
         </button>
         <button class="btn btn-primary modal-action-btn" [disabled]="!modalShipmentReady"
           (click)="saveShipmentFromModal()">
           <i class="ft-check-circle me-1"></i>
-          <span>{{ modalShipmentIsEdit ? 'Update Shipment Details' : 'Submit Shipment Details' }}</span>
+          <span>{{ (modalShipmentIsEdit ? 'PO_MODULE.UPDATE_SHIPMENT_DETAILS' : 'PO_MODULE.SUBMIT_SHIPMENT_DETAILS') | translate }}</span>
         </button>
       </ng-container>
       <ng-container *ngIf="selectedPoLineId">
         <button class="btn btn-primary modal-action-btn" [disabled]="!modalShipmentLinesReady"
           (click)="saveShipmentLinesFromModal()">
           <i class="ft-save me-1"></i>
-          <span>Save</span>
+          <span>{{ 'COMMON.SAVE' | translate }}</span>
         </button>
       </ng-container>
       <ng-container *ngIf="selectedInvoicePoId">
         <button class="btn btn-primary modal-action-btn" [disabled]="!modalInvoiceReady || !modalInvoiceIsEdit"
           (click)="downloadInvoiceFromModal()">
           <i class="ft-download me-1"></i>
-          <span>Download PDF</span>
+          <span>{{ 'COMMON.DOWNLOAD' | translate }} PDF</span>
         </button>
       </ng-container>
     </div>

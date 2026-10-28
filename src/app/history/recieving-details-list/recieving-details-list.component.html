@@ -5,12 +5,12 @@
             <!-- Header -->
             <div class="row mb-3">
                 <div class="col-md-12">
-                    <h4 class="heading">{{ title }}</h4>
+                    <h4 class="heading">{{ 'PO_MODULE.GOODS_RECEIPT_NOTE' | translate }}</h4>
                 </div>
             </div>
 
             <ngx-datatable class="bootstrap core-bootstrap" [rows]="rfqData"
-            [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50" [columns]="columns"
+            [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50"
             rowHeight="50" [limit]="15" [scrollbarH]="true" [loadingIndicator]="loading"
             [selected]="chkBoxSelected" [swapColumns]="false" [selectionType]="SelectionType.checkbox"
             (sort)="onSort($event)" (select)="customChkboxOnSelect($event)">
@@ -31,40 +31,33 @@
                     </div>
                 </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column name="Sr. No." [resizeable]="false">
+            <ngx-datatable-column [name]="'COMMON.SR_NO' | translate" [resizeable]="false">
                 <ng-template let-rowIndex="rowIndex" let-value="value" ngx-datatable-cell-template>
                     <span>{{rowIndex + 1}}</span>
                 </ng-template>
             </ngx-datatable-column>
 
-            <ngx-datatable-column name="Requisition No." prop="requisitionNo" >
-
+            <ngx-datatable-column [name]="'COMMON.REQUISITION_NO' | translate" prop="requisitionNo" >
             </ngx-datatable-column>
 
-            <ngx-datatable-column name="Status" prop="status" >
-
+            <ngx-datatable-column [name]="'COMMON.STATUS' | translate" prop="status" >
             </ngx-datatable-column>
-            <ngx-datatable-column name="Date" prop="date" >
-            </ngx-datatable-column>
-
-            <ngx-datatable-column name="Owner" prop="owner" >
-
+            <ngx-datatable-column [name]="'COMMON.DATE' | translate" prop="date" >
             </ngx-datatable-column>
 
-            <ngx-datatable-column name="Department" prop="department" >
-
+            <ngx-datatable-column [name]="'RFQ_MODULE.OWNER' | translate" prop="owner" >
             </ngx-datatable-column>
-            <ngx-datatable-column name="Title" prop="title" >
 
+            <ngx-datatable-column [name]="'COMMON.DEPARTMENT' | translate" prop="department" >
             </ngx-datatable-column>
-            <ngx-datatable-column name="Account" prop="account" >
-
+            <ngx-datatable-column [name]="'HISTORY_MODULE.PR_TITLE' | translate" prop="title" >
+            </ngx-datatable-column>
+            <ngx-datatable-column [name]="'HISTORY_MODULE.ACCOUNT' | translate" prop="account" >
             </ngx-datatable-column>
             
-            <ngx-datatable-column name="Total Amount"  prop="totalAmount"
+            <ngx-datatable-column [name]="'COMMON.TOTAL_AMOUNT' | translate" prop="totalAmount"
                 [sortable]="false">
             </ngx-datatable-column>
-
 
         </ngx-datatable>
         </div>

@@ -8,13 +8,13 @@
           style="position: sticky; width: 40px; height: 40px; display: flex ; align-items: center; justify-content: center;">
           <i class="fa fa-arrow-left"></i>
         </button>
-        <h1 class="mb-0">Quotation Bid</h1>
+        <h1 class="mb-0">{{ 'RFQ_MODULE.QUOTATION_BID' | translate }}</h1>
       </div>
       <div class="col-6 d-flex align-items-center justify-content-end">
         <!-- <button class="btn btn-outline-primary me-2">Cancel</button> -->
         <button class="btn btn-primary" (click)="submitBids()">
             <i class="ft-check me-1"></i>
-          Submit Bid</button>
+          {{ 'RFQ_MODULE.SUBMIT_BID' | translate }}</button>
         <!-- <button 
         class="btn btn-primary"
         [disabled]="isLoading"
@@ -43,25 +43,25 @@
       <div class="card-body">
                    <div class="row">
                   <div class="col-lg-4 col-md-6 mb-3" *ngFor="let field of [
-                      { label: 'RFQ No.', value: rfq?.rfqNo },
-                      { label: 'PR No.', value: rfq?.purchaseRequestNo },
-                      { label: 'Status', value: rfq?.requestStatus },
-                      { label: 'Owner', value: rfq?.owner },
-                      { label: 'Date', value: rfq?.date | date:'yyyy-MM-dd' },
-                      { label: 'Contact', value: rfq?.contact },
-                      { label: 'Delivery Location', value: rfq?.deliveryLocation },
-                      { label: 'Start Date', value: rfq?.startDate | date:'yyyy-MM-dd' },
-                      { label: 'End Date', value: rfq?.endDate | date:'yyyy-MM-dd' },
-                      { label: 'Title', value: rfq?.title }
+                      { key: 'COMMON.RFQ_NO', value: rfq?.rfqNo },
+                      { key: 'COMMON.REQUISITION_NO', value: rfq?.purchaseRequestNo },
+                      { key: 'COMMON.STATUS', value: (rfq?.requestStatus | statusTranslate) },
+                      { key: 'RFQ_MODULE.OWNER', value: rfq?.owner },
+                      { key: 'COMMON.DATE', value: rfq?.date | date:'yyyy-MM-dd' },
+                      { key: 'COMPANY_MODULE.CONTACT', value: rfq?.contact },
+                      { key: 'COMMON.ENTITY', value: rfq?.deliveryLocation },
+                      { key: 'RFQ_MODULE.START_DATE', value: rfq?.startDate | date:'yyyy-MM-dd' },
+                      { key: 'RFQ_MODULE.END_DATE', value: rfq?.endDate | date:'yyyy-MM-dd' },
+                      { key: 'HISTORY_MODULE.PR_TITLE', value: rfq?.title }
                     ]">
-                    <label class="form-label small mb-1">{{ field.label }}</label>
+                    <label class="form-label small mb-1">{{ field.key ? (field.key | translate) : field.label }}</label>
                     <input class="form-control form-control-sm" [value]="field.value" disabled>
                   </div>
                 </div>
 
                 <div class="row mt-2 mb-3">
                   <div class="col-lg-4 col-md-6">
-                    <label class="form-label small mb-1">Delivery Date<span class="text-danger">*</span></label>
+                    <label class="form-label small mb-1">{{ 'RFQ_MODULE.DELIVERY_DATE' | translate }}<span class="text-danger">*</span></label>
                     <input type="date" class="form-control form-control-sm" [(ngModel)]="deliveryDate">
                   </div>
                 </div>
@@ -80,13 +80,13 @@
 
                      
                       <span class="panel-icon">
-                        <label class="mb-0">       Quotation Items</label>
+                        <label class="mb-0">{{ 'RFQ_MODULE.QUOTATION_ITEMS' | translate }}</label>
                       </span>
                       
                       <i class="ft ft-chevron-down accordion-chevron ms-1"></i>
                     </div>
 
-                      <span class="items-count ms-2">Items listed: {{ getFormattedItemCount() }}</span>
+                      <span class="items-count ms-2">{{ 'RFQ_MODULE.ITEMS_LISTED' | translate }}: {{ getFormattedItemCount() }}</span>
                     </div>
                   </button>
                   

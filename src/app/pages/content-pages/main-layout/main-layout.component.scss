@@ -303,3 +303,157 @@ p {
 .or-divider:not(:empty)::after {
   margin-left: 0.75em;
 }
+
+
+/* --- Auth Language Switcher --- */
+.auth-lang-switcher {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.5rem;
+  z-index: 100;
+
+  .auth-lang-dropdown-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 38px;
+    padding: 0 14px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    color: #1f2937;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: #ffffff;
+      border-color: #249D57;
+      color: #249D57;
+      box-shadow: 0 4px 14px rgba(36, 157, 87, 0.15);
+
+      .auth-lang-globe-icon {
+        color: #249D57;
+      }
+    }
+
+    &:focus {
+      outline: none;
+      border-color: #249D57;
+      box-shadow: 0 0 0 3px rgba(36, 157, 87, 0.18);
+    }
+
+    &::after {
+      display: none !important;
+    }
+
+    .auth-lang-globe-icon {
+      font-size: 16px;
+      color: #249D57;
+      transition: color 0.2s ease;
+    }
+
+    .auth-lang-text {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1f2937;
+      letter-spacing: 0.01em;
+    }
+
+    .auth-lang-chevron-icon {
+      font-size: 11px;
+      color: #94a3b8;
+      transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), color 0.2s ease;
+
+      &.rotate {
+        transform: rotate(180deg);
+        color: #249D57;
+      }
+    }
+  }
+
+  .auth-lang-dropdown-menu {
+    min-width: 150px;
+    padding: 0.4rem;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: #ffffff;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+    margin-top: 6px !important;
+
+    .auth-lang-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: #334155;
+      transition: all 0.15s ease;
+
+      .auth-lang-name {
+        color: #1e293b;
+      }
+
+      .auth-lang-check-icon {
+        font-size: 14px;
+        color: #249D57;
+        font-weight: bold;
+      }
+
+      &:hover {
+        background: #eef8f2 !important;
+        color: #249D57 !important;
+
+        .auth-lang-name {
+          color: #249D57 !important;
+        }
+
+        .auth-lang-check-icon {
+          color: #249D57 !important;
+        }
+      }
+
+      &.active {
+        background: #eef8f2 !important;
+        color: #249D57 !important;
+        font-weight: 600;
+
+        .auth-lang-name {
+          color: #249D57 !important;
+          font-weight: 600;
+        }
+
+        .auth-lang-check-icon {
+          color: #249D57 !important;
+          display: inline-block !important;
+        }
+      }
+    }
+  }
+}
+
+:host-context([dir="rtl"]) .auth-lang-switcher,
+:host-context(html.rtl) .auth-lang-switcher {
+  right: auto;
+  left: 1.5rem;
+}
+
+:host-context([dir="rtl"]) .icon-container,
+:host-context(html.rtl) .icon-container {
+  left: auto;
+  right: 30px;
+}
+
+:host-context([dir="rtl"]) .text-justify,
+:host-context(html.rtl) .text-justify {
+  text-align: right !important;
+}

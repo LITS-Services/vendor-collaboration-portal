@@ -11,6 +11,7 @@ import { customAnimations } from "../animations/custom-animations";
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { ConfigService } from '../services/config.service';
 import { Subscription } from 'rxjs';
+import { LanguageService } from 'app/core/language/language.service';
 import { LayoutService } from '../services/layout.service';
 
 @Component({
@@ -29,6 +30,7 @@ export class VerticalMenuComponent implements OnInit, AfterViewInit, OnDestroy {
   protected innerWidth: any;
   layoutSub: Subscription;
   configSub: Subscription;
+  langSub: Subscription;
   perfectScrollbarEnable = true;
   collapseSidebar = false;
   resizeTimeout;
@@ -39,7 +41,8 @@ export class VerticalMenuComponent implements OnInit, AfterViewInit, OnDestroy {
     private layoutService: LayoutService,
     private configService: ConfigService,
     private cdr: ChangeDetectorRef,
-    private deviceService: DeviceDetectorService
+    private deviceService: DeviceDetectorService,
+    public languageService: LanguageService
   ) {
     this.config = this.configService.templateConf;
     this.innerWidth = window.innerWidth;
@@ -49,6 +52,14 @@ export class VerticalMenuComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     this.menuItems = ROUTES;
+    if (this.languageService?.languageChanges$) {
+      this.langSub = this.languageService.languageChanges$.subscribe(() => {
+        this.cdr.markForCheck();
+        if (!(this.cdr as any).destroyed) {
+          this.cdr.detectChanges();
+        }
+      });
+    }
   }
 
   ngAfterViewInit() {
@@ -153,6 +164,9 @@ export class VerticalMenuComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     if (this.configSub) {
       this.configSub.unsubscribe();
+    }
+    if (this.langSub) {
+      this.langSub.unsubscribe();
     }
 
   }

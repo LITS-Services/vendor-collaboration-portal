@@ -1,0 +1,1183 @@
+/* ==========================================================================
+   DIGITAL PROCUREMENT PORTAL - COMPREHENSIVE RTL STYLESHEET
+   Supports Arabic (RTL) mode layout shifting, sidebar, navbar, typography,
+   datatable, form controls, and utility class mirroring.
+   ========================================================================== */
+
+html[dir="rtl"],
+html.rtl,
+body[dir="rtl"],
+body.rtl {
+  direction: rtl !important;
+  text-align: right;
+  font-family: "Poppins", "Segoe UI", Tahoma, Arial, sans-serif !important;
+  overflow-x: hidden !important;
+}
+
+/* --------------------------------------------------------------------------
+   1. APP SIDEBAR & NAVIGATION (MIRRORED TO RIGHT FLUSH AGAINST EDGE)
+   -------------------------------------------------------------------------- */
+html[dir="rtl"] .app-sidebar,
+html.rtl .app-sidebar,
+html[dir="rtl"] .main-menu,
+html.rtl .main-menu,
+html[dir="rtl"] .menu-fixed,
+html.rtl .menu-fixed,
+body.rtl .app-sidebar,
+body.rtl .main-menu,
+body[dir="rtl"] .app-sidebar,
+body[dir="rtl"] .main-menu,
+[dir="rtl"] .app-sidebar,
+[dir="rtl"] .main-menu,
+.rtl .app-sidebar,
+.rtl .main-menu {
+  left: auto !important;
+  right: 0 !important;
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-top-left-radius: 20px !important;
+  border-bottom-left-radius: 20px !important;
+  border-left: 0.5px solid #a5d0e3 !important;
+  border-right: none !important;
+  box-shadow: -1px 0 20px rgba(0, 0, 0, 0.08) !important;
+  text-align: right;
+  z-index: 998 !important;
+}
+
+html[dir="rtl"] .app-sidebar .sidebar-background,
+html.rtl .app-sidebar .sidebar-background,
+body.rtl .app-sidebar .sidebar-background,
+.rtl .app-sidebar .sidebar-background {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-top-left-radius: 20px !important;
+  border-bottom-left-radius: 20px !important;
+}
+
+/* Ensure no transforms push sidebar away from right edge on desktop */
+@media (min-width: 1200px) {
+  html[dir="rtl"] .app-sidebar,
+  html.rtl .app-sidebar,
+  html[dir="rtl"] .main-menu,
+  html.rtl .main-menu,
+  html[dir="rtl"] .menu-expanded .app-sidebar,
+  html.rtl .menu-expanded .app-sidebar,
+  html[dir="rtl"] .menu-open .app-sidebar,
+  html.rtl .menu-open .app-sidebar,
+  html[dir="rtl"] .menu-open .main-menu,
+  html.rtl .menu-open .main-menu,
+  body.rtl .app-sidebar,
+  body.rtl .main-menu,
+  body.rtl .menu-open .app-sidebar,
+  body.rtl .menu-open .main-menu,
+  .rtl .app-sidebar,
+  .rtl .main-menu {
+    transform: none !important;
+    left: auto !important;
+    right: 0 !important;
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+  }
+}
+
+/* Sidebar navigation list */
+html[dir="rtl"] .app-sidebar .navigation,
+html.rtl .app-sidebar .navigation,
+body.rtl .app-sidebar .navigation {
+  padding-right: 0 !important;
+  padding-left: 0 !important;
+}
+
+/* Sidebar navigation links */
+html[dir="rtl"] .app-sidebar .navigation li a,
+html.rtl .app-sidebar .navigation li a {
+  text-align: right;
+  padding-left: 15px !important;
+  padding-right: 18px !important;
+}
+
+html[dir="rtl"] .app-sidebar .navigation li a i,
+html.rtl .app-sidebar .navigation li a i {
+  float: right !important;
+  margin-left: 12px !important;
+  margin-right: 0 !important;
+}
+
+html[dir="rtl"] .app-sidebar .navigation li.has-sub > a:after,
+html.rtl .app-sidebar .navigation li.has-sub > a:after {
+  right: auto !important;
+  left: 18px !important;
+  transform: rotate(180deg);
+}
+
+html[dir="rtl"] .app-sidebar .navigation li.has-sub.open > a:after,
+html.rtl .app-sidebar .navigation li.has-sub.open > a:after {
+  transform: rotate(90deg) !important;
+}
+
+/* Sidebar brand header & logo */
+html[dir="rtl"] .app-sidebar .sidebar-header,
+html.rtl .app-sidebar .sidebar-header {
+  position: relative !important;
+  z-index: 1001 !important;
+}
+
+html[dir="rtl"] .app-sidebar .sidebar-header .logo,
+html.rtl .app-sidebar .sidebar-header .logo {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+}
+
+html[dir="rtl"] .app-sidebar .sidebar-header .logo-text,
+html.rtl .app-sidebar .sidebar-header .logo-text {
+  float: right !important;
+  padding-right: 18px !important;
+  padding-left: 0 !important;
+  text-align: right !important;
+}
+
+html[dir="rtl"] .app-sidebar .sidebar-header .logo-img,
+html.rtl .app-sidebar .sidebar-header .logo-img {
+  margin-right: 0 !important;
+  margin-left: 15px !important;
+}
+
+html[dir="rtl"] .app-sidebar .sidebar-header .logo-img .sidebar-logo,
+html.rtl .app-sidebar .sidebar-header .logo-img .sidebar-logo {
+  margin-right: 9px !important;
+  margin-left: 0 !important;
+}
+
+/* Sidebar collapse/expand toggle button */
+html[dir="rtl"] .app-sidebar a.nav-toggle,
+html.rtl .app-sidebar a.nav-toggle,
+html[dir="rtl"] .sidebar-header #sidebarToggle,
+html.rtl .sidebar-header #sidebarToggle {
+  position: absolute !important;
+  left: 15px !important;
+  right: auto !important;
+  top: 26px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 32px !important;
+  height: 32px !important;
+  z-index: 1100 !important;
+  cursor: pointer !important;
+}
+
+/* Sidebar collapse/expand toggle button when collapsed */
+html[dir="rtl"] .app-sidebar a.nav-toggle.nav-toggle-collapsed,
+html.rtl .app-sidebar a.nav-toggle.nav-toggle-collapsed,
+html[dir="rtl"] .sidebar-header #sidebarToggle.nav-toggle-collapsed,
+html.rtl .sidebar-header #sidebarToggle.nav-toggle-collapsed,
+body.rtl.nav-collapsed .app-sidebar a.nav-toggle,
+body.rtl.nav-collapsed .sidebar-header #sidebarToggle {
+  left: 6px !important;
+  right: 6px !important;
+  margin: 0 auto !important;
+  top: 100px !important;
+  width: 56px !important;
+  height: 48px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* ==========================================================================
+   RTL COLLAPSED SIDEBAR RULES (Center icons & proper alignments)
+   ========================================================================== */
+
+/* 1. Header & Logo centering when collapsed in RTL */
+html[dir="rtl"] body.nav-collapsed .app-sidebar .sidebar-header,
+html.rtl body.nav-collapsed .app-sidebar .sidebar-header,
+body.rtl.nav-collapsed .app-sidebar .sidebar-header {
+  text-align: center !important;
+}
+
+html[dir="rtl"] body.nav-collapsed .app-sidebar .sidebar-header .logo,
+html.rtl body.nav-collapsed .app-sidebar .sidebar-header .logo,
+body.rtl.nav-collapsed .app-sidebar .sidebar-header .logo {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0.5rem 0 !important;
+  margin: 0 auto 25px auto !important;
+  float: none !important;
+}
+
+html[dir="rtl"] body.nav-collapsed .app-sidebar .sidebar-header .logo-text,
+html.rtl body.nav-collapsed .app-sidebar .sidebar-header .logo-text,
+body.rtl.nav-collapsed .app-sidebar .sidebar-header .logo-text {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  float: none !important;
+  padding: 0 !important;
+  margin: 0 auto !important;
+  text-align: center !important;
+}
+
+html[dir="rtl"] body.nav-collapsed .app-sidebar .sidebar-header .logo-img,
+html.rtl body.nav-collapsed .app-sidebar .sidebar-header .logo-img,
+body.rtl.nav-collapsed .app-sidebar .sidebar-header .logo-img {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  float: none !important;
+}
+
+html[dir="rtl"] body.nav-collapsed .app-sidebar .sidebar-header .logo-img .sidebar-logo,
+html.rtl body.nav-collapsed .app-sidebar .sidebar-header .logo-img .sidebar-logo,
+body.rtl.nav-collapsed .app-sidebar .sidebar-header .logo-img .sidebar-logo {
+  display: block !important;
+  margin: 15px auto 10px auto !important;
+  float: none !important;
+  width: 36px !important;
+}
+
+/* 2. Navigation items and links centering in collapsed RTL sidebar */
+html[dir="rtl"] body.nav-collapsed .app-sidebar .navigation li,
+html.rtl body.nav-collapsed .app-sidebar .navigation li,
+body.rtl.nav-collapsed .app-sidebar .navigation li,
+html[dir="rtl"] .sidebar-content.collapsed .navigation li,
+html.rtl .sidebar-content.collapsed .navigation li,
+body.rtl .sidebar-content.collapsed .navigation li {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  float: none !important;
+}
+
+html[dir="rtl"] body.nav-collapsed .app-sidebar .navigation li > a,
+html.rtl body.nav-collapsed .app-sidebar .navigation li > a,
+body.rtl.nav-collapsed .app-sidebar .navigation li > a,
+html[dir="rtl"] .sidebar-content.collapsed .navigation li > a,
+html.rtl .sidebar-content.collapsed .navigation li > a,
+body.rtl .sidebar-content.collapsed .navigation li > a {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  padding: 0 !important;
+  margin: 0 auto 6px auto !important;
+  width: 56px !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  box-sizing: border-box !important;
+  border-radius: 10px !important;
+  position: relative !important;
+  float: none !important;
+}
+
+html[dir="rtl"] body.nav-collapsed .app-sidebar .navigation li > a i,
+html.rtl body.nav-collapsed .app-sidebar .navigation li > a i,
+body.rtl.nav-collapsed .app-sidebar .navigation li > a i,
+html[dir="rtl"] .sidebar-content.collapsed .navigation li > a i,
+html.rtl .sidebar-content.collapsed .navigation li > a i,
+body.rtl .sidebar-content.collapsed .navigation li > a i {
+  float: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  line-height: 1 !important;
+  font-size: 1.25rem !important;
+}
+
+/* 3. Active / hover state in collapsed RTL mode */
+html[dir="rtl"] body.nav-collapsed .app-sidebar .navigation li.active > a,
+html.rtl body.nav-collapsed .app-sidebar .navigation li.active > a,
+body.rtl.nav-collapsed .app-sidebar .navigation li.active > a,
+html[dir="rtl"] .sidebar-content.collapsed .navigation li.active > a,
+html.rtl .sidebar-content.collapsed .navigation li.active > a,
+body.rtl .sidebar-content.collapsed .navigation li.active > a,
+html[dir="rtl"] body.nav-collapsed .app-sidebar .navigation li > a:hover,
+html.rtl body.nav-collapsed .app-sidebar .navigation li > a:hover,
+body.rtl.nav-collapsed .app-sidebar .navigation li > a:hover,
+html[dir="rtl"] .sidebar-content.collapsed .navigation li > a:hover,
+html.rtl .sidebar-content.collapsed .navigation li > a:hover,
+body.rtl .sidebar-content.collapsed .navigation li > a:hover {
+  background: #ffffff !important;
+  color: #116aef !important;
+  border-radius: 10px !important;
+}
+
+html[dir="rtl"] body.nav-collapsed .app-sidebar .navigation li.active > a i,
+html.rtl body.nav-collapsed .app-sidebar .navigation li.active > a i,
+body.rtl.nav-collapsed .app-sidebar .navigation li.active > a i,
+html[dir="rtl"] .sidebar-content.collapsed .navigation li.active > a i,
+html.rtl .sidebar-content.collapsed .navigation li.active > a i,
+body.rtl .sidebar-content.collapsed .navigation li.active > a i,
+html[dir="rtl"] body.nav-collapsed .app-sidebar .navigation li > a:hover i,
+html.rtl body.nav-collapsed .app-sidebar .navigation li > a:hover i,
+body.rtl.nav-collapsed .app-sidebar .navigation li > a:hover i,
+html[dir="rtl"] .sidebar-content.collapsed .navigation li > a:hover i,
+html.rtl .sidebar-content.collapsed .navigation li > a:hover i,
+body.rtl .sidebar-content.collapsed .navigation li > a:hover i {
+  color: #116aef !important;
+}
+
+/* 4. Submenu indicator dot in collapsed RTL mode */
+html[dir="rtl"] body.nav-collapsed .collapsed-has-sub .submenu-dot,
+html.rtl body.nav-collapsed .collapsed-has-sub .submenu-dot,
+body.rtl.nav-collapsed .collapsed-has-sub .submenu-dot,
+html[dir="rtl"] .sidebar-content.collapsed .collapsed-has-sub .submenu-dot,
+html.rtl .sidebar-content.collapsed .collapsed-has-sub .submenu-dot,
+body.rtl .sidebar-content.collapsed .collapsed-has-sub .submenu-dot {
+  right: auto !important;
+  left: 6px !important;
+}
+
+/* 5. Submenu Mat-Menu overlay panel in RTL mode */
+html[dir="rtl"] .cdk-overlay-pane:has(.sidebar-collapsed-menu),
+html.rtl .cdk-overlay-pane:has(.sidebar-collapsed-menu),
+body.rtl .cdk-overlay-pane:has(.sidebar-collapsed-menu) {
+  left: auto !important;
+  right: 68px !important;
+}
+
+html[dir="rtl"] .sidebar-collapsed-menu,
+html.rtl .sidebar-collapsed-menu,
+body.rtl .sidebar-collapsed-menu {
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+html[dir="rtl"] .sidebar-collapsed-menu .mat-menu-item,
+html.rtl .sidebar-collapsed-menu .mat-menu-item,
+body.rtl .sidebar-collapsed-menu .mat-menu-item {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+html[dir="rtl"] .sidebar-collapsed-menu .mat-menu-item i,
+html.rtl .sidebar-collapsed-menu .mat-menu-item i,
+body.rtl .sidebar-collapsed-menu .mat-menu-item i {
+  margin-left: 10px !important;
+  margin-right: 0 !important;
+}
+
+/* 6. Thin unobtrusive scrollbar for sidebar in RTL mode */
+html[dir="rtl"] .app-sidebar .sidebar-content,
+html.rtl .app-sidebar .sidebar-content,
+body.rtl .app-sidebar .sidebar-content {
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(255, 255, 255, 0.3) transparent !important;
+}
+
+html[dir="rtl"] .app-sidebar .sidebar-content::-webkit-scrollbar,
+html.rtl .app-sidebar .sidebar-content::-webkit-scrollbar,
+body.rtl .app-sidebar .sidebar-content::-webkit-scrollbar {
+  width: 5px !important;
+}
+
+html[dir="rtl"] .app-sidebar .sidebar-content::-webkit-scrollbar-track,
+html.rtl .app-sidebar .sidebar-content::-webkit-scrollbar-track,
+body.rtl .app-sidebar .sidebar-content::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+html[dir="rtl"] .app-sidebar .sidebar-content::-webkit-scrollbar-thumb,
+html.rtl .app-sidebar .sidebar-content::-webkit-scrollbar-thumb,
+body.rtl .app-sidebar .sidebar-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3) !important;
+  border-radius: 4px !important;
+}
+
+/* Flip collapse/expand icon arrows in RTL */
+html[dir="rtl"] .app-sidebar a.nav-toggle .toggle-icon img,
+html.rtl .app-sidebar a.nav-toggle .toggle-icon img,
+html[dir="rtl"] .sidebar-header #sidebarToggle .toggle-icon img,
+html.rtl .sidebar-header #sidebarToggle .toggle-icon img {
+  transform: scaleX(-1) !important;
+}
+
+html[dir="rtl"] .sidebar-header a.nav-close,
+html.rtl .sidebar-header a.nav-close {
+  float: left !important;
+  right: auto !important;
+  left: 15px !important;
+}
+
+/* Mobile sidebar drawer */
+@media (max-width: 1199.98px) {
+  html[dir="rtl"] .app-sidebar,
+  html.rtl .app-sidebar {
+    transform: translate3d(100%, 0, 0) !important;
+  }
+
+  html[dir="rtl"] .menu-open .app-sidebar,
+  html.rtl .menu-open .app-sidebar {
+    transform: translate3d(0, 0, 0) !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   2. MAIN PANEL & CONTENT WRAPPER LAYOUT
+   -------------------------------------------------------------------------- */
+html[dir="rtl"] .main-panel,
+html.rtl .main-panel,
+body.rtl .main-panel,
+.rtl .main-panel {
+  float: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  width: 100% !important;
+}
+
+/* In Vendor Portal (Top / Horizontal menu layout), enforce 0 margins on main content and navbar */
+html[dir="rtl"] .main-panel,
+html.rtl .main-panel,
+body.rtl .main-panel,
+html[dir="rtl"] .main-content,
+html.rtl .main-content,
+body.rtl .main-content,
+html[dir="rtl"] .content-wrapper,
+html.rtl .content-wrapper,
+body.rtl .content-wrapper {
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+html[dir="rtl"] footer.footer,
+html.rtl footer.footer,
+body.rtl footer.footer {
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+  width: 100% !important;
+}
+
+html[dir="rtl"] .main-content .content-wrapper,
+html.rtl .main-content .content-wrapper {
+  padding-right: 32px !important;
+  padding-left: 32px !important;
+}
+
+/* Content pages / Auth / Blank pages must NOT have extra margins or paddings under any layout state */
+html[dir="rtl"] app-content-layout,
+html.rtl app-content-layout,
+html[dir="rtl"] body.blank-page,
+html.rtl body.blank-page,
+html[dir="rtl"] body.auth-page,
+html.rtl body.auth-page,
+[dir="rtl"] app-content-layout,
+.rtl app-content-layout,
+[dir="rtl"] app-content-layout .wrapper,
+[dir="rtl"] app-content-layout .main-panel,
+[dir="rtl"] app-content-layout .main-content,
+[dir="rtl"] app-content-layout .content-wrapper,
+[dir="rtl"] app-content-layout #login,
+.rtl app-content-layout .wrapper,
+.rtl app-content-layout .main-panel,
+.rtl app-content-layout .main-content,
+.rtl app-content-layout .content-wrapper,
+.rtl app-content-layout #login,
+html[dir="rtl"] .content-wrapper.p-0,
+html.rtl .content-wrapper.p-0,
+html[dir="rtl"] body.blank-page .content-wrapper,
+html.rtl body.blank-page .content-wrapper,
+html[dir="rtl"] body.auth-page .content-wrapper,
+html.rtl body.auth-page .content-wrapper,
+html[dir="rtl"] body.blank-page .main-panel,
+html.rtl body.blank-page .main-panel,
+html[dir="rtl"] body.blank-page .main-content,
+html.rtl body.blank-page .main-content,
+html[dir="rtl"] body.auth-page .main-panel,
+html.rtl body.auth-page .main-panel,
+html[dir="rtl"] body.auth-page .main-content,
+html.rtl body.auth-page .main-content,
+html[dir="rtl"] body.blank-page .main-panel .main-content,
+html.rtl body.blank-page .main-panel .main-content,
+html[dir="rtl"] body.auth-page .main-panel .main-content,
+html.rtl body.auth-page .main-panel .main-content,
+html[dir="rtl"] body.blank-page.sidebar-lg .main-panel .main-content,
+html.rtl body.blank-page.sidebar-lg .main-panel .main-content,
+html[dir="rtl"] body.auth-page.sidebar-lg .main-panel .main-content,
+html.rtl body.auth-page.sidebar-lg .main-panel .main-content,
+html[dir="rtl"] body.blank-page.vertical-menu .main-panel .main-content,
+html.rtl body.blank-page.vertical-menu .main-panel .main-content,
+html[dir="rtl"] body.auth-page.vertical-menu .main-panel .main-content,
+html.rtl body.auth-page.vertical-menu .main-panel .main-content,
+html[dir="rtl"] body.blank-page.vertical-layout .main-panel .main-content,
+html.rtl body.blank-page.vertical-layout .main-panel .main-content,
+html[dir="rtl"] body.auth-page.vertical-layout .main-panel .main-content,
+html.rtl body.auth-page.vertical-layout .main-panel .main-content,
+body.blank-page .main-panel .main-content,
+body.auth-page .main-panel .main-content {
+  padding-right: 0 !important;
+  padding-left: 0 !important;
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. HEADER NAVBAR & CONTROLS (MIRRORED PROPERLY IN RTL)
+   -------------------------------------------------------------------------- */
+/* Enforce full-width navbar with 0 margin in RTL */
+html[dir="rtl"] .navbar,
+html.rtl .navbar,
+body.rtl .navbar,
+html[dir="rtl"] nav.header-navbar,
+html.rtl nav.header-navbar,
+body.rtl nav.header-navbar,
+html[dir="rtl"] .vp-navbar,
+html.rtl .vp-navbar,
+body.rtl .vp-navbar {
+  left: 0 !important;
+  right: 0 !important;
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+@media (max-width: 1199.98px) {
+  html[dir="rtl"] nav.navbar.header-navbar,
+  html[dir="rtl"] .header-navbar,
+  html.rtl nav.navbar.header-navbar,
+  html.rtl .header-navbar {
+    left: 0 !important;
+    right: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+  }
+}
+
+html[dir="rtl"] nav.navbar.header-navbar,
+html.rtl nav.navbar.header-navbar {
+  padding: 0.3rem 0 !important;
+}
+
+html[dir="rtl"] .header-navbar .navbar-wrapper,
+html.rtl .header-navbar .navbar-wrapper,
+body.rtl .header-navbar .navbar-wrapper {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  padding-left: 1.5rem !important;
+  padding-right: 1.5rem !important;
+  box-sizing: border-box !important;
+}
+
+/* Entity switcher on FAR RIGHT (near the sidebar) */
+html[dir="rtl"] .header-navbar .navbar-header,
+html.rtl .header-navbar .navbar-header,
+body.rtl .header-navbar .navbar-header {
+  order: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  flex: 0 0 auto !important;
+}
+
+/* Controls container on FAR LEFT (Notification, Profile, Language, Search) */
+html[dir="rtl"] .header-navbar .navbar-container,
+html.rtl .header-navbar .navbar-container,
+body.rtl .header-navbar .navbar-container {
+  order: 2 !important;
+  display: flex !important;
+  align-items: center !important;
+  margin-right: auto !important;
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+  flex: 0 0 auto !important;
+}
+
+html[dir="rtl"] .header-navbar .navbar-container #navbarSupportedContent,
+html.rtl .header-navbar .navbar-container #navbarSupportedContent,
+body.rtl .header-navbar .navbar-container #navbarSupportedContent {
+  display: flex !important;
+  align-items: center !important;
+}
+
+html[dir="rtl"] .header-navbar #navbarSupportedContent > .navbar-nav,
+html.rtl .header-navbar #navbarSupportedContent > .navbar-nav,
+body.rtl .header-navbar #navbarSupportedContent > .navbar-nav {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+html[dir="rtl"] .header-navbar .search-bar-container,
+html.rtl .header-navbar .search-bar-container,
+body.rtl .header-navbar .search-bar-container {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+
+html[dir="rtl"] .header-navbar .icon-buttons,
+html.rtl .header-navbar .icon-buttons,
+body.rtl .header-navbar .icon-buttons {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+/* Search input & panel */
+html[dir="rtl"] .search-input,
+html.rtl .search-input {
+  padding-right: 44px !important;
+  padding-left: 12px !important;
+  text-align: right;
+}
+
+html[dir="rtl"] .search-icon,
+html.rtl .search-icon {
+  right: 14px !important;
+  left: auto !important;
+}
+
+html[dir="rtl"] .search-panel,
+html.rtl .search-panel {
+  right: 0 !important;
+  left: auto !important;
+  text-align: right;
+}
+
+html[dir="rtl"] .search-panel .result-arrow i,
+html.rtl .search-panel .result-arrow i {
+  transform: scaleX(-1);
+}
+
+/* Notification panel & badges */
+html[dir="rtl"] .notification-bell .dot,
+html.rtl .notification-bell .dot {
+  left: 6px !important;
+  right: auto !important;
+}
+
+html[dir="rtl"] .notif-panel,
+html.rtl .notif-panel {
+  left: 0 !important;
+  right: auto !important;
+  text-align: right;
+}
+
+/* Profile pill & dropdown */
+html[dir="rtl"] .profile-pill,
+html.rtl .profile-pill {
+  border-radius: 24px 0px 0px 24px !important;
+  margin-right: -12px !important;
+  margin-left: 0 !important;
+}
+
+html[dir="rtl"] .profile-avatar,
+html.rtl .profile-avatar {
+  margin-left: 0;
+}
+
+html[dir="rtl"] .user-dropdown .user,
+html.rtl .user-dropdown .user {
+  text-align: right !important;
+  margin-left: 0.5rem !important;
+  margin-right: 0 !important;
+}
+
+html[dir="rtl"] .dropdown-menu.dropdown-menu-right,
+html.rtl .dropdown-menu.dropdown-menu-right {
+  left: 0 !important;
+  right: auto !important;
+  text-align: right !important;
+}
+
+/* --------------------------------------------------------------------------
+   4. FORM INPUTS & PASSWORD WRAPPERS
+   -------------------------------------------------------------------------- */
+html[dir="rtl"] .form-control,
+html.rtl .form-control,
+html[dir="rtl"] .custom-input,
+html.rtl .custom-input {
+  text-align: right;
+}
+
+html[dir="rtl"] .eye-icon,
+html.rtl .eye-icon,
+body.rtl .eye-icon,
+html[dir="rtl"] .pass-icon,
+html.rtl .pass-icon,
+body.rtl .pass-icon {
+  left: 12px !important;
+  right: auto !important;
+}
+
+html[dir="rtl"] .cstm-pass-input-wrap input,
+html.rtl .cstm-pass-input-wrap input,
+body.rtl .cstm-pass-input-wrap input,
+html[dir="rtl"] .position-relative input.form-control,
+html.rtl .position-relative input.form-control,
+body.rtl .position-relative input.form-control,
+html[dir="rtl"] .form-control.password-input,
+html.rtl .form-control.password-input,
+body.rtl .form-control.password-input {
+  padding-left: 36px !important;
+  padding-right: 14px !important;
+  text-align: right !important;
+}
+
+/* Eye icon stays in place on the left (left: 12px). Both input validation ticks align at left: 32px */
+html[dir="rtl"] .form-control.is-valid,
+html[dir="rtl"] .was-validated .form-control:valid,
+html[dir="rtl"] .form-control.is-invalid,
+html[dir="rtl"] .was-validated .form-control:invalid,
+html.rtl .form-control.is-valid,
+html.rtl .was-validated .form-control:valid,
+html.rtl .form-control.is-invalid,
+html.rtl .was-validated .form-control:invalid,
+body.rtl .form-control.is-valid,
+body.rtl .was-validated .form-control:valid,
+body.rtl .form-control.is-invalid,
+body.rtl .was-validated .form-control:invalid,
+html[dir="rtl"] .cstm-pass-input-wrap .form-control.is-valid,
+html[dir="rtl"] .cstm-pass-input-wrap .form-control.is-invalid,
+html.rtl .cstm-pass-input-wrap .form-control.is-valid,
+html.rtl .cstm-pass-input-wrap .form-control.is-invalid,
+body.rtl .cstm-pass-input-wrap .form-control.is-valid,
+body.rtl .cstm-pass-input-wrap .form-control.is-invalid {
+  background-position: left 32px center !important;
+  padding-left: 54px !important;
+  padding-right: 14px !important;
+}
+
+/* Checkbox alignment in RTL */
+html[dir="rtl"] .checkbox label,
+html.rtl .checkbox label {
+  margin-right: 1.75rem !important;
+  margin-left: 0 !important;
+  text-align: right !important;
+}
+
+html[dir="rtl"] .checkbox label:before,
+html[dir="rtl"] .checkbox label:after,
+html.rtl .checkbox label:before,
+html.rtl .checkbox label:after {
+  right: 0 !important;
+  left: auto !important;
+}
+
+html[dir="rtl"] .checkbox input[type="checkbox"]:checked ~ label:after,
+html.rtl .checkbox input[type="checkbox"]:checked ~ label:after {
+  right: 4px !important;
+  left: auto !important;
+}
+
+html[dir="rtl"] .checkbox.checkbox-sm label,
+html.rtl .checkbox.checkbox-sm label {
+  margin-right: 1.5rem !important;
+  margin-left: 0 !important;
+}
+
+html[dir="rtl"] .checkbox.checkbox-sm label:before,
+html[dir="rtl"] .checkbox.checkbox-sm label:after,
+html.rtl .checkbox.checkbox-sm label:before,
+html.rtl .checkbox.checkbox-sm label:after {
+  right: 3px !important;
+  left: auto !important;
+}
+
+html[dir="rtl"] .checkbox.checkbox-sm input[type="checkbox"]:checked ~ label:after,
+html.rtl .checkbox.checkbox-sm input[type="checkbox"]:checked ~ label:after {
+  right: 6px !important;
+  left: auto !important;
+}
+
+/* Login decorative circles in RTL */
+html[dir="rtl"] .semi-circle-img,
+html.rtl .semi-circle-img {
+  right: auto !important;
+  left: 0 !important;
+  background-position: right center !important;
+  transform: scaleX(-1) !important;
+}
+
+/* Action bar vertical line */
+html[dir="rtl"] .vl,
+html.rtl .vl {
+  border-right: 1.4px solid #cccccc !important;
+  border-left: none !important;
+  margin-right: -3px !important;
+  margin-left: 0 !important;
+}
+
+/* --------------------------------------------------------------------------
+   5. DATA TABLES & NGX-DATATABLE (RTL FLOW)
+   -------------------------------------------------------------------------- */
+html[dir="rtl"] .ngx-datatable,
+html.rtl .ngx-datatable {
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+html[dir="rtl"] .ngx-datatable .datatable-header-inner,
+html.rtl .ngx-datatable .datatable-header-inner,
+html[dir="rtl"] .ngx-datatable .datatable-body-row,
+html.rtl .ngx-datatable .datatable-body-row,
+html[dir="rtl"] .ngx-datatable .datatable-row-center,
+html.rtl .ngx-datatable .datatable-row-center {
+  display: flex !important;
+  flex-direction: row !important;
+}
+
+html[dir="rtl"] .ngx-datatable .datatable-header-cell,
+html.rtl .ngx-datatable .datatable-header-cell {
+  text-align: right !important;
+}
+
+html[dir="rtl"] .ngx-datatable .datatable-body-cell,
+html.rtl .ngx-datatable .datatable-body-cell {
+  text-align: right !important;
+}
+
+html[dir="rtl"] .ngx-datatable .datatable-footer .page-count,
+html.rtl .ngx-datatable .datatable-footer .page-count {
+  direction: rtl !important;
+  text-align: right !important;
+  unicode-bidi: embed !important;
+}
+
+html[dir="rtl"] .ngx-datatable .datatable-footer .datatable-pager,
+html.rtl .ngx-datatable .datatable-footer .datatable-pager {
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+html[dir="rtl"] footer.footer p.copyright,
+html.rtl footer.footer p.copyright {
+  direction: rtl !important;
+  text-align: center !important;
+}
+
+/* --------------------------------------------------------------------------
+   6. COMMON UTILITY MIRRORS (MARGINS, FLOATS, TEXT)
+   -------------------------------------------------------------------------- */
+html[dir="rtl"] .text-left,
+html.rtl .text-left {
+  text-align: right !important;
+}
+
+html[dir="rtl"] .text-right,
+html.rtl .text-right {
+  text-align: left !important;
+}
+
+html[dir="rtl"] .float-left,
+html.rtl .float-left {
+  float: right !important;
+}
+
+html[dir="rtl"] .float-right,
+html.rtl .float-right {
+  float: left !important;
+}
+
+/* Bootstrap spacing mirrors */
+html[dir="rtl"] .mr-1, html.rtl .mr-1 { margin-left: 0.25rem !important; margin-right: 0 !important; }
+html[dir="rtl"] .mr-2, html.rtl .mr-2 { margin-left: 0.5rem !important; margin-right: 0 !important; }
+html[dir="rtl"] .mr-3, html.rtl .mr-3 { margin-left: 1rem !important; margin-right: 0 !important; }
+html[dir="rtl"] .mr-4, html.rtl .mr-4 { margin-left: 1.5rem !important; margin-right: 0 !important; }
+
+html[dir="rtl"] .ml-1, html.rtl .ml-1 { margin-right: 0.25rem !important; margin-left: 0 !important; }
+html[dir="rtl"] .ml-2, html.rtl .ml-2 { margin-right: 0.5rem !important; margin-left: 0 !important; }
+html[dir="rtl"] .ml-3, html.rtl .ml-3 { margin-right: 1rem !important; margin-left: 0 !important; }
+html[dir="rtl"] .ml-4, html.rtl .ml-4 { margin-right: 1.5rem !important; margin-left: 0 !important; }
+
+html[dir="rtl"] .me-1, html.rtl .me-1 { margin-left: 0.25rem !important; margin-right: 0 !important; }
+html[dir="rtl"] .me-2, html.rtl .me-2 { margin-left: 0.5rem !important; margin-right: 0 !important; }
+html[dir="rtl"] .me-3, html.rtl .me-3 { margin-left: 1rem !important; margin-right: 0 !important; }
+html[dir="rtl"] .me-4, html.rtl .me-4 { margin-left: 1.5rem !important; margin-right: 0 !important; }
+
+html[dir="rtl"] .ms-1, html.rtl .ms-1 { margin-right: 0.25rem !important; margin-left: 0 !important; }
+html[dir="rtl"] .ms-2, html.rtl .ms-2 { margin-right: 0.5rem !important; margin-left: 0 !important; }
+html[dir="rtl"] .ms-3, html.rtl .ms-3 { margin-right: 1rem !important; margin-left: 0 !important; }
+html[dir="rtl"] .ms-4, html.rtl .ms-4 { margin-right: 1.5rem !important; margin-left: 0 !important; }
+
+/* Modal header dismiss button */
+html[dir="rtl"] .modal-header .close,
+html.rtl .modal-header .close {
+  margin: -1rem auto -1rem -1rem !important;
+}
+
+/* Breadcrumb dividers & directional icons */
+html[dir="rtl"] .breadcrumb-item + .breadcrumb-item::before,
+html.rtl .breadcrumb-item + .breadcrumb-item::before {
+  float: right;
+  padding-left: 0.5rem;
+  padding-right: 0;
+}
+
+html[dir="rtl"] .ft-chevron-right,
+html.rtl .ft-chevron-right,
+html[dir="rtl"] .ft-arrow-right,
+html.rtl .ft-arrow-right {
+  transform: scaleX(-1);
+}
+
+html[dir="rtl"] .ft-arrow-left,
+html.rtl .ft-arrow-left {
+  transform: scaleX(-1);
+}
+
+/* Language Dropdown in Header (RTL Mode) */
+html[dir="rtl"] .lang-dropdown-wrapper .lang-dropdown-toggle,
+html.rtl .lang-dropdown-wrapper .lang-dropdown-toggle,
+body.rtl .lang-dropdown-wrapper .lang-dropdown-toggle {
+  direction: rtl;
+  text-align: right;
+}
+
+html[dir="rtl"] .lang-dropdown-menu,
+html.rtl .lang-dropdown-menu,
+body.rtl .lang-dropdown-menu {
+  direction: rtl !important;
+  text-align: right !important;
+  left: 0 !important;
+  right: auto !important;
+}
+
+html[dir="rtl"] .lang-dropdown-menu .lang-item,
+html.rtl .lang-dropdown-menu .lang-item,
+body.rtl .lang-dropdown-menu .lang-item {
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+/* Auth / Login Language Dropdown in RTL Mode */
+html[dir="rtl"] .auth-lang-switcher,
+html.rtl .auth-lang-switcher,
+body.rtl .auth-lang-switcher {
+  right: auto !important;
+  left: 1.5rem !important;
+}
+
+html[dir="rtl"] .auth-lang-dropdown-menu,
+html.rtl .auth-lang-dropdown-menu,
+body.rtl .auth-lang-dropdown-menu {
+  direction: rtl !important;
+  text-align: right !important;
+  left: 0 !important;
+  right: auto !important;
+}
+
+html[dir="rtl"] .auth-lang-dropdown-menu .auth-lang-item,
+html.rtl .auth-lang-dropdown-menu .auth-lang-item,
+body.rtl .auth-lang-dropdown-menu .auth-lang-item {
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+
+/* User Profile Menu RTL adjustments */
+html[dir="rtl"] .user-profile-menu,
+html.rtl .user-profile-menu,
+body.rtl .user-profile-menu {
+  text-align: right !important;
+}
+
+html[dir="rtl"] .user-profile-menu .dropdown-item,
+html.rtl .user-profile-menu .dropdown-item,
+body.rtl .user-profile-menu .dropdown-item {
+  text-align: right !important;
+}
+
+
+/* ==========================================================================
+   VENDOR COLLABORATION PORTAL - SPECIFIC RTL OVERRIDES
+   ========================================================================== */
+
+html[dir="rtl"] .vp-actions,
+html.rtl .vp-actions,
+body.rtl .vp-actions {
+  margin-left: 0 !important;
+  margin-right: 12px !important;
+  justify-content: flex-start !important;
+}
+
+html[dir="rtl"] .vp-logo,
+html.rtl .vp-logo,
+body.rtl .vp-logo {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+@media (max-width: 991.98px) {
+  html[dir="rtl"] .vp-logo,
+  html.rtl .vp-logo,
+  body.rtl .vp-logo {
+    margin-left: 0 !important;
+    margin-right: 36px !important;
+  }
+}
+
+html[dir="rtl"] .vp-navbar .dropdown-menu-right,
+html.rtl .vp-navbar .dropdown-menu-right,
+body.rtl .vp-navbar .dropdown-menu-right {
+  right: auto !important;
+  left: 0 !important;
+}
+
+html[dir="rtl"] .lang-switch-wrapper,
+html.rtl .lang-switch-wrapper {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* Auth Language Switcher */
+html[dir="rtl"] .auth-lang-switcher,
+html.rtl .auth-lang-switcher {
+  right: auto !important;
+  left: 1.5rem !important;
+}
+
+/* Vendor Portal Tabs & Tables in RTL */
+html[dir="rtl"] .vp-tabs,
+html.rtl .vp-tabs {
+  direction: rtl;
+}
+
+/* Status Pill in RTL */
+html[dir="rtl"] .status-pill,
+html.rtl .status-pill {
+  direction: rtl;
+  text-align: center;
+}
+
+
+/* --------------------------------------------------------------------------
+   7. TOASTR NOTIFICATIONS (MIRRORED TO TOP LEFT IN RTL)
+   -------------------------------------------------------------------------- */
+html[dir="rtl"] #toast-container.toast-top-right,
+html.rtl #toast-container.toast-top-right,
+body[dir="rtl"] #toast-container.toast-top-right,
+body.rtl #toast-container.toast-top-right,
+[dir="rtl"] #toast-container.toast-top-right,
+html[dir="rtl"] .toast-container.toast-top-right,
+html.rtl .toast-container.toast-top-right,
+body[dir="rtl"] .toast-container.toast-top-right,
+body.rtl .toast-container.toast-top-right,
+[dir="rtl"] .toast-container.toast-top-right,
+html[dir="rtl"] #toast-container.toast-top-left,
+html.rtl #toast-container.toast-top-left,
+body[dir="rtl"] #toast-container.toast-top-left,
+body.rtl #toast-container.toast-top-left,
+[dir="rtl"] #toast-container.toast-top-left,
+html[dir="rtl"] .toast-container.toast-top-left,
+html.rtl .toast-container.toast-top-left,
+body[dir="rtl"] .toast-container.toast-top-left,
+body.rtl .toast-container.toast-top-left,
+[dir="rtl"] .toast-container.toast-top-left,
+html[dir="rtl"] #toast-container,
+html.rtl #toast-container,
+body[dir="rtl"] #toast-container,
+body.rtl #toast-container,
+html[dir="rtl"] .toast-container,
+html.rtl .toast-container,
+body[dir="rtl"] .toast-container,
+body.rtl .toast-container {
+  right: auto !important;
+  left: 20px !important;
+}
+
+html[dir="rtl"] #toast-container.toast-bottom-right,
+html.rtl #toast-container.toast-bottom-right,
+body[dir="rtl"] #toast-container.toast-bottom-right,
+body.rtl #toast-container.toast-bottom-right,
+[dir="rtl"] #toast-container.toast-bottom-right,
+html[dir="rtl"] .toast-container.toast-bottom-right,
+html.rtl .toast-container.toast-bottom-right,
+body[dir="rtl"] .toast-container.toast-bottom-right,
+body.rtl .toast-container.toast-bottom-right,
+[dir="rtl"] .toast-container.toast-bottom-right {
+  right: auto !important;
+  left: 20px !important;
+}
+
+/* Toast Card Content & Icon Mirroring */
+html[dir="rtl"] #toast-container .ngx-toastr,
+html.rtl #toast-container .ngx-toastr,
+body[dir="rtl"] #toast-container .ngx-toastr,
+body.rtl #toast-container .ngx-toastr,
+[dir="rtl"] #toast-container .ngx-toastr,
+html[dir="rtl"] .toast-container .ngx-toastr,
+html.rtl .toast-container .ngx-toastr,
+body[dir="rtl"] .toast-container .ngx-toastr,
+body.rtl .toast-container .ngx-toastr,
+[dir="rtl"] .toast-container .ngx-toastr {
+  direction: rtl !important;
+  text-align: right !important;
+  padding: 15px 50px 15px 15px !important;
+  background-position: calc(100% - 15px) center !important;
+}
+
+html[dir="rtl"] #toast-container .toast-title,
+html.rtl #toast-container .toast-title,
+body[dir="rtl"] #toast-container .toast-title,
+body.rtl #toast-container .toast-title,
+[dir="rtl"] #toast-container .toast-title {
+  text-align: right !important;
+}
+
+html[dir="rtl"] #toast-container .toast-message,
+html.rtl #toast-container .toast-message,
+body[dir="rtl"] #toast-container .toast-message,
+body.rtl #toast-container .toast-message,
+[dir="rtl"] #toast-container .toast-message {
+  text-align: right !important;
+}
+
+html[dir="rtl"] #toast-container .toast-close-button,
+html.rtl #toast-container .toast-close-button,
+body[dir="rtl"] #toast-container .toast-close-button,
+body.rtl #toast-container .toast-close-button,
+[dir="rtl"] #toast-container .toast-close-button {
+  float: left !important;
+  right: auto !important;
+  left: -0.3em !important;
+}
+
+html[dir="rtl"] #toast-container .toast-progress,
+html.rtl #toast-container .toast-progress,
+body[dir="rtl"] #toast-container .toast-progress,
+body.rtl #toast-container .toast-progress,
+[dir="rtl"] #toast-container .toast-progress {
+  left: auto !important;
+  right: 0 !important;
+}
+
+/* User Profile Menu RTL adjustments */
+html[dir="rtl"] .user-profile-menu,
+html.rtl .user-profile-menu,
+body.rtl .user-profile-menu {
+  text-align: right !important;
+}
+
+html[dir="rtl"] .user-profile-menu .dropdown-item,
+html.rtl .user-profile-menu .dropdown-item,
+body.rtl .user-profile-menu .dropdown-item {
+  text-align: right !important;
+}

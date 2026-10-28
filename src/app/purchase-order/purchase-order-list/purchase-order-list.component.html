@@ -5,23 +5,23 @@
             <!-- Header -->
             <div class="row mb-3">
                 <div class="col-md-12 d-flex align-items-center justify-content-between">
-                    <h5 class="mb-0">{{ title }}</h5>
+                    <h5 class="mb-0">{{ getTranslatedTitle() }}</h5>
             
                     <div ngbDropdown class="d-inline-block">
-                        <button class="btn btn-outline-secondary" id="filterDropdown" ngbDropdownToggle ngbTooltip="Filter"
+                        <button class="btn btn-outline-secondary" id="filterDropdown" ngbDropdownToggle [ngbTooltip]="'COMMON.FILTER' | translate"
                             container="body">
                             <i class="bi bi-sliders"></i>
                         </button>
             
                         <div ngbDropdownMenu class="dropdown-menu-end p-3 shadow filter-dropdown" aria-labelledby="filterDropdown"
                             style="min-width: 220px;" placement="bottom-end" container="body">
-                            <label for="statusFilter" class="form-label fw-semibold mb-2">Status:</label>
+                            <label for="statusFilter" class="form-label fw-semibold mb-2">{{ 'COMMON.STATUS' | translate }}:</label>
                             <select id="statusFilter" [(ngModel)]="selectedStatus" (change)="loadPurchaseOrders()"
                                 class="form-select form-select-sm">
-                                <option value="">All</option>
-                                <option value="Open">Open</option>
-                                <option value="Delivered">Delivered</option>
-                                <option value="Closed">Closed</option>
+                                <option value="">{{ 'STATUS.ALL' | translate }}</option>
+                                <option value="Open">{{ 'STATUS.OPEN' | translate }}</option>
+                                <option value="Delivered">{{ 'STATUS.DELIVERED' | translate }}</option>
+                                <option value="Closed">{{ 'STATUS.CLOSED' | translate }}</option>
                             </select>
                         </div>
                     </div>
@@ -29,32 +29,20 @@
             </div>
 
             <ngx-datatable class="bootstrap core-bootstrap" [rows]="purchaseOrders" [columnMode]="'force'"
-                [headerHeight]="50" [footerHeight]="50" [columns]="columns" rowHeight="50" [limit]="10"
+                [headerHeight]="50" [footerHeight]="50" rowHeight="50" [limit]="10"
                 [scrollbarH]="true" [loadingIndicator]="loading" [selected]="chkBoxSelected" [swapColumns]="false"
                 [selectionType]="SelectionType.single" (sort)="onSort($event)"
                 (select)="customChkboxOnSelect($event)" (rowClick)="onRowClick($event)" (activate)="onActivate($event)" (clicktype)="'single'">
                 <ngx-datatable-column [width]="50" [sortable]="false" [canAutoResize]="false" [draggable]="false"
                     [resizeable]="false">
-                    <!-- <ng-template ngx-datatable-header-template>
-                        <div class="custom-control">
-                            <input type="checkbox" [checked]="isAllSelected" (change)="toggleSelectAll($event)" />
-                        </div>
-                    </ng-template>
-                    <ng-template ngx-datatable-cell-template let-value="value" let-isSelected="isSelected"
-                        let-onCheckboxChangeFn="onCheckboxChangeFn">
-
-                        <div class="custom-control custom-checkbox ">
-                            <input type="checkbox" [checked]="isSelected" (change)="onCheckboxChangeFn($event)" />
-                        </div>
-                    </ng-template> -->
                 </ngx-datatable-column>
-                <ngx-datatable-column name="Sr. No." [resizeable]="false" [sortable]="false">
+                <ngx-datatable-column [name]="'COMMON.SR_NO' | translate" [resizeable]="false" [sortable]="false">
                     <ng-template let-rowIndex="rowIndex" let-value="value" ngx-datatable-cell-template>
                         <span>{{rowIndex + 1}}</span>
                     </ng-template>
                 </ngx-datatable-column>
 
-                <ngx-datatable-column name="PO No." prop="purchaseOrderNo" [sortable]="false">
+                <ngx-datatable-column [name]="'PO_MODULE.PO_NUMBER' | translate" prop="purchaseOrderNo" [sortable]="false">
                     <ng-template let-row="row" ngx-datatable-cell-template>
                         <a href="javascript:void(0)">
                             {{ row.purchaseOrderNo }}
@@ -62,24 +50,24 @@
                     </ng-template>
                 </ngx-datatable-column>
 
-                <ngx-datatable-column name="Status" prop="requestStatus" [sortable]="false">
+                <ngx-datatable-column [name]="'COMMON.STATUS' | translate" prop="requestStatus" [sortable]="false">
                     <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
                         <span class="status-pill" [ngClass]="mapStatusKey(value)">
-                            {{ value }}
+                            {{ value | statusTranslate }}
                         </span>
                     </ng-template>
                 </ngx-datatable-column>
                 
-                <ngx-datatable-column name="Requisition No." prop="requisitionNo" [sortable]="false">
+                <ngx-datatable-column [name]="'COMMON.REQUISITION_NO' | translate" prop="requisitionNo" [sortable]="false">
                 </ngx-datatable-column>
 
-                <ngx-datatable-column name="Entity" prop="entityName" [sortable]="false">
+                <ngx-datatable-column [name]="'COMMON.ENTITY' | translate" prop="entityName" [sortable]="false">
                 </ngx-datatable-column>
 
-                <ngx-datatable-column name="RFQ No." prop="rfqNo" [sortable]="false">
+                <ngx-datatable-column [name]="'COMMON.RFQ_NO' | translate" prop="rfqNo" [sortable]="false">
                 </ngx-datatable-column>
 
-                <ngx-datatable-column name="Date" prop="createdDate" [sortable]="false">
+                <ngx-datatable-column [name]="'COMMON.DATE' | translate" prop="createdDate" [sortable]="false">
                     <ng-template let-row="row" ngx-datatable-cell-template>
                         {{ row.createdDate | date:'yyyy-MM-dd' }}
                     </ng-template>

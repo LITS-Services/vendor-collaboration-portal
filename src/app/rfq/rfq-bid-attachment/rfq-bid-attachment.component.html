@@ -1,5 +1,5 @@
 <div class="modal-header">
-  Attachments
+  {{ 'COMMON.ATTACHMENTS' | translate }}
   <button type="button" class="close" aria-label="Close" (click)="closeDialog()">
     <span aria-hidden="true">&times;</span>
   </button>
@@ -11,25 +11,25 @@
 
       <!-- PROCUREMENT ATTACHMENTS -->
       <div class="col-12 mt-2">
-        <h5 class="heading-upload mb-2">Procurement Attachments</h5>
+        <h5 class="heading-upload mb-2">{{ 'RFQ_MODULE.PROCUREMENT_ATTACHMENTS' | translate }}</h5>
       </div>
 
       <div class="col-12 form-group" *ngIf="procurementAttachments.length > 0; else noProcFiles">
         <ngx-datatable class="bootstrap core-bootstrap" [rows]="procurementAttachments" [columnMode]="'standard'"
           [headerHeight]="50" [footerHeight]="50" rowHeight="auto" [limit]="5" [scrollbarH]="true">
 
-          <ngx-datatable-column name="Sr. No." [width]="80">
+          <ngx-datatable-column [name]="'COMMON.SR_NO' | translate" [width]="80">
             <ng-template let-rowIndex="rowIndex" ngx-datatable-cell-template>
               {{ rowIndex + 1 }}
             </ng-template>
           </ngx-datatable-column>
 
-          <ngx-datatable-column name="File Name" prop="fileName" [width]="300"></ngx-datatable-column>
-          <ngx-datatable-column name="Type" prop="contentType" [width]="200"></ngx-datatable-column>
+          <ngx-datatable-column [name]="'COMMON.FILE_NAME' | translate" prop="fileName" [width]="300"></ngx-datatable-column>
+          <ngx-datatable-column [name]="'COMMON.TYPE' | translate" prop="contentType" [width]="200"></ngx-datatable-column>
 
-          <ngx-datatable-column name="Actions" [width]="100">
+          <ngx-datatable-column [name]="'COMMON.ACTIONS' | translate" [width]="100">
             <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex">
-              <a matTooltip="Download File" style="cursor: pointer; color: #5a5a5a; margin-right: 10px;"
+              <a [matTooltip]="'COMMON.DOWNLOAD' | translate" style="cursor: pointer; color: #5a5a5a; margin-right: 10px;"
                 (click)="downloadAttachment(procurementAttachments[rowIndex])">
                 <i class="ft-download" style="font-size: 1.3rem;"></i>
               </a>
@@ -40,7 +40,7 @@
 
       <ng-template #noProcFiles>
         <div class="col-12 text-muted small mt-2">
-          No attachments were uploaded by procurement.
+          {{ 'COMMON.NO_DATA' | translate }}
         </div>
       </ng-template>
 
@@ -48,7 +48,7 @@
 
       <!-- VENDOR ATTACHMENTS -->
       <div class="col-12 mt-3">
-        <h5 class="heading-upload mb-2">Vendor Attachments</h5>
+        <h5 class="heading-upload mb-2">{{ 'RFQ_MODULE.VENDOR_ATTACHMENTS' | translate }}</h5>
       </div>
 
       <div class="col-12 form-group mt-2">
@@ -60,23 +60,23 @@
         <ngx-datatable class="bootstrap core-bootstrap" [rows]="vendorAttachments" [columnMode]="'standard'"
           [headerHeight]="50" [footerHeight]="50" rowHeight="auto" [limit]="5" [scrollbarH]="true">
 
-          <ngx-datatable-column name="Sr. No." [width]="80">
+          <ngx-datatable-column [name]="'COMMON.SR_NO' | translate" [width]="80">
             <ng-template let-rowIndex="rowIndex" ngx-datatable-cell-template>
               {{ rowIndex + 1 }}
             </ng-template>
           </ngx-datatable-column>
 
-          <ngx-datatable-column name="File Name" prop="fileName" [width]="300"></ngx-datatable-column>
-          <ngx-datatable-column name="Type" prop="contentType" [width]="200"></ngx-datatable-column>
+          <ngx-datatable-column [name]="'COMMON.FILE_NAME' | translate" prop="fileName" [width]="300"></ngx-datatable-column>
+          <ngx-datatable-column [name]="'COMMON.TYPE' | translate" prop="contentType" [width]="200"></ngx-datatable-column>
 
-          <ngx-datatable-column name="Actions" [width]="100">
+          <ngx-datatable-column [name]="'COMMON.ACTIONS' | translate" [width]="100">
             <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex">
-              <a matTooltip="Download" style="cursor: pointer; color: #5a5a5a; margin-right: 10px;"
+              <a [matTooltip]="'COMMON.DOWNLOAD' | translate" style="cursor: pointer; color: #5a5a5a; margin-right: 10px;"
                 (click)="downloadAttachment(vendorAttachments[rowIndex])">
                 <i class="ft-download" style="font-size: 1.3rem;"></i>
               </a>
 
-              <a *ngIf="!viewMode" matTooltip="Delete" style="cursor: pointer; color: #d9534f;"
+              <a *ngIf="!viewMode" [matTooltip]="'COMMON.DELETE' | translate" style="cursor: pointer; color: #d9534f;"
                 (click)="deleteVendorAttachment(rowIndex)">
                 <i class="ft-trash" style="font-size: 1.3rem;"></i>
               </a>
@@ -88,7 +88,7 @@
       <!-- Upload Button -->
       <div class="col-12 form-group mt-3 text-right">
         <button type="button" class="btn btn-primary" (click)="uploadFiles()" [disabled]="viewMode">
-          Upload Files
+          {{ 'COMMON.UPLOAD' | translate }}
         </button>
       </div>
     </div>

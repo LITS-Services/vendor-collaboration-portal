@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, ViewChild, ChangeDetectorRef, TemplateRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef, TemplateRef } from '@angular/core';
 import { ColumnMode, DatatableComponent, SelectionType } from '@swimlane/ngx-datatable';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -6,6 +6,7 @@ import { BehaviorSubject, forkJoin, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { CompanyService } from 'app/shared/services/company.service';
 import { NgxSpinner, NgxSpinnerService } from 'ngx-spinner';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-company-list',
@@ -43,8 +44,22 @@ export class CompanyListComponent implements OnInit {
     private modalService: NgbModal,
     private companyService: CompanyService,
     private cdr: ChangeDetectorRef,
-    private spinner: NgxSpinnerService
+    private spinner: NgxSpinnerService,
+    private translate: TranslateService
   ) { }
+
+  getTranslatedTitle(): string {
+    if (!this.title || this.title === 'Companies') {
+      return this.translate.instant('COMPANY_MODULE.TITLE') || 'Companies';
+    }
+    if (this.title === 'Onboarded Companies') {
+      return this.translate.instant('COMPANY_MODULE.ONBOARDED_COMPANIES') || this.title;
+    }
+    if (this.title === 'Pending Companies') {
+      return this.translate.instant('COMPANY_MODULE.PENDING_COMPANIES') || this.title;
+    }
+    return this.title;
+  }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {

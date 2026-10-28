@@ -1,3 +1,4 @@
+@import './assets/css/rtl.css';
 @import './app/shared/custom-style/custom-tab.css';
 @import 'intl-tel-input/build/css/intlTelInput.css';
 
@@ -256,12 +257,38 @@ a:hover {
     font-size: 0.85rem;
     font-weight: 500;
   }
-  .eye-icon {
+  .eye-icon,
+  .pass-icon {
     position: absolute;
-    right: 10px;
+    right: 12px;
     top: 50%;
     transform: translateY(-50%);
     cursor: pointer;
+    z-index: 10;
+    line-height: 1;
+    color: #707070;
+  }
+
+  .cstm-pass-input-wrap {
+    position: relative;
+    display: block;
+  }
+
+  .cstm-pass-input-wrap input,
+  .position-relative input.form-control,
+  .form-control.password-input {
+    padding-right: 36px;
+  }
+
+  /* Eye icon stays fixed in place (right: 12px). Both input validation ticks align at right: 32px */
+  app-login-page .form-control.is-valid,
+  app-login-page .form-control.is-invalid,
+  app-register-vendor .form-control.is-valid,
+  app-register-vendor .form-control.is-invalid,
+  .cstm-pass-input-wrap .form-control.is-valid,
+  .cstm-pass-input-wrap .form-control.is-invalid {
+    padding-right: 54px !important;
+    background-position: right 32px center !important;
   }
 
   .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
@@ -619,3 +646,176 @@ html.modal-open {
 body.swal2-shown {
   overflow-y: hidden !important;
 } */
+
+/* Enforce full width and zero margins on auth / blank / content pages globally */
+body.blank-page .main-panel,
+body.blank-page .main-content,
+body.blank-page .content-wrapper,
+body.blank-page .wrapper,
+body.auth-page .main-panel,
+body.auth-page .main-content,
+body.auth-page .content-wrapper,
+body.auth-page .wrapper,
+app-content-layout,
+app-content-layout .main-panel,
+app-content-layout .main-content,
+app-content-layout .content-wrapper,
+app-content-layout .wrapper,
+app-content-layout #login {
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+  padding-right: 0 !important;
+  padding-left: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* ==========================================================================
+   USER PROFILE MENU & DROPDOWN ITEM DANGER OVERRIDES
+   ========================================================================== */
+.user-profile-menu {
+  min-width: 190px !important;
+  padding: 8px !important;
+  border-radius: 14px !important;
+  border: 1px solid #e5e7eb !important;
+  background: #ffffff !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1) !important;
+  margin-top: 8px !important;
+  z-index: 1050;
+}
+
+.user-profile-menu .dropdown-item,
+.dropdown-menu .dropdown-item.user-profile-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  width: 100% !important;
+  padding: 10px 14px !important;
+  border-radius: 9px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  color: #334155 !important;
+  background: transparent !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+.user-profile-menu .dropdown-item i,
+.dropdown-menu .dropdown-item.user-profile-item i {
+  font-size: 16px !important;
+  color: #64748b !important;
+  transition: color 0.15s ease !important;
+  flex-shrink: 0 !important;
+}
+
+.user-profile-menu .dropdown-item:hover,
+.user-profile-menu .dropdown-item:focus,
+.dropdown-menu .dropdown-item.user-profile-item:hover,
+.dropdown-menu .dropdown-item.user-profile-item:focus {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.user-profile-menu .dropdown-item:hover i,
+.user-profile-menu .dropdown-item:focus i,
+.dropdown-menu .dropdown-item.user-profile-item:hover i,
+.dropdown-menu .dropdown-item.user-profile-item:focus i {
+  color: #0f172a !important;
+}
+
+.user-profile-menu .dropdown-item:active,
+.dropdown-menu .dropdown-item.user-profile-item:active {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+  outline: none !important;
+}
+
+/* Logout / Danger Dropdown Item (Fix background & text on hover, focus, and click) */
+.user-profile-menu .dropdown-item.text-danger,
+.user-profile-menu .dropdown-item.logout-item,
+.dropdown-menu .dropdown-item.text-danger,
+.dropdown .dropdown-menu .dropdown-item.text-danger,
+.dropdown-item.text-danger {
+  color: #ef4444 !important;
+  background-color: transparent !important;
+  cursor: pointer !important;
+}
+
+.user-profile-menu .dropdown-item.text-danger i,
+.user-profile-menu .dropdown-item.logout-item i,
+.dropdown-menu .dropdown-item.text-danger i,
+.dropdown .dropdown-menu .dropdown-item.text-danger i,
+.dropdown-item.text-danger i {
+  color: #ef4444 !important;
+}
+
+.user-profile-menu .dropdown-item.text-danger:hover,
+.user-profile-menu .dropdown-item.text-danger:focus,
+.user-profile-menu .dropdown-item.logout-item:hover,
+.user-profile-menu .dropdown-item.logout-item:focus,
+.dropdown-menu .dropdown-item.text-danger:hover,
+.dropdown-menu .dropdown-item.text-danger:focus,
+.dropdown .dropdown-menu .dropdown-item.text-danger:hover,
+.dropdown .dropdown-menu .dropdown-item.text-danger:focus,
+.dropdown-item.text-danger:hover,
+.dropdown-item.text-danger:focus {
+  background-color: #fef2f2 !important;
+  color: #dc2626 !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.user-profile-menu .dropdown-item.text-danger:hover i,
+.user-profile-menu .dropdown-item.text-danger:focus i,
+.user-profile-menu .dropdown-item.logout-item:hover i,
+.user-profile-menu .dropdown-item.logout-item:focus i,
+.dropdown-menu .dropdown-item.text-danger:hover i,
+.dropdown-menu .dropdown-item.text-danger:focus i,
+.dropdown .dropdown-menu .dropdown-item.text-danger:hover i,
+.dropdown .dropdown-menu .dropdown-item.text-danger:focus i,
+.dropdown-item.text-danger:hover i,
+.dropdown-item.text-danger:focus i {
+  color: #dc2626 !important;
+}
+
+.user-profile-menu .dropdown-item.text-danger:active,
+.user-profile-menu .dropdown-item.logout-item:active,
+.dropdown-menu .dropdown-item.text-danger:active,
+.dropdown .dropdown-menu .dropdown-item.text-danger:active,
+.dropdown-item.text-danger:active,
+.dropdown-item.text-danger:focus:active {
+  background-color: #fee2e2 !important;
+  color: #b91c1c !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.user-profile-menu .dropdown-item.text-danger:active i,
+.user-profile-menu .dropdown-item.logout-item:active i,
+.dropdown-menu .dropdown-item.text-danger:active i,
+.dropdown .dropdown-menu .dropdown-item.text-danger:active i,
+.dropdown-item.text-danger:active i,
+.dropdown-item.text-danger:focus:active i {
+  color: #b91c1c !important;
+}
+
+/* Active state for language switcher items (both navbar and login/auth page) */
+.lang-dropdown-menu .lang-item.active,
+.auth-lang-dropdown-menu .auth-lang-item.active {
+  background-color: #edf5ff !important;
+  color: #249D57 !important;
+}
+
+.lang-dropdown-menu .lang-item.active .lang-name,
+.auth-lang-dropdown-menu .auth-lang-item.active .auth-lang-name {
+  color: #249D57 !important;
+  font-weight: 600 !important;
+}
+
+.lang-dropdown-menu .lang-item.active .lang-check-icon,
+.auth-lang-dropdown-menu .auth-lang-item.active .auth-lang-check-icon {
+  color: #249D57 !important;
+  display: inline-block !important;
+}

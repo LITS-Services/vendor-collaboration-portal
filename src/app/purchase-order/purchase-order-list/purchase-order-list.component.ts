@@ -6,6 +6,7 @@ import { NewPurchaseOrderComponent } from '../new-purchase-order/new-purchase-or
 import { PurchaseOrderService } from 'app/shared/services/purchase-order.service';
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-purchase-order-list',
@@ -42,8 +43,16 @@ export class PurchaseOrderListComponent implements OnInit {
     private toastr: ToastrService,
     private router: Router, private route: ActivatedRoute,
     private modalService: NgbModal, public cdr: ChangeDetectorRef,
-    private spinner: NgxSpinnerService
+    private spinner: NgxSpinnerService,
+    private translate: TranslateService
   ) { }
+
+  getTranslatedTitle(): string {
+    if (!this.title || this.title === 'Purchase Orders') {
+      return this.translate.instant('PO_MODULE.PURCHASE_ORDERS') || 'Purchase Orders';
+    }
+    return this.title;
+  }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {

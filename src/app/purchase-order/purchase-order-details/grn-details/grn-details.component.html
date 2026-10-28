@@ -166,20 +166,20 @@
 </div>
 <!-- Items Table -->
 <div class="d-flex justify-content-between align-items-center mb-2 cursor-pointer" (click)="toggleItems()">
-    <h5 class="section-title m-0">Items</h5>
+    <h5 class="section-title m-0">{{ 'PO_MODULE.ITEMS' | translate }}</h5>
     <i class="ft-chevron-down transition-icon" [ngClass]="{ 'rotate-icon': itemsExpanded }"></i>
 </div>
 
 <div class="expand-wrapper" [ngClass]="{ 'expanded': itemsExpanded }">
     <div class="table-card table-card--grn">
         <div class="table__row table__row--head table__row--grn">
-            <div>ITEM NO</div>
-            <div>ITEM</div>
-            <div class="text-center">LOCATION CODE</div>
-            <div class="text-center">PLANNED RECEIPT DATE</div>
-            <div class="text-center">EXPECTED RECEIPT DATE</div>
-            <div class="text-center">RECEIVED QTY</div>
-            <div class="text-end">UNIT COST EXCL VAT</div>
+            <div>{{ 'PO_MODULE.ITEM_NAME' | translate }}</div>
+            <div>{{ 'PO_MODULE.ITEM' | translate }}</div>
+            <div class="text-center">{{ 'PO_MODULE.LOCATION_CODE' | translate }}</div>
+            <div class="text-center">{{ 'PO_MODULE.PLANNED_RECEIPT_DATE' | translate }}</div>
+            <div class="text-center">{{ 'PO_MODULE.EXPECTED_RECEIPT_DATE' | translate }}</div>
+            <div class="text-center">{{ 'PO_MODULE.RECEIVED_QTY' | translate }}</div>
+            <div class="text-end">{{ 'PO_MODULE.UNIT_COST_EXCL_VAT' | translate }}</div>
         </div>
 
         <div class="table-scroll table-scroll--grn">

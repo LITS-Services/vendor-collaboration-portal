@@ -2,43 +2,36 @@
 
   <div class="card-body">
     <div class="back-btn">
-      <button class="back-icon-div" [routerLink]="['/pages/login']"><i class="ft-arrow-left back-icon"></i></button>
+      <button class="back-icon-div" [routerLink]="['/pages/login']" [title]="'AUTH.BACK_TO_LOGIN' | translate">
+        <i class="ft-arrow-left back-icon"></i>
+      </button>
     </div>
     <div class="w-100 mb-3">
-      <h2 class="heading mb-0">Create an Account</h2>
-      <p>Please enter your credentials</p>
+      <h2 class="heading mb-0">{{ 'AUTH.CREATE_ACCOUNT' | translate }}</h2>
+      <p>{{ 'AUTH.CREATE_ACCOUNT_SUB' | translate }}</p>
     </div>
     <form class="cstm-form" [formGroup]="registerVendorForm">
 
       <div class="">
         <div class="form-group mb-2">
-          <input type="text" formControlName="username" class="form-control" placeholder="Enter Username"
+          <input type="text" formControlName="username" class="form-control" [placeholder]="'AUTH.ENTER_USERNAME' | translate"
             [ngClass]="{ 'is-invalid': registerVendorFormSubmitted && lf.username.invalid, 'is-valid': registerVendorFormSubmitted && !lf.username.invalid }"
             required>
           <div *ngIf="registerVendorFormSubmitted && (lf.username.invalid || lf.username.errors?.required)"
             class="help-block mt-1 text-danger">
-            <i class="ft-alert-circle align-middle"></i> This is required
+            <i class="ft-alert-circle align-middle"></i> {{ 'AUTH.REQUIRED_FIELD' | translate }}
           </div>
         </div>
         <div class="form-group mb-2">
-          <input type="text" formControlName="fullname" class="form-control" placeholder="Enter Full Name"
+          <input type="text" formControlName="fullname" class="form-control" [placeholder]="'AUTH.ENTER_FULLNAME' | translate"
             [ngClass]="{ 'is-invalid': registerVendorFormSubmitted && lf.fullname.invalid, 'is-valid': registerVendorFormSubmitted && !lf.fullname.invalid }"
             required>
           <div *ngIf="registerVendorFormSubmitted && (lf.fullname.invalid || lf.fullname.errors?.required)"
             class="help-block mt-1 text-danger">
-            <i class="ft-alert-circle align-middle"></i> This is required
+            <i class="ft-alert-circle align-middle"></i> {{ 'AUTH.REQUIRED_FIELD' | translate }}
           </div>
         </div>
 
-        <!-- <div class="form-group">
-                  <input type="text" formControlName="phoneNo" class="form-control" placeholder="Enter Phone No."
-                    [ngClass]="{ 'is-invalid': registerVendorFormSubmitted && lf.phoneNo.invalid, 'is-valid': registerVendorFormSubmitted && !lf.phoneNo.invalid }"
-                    required>
-                  <div *ngIf="registerVendorFormSubmitted && (lf.phoneNo.invalid || lf.phoneNo.errors?.required)"
-                    class="help-block mt-1 text-danger">
-                    <i class="ft-alert-circle align-middle"></i> This is required
-                  </div>
-                </div> -->
         <div class="form-group mb-2">
           <ngx-intl-tel-input class="vendor-phone" name="phone" formControlName="phone"
             [preferredCountries]="preferredCountries" [enableAutoCountrySelect]="true" [searchCountryFlag]="true"
@@ -49,113 +42,77 @@
           <div class="help-block mt-1 text-danger" *ngIf="registerVendorFormSubmitted && lf['phone']?.invalid">
             <i class="ft-alert-circle align-middle me-1"></i>
             <ng-container *ngIf="lf['phone']?.hasError('required'); else invalidMsg">
-              Phone is required
+              {{ 'AUTH.PHONE_REQ' | translate }}
             </ng-container>
-            <ng-template #invalidMsg>Invalid phone number</ng-template>
+            <ng-template #invalidMsg>{{ 'AUTH.INVALID_PHONE' | translate }}</ng-template>
           </div>
         </div>
 
-        <!-- <div class="form-group d-flex align-items-center mb-2">
-              
-                <select formControlName="phoneExtension" class="form-control w-auto me-2" required
-                  [ngClass]="{'is-invalid': registerVendorFormSubmitted && lf.phoneExtension.invalid}">
-                  <option value="" disabled selected>Select Ext</option>
-                  <option *ngFor="let ext of countryExtensions" [value]="ext.value">{{ ext.label }}</option>
-                </select>
-  
-                
-                <input type="text" formControlName="phoneNo" class="form-control" placeholder="Enter Phone No." [ngClass]="{ 'is-invalid': registerVendorFormSubmitted && lf.phoneNo.invalid, 
-                                     'is-valid': registerVendorFormSubmitted && !lf.phoneNo.invalid }" required>
-  
-                
-                <div *ngIf="registerVendorFormSubmitted && (lf.phoneNo.invalid || lf.phoneExtension.invalid)"
-                  class="help-block mt-1 text-danger">
-                  <i class="ft-alert-circle align-middle"></i> This is required
-                </div>
-              </div> -->
         <div class="form-group mb-2">
-          <input type="text" formControlName="email" class="form-control" placeholder="Enter Email Address"
+          <input type="text" formControlName="email" class="form-control" [placeholder]="'AUTH.ENTER_EMAIL' | translate"
             [ngClass]="{ 'is-invalid': registerVendorFormSubmitted && lf.email.invalid, 'is-valid': registerVendorFormSubmitted && !lf.email.invalid }"
             required>
           <div *ngIf="registerVendorFormSubmitted && (lf.email.invalid || lf.email.errors?.required)"
             class="help-block mt-1 text-danger">
-            <i class="ft-alert-circle align-middle"></i> This is required
+            <i class="ft-alert-circle align-middle"></i> {{ 'AUTH.REQUIRED_FIELD' | translate }}
           </div>
         </div>
-        <!-- <div class="form-group mb-2">
-    <label for="companies">Select Companies</label>
-    <ng-select
-      [items]="companies"
-      bindLabel="name"
-      bindValue="companyGUID"
-      [multiple]="true"
-      placeholder="Select Companies"
-      formControlName="selectedCompanies"
-      [ngClass]="{ 'is-invalid': registerVendorFormSubmitted && lf.selectedCompanies.invalid }">
-    </ng-select>
-    <div *ngIf="registerVendorFormSubmitted && lf.selectedCompanies.invalid" class="help-block mt-1 text-danger">
-      <i class="ft-alert-circle align-middle"></i> Please select at least one company
-    </div>
-  </div> -->
 
         <div class="form-group mb-2">
           <div style="position:relative">
             <input type="{{ hidePassword ? 'password' : 'text' }}" formControlName="password"
-              class="form-control password-input" placeholder="Enter password"
+              class="form-control password-input" [placeholder]="'AUTH.ENTER_PASSWORD_PLACEHOLDER' | translate"
               [ngClass]="{ 'is-invalid': shouldHighlightPasswordField()}" required>
-            <i class="eye-icon ft" [ngClass]="hidePassword ? 'ft-eye-off' : 'ft-eye'"
+            <i class="eye-icon pass-icon ft" [ngClass]="hidePassword ? 'ft-eye-off' : 'ft-eye'"
               *ngIf="!(registerVendorFormSubmitted && (lf.password.invalid || lf.password.errors?.required))"
               (click)="togglePasswordVisibility('password')"></i>
           </div>
           <div *ngIf="registerVendorFormSubmitted && (lf.password.invalid || lf.password.errors?.required)"
-            class="invalid-feedback"> Please enter the valid
-            password
+            class="invalid-feedback"> {{ 'AUTH.PLEASE_ENTER_VALID_PASSWORD' | translate }}
           </div>
         </div>
         <div class="form-group mb-2">
           <div style="position:relative">
             <input type="{{ hideConfirmPassword ? 'password' : 'text' }}" formControlName="confirmPassword"
-              class="form-control password-input" placeholder="Confirm password"
+              class="form-control password-input" [placeholder]="'AUTH.CONFIRM_PASSWORD' | translate"
               [ngClass]="{ 'is-invalid': shouldHighlightPasswordField()}" required>
-            <i class="eye-icon ft" [ngClass]="hideConfirmPassword ? 'ft-eye-off' : 'ft-eye'"
+            <i class="eye-icon pass-icon ft" [ngClass]="hideConfirmPassword ? 'ft-eye-off' : 'ft-eye'"
               *ngIf="!(registerVendorFormSubmitted && (lf.confirmPassword.invalid || lf.confirmPassword.errors?.required))"
               (click)="togglePasswordVisibility('confirmPassword')"></i>
           </div>
           <div
             *ngIf="registerVendorFormSubmitted && (lf.confirmPassword.invalid || lf.confirmPassword.errors?.required)"
-            class="invalid-feedback"> Please enter the valid
-            password
+            class="invalid-feedback"> {{ 'AUTH.PLEASE_ENTER_VALID_PASSWORD' | translate }}
           </div>
         </div>
         <div class="form-group mb-2">
           <div class="checkbox">
             <input type="checkbox" id="checkbox1" checked>
-            <label for="checkbox1"><span>I agree with terms and conditions</span></label>
+            <label for="checkbox1"><span>{{ 'AUTH.ACCEPT_TERMS' | translate }}</span></label>
           </div>
         </div>
       </div>
 
-
       <div class="row d-none">
         <div class="col-md-6">
           <div class="form-group mb-2">
-            <input type="text" formControlName="username" class="form-control" placeholder="Enter Username"
+            <input type="text" formControlName="username" class="form-control" [placeholder]="'AUTH.ENTER_USERNAME' | translate"
               [ngClass]="{ 'is-invalid': registerVendorFormSubmitted && lf.username.invalid, 'is-valid': registerVendorFormSubmitted && !lf.username.invalid }"
               required>
             <div *ngIf="registerVendorFormSubmitted && (lf.username.invalid || lf.username.errors?.required)"
               class="help-block mt-1 text-danger">
-              <i class="ft-alert-circle align-middle"></i> This is required
+              <i class="ft-alert-circle align-middle"></i> {{ 'AUTH.REQUIRED_FIELD' | translate }}
             </div>
           </div>
         </div>
         <div class="col-md-6">
           <div class="form-group mb-2">
-            <input type="text" formControlName="fullname" class="form-control" placeholder="Enter Full Name"
+            <input type="text" formControlName="fullname" class="form-control" [placeholder]="'AUTH.ENTER_FULLNAME' | translate"
               [ngClass]="{ 'is-invalid': registerVendorFormSubmitted && lf.fullname.invalid, 'is-valid': registerVendorFormSubmitted && !lf.fullname.invalid }"
               required>
             <div *ngIf="registerVendorFormSubmitted && (lf.fullname.invalid || lf.fullname.errors?.required)"
               class="help-block mt-1 text-danger">
-              <i class="ft-alert-circle align-middle"></i> This is required
+              <i class="ft-alert-circle align-middle"></i> {{ 'AUTH.REQUIRED_FIELD' | translate }}
             </div>
           </div>
         </div>
@@ -170,20 +127,20 @@
             <div class="help-block mt-1 text-danger" *ngIf="registerVendorFormSubmitted && lf['phone']?.invalid">
               <i class="ft-alert-circle align-middle"></i>
               <ng-container *ngIf="lf['phone']?.hasError('required'); else invalidMsg">
-                Phone is required
+                {{ 'AUTH.PHONE_REQ' | translate }}
               </ng-container>
-              <ng-template #invalidMsg>Invalid phone number</ng-template>
+              <ng-template #invalidMsg>{{ 'AUTH.INVALID_PHONE' | translate }}</ng-template>
             </div>
           </div>
         </div>
         <div class="col-md-6">
           <div class="form-group mb-2">
-            <input type="text" formControlName="email" class="form-control" placeholder="Enter Email Address"
+            <input type="text" formControlName="email" class="form-control" [placeholder]="'AUTH.ENTER_EMAIL' | translate"
               [ngClass]="{ 'is-invalid': registerVendorFormSubmitted && lf.email.invalid, 'is-valid': registerVendorFormSubmitted && !lf.email.invalid }"
               required>
             <div *ngIf="registerVendorFormSubmitted && (lf.email.invalid || lf.email.errors?.required)"
               class="help-block mt-1 text-danger">
-              <i class="ft-alert-circle align-middle"></i> This is required
+              <i class="ft-alert-circle align-middle"></i> {{ 'AUTH.REQUIRED_FIELD' | translate }}
             </div>
           </div>
         </div>
@@ -191,15 +148,14 @@
           <div class="form-group mb-2">
             <div style="position:relative">
               <input type="{{ hidePassword ? 'password' : 'text' }}" formControlName="password"
-                class="form-control password-input" placeholder="Enter password"
+                class="form-control password-input" [placeholder]="'AUTH.ENTER_PASSWORD_PLACEHOLDER' | translate"
                 [ngClass]="{ 'is-invalid': shouldHighlightPasswordField()}" required>
-              <i class="eye-icon ft" [ngClass]="hidePassword ? 'ft-eye-off' : 'ft-eye'"
+              <i class="eye-icon pass-icon ft" [ngClass]="hidePassword ? 'ft-eye-off' : 'ft-eye'"
                 *ngIf="!(registerVendorFormSubmitted && (lf.password.invalid || lf.password.errors?.required))"
                 (click)="togglePasswordVisibility('password')"></i>
             </div>
             <div *ngIf="registerVendorFormSubmitted && (lf.password.invalid || lf.password.errors?.required)"
-              class="invalid-feedback"> Please enter the valid
-              password
+              class="invalid-feedback"> {{ 'AUTH.PLEASE_ENTER_VALID_PASSWORD' | translate }}
             </div>
           </div>
         </div>
@@ -207,37 +163,31 @@
           <div class="form-group mb-2">
             <div style="position:relative">
               <input type="{{ hideConfirmPassword ? 'password' : 'text' }}" formControlName="confirmPassword"
-                class="form-control password-input" placeholder="Confirm password"
+                class="form-control password-input" [placeholder]="'AUTH.CONFIRM_PASSWORD' | translate"
                 [ngClass]="{ 'is-invalid': shouldHighlightPasswordField()}" required>
-              <i class="eye-icon ft" [ngClass]="hideConfirmPassword ? 'ft-eye-off' : 'ft-eye'"
+              <i class="eye-icon pass-icon ft" [ngClass]="hideConfirmPassword ? 'ft-eye-off' : 'ft-eye'"
                 *ngIf="!(registerVendorFormSubmitted && (lf.confirmPassword.invalid || lf.confirmPassword.errors?.required))"
                 (click)="togglePasswordVisibility('confirmPassword')"></i>
             </div>
             <div
               *ngIf="registerVendorFormSubmitted && (lf.confirmPassword.invalid || lf.confirmPassword.errors?.required)"
-              class="invalid-feedback"> Please enter the valid
-              password
+              class="invalid-feedback"> {{ 'AUTH.PLEASE_ENTER_VALID_PASSWORD' | translate }}
             </div>
           </div>
         </div>
       </div>
 
-
       <div class="d-flex justify-content-between">
-        <a class="btn btn-primary login-btn w-100" (click)="onSubmit()">Register</a>
+        <a class="btn btn-primary login-btn w-100" (click)="onSubmit()">{{ 'AUTH.REGISTER' | translate }}</a>
       </div>
     </form>
 
     <div class="row mt-3">
       <div class="col-12">
         <div class="form-group d-flex align-items-center justify-content-center">
-          <!-- <h6>Already have an account?</h6> -->
-          <label for="" class="mt-1 me-1">Already have an account?</label>
-
-          <a routerLink="/pages/login">Login</a>
-
+          <label for="" class="mt-1 me-1 mb-0">{{ 'AUTH.ALREADY_HAVE_ACCOUNT' | translate }}</label>
+          <a routerLink="/pages/login">{{ 'AUTH.LOGIN' | translate }}</a>
         </div>
-
       </div>
     </div>
   </div>

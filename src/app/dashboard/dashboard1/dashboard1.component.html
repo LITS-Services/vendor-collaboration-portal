@@ -3,7 +3,7 @@
   <!-- Top Header (same idea as your current) -->
   <div class="dash__top">
     <div class="dash__title">
-      <h1 class="m-0">Dashboard Overview</h1>
+      <h1 class="m-0">{{ 'DASHBOARD.TITLE' | translate }}</h1>
       <!-- <p class="m-0">Welcome Back!</p> -->
     </div>
 
@@ -27,13 +27,13 @@
       </div>
 
       <div class="stat-card__main">
-        <div class="stat-card__label">Total RFQ</div>
+        <div class="stat-card__label">{{ 'DASHBOARD.TOTAL_RFQ' | translate }}</div>
         <!-- <div class="stat-card__value">{{dashboardCounts?.totalRfqs}}</div> -->
         <div class="stat-card__value">{{ formatNumber(metrics.totalRfqs) }}</div>
       </div>
 
       <div class="stat-card__footer">
-        <div class="stat-card__details">View details</div>
+        <div class="stat-card__details">{{ 'DASHBOARD.VIEW_DETAILS' | translate }}</div>
         <div class="stat-card__arrow"><i class="ft-arrow-right"></i></div>
       </div>
     </a>
@@ -46,13 +46,13 @@
       </div>
 
       <div class="stat-card__main">
-        <div class="stat-card__label">Total Pending Quotes</div>
+        <div class="stat-card__label">{{ 'DASHBOARD.TOTAL_PENDING_QUOTES' | translate }}</div>
         <div class="stat-card__value">{{ formatNumber(metrics.totalPendingQuotes) }}</div>
         <!-- <div class="stat-card__value">{{dashboardCounts?.totalPendingQuotes}}</div> -->
       </div>
 
       <div class="stat-card__footer">
-        <div class="stat-card__details">View details</div>
+        <div class="stat-card__details">{{ 'DASHBOARD.VIEW_DETAILS' | translate }}</div>
         <div class="stat-card__arrow"><i class="ft-arrow-right"></i></div>
       </div>
     </a>
@@ -64,13 +64,13 @@
       </div>
 
       <div class="stat-card__main">
-        <div class="stat-card__label">Total Pending Deliveries</div>
+        <div class="stat-card__label">{{ 'DASHBOARD.TOTAL_PENDING_DELIVERIES' | translate }}</div>
         <div class="stat-card__value">{{ formatNumber(metrics.totalPendingDeliveries) }}</div>
         <!-- <div class="stat-card__value">{{dashboardCounts?.totalPendingDeliveries}}</div> -->
       </div>
 
       <div class="stat-card__footer">
-        <div class="stat-card__details">View details</div>
+        <div class="stat-card__details">{{ 'DASHBOARD.VIEW_DETAILS' | translate }}</div>
         <div class="stat-card__arrow"><i class="ft-arrow-right"></i></div>
       </div>
     </a>
@@ -81,13 +81,13 @@
       </div>
 
       <div class="stat-card__main">
-        <div class="stat-card__label">Total Income</div>
+        <div class="stat-card__label">{{ 'DASHBOARD.TOTAL_INCOME' | translate }}</div>
         <div class="stat-card__value">{{ formatNumber(metrics.totalIncome) }}</div>
         <!-- <div class="stat-card__value">{{dashboardCounts?.totalIncome}}</div> -->
       </div>
 
       <div class="stat-card__footer">
-        <div class="stat-card__details">View details</div>
+        <div class="stat-card__details">{{ 'DASHBOARD.VIEW_DETAILS' | translate }}</div>
         <div class="stat-card__arrow"><i class="ft-arrow-right"></i></div>
       </div>
     </a>
@@ -103,10 +103,10 @@
     <div class="panel">
       <div class="panel__head">
         <div class="d-flex justify-content-between w-100 align-items-center">
-          <div class="panel__title">{{ vendorCompanyName ? 'Company Status' : 'Status' }}</div>
+          <div class="panel__title">{{ (vendorCompanyName ? 'DASHBOARD.COMPANY_STATUS' : 'DASHBOARD.STATUS') | translate }}</div>
           <span class="status-pill" [ngClass]="statusPillClass">
             <span class="status-pill__dot"></span>
-            {{ companyStatusLabel }}
+            {{ companyStatusLabel | statusTranslate }}
           </span>
         </div>
       </div>
@@ -141,7 +141,7 @@
 
           <!-- FOOTER: title always at bottom -->
           <div class="company-status-footer">
-            <div class="company-title">{{ vendorCompanyName || 'Company Name' }}</div>
+            <div class="company-title">{{ vendorCompanyName || ('DASHBOARD.COMPANY_NAME' | translate) }}</div>
           </div>
 
         </div>
@@ -152,16 +152,16 @@
     <div class="panel panel--wide">
       <div class="panel__head panel__head--split">
         <div>
-          <div class="panel__title">Income</div>
+          <div class="panel__title">{{ 'DASHBOARD.INCOME' | translate }}</div>
         </div>
 
         <div class="segmented">
           <button type="button" class="segmented__btn" [class.is-active]="incomeRange==='month'"
-            (click)="setIncomeRange('month')">Month</button>
+            (click)="setIncomeRange('month')">{{ 'DASHBOARD.MONTH' | translate }}</button>
           <button type="button" class="segmented__btn" [class.is-active]="incomeRange==='quarter'"
-            (click)="setIncomeRange('quarter')">Quarter</button>
+            (click)="setIncomeRange('quarter')">{{ 'DASHBOARD.QUARTER' | translate }}</button>
           <button type="button" class="segmented__btn" [class.is-active]="incomeRange==='year'"
-            (click)="setIncomeRange('year')">Year</button>
+            (click)="setIncomeRange('year')">{{ 'DASHBOARD.YEAR' | translate }}</button>
         </div>
       </div>
 
@@ -182,7 +182,7 @@
     <div class="panel">
       <div class="panel__head">
         <div>
-          <div class="panel__title">Delivery Performance</div>
+          <div class="panel__title">{{ 'DASHBOARD.DELIVERY_PERFORMANCE' | translate }}</div>
         </div>
       </div>
 
@@ -196,14 +196,14 @@
           <!-- Figma-like center content -->
           <div class="delivery-radial__center">
             <div class="delivery-radial__value">{{ completedPercent }}%</div>
-            <div class="delivery-radial__label">Completed</div>
+            <div class="delivery-radial__label">{{ 'DASHBOARD.COMPLETED' | translate }}</div>
 
             <div class="delivery-radial__legend">
               <div class="delivery-radial__legend-item">
-                <span class="dot dot--primary"></span> Completed
+                <span class="dot dot--primary"></span> {{ 'DASHBOARD.COMPLETED' | translate }}
               </div>
               <div class="delivery-radial__legend-item">
-                <span class="dot dot--soft"></span> In Progress
+                <span class="dot dot--soft"></span> {{ 'DASHBOARD.IN_PROGRESS' | translate }}
               </div>
             </div>
           </div>
@@ -214,18 +214,18 @@
     <!-- Pending Invoices -->
     <div class="panel panel--wide">
       <div class="panel__head panel__head--split">
-        <div class="panel__title">Pending Invoices</div>
-        <a class="panel__link" role="button" (click)="goToInvoices()">View All</a>
+        <div class="panel__title">{{ 'DASHBOARD.PENDING_INVOICES' | translate }}</div>
+        <a class="panel__link" role="button" (click)="goToInvoices()">{{ 'COMMON.VIEW_ALL' | translate }}</a>
       </div>
 
       <div>
         <div class="table-card">
 
           <div class="table__row table__row--head">
-            <div>INVOICE NO.</div>
-            <div>CUSTOMER</div>
-            <div class="text-end">AMOUNT</div>
-            <div class="text-end">DUE DATE</div>
+            <div>{{ 'DASHBOARD.INVOICE_NO' | translate }}</div>
+            <div>{{ 'DASHBOARD.CUSTOMER' | translate }}</div>
+            <div class="text-end">{{ 'DASHBOARD.AMOUNT' | translate }}</div>
+            <div class="text-end">{{ 'DASHBOARD.DUE_DATE' | translate }}</div>
           </div>
 
           <div class="table-scroll">
@@ -239,7 +239,7 @@
             }
             @else {
             <div class="p-3">
-              No data available.
+              {{ 'COMMON.NO_DATA' | translate }}
             </div>
             }
           </div>
@@ -251,7 +251,7 @@
     <!-- Top Items -->
     <div class="panel">
       <div class="panel__head">
-        <div class="panel__title">Top Items</div>
+        <div class="panel__title">{{ 'DASHBOARD.TOP_ITEMS' | translate }}</div>
       </div>
 
       <div class="panel__body">
@@ -274,8 +274,8 @@
         </div>
         }
         @else {
-        <div>
-          No data available.
+        <div class="p-3">
+          {{ 'COMMON.NO_DATA' | translate }}
         </div>
         }
       </div>

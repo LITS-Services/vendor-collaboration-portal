@@ -11,6 +11,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { finalize } from 'rxjs/operators';
 import Swal from 'sweetalert2';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-vendor-purchase-order-details',
@@ -54,8 +55,22 @@ export class PurchaseOrderDetailsComponent implements OnInit {
     private router: Router,
     public cdr: ChangeDetectorRef,
     private spinner: NgxSpinnerService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private translate: TranslateService
   ) { }
+
+  getTranslatedModalTitle(): string {
+    if (this.modalTitle === 'Shipment Detail' || this.modalTitle === 'Shipment Details') {
+      return this.translate.instant('PO_MODULE.SHIPMENT_DETAILS') || this.modalTitle;
+    }
+    if (this.modalTitle === 'Goods Receipt Note') {
+      return this.translate.instant('PO_MODULE.GOODS_RECEIPT_NOTE') || this.modalTitle;
+    }
+    if (this.modalTitle === 'Invoice Detail' || this.modalTitle === 'Invoice Details') {
+      return this.translate.instant('PO_MODULE.INVOICE_DETAILS') || this.modalTitle;
+    }
+    return this.modalTitle;
+  }
 
   ngOnInit(): void {
     this.poId = Number(this.route.snapshot.paramMap.get('id'));

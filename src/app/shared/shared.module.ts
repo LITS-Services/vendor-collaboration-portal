@@ -57,6 +57,7 @@ import { HasPermissionDirective } from './auth/has-permission.directive';
         TranslateModule,
         FormsModule,
         ReactiveFormsModule,
+        PipeModule,
     ],
     imports: [
         RouterModule,

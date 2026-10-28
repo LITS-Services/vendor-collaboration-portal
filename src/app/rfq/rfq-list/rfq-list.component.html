@@ -2,23 +2,23 @@
   <div class="row mb-3">
     <div class="col-12 d-flex align-items-center justify-content-between">
       <!-- Filter Icon Button -->
-        <h5 class="mb-0">Request For Quotations</h5>
+      <h5 class="mb-0">{{ 'RFQ_MODULE.REQUEST_FOR_QUOTATION' | translate }}</h5>
 
       <div ngbDropdown class="d-inline-block">
-        <button class="btn btn-outline-secondary" id="filterDropdown" ngbDropdownToggle ngbTooltip="Filter"
+        <button class="btn btn-outline-secondary" id="filterDropdown" ngbDropdownToggle [ngbTooltip]="'COMMON.FILTER' | translate"
           container="body">
           <i class="bi bi-sliders"></i>
         </button>
 
         <div ngbDropdownMenu class="dropdown-menu-end p-3 shadow filter-dropdown" aria-labelledby="filterDropdown"
           style="min-width: 220px;" placement="bottom-end" container="body">
-          <label for="statusFilter" class="form-label fw-semibold mb-2">Status:</label>
+          <label for="statusFilter" class="form-label fw-semibold mb-2">{{ 'COMMON.STATUS' | translate }}:</label>
           <select id="statusFilter" [(ngModel)]="selectedStatus" (change)="loadQuotations()"
             class="form-select form-select-sm">
-            <option value="">All</option>
-            <option value="New">New</option>
-            <option value="InProgress">In Progress</option>
-            <option value="Completed">Completed</option>
+            <option value="">{{ 'STATUS.ALL' | translate }}</option>
+            <option value="New">{{ 'STATUS.NEW' | translate }}</option>
+            <option value="InProgress">{{ 'STATUS.IN_PROGRESS' | translate }}</option>
+            <option value="Completed">{{ 'STATUS.COMPLETED' | translate }}</option>
           </select>
         </div>
       </div>
@@ -27,19 +27,19 @@
 
   <div class="row">
     <div class="col-12">
-      <div  class="pr-table-wrapper" appDatatableAutoResize [datatable]="datatable">
+      <div class="pr-table-wrapper" appDatatableAutoResize [datatable]="datatable">
       <ngx-datatable #datatable class="bootstrap core-bootstrap" [rows]="quotations"
-        [columnMode]="'force'" [headerHeight]="42" [footerHeight]="50" [scrollbarH]="isMobile"  [rowHeight]="42" [limit]="10">
+        [columnMode]="'force'" [headerHeight]="42" [footerHeight]="50" [scrollbarH]="isMobile" [rowHeight]="42" [limit]="10">
       
         <!-- Sr. No Column -->
-        <ngx-datatable-column name="Sr. No." [width]="50" [sortable]="false">
+        <ngx-datatable-column [name]="'COMMON.SR_NO' | translate" [width]="50" [sortable]="false">
           <ng-template let-rowIndex="rowIndex" ngx-datatable-cell-template>
             <span class="ms-1">{{ rowIndex + 1 }}</span>
           </ng-template>
         </ngx-datatable-column>
       
         <!-- RFQ No -->
-        <ngx-datatable-column name="RFQ No." prop="rfqNo" [flexGrow]="2" [minWidth]="140" [sortable]="false">
+        <ngx-datatable-column [name]="'COMMON.RFQ_NO' | translate" prop="rfqNo" [flexGrow]="2" [minWidth]="140" [sortable]="false">
           <ng-template let-row="row" ngx-datatable-cell-template>
             <a href="javascript:void(0)" (click)="openBidModal(row)">
               {{ row.rfqNo }}
@@ -48,46 +48,39 @@
         </ngx-datatable-column>
       
         <!-- Status -->
-              <ngx-datatable-column name="Status" prop="requestStatus" [sortable]="false">
-                <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
-                  <span class="status-pill" [ngClass]="getStatusClass(value)">
-                    {{ value }}
-                  </span>
-                </ng-template>
-              </ngx-datatable-column>
+        <ngx-datatable-column [name]="'COMMON.STATUS' | translate" prop="requestStatus" [sortable]="false">
+          <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+            <span class="status-pill" [ngClass]="getStatusClass(value)">
+              {{ value | statusTranslate }}
+            </span>
+          </ng-template>
+        </ngx-datatable-column>
       
         <!-- Start Date -->
-        <ngx-datatable-column name="Start Date" prop="startDate" [flexGrow]="1" [minWidth]="120" [sortable]="false">
+        <ngx-datatable-column [name]="'RFQ_MODULE.START_DATE' | translate" prop="startDate" [flexGrow]="1" [minWidth]="120" [sortable]="false">
           <ng-template let-row="row" ngx-datatable-cell-template>
             {{ row.startDate | date: 'yyyy-MM-dd' }}
           </ng-template>
         </ngx-datatable-column>
       
         <!-- End Date -->
-        <ngx-datatable-column name="End Date" prop="endDate"  [flexGrow]="1" [minWidth]="120" [sortable]="false">
+        <ngx-datatable-column [name]="'RFQ_MODULE.END_DATE' | translate" prop="endDate" [flexGrow]="1" [minWidth]="120" [sortable]="false">
           <ng-template let-row="row" ngx-datatable-cell-template>
             {{ row.endDate | date: 'yyyy-MM-dd' }}
           </ng-template>
         </ngx-datatable-column>
       
         <!-- Owner -->
-        <ngx-datatable-column name="Owner" prop="owner"  [flexGrow]="1" [minWidth]="120" [sortable]="false"></ngx-datatable-column>
-      
-        <!-- Total Amount -->
-        <!-- <ngx-datatable-column name="Total Amount" prop="totalAmount" [sortable]="false">
-                <ng-template let-row="row" ngx-datatable-cell-template>
-                  {{ row.totalAmount }}
-                </ng-template>
-              </ngx-datatable-column> -->
+        <ngx-datatable-column [name]="'RFQ_MODULE.OWNER' | translate" prop="owner" [flexGrow]="1" [minWidth]="120" [sortable]="false"></ngx-datatable-column>
       
         <!-- Action -->
-        <ngx-datatable-column name="Action" [sortable]="false"  [flexGrow]="1" minWidth="100" maxWidth="300" >
+        <ngx-datatable-column [name]="'COMMON.ACTION' | translate" [sortable]="false" [flexGrow]="1" minWidth="100" maxWidth="300">
           <ng-template ngx-datatable-cell-template let-row="row">
             <div class="d-flex justify-content-end w-100 pe-3 py-3">
               <button type="button" class="proposal-btn position-relative" (click)="openBidModal(row)"
-                ngbTooltip="View Proposal details" container="body">
+                [ngbTooltip]="'RFQ_MODULE.VIEW_PROPOSAL_DETAILS' | translate" container="body">
       
-                Proposal
+                {{ 'RFQ_MODULE.PROPOSAL' | translate }}
       
                 <span class="proposal-badge" *ngIf="row.qrItems?.length > 0">
                   {{ row.qrItems.length }}

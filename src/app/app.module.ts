@@ -38,14 +38,33 @@ import { responseHandlerInterceptor } from "./shared/interceptor/response-handle
 import { environment } from "environments/environment";
 import { AngularFireMessagingModule } from "@angular/fire/compat/messaging";
 
+import { Observable, of } from "rxjs";
+import { LanguageService, LanguageInterceptor } from "./core/language";
+import en from '../assets/i18n/en.json';
+import ar from '../assets/i18n/ar.json';
 
+export class BundledTranslateLoader implements TranslateLoader {
+  getTranslation(lang: string): Observable<any> {
+    const raw = (lang === 'ar' ? ar : en) as any;
+    const table = raw && raw.default ? raw.default : raw;
+    return of(table);
+  }
+}
 
+export function appLanguageInitializer(languageService: LanguageService) {
+  return () => {
+    try {
+      languageService.init();
+    } catch {
+      /* fallback */
+    }
+  };
+}
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
   wheelPropagation: false
 };
-
 
 @NgModule({
   declarations: [AppComponent, FullLayoutComponent, ContentLayoutComponent],
@@ -65,7 +84,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
-        useClass: TranslateHttpLoader
+        useClass: BundledTranslateLoader
       }
     }),
     GoogleMapsModule
@@ -77,10 +96,17 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
       useValue: { prefix: './assets/i18n/', suffix: '.json' }
     },
     DragulaService,
+    { provide: HTTP_INTERCEPTORS, useClass: LanguageInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: CsrfInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: HttpRetryTimeoutInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: responseHandlerInterceptor, multi: true },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: appLanguageInitializer,
+      deps: [LanguageService],
+      multi: true
+    },
     {
       provide: APP_INITIALIZER,
       useFactory: sessionInitializer,

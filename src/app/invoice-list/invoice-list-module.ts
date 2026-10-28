@@ -8,6 +8,8 @@ import { NgbAccordionModule, NgbDatepickerModule, NgbModule } from '@ng-bootstra
 import { AutoResizeDatatableDirective } from 'app/shared/directives/table-auto-resize.directive';
 import { DatatableAutoResizeDirective } from 'app/shared/directives/datatable-auto-resize.directive';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
+import { PipeModule } from 'app/shared/pipes/pipe.module';
 
 
 @NgModule({
@@ -15,6 +17,8 @@ import { FormsModule } from '@angular/forms';
   declarations: [InvoiceList],
   imports: [
     CommonModule,
+    TranslateModule,
+    PipeModule,
     InvoiceListRoutingModule,
     NgxDatatableModule,
     NgbAccordionModule,

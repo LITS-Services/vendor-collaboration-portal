@@ -5,37 +5,36 @@
             <!-- Header -->
             <div class="row mb-3">
                 <div class="col-md-12">
-                    <h4 class="heading">{{ title }}</h4>
+                    <h4 class="heading">{{ 'HISTORY_MODULE.PAYMENT_DETAILS' | translate }}</h4>
                 </div>
             </div>
 
             <ngx-datatable class="bootstrap core-bootstrap" [rows]="transformedRfqData"
-            [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50" [columns]="columns"
+            [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50"
             rowHeight="50" [limit]="15" [scrollbarH]="true" [loadingIndicator]="loading"
             [selected]="chkBoxSelected" [swapColumns]="false" [selectionType]="SelectionType.checkbox"
             (sort)="onSort($event)" (select)="customChkboxOnSelect($event)">
-            <ngx-datatable-column name="Sr. No." [resizeable]="false" [width]="30">
+            <ngx-datatable-column [name]="'COMMON.SR_NO' | translate" [resizeable]="false" [width]="30">
                 <ng-template let-rowIndex="rowIndex" let-value="value" ngx-datatable-cell-template>
                     <span>{{rowIndex + 1}}</span>
                 </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column name="Payment ID" prop="paymentID" >
+            <ngx-datatable-column [name]="'HISTORY_MODULE.PAYMENT_ID' | translate" prop="paymentID" >
             </ngx-datatable-column>
-            <ngx-datatable-column name="Payment Method" prop="paymentMethod" >
+            <ngx-datatable-column [name]="'PO_MODULE.PAYMENT_METHOD' | translate" prop="paymentMethod" >
             </ngx-datatable-column>
-            <ngx-datatable-column name="Customer Email" prop="customerEmail" >
+            <ngx-datatable-column [name]="'HISTORY_MODULE.CUSTOMER_EMAIL' | translate" prop="customerEmail" >
             </ngx-datatable-column>
-            <ngx-datatable-column name="Status" prop="status" >
+            <ngx-datatable-column [name]="'COMMON.STATUS' | translate" prop="status" >
             </ngx-datatable-column>
-            <ngx-datatable-column name="Date/Time" prop="date" >
+            <ngx-datatable-column [name]="'HISTORY_MODULE.DATE_TIME' | translate" prop="date" >
             </ngx-datatable-column>
-            <ngx-datatable-column name="Amount" prop="amount" >
+            <ngx-datatable-column [name]="'COMMON.AMOUNT' | translate" prop="amount" >
             </ngx-datatable-column>
-            <ngx-datatable-column name="View"  prop="action"
+            <ngx-datatable-column [name]="'COMMON.VIEW' | translate" prop="action"
             [sortable]="false">
             <ng-template let-row="row" ngx-datatable-cell-template>
-                <button class="btn btn-sm"
-                >
+                <button class="btn btn-sm">
                 <i class="ft-eye"></i>
               </button>
               </ng-template>

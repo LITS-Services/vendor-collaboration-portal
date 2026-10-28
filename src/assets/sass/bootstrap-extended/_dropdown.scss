@@ -14,7 +14,7 @@
       }
       .dropdown-item {
           width: auto;
-          &:active {
+          &:not(.text-danger):not(.logout-item):active {
               background-color: #249D57 !important;
           }
       }

@@ -17,12 +17,12 @@
 
             <!-- internal route -->
             <a *ngIf="!item.isExternalLink" [routerLink]="[item.path]">
-              {{ item.title }}
+              {{ item.title | translate }}
             </a>
 
             <!-- external link -->
             <a *ngIf="item.isExternalLink" [href]="item.path" target="_blank" rel="noopener">
-              {{ item.title }}
+              {{ item.title | translate }}
             </a>
           </li>
         </ul>
@@ -30,6 +30,29 @@
 
       <!-- Right: Actions -->
       <div class="vp-actions">
+        <!-- Language Switcher Dropdown -->
+        <div class="lang-dropdown-wrapper" ngbDropdown [display]="'dynamic'" (openChange)="langOpen = $event">
+          <button type="button" class="icon-btn lang-dropdown-toggle" ngbDropdownToggle
+            [disabled]="isSwitchingLanguage" [title]="'SETTINGS.LANGUAGE' | translate">
+            <i class="ft-globe lang-globe-icon"></i>
+            <span class="lang-code-text">{{ currentLang === 'ar' ? 'العربية' : 'English' }}</span>
+            <i class="ft-chevron-down lang-chevron-icon" [class.rotate]="langOpen"></i>
+          </button>
+
+          <div class="dropdown-menu dropdown-menu-right lang-dropdown-menu" ngbDropdownMenu>
+            <button type="button" class="dropdown-item lang-item" [class.active]="currentLang === 'en'"
+              [disabled]="isSwitchingLanguage" (click)="switchLanguage('en')">
+              <span class="lang-name">English</span>
+              <i *ngIf="currentLang === 'en'" class="ft-check lang-check-icon"></i>
+            </button>
+            <button type="button" class="dropdown-item lang-item" [class.active]="currentLang === 'ar'"
+              [disabled]="isSwitchingLanguage" (click)="switchLanguage('ar')">
+              <span class="lang-name">العربية</span>
+              <i *ngIf="currentLang === 'ar'" class="ft-check lang-check-icon"></i>
+            </button>
+          </div>
+        </div>
+
         <button class="icon-btn" appToggleFullscreen (click)="ToggleClass()">
           <i class="{{ toggleClass }}"></i>
         </button>
@@ -45,7 +68,7 @@
           <div class="notif-panel" *ngIf="notifOpen" [class.show]="notifOpen" (click)="$event.stopPropagation()">
             <div class="panel-header">
               <div class="panel-row">
-                <span class="title">Notifications</span>
+                <span class="title">{{ 'NAV.NOTIFICATIONS' | translate }}</span>
                 <span *ngIf="notificationCount > 0" class="count-div">{{notificationCount}}</span>
               </div>
               <button class="btn" (click)="closePanel()" aria-label="Close">
@@ -69,33 +92,33 @@
               </ng-container>
 
               <ng-template #emptyState>
-                <div class="empty p-2">No Notifcation: You're all caught up</div>
+                <div class="empty p-2">{{ 'NAV.NO_NOTIFICATIONS' | translate }}</div>
               </ng-template>
             </div>
 
             <div class="panel-footer">
-              <button class="btn btn-markasread" (click)="markAllAsRead()"><i class="ft ft-check ml-2"></i>Mark all as
-                read</button>
-              <button class="btn btn-clearall" (click)="clearAllNotification()"><i class="ft ft-trash-2 ml-2"></i>Clear
-                All</button>
+              <button class="btn btn-markasread" (click)="markAllAsRead()"><i class="ft ft-check ml-2"></i>{{ 'NAV.MARK_ALL_AS_READ' | translate }}</button>
+              <button class="btn btn-clearall" (click)="clearAllNotification()"><i class="ft ft-trash-2 ml-2"></i>{{ 'NAV.CLEAR_ALL' | translate }}</button>
             </div>
           </div>
         </div>
-        <!-- User dropdown (kept from your code) -->
+
+        <!-- User dropdown -->
         <div class="dropdown" container="body" ngbDropdown placement="bottom-right">
           <a class="user-btn" ngbDropdownToggle>
-            <!-- <span class="user-name d-none d-md-inline">{{ username }}</span> -->
             <img class="avatar" [ngbTooltip]="username"
               [ngClass]="{ 'default-avatar': profilePicture === 'assets/img/profile/user.png' || !profilePicture }"
               [src]="profilePicture || 'assets/img/profile/user.png'" alt="avatar" height="34" width="34" />
           </a>
-          <div class="dropdown-menu dropdown-menu-right" ngbDropdownMenu>
-            <a class="dropdown-item" routerLink="/pages/profile">
-              <i class="ft-edit mr-3"></i> Edit Profile
+          <div class="dropdown-menu dropdown-menu-right user-profile-menu" ngbDropdownMenu>
+            <a class="dropdown-item user-profile-item" routerLink="/pages/profile">
+              <i class="ft-edit"></i>
+              <span>{{ 'PROFILE.VIEW_PROFILE' | translate }}</span>
             </a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" (click)="logout()">
-              <i class="ft-power mr-3"></i> Logout
+            <a class="dropdown-item user-profile-item text-danger logout-item" role="button" (click)="logout()">
+              <i class="ft-power"></i>
+              <span>{{ 'AUTH.LOGOUT' | translate }}</span>
             </a>
           </div>
         </div>
@@ -123,16 +146,17 @@
 
     <!-- Right: circle icon buttons + avatar -->
     <div class="vp-mobile-actions">
+      <!-- Language toggle in mobile bar -->
+      <button class="icon-circle" [disabled]="isSwitchingLanguage" (click)="switchLanguage(currentLang === 'en' ? 'ar' : 'en')" [title]="currentLang === 'en' ? 'العربية' : 'EN'">
+        <i class="ft-globe"></i>
+      </button>
+
       <button class="icon-circle" aria-label="Search">
         <i class="ft-search"></i>
       </button>
       <button class="icon-circle" aria-label="Filters">
         <i class="ft-sliders"></i>
       </button>
-      <!-- 
-      <button class="icon-circle"  aria-label="Notifications">
-        <i class="ft-bell"></i>
-      </button> -->
 
       <div class="notification-wrapper" #notifRoot>
         <button class="icon-circle notification-bell" (click)="$event.stopPropagation(); togglePanel()"
@@ -145,7 +169,7 @@
         <div class="notif-panel" *ngIf="notifOpen" [class.show]="notifOpen" (click)="$event.stopPropagation()">
           <div class="panel-header">
             <div class="panel-row">
-              <span class="title">Notifications</span>
+              <span class="title">{{ 'NAV.NOTIFICATIONS' | translate }}</span>
               <span *ngIf="notificationCount > 0" class="count-div">{{notificationCount}}</span>
             </div>
             <button class="btn" (click)="closePanel()" aria-label="Close">
@@ -168,13 +192,9 @@
             </ng-container>
 
             <ng-template #emptyState>
-              <div class="empty p-2">No Notifcation: You're all caught up</div>
+              <div class="empty p-2">{{ 'NAV.NO_NOTIFICATIONS' | translate }}</div>
             </ng-template>
           </div>
-
-          <!-- <div class="panel-footer">
-                                    <a class="view-all" [routerLink]="['/notifications']">View all</a>
-                                  </div> -->
         </div>
       </div>
 
@@ -184,13 +204,15 @@
           <img class="avatar" [src]="profilePicture || 'assets/img/portrait/small/avatar-s-1.png'" alt="avatar"
             height="34" width="34" />
         </a>
-        <div class="dropdown-menu dropdown-menu-right" ngbDropdownMenu>
-          <a class="dropdown-item" routerLink="/pages/profile">
-            <i class="ft-edit mr-2"></i> Edit Profile
+        <div class="dropdown-menu dropdown-menu-right user-profile-menu" ngbDropdownMenu>
+          <a class="dropdown-item user-profile-item" routerLink="/pages/profile">
+            <i class="ft-edit"></i>
+            <span>{{ 'PROFILE.VIEW_PROFILE' | translate }}</span>
           </a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" (click)="logout()">
-            <i class="ft-power mr-2"></i> Logout
+          <a class="dropdown-item user-profile-item text-danger logout-item" role="button" (click)="logout()">
+            <i class="ft-power"></i>
+            <span>{{ 'AUTH.LOGOUT' | translate }}</span>
           </a>
         </div>
       </div>

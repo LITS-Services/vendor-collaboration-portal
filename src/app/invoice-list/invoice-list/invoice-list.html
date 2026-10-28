@@ -1,90 +1,90 @@
 <section>
-      <div class="row">
-        <div class="col-12">
+  <div class="row">
+    <div class="col-12">
 
-  <div class="row mb-3">
-    <div class="col-md-12 d-flex align-items-center justify-content-between">
-      <h5 class="mb-0">Invoices</h5>
-    
-      <div ngbDropdown class="d-inline-block">
-        <button class="btn btn-outline-secondary" id="filterDropdown" ngbDropdownToggle ngbTooltip="Filter"
-          container="body">
-          <i class="bi bi-sliders"></i>
-        </button>
-    
-        <div ngbDropdownMenu class="dropdown-menu-end p-3 shadow filter-dropdown" aria-labelledby="filterDropdown"
-          style="min-width: 220px;" placement="bottom-end" container="body">
-          <label for="statusFilter" class="form-label fw-semibold mb-2">Status:</label>
-          <select id="statusFilter" [(ngModel)]="selectedStatus" (change)="loadInvoices()"
-            class="form-select form-select-sm">
-            <option value="">All</option>
-            <option value="Approved for Payment">Approved for Payment</option>
-            <option value="Pending for Payment">Pending for Payment</option>
-            <option value="Paid">Paid</option>
-          </select>
+      <div class="row mb-3">
+        <div class="col-md-12 d-flex align-items-center justify-content-between">
+          <h5 class="mb-0">{{ 'INVOICE_MODULE.TITLE' | translate }}</h5>
+
+          <div ngbDropdown class="d-inline-block">
+            <button class="btn btn-outline-secondary" id="filterDropdown" ngbDropdownToggle [ngbTooltip]="'INVOICE_MODULE.FILTER' | translate"
+              container="body">
+              <i class="bi bi-sliders"></i>
+            </button>
+
+            <div ngbDropdownMenu class="dropdown-menu-end p-3 shadow filter-dropdown" aria-labelledby="filterDropdown"
+              style="min-width: 220px;" placement="bottom-end" container="body">
+              <label for="statusFilter" class="form-label fw-semibold mb-2">{{ 'INVOICE_MODULE.STATUS' | translate }}</label>
+              <select id="statusFilter" [(ngModel)]="selectedStatus" (change)="loadInvoices()"
+                class="form-select form-select-sm">
+                <option value="">{{ 'STATUS.ALL' | translate }}</option>
+                <option value="Approved for Payment">{{ 'STATUS.APPROVED_FOR_PAYMENT' | translate }}</option>
+                <option value="Pending for Payment">{{ 'STATUS.PENDING_FOR_PAYMENT' | translate }}</option>
+                <option value="Paid">{{ 'STATUS.PAID' | translate }}</option>
+              </select>
+            </div>
+          </div>
         </div>
       </div>
+
+      <ngx-datatable #datatable class="bootstrap core-bootstrap" [rows]="invoices" [columnMode]="'force'"
+        [headerHeight]="42" [footerHeight]="50" [scrollbarH]="false" [rowHeight]="42" [loadingIndicator]="loading"
+        [count]="totalItems" [offset]="query.currentPage - 1" [limit]="query.pageSize" (page)='onPageChange($event)'>
+
+        <!-- Sr. No Column -->
+        <ngx-datatable-column [name]="'COMMON.SR_NO' | translate" [width]="50" [sortable]="false" [maxWidth]="100">
+          <ng-template let-rowIndex="rowIndex" ngx-datatable-cell-template>
+            <span class="ms-1">{{ rowIndex + 1 }}</span>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <!-- Invoice No -->
+        <ngx-datatable-column [name]="'INVOICE_MODULE.INVOICE_NO' | translate" prop="invoiceNo" [flexGrow]="1" [minWidth]="140"
+          [sortable]="false"></ngx-datatable-column>
+
+        <!-- Status -->
+        <ngx-datatable-column [name]="'COMMON.STATUS' | translate" prop="requestStatus" [flexGrow]="1" [minWidth]="200" [sortable]="false">
+          <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
+            <span class="status-pill" [ngClass]="getStatusClass(value)">
+              {{ value | statusTranslate }}
+            </span>
+          </ng-template>
+        </ngx-datatable-column>
+
+        <!-- PO No -->
+        <ngx-datatable-column [name]="'COMMON.PO_NO' | translate" prop="purchaseOrderNo" [flexGrow]="1" [minWidth]="120"
+          [sortable]="false"></ngx-datatable-column>
+
+        <!-- Vendor -->
+        <ngx-datatable-column [name]="'COMMON.ENTITY' | translate" prop="entityName" [flexGrow]="1" [minWidth]="120"
+          [sortable]="false"></ngx-datatable-column>
+
+        <!-- Invoice Date -->
+        <ngx-datatable-column [name]="'INVOICE_MODULE.INVOICE_DATE' | translate" prop="invoiceDate" [flexGrow]="1" [minWidth]="120"
+          [sortable]="false">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.invoiceDate | date: 'yyyy-MM-dd' }}
+          </ng-template>
+        </ngx-datatable-column>
+
+        <!-- Due Date -->
+        <ngx-datatable-column [name]="'INVOICE_MODULE.DUE_DATE' | translate" prop="dueDate" [flexGrow]="1" [minWidth]="50" [sortable]="false">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.dueDate | date: 'yyyy-MM-dd' }}
+          </ng-template>
+        </ngx-datatable-column>
+
+        <!-- Action -->
+        <ngx-datatable-column [name]="'COMMON.ACTION' | translate" [sortable]="false" [flexGrow]="1" minWidth="100" maxWidth="200">
+          <ng-template ngx-datatable-cell-template let-row="row">
+            <button class="proposal-btn" (click)="downloadInvoice(row.id, row.invoiceNo)">
+              {{ 'COMMON.DOWNLOAD' | translate }}
+            </button>
+          </ng-template>
+        </ngx-datatable-column>
+
+      </ngx-datatable>
     </div>
   </div>
-
-        <ngx-datatable #datatable class="bootstrap core-bootstrap" [rows]="invoices" [columnMode]="'force'"
-          [headerHeight]="42" [footerHeight]="50" [scrollbarH]="false" [rowHeight]="42" [loadingIndicator]="loading"
-          [count]="totalItems" [offset]="query.currentPage - 1" [limit]="query.pageSize" (page)='onPageChange($event)'>
-
-          <!-- Sr. No Column -->
-          <ngx-datatable-column name="Sr. No." [width]="50" [sortable]="false" [maxWidth]="100">
-            <ng-template let-rowIndex="rowIndex" ngx-datatable-cell-template>
-              <span class="ms-1">{{ rowIndex + 1 }}</span>
-            </ng-template>
-          </ngx-datatable-column>
-
-          <!-- Invoice No -->
-          <ngx-datatable-column name="Invoice No" prop="invoiceNo" [flexGrow]="1" [minWidth]="140"
-            [sortable]="false"></ngx-datatable-column>
-
-          <!-- Status -->
-          <ngx-datatable-column name="Status" prop="requestStatus" [flexGrow]="1" [minWidth]="200" [sortable]="false">
-            <ng-template ngx-datatable-cell-template let-row="row" let-value="value">
-              <span class="status-pill" [ngClass]="getStatusClass(value)">
-                {{ value }}
-              </span>
-            </ng-template>
-          </ngx-datatable-column>
-
-          <!-- PO No -->
-          <ngx-datatable-column name="PO No" prop="purchaseOrderNo" [flexGrow]="1" [minWidth]="120"
-            [sortable]="false"></ngx-datatable-column>
-
-          <!-- Vendor -->
-          <ngx-datatable-column name="Entity" prop="entityName" [flexGrow]="1" [minWidth]="120"
-            [sortable]="false"></ngx-datatable-column>
-
-          <!-- Invoice Date -->
-          <ngx-datatable-column name="Invoice Date" prop="invoiceDate" [flexGrow]="1" [minWidth]="120"
-            [sortable]="false">
-            <ng-template let-row="row" ngx-datatable-cell-template>
-              {{ row.invoiceDate | date: 'yyyy-MM-dd' }}
-            </ng-template>
-          </ngx-datatable-column>
-
-          <!-- Due Date -->
-          <ngx-datatable-column name="Due Date" prop="dueDate" [flexGrow]="1" [minWidth]="50" [sortable]="false">
-            <ng-template let-row="row" ngx-datatable-cell-template>
-              {{ row.dueDate | date: 'yyyy-MM-dd' }}
-            </ng-template>
-          </ngx-datatable-column>
-
-          <!-- Action -->
-          <ngx-datatable-column name="Action" [sortable]="false" [flexGrow]="1" minWidth="100" maxWidth="200">
-            <ng-template ngx-datatable-cell-template let-row="row">
-              <button class="proposal-btn" (click)="downloadInvoice(row.id, row.invoiceNo)">
-                Download
-              </button>
-            </ng-template>
-          </ngx-datatable-column>
-
-        </ngx-datatable>
-      </div>
-    </div>
 
 </section>

@@ -3,7 +3,7 @@
   <!-- Header -->
   <div class="history__top">
     <div class="history__title">
-      <h1 class="m-0">History</h1>
+      <h1 class="m-0">{{ 'HISTORY_MODULE.TITLE' | translate }}</h1>
     </div>
   </div>
 
@@ -16,12 +16,12 @@
       </div>
 
       <div class="stat-card__main">
-        <div class="stat-card__label">Total RFQ</div>
+        <div class="stat-card__label">{{ 'HISTORY_MODULE.TOTAL_RFQ' | translate }}</div>
         <div class="stat-card__value">{{ formatNumber(metrics.totalRfqs) }}</div>
       </div>
 
       <div class="stat-card__footer">
-        <div class="stat-card__details" (click)="viewAllBids()">View details</div>
+        <div class="stat-card__details" (click)="viewAllBids()">{{ 'COMMON.VIEW_DETAILS' | translate }}</div>
         <div class="stat-card__arrow">
           <i class="ft-arrow-right" (click)="viewAllBids()"></i>
         </div>
@@ -35,12 +35,12 @@
       </div>
 
       <div class="stat-card__main">
-        <div class="stat-card__label">Total Item Sold</div>
+        <div class="stat-card__label">{{ 'HISTORY_MODULE.TOTAL_ITEMS_SOLD' | translate }}</div>
         <div class="stat-card__value">{{ formatNumber(metrics.totalItemsSold) }}</div>
       </div>
 
       <div class="stat-card__footer">
-        <div class="stat-card__details" (click)="viewAllSoldItems()">View details</div>
+        <div class="stat-card__details" (click)="viewAllSoldItems()">{{ 'COMMON.VIEW_DETAILS' | translate }}</div>
         <div class="stat-card__arrow">
           <i class="ft-arrow-right" (click)="viewAllSoldItems()"></i>
         </div>
@@ -54,19 +54,19 @@
       </div>
 
       <div class="stat-card__main">
-        <div class="stat-card__label">Total Purchase Order</div>
+        <div class="stat-card__label">{{ 'HISTORY_MODULE.TOTAL_PURCHASE_ORDER' | translate }}</div>
         <div class="stat-card__value">{{ formatNumber(metrics.totalPurchaseOrders) }}</div>
       </div>
 
       <div class="stat-card__footer stat-card__footer--chips">
         <div class="po-chip po-chip--success">
           <span class="po-chip__dot po-chip__dot--green"></span>
-          {{ formatNumber(metrics.poSuccessCount) }} Successful
+          {{ formatNumber(metrics.poSuccessCount) }} {{ 'HISTORY_MODULE.SUCCESSFUL' | translate }}
         </div>
       
         <div class="po-chip po-chip--danger">
           <span class="po-chip__dot po-chip__dot--red"></span>
-          {{ formatNumber(metrics.poRejectedCount) }} Rejected
+          {{ formatNumber(metrics.poRejectedCount) }} {{ 'HISTORY_MODULE.REJECTED' | translate }}
         </div>
       </div>
     </a>
@@ -75,19 +75,18 @@
   <!-- Recent Bids History (full width) -->
   <div class="panel panel--full panel--bids">
     <div class="panel__head">
-      <div class="panel__title">Recent Bids History</div>
-      <a class="panel__link" role="button" (click)="viewAllBids()">View all</a>
+      <div class="panel__title">{{ 'HISTORY_MODULE.RECENT_BIDS_HISTORY' | translate }}</div>
+      <a class="panel__link" role="button" (click)="viewAllBids()">{{ 'COMMON.VIEW_ALL' | translate }}</a>
     </div>
 
     <div class="panel__body panel__body--bids">
       <div class="table-card table-card--bids">
         <div class="table__row table__row--head table__row--bids">
-          <div>ITEM CODE</div>
-          <div>RFQ NO.</div>
-          <!-- <div>VENDOR NAME</div> -->
-          <div>BID AMOUNT</div>
-          <div>END DATE</div>
-          <div>STATUS</div>
+          <div>{{ 'HISTORY_MODULE.ITEM_CODE' | translate }}</div>
+          <div>{{ 'COMMON.RFQ_NO' | translate }}</div>
+          <div>{{ 'HISTORY_MODULE.BID_AMOUNT' | translate }}</div>
+          <div>{{ 'RFQ_MODULE.END_DATE' | translate }}</div>
+          <div>{{ 'COMMON.STATUS' | translate }}</div>
         </div>
 
         <div class="table-scroll table-scroll--bids">
@@ -96,7 +95,6 @@
                *ngFor="let row of recentBids">
             <div class="mono">{{ row.itemCode }}</div>
             <div class="mono">{{ row.rfqNo }}</div>
-            <!-- <div>{{ row.vendorName }}</div> -->
             <div class="mono">
               {{ formatCurrency(row.biddingAmount) }}
             </div>
@@ -106,14 +104,14 @@
             <div class="mono">
               <span class="chip"
                     [ngClass]="mapStatusKey(row.status)">
-                {{ row.status }}
+                {{ row.status | statusTranslate }}
               </span>
             </div>
           </div>
         }
         @else {
           <div class="p-3">
-            No recent bids
+            {{ 'HISTORY_MODULE.NO_RECENT_BIDS' | translate }}
           </div>
         }
         </div>
@@ -127,19 +125,18 @@
     <!-- Purchase Order Invoice -->
     <div class="panel panel--wide">
       <div class="panel__head">
-        <div class="panel__title">Purchase Order Invoice</div>
-        <a class="panel__link" role="button" (click)="viewAllInvoices()">View all</a>
+        <div class="panel__title">{{ 'HISTORY_MODULE.PO_INVOICE' | translate }}</div>
+        <a class="panel__link" role="button" (click)="viewAllInvoices()">{{ 'COMMON.VIEW_ALL' | translate }}</a>
       </div>
 
       <div class="panel__body">
         <div class="table-card table-card--invoice">
           <div class="table__row table__row--head table__row--invoice">
-            <div>INVOICE NO.</div>
-            <!-- <div>PO NO.</div> -->
-            <div>ENTITY</div>
-            <div class="text-center">TOTAL AMOUNT</div>
-            <div class="text-center">STATUS</div>
-            <div class="text-end">DUE DATE</div>
+            <div>{{ 'INVOICE_MODULE.INVOICE_NO' | translate }}</div>
+            <div>{{ 'COMMON.ENTITY' | translate }}</div>
+            <div class="text-center">{{ 'COMMON.TOTAL_AMOUNT' | translate }}</div>
+            <div class="text-center">{{ 'COMMON.STATUS' | translate }}</div>
+            <div class="text-end">{{ 'PO_MODULE.DUE_DATE' | translate }}</div>
           </div>
 
           <div class="table-scroll table-scroll--invoice">
@@ -147,13 +144,12 @@
             <div class="table__row table__row--invoice"
                  *ngFor="let inv of vendorDashboardAndHistoryInvoices">
               <div class="mono">{{ inv.invoiceNo }}</div>
-              <!-- <div>{{ inv.purchaseOrderNo }}</div> -->
               <div>{{ inv.entityName }}</div>
               <div class="text-center">{{ formatCurrency(inv.totalAmount) }}</div>
               <div class="text-center">
                 <span class="chip"
                       [ngClass]="mapStatusKey(inv.status)">
-                  {{ inv.status }}
+                  {{ inv.status | statusTranslate }}
                 </span>
               </div>
               <div class="text-end">
@@ -163,7 +159,7 @@
           }
           @else {
             <div class="p-3" >
-              No data available.
+              {{ 'COMMON.NO_DATA' | translate }}
             </div>
           }
           </div>
@@ -175,8 +171,7 @@
     <!-- Vendor Ratings -->
    <div class="panel panel--side">
   <div class="panel__head">
-    <div class="panel__title">Vendor Ratings</div>
-    <!-- <a class="panel__link" role="button" (click)="viewAllVendors()">View all</a> -->
+    <div class="panel__title">{{ 'PO_MODULE.VENDOR_RATING' | translate }}</div>
   </div>
 
   <div class="panel__body panel__body--vendor">

@@ -1,3 +1,4 @@
+import { TranslateModule } from '@ngx-translate/core';
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -42,6 +43,7 @@ import { ShipmentLinesModalComponent } from './purchase-order-details/shipment-l
     ShipmentLinesModalComponent
   ],
   imports: [
+    TranslateModule,
     CommonModule,
     PurchaseOrderRoutingModule,
     NgbModule,

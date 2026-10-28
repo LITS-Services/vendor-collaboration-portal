@@ -1,11 +1,32 @@
 <section id="login" class="container-fluid">
+    <div class="auth-lang-switcher" ngbDropdown [display]="'dynamic'" (openChange)="langOpen = $event">
+        <button type="button" class="auth-lang-dropdown-toggle" ngbDropdownToggle
+            [title]="'SETTINGS.LANGUAGE' | translate">
+            <i class="ft-globe auth-lang-globe-icon"></i>
+            <span class="auth-lang-text">{{ currentLang === 'ar' ? 'العربية' : 'English' }}</span>
+            <i class="ft-chevron-down auth-lang-chevron-icon" [class.rotate]="langOpen"></i>
+        </button>
+
+        <div class="dropdown-menu dropdown-menu-right auth-lang-dropdown-menu" ngbDropdownMenu>
+            <button type="button" class="dropdown-item auth-lang-item" [class.active]="currentLang === 'en'"
+                (click)="switchLanguage('en')">
+                <span class="auth-lang-name">English</span>
+                <i *ngIf="currentLang === 'en'" class="ft-check auth-lang-check-icon"></i>
+            </button>
+            <button type="button" class="dropdown-item auth-lang-item" [class.active]="currentLang === 'ar'"
+                (click)="switchLanguage('ar')">
+                <span class="auth-lang-name">العربية</span>
+                <i *ngIf="currentLang === 'ar'" class="ft-check auth-lang-check-icon"></i>
+            </button>
+        </div>
+    </div>
     <div class="row register-container m-0">
         <div class="col-md-6 d-none d-md-flex align-items-center justify-content-center bg-image">
             <div class="icon-container position-absolute">
                 <img src="/assets/img/LITS Procurement and Sourcing.png" alt="Icon" class="icon-img">
             </div>
             <div class="content text-white text-center">
-                <h1 class="text-white vendor-title">Procurement and Sourcing Portal</h1>
+                <h1 class="text-white vendor-title">{{ 'AUTH.PORTAL_TITLE' | translate }}</h1>
                 <div class="row mt-4 features justify-content-center">
 
                     <div class="col-md-5 p-2 d-flex align-items-start gap-3">
@@ -14,9 +35,8 @@
                         </div>
 
                         <div class="text-justify">
-                            <h4 class="text-white mt-0 mb-1 sub-heading">Seamless UI</h4>
-                            <p class="mb-0 heading-description">Intuitive and Responsive Interfaces<br>on all devices
-                            </p>
+                            <h4 class="text-white mt-0 mb-1 sub-heading">{{ 'AUTH.FEATURE_SEAMLESS_UI' | translate }}</h4>
+                            <p class="mb-0 heading-description">{{ 'AUTH.FEATURE_SEAMLESS_UI_DESC' | translate }}</p>
                         </div>
 
                     </div>
@@ -28,9 +48,8 @@
                         </div>
 
                         <div class="text-justify">
-                            <h4 class="text-white mt-0 mb-1 sub-heading">Sourcing Dashboard</h4>
-                            <p class="mb-0 heading-description">Pending orders,
-                                active contracts,<br> performance metrics, and payment statuses.</p>
+                            <h4 class="text-white mt-0 mb-1 sub-heading">{{ 'AUTH.FEATURE_SOURCING_DASHBOARD' | translate }}</h4>
+                            <p class="mb-0 heading-description">{{ 'AUTH.FEATURE_SOURCING_DASHBOARD_DESC' | translate }}</p>
                         </div>
 
                     </div>
@@ -42,9 +61,8 @@
                         </div>
 
                         <div class="text-justify">
-                            <h4 class="text-white mt-0 mb-1 sub-heading">Performance Analytics</h4>
-                            <p class="mb-0 heading-description">Vendors can view real-time <br> analytics and
-                                performance reports</p>
+                            <h4 class="text-white mt-0 mb-1 sub-heading">{{ 'AUTH.FEATURE_PERFORMANCE_ANALYTICS' | translate }}</h4>
+                            <p class="mb-0 heading-description">{{ 'AUTH.FEATURE_PERFORMANCE_ANALYTICS_DESC' | translate }}</p>
                         </div>
 
                     </div>
@@ -55,8 +73,8 @@
                         </div>
 
                         <div class="text-justify">
-                            <h4 class="text-white mt-0 mb-1 sub-heading">Compliance Management</h4>
-                            <p class="mb-0 heading-description">Ensures Regulatory and Compliance Requirements</p>
+                            <h4 class="text-white mt-0 mb-1 sub-heading">{{ 'AUTH.FEATURE_COMPLIANCE' | translate }}</h4>
+                            <p class="mb-0 heading-description">{{ 'AUTH.FEATURE_COMPLIANCE_DESC' | translate }}</p>
                         </div>
 
                     </div>
@@ -65,10 +83,7 @@
                 </div>
             </div>
             <div class="icon-container1 position-absolute">
-                <p class="text-center sub-heading">© 2025 LITS Procurement and Sourcing Portal. Powered by
-                    LITS SERVICES. All
-                    rights
-                    reserved.</p>
+                <p class="text-center sub-heading">{{ 'AUTH.COPYRIGHT' | translate }}</p>
             </div>
         </div>
 

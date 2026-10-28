@@ -79,7 +79,7 @@
 
         <!-- Expand/Collapse Header -->
         <div class="d-flex justify-content-between align-items-center mb-2 cursor-pointer" (click)="toggleItems()">
-            <h5 class="section-title m-0">Items</h5>
+            <h5 class="section-title m-0">{{ 'PO_MODULE.ITEMS' | translate }}</h5>
             <i class="ft-chevron-down transition-icon" [ngClass]="{ 'rotate-icon': itemsExpanded }"></i>
         </div>
 
@@ -87,9 +87,9 @@
         <div class="expand-wrapper" [ngClass]="{ 'expanded': itemsExpanded }" [formGroup]="form">
             <div class="table-card table-card--shipment">
                 <div class="table__row table__row--head table__row--shipment">
-                    <div>ITEM</div>
-                    <div class="text-center">QUANTITY</div>
-                    <div class="text-center">DELIVERY DATE</div>
+                    <div>{{ 'PO_MODULE.ITEM' | translate }}</div>
+                    <div class="text-center">{{ 'PO_MODULE.QTY' | translate }}</div>
+                    <div class="text-center">{{ 'RFQ_MODULE.DELIVERY_DATE' | translate }}</div>
                 </div>
 
                 <div class="table-scroll table-scroll--shipment" formArrayName="items">

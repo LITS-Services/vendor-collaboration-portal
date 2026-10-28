@@ -28,8 +28,7 @@ export class ContentLayoutComponent implements OnInit, OnDestroy {
     this.config = this.configService.templateConf;
     this.renderer.addClass(this.document.body, "auth-page");
 
-    const browserLang: string = translate.getBrowserLang();
-    translate.use(browserLang.match(/en|fr/) ? browserLang : 'en');
+    // Language managed by LanguageService
   }
 
   ngOnInit() {
