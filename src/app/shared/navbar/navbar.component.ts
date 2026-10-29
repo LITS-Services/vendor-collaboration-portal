@@ -406,6 +406,10 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
       // Clear in-memory caches
       clearCachedObservables();
 
+      // Refresh navbar user and notifications
+      this.loadNavbarUser();
+      this.getNotification();
+
       // In-app refresh: re-render the active route without a full window reload
       const currentUrl = this.router.url;
       const prevStrategy = this.router.routeReuseStrategy.shouldReuseRoute;
@@ -414,6 +418,10 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
       this.router.onSameUrlNavigation = 'reload';
       try {
         await this.router.navigateByUrl(currentUrl);
+        setTimeout(() => {
+          window.dispatchEvent(new Event('resize'));
+          this.cdr.detectChanges();
+        }, 150);
       } finally {
         this.router.routeReuseStrategy.shouldReuseRoute = prevStrategy;
         this.router.onSameUrlNavigation = prevOnSameUrl;
