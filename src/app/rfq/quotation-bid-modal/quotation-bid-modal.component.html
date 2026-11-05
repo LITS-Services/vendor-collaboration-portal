@@ -33,7 +33,7 @@
         <span class="custom-vl mx-2"></span>
         <button class="btn btn-sm cstm-ui-table-btn me-2" (click)="submitBids()">
           <i class="ft-check"></i>
-          <label class="ms-1 mt-1">Submit Bids</label>
+          <label class="ms-1 mt-1">{{ 'RFQ_MODULE.SUBMIT_QUOTES' | translate }}</label>
         </button>
       </div>
     </div> -->
@@ -110,12 +110,12 @@
                             <div class="item-details-section">
                               <div class="item-header">
                                 <h6 class="item-name">{{ item.itemName }}</h6>
-                                <span class="item-type-badge">{{ item.itemType || 'INVENTORY' }}</span>
-                                            <div class="info-divider bg-slate-300"></div>
-                                   <div class="item-info-left">
-                                  <span class="info-item">Qty: {{ item.orderQuantity }}</span>
-                                  <span class="info-item">UoM: {{ item.unitOfMeasurementCode }}</span>
-                                  <span class="info-item">Req. Date: {{ item.reqByDate | date:'yyyy-MM-dd' }}</span>
+                                <span class="item-type-badge">{{ (item.itemType || 'INVENTORY') | statusTranslate }}</span>
+                                <div class="info-divider bg-slate-300"></div>
+                                <div class="item-info-left">
+                                  <span class="info-item">{{ 'RFQ_MODULE.QTY' | translate }}: {{ item.orderQuantity }}</span>
+                                  <span class="info-item">{{ 'RFQ_MODULE.UOM' | translate }}: {{ item.unitOfMeasurementCode || '—' }}</span>
+                                  <span class="info-item">{{ 'RFQ_MODULE.REQ_DATE' | translate }}: {{ item.reqByDate | date:'yyyy-MM-dd' }}</span>
                                 </div>
                               </div>
                               
@@ -125,7 +125,7 @@
                                 (click)="openAttachmentsModal(item, attachmentsModal)"
                                 *ngIf="item.quotationItemAttachments && item.quotationItemAttachments.length > 0">
                                 <i class="fa fa-file-text me-1"></i>
-                                View Procurement Attachments ({{ item.quotationItemAttachments.length }})
+                                {{ 'RFQ_MODULE.VIEW_PROCUREMENT_ATTACHMENTS' | translate }} ({{ item.quotationItemAttachments.length }})
                               </button>
 
                                 <div class="item-info">
@@ -144,7 +144,7 @@
                                       [disabled]="!isBidEditable(item.id)"
                                       (change)="onFileSelected($event, getBid(item.id))">
                                     <i class="fa fa-cloud-upload upload-icon-compact"></i>
-                                    <span class="upload-text-compact">Upload Attachments</span>
+                                    <span class="upload-text-compact">{{ 'RFQ_MODULE.UPLOAD_ATTACHMENTS' | translate }}</span>
                                   </div>
                                   <div class="item-attachments-inline" *ngIf="getBid(item.id).vendorBidAttachments && getBid(item.id).vendorBidAttachments.length > 0">
                                     <!-- Attachment chips -->
@@ -171,21 +171,21 @@
                             <div *ngIf="bidMap.has(item.id) && !getBid(item.id).isDeleted && editingBidItemId !== item.id" 
                               class="my-quote-section-inline">
                               <div class="my-quote-box">
-                                <span class="my-quote-label">MY QUOTE <span 
+                                <span class="my-quote-label">{{ 'RFQ_MODULE.MY_QUOTE' | translate }} <span 
                                   *ngIf="bidMap.has(item.id) && !getBid(item.id)?.id" 
                                   class="draft-pill ms-2">
-                                  Pending Submit
+                                  {{ 'STATUS.PENDING_SUBMIT' | translate }}
                                 </span>
                               </span>
                                 <div class="quote-price-actions">
                                   <span class="quote-price">{{ getBid(item.id).biddingAmount | number:'1.2-2' }}</span>
-                                  <button class="btn-icon-edit" (click)="editBid(item.id)" title="Edit">
+                                  <button class="btn-icon-edit" (click)="editBid(item.id)" [title]="'COMMON.EDIT' | translate">
                                     <i [ngClass]="!isBidEditable(item.id) ? 'fa fa-eye' : 'fa fa-edit'"></i>
                                   </button>
                                   <button class="btn-icon-delete" 
                                     [disabled]="!isBidEditable(item.id)"
                                     (click)="deleteBid(item.id)" 
-                                    title="Delete">
+                                    [title]="'COMMON.DELETE' | translate">
                                     <i class="fa fa-trash"></i>
                                   </button>
                                 </div>
@@ -196,7 +196,7 @@
                             <div *ngIf="(!bidMap.has(item.id) || getBid(item.id).isDeleted) && editingBidItemId !== item.id" 
                               class="place-bid-section-inline">
                               <button class="btn btn-primary" (click)="addBid(item.id)">
-                               <i class="ft-plus me-1"></i> Place Bid
+                               <i class="ft-plus me-1"></i> {{ 'RFQ_MODULE.PLACE_QUOTE' | translate }}
                               </button>
                             </div>
                           </div>
@@ -205,7 +205,7 @@
                           <div *ngIf="editingBidItemId === item.id" class="edit-quotation-section">
                             <div class="edit-form-row">
                               <div class="edit-form-col">
-                                <label class="form-label">Bidding Amount<span class="text-danger">*</span></label>
+                                <label class="form-label">{{ 'RFQ_MODULE.QUOTE_AMOUNT' | translate }}<span class="text-danger">*</span></label>
                                 <input type="number" 
                                   class="form-control unit-price-input" 
                                   [(ngModel)]="getBid(item.id).biddingAmount"
@@ -215,21 +215,21 @@
                               </div>
                               
                               <div class="edit-form-col">
-                                <label class="form-label">Comments</label>
+                                <label class="form-label">{{ 'RFQ_MODULE.COMMENTS' | translate }}</label>
                                 <textarea rows="3" 
                                   class="form-control description-textarea" 
                                   [(ngModel)]="getBid(item.id).comment"
-                                  placeholder="Enter comments..."
+                                  [placeholder]="'RFQ_MODULE.ENTER_COMMENTS_PLACEHOLDER' | translate"
                                   [disabled]="!isBidEditable(item.id)"></textarea>
                               </div>
                               
                               <div class="edit-form-col actions-col">
                                 <div class="edit-actions-compact">
-                                  <button class="btn-cancel" (click)="cancelBid(item.id)">Cancel</button>
+                                  <button class="btn-cancel" (click)="cancelBid(item.id)">{{ 'COMMON.CANCEL' | translate }}</button>
                                   <button class="btn btn-primary" 
                                     [disabled]="!isBidEditable(item.id)  || !(getBid(item.id)?.biddingAmount > 0)"
                                     (click)="saveBid(item.id)">
-                                    <i [ngClass]="getBid(item.id)?.id ? 'ft-check me-1' : 'ft-plus me-1'"></i> {{ getBid(item.id)?.id ? 'Update Bid' : 'Add Bid' }}
+                                    <i [ngClass]="getBid(item.id)?.id ? 'ft-check me-1' : 'ft-plus me-1'"></i> {{ getBid(item.id)?.id ? ('RFQ_MODULE.UPDATE_QUOTE' | translate) : ('RFQ_MODULE.ADD_QUOTE' | translate) }}
                                   </button>
                                 </div>
                               </div>
@@ -274,17 +274,17 @@
                         
                        <div class="align-items-center">
                       <span class="panel-icon">
-                        <label class="mb-0"> Comments</label>
+                        <label class="mb-0"> {{ 'RFQ_MODULE.COMMENTS' | translate }}</label>
                       </span>
                       <i class="ft ft-chevron-down accordion-chevron ms-1"></i>
                     </div>
             
                       <div class="last-message-div" *ngIf="lastMessageAgo; else noLastMsg">
-                        Last message: <span class="last-message-time">{{ lastMessageAgo }}</span>
+                        {{ 'RFQ_MODULE.LAST_MESSAGE' | translate }}: <span class="last-message-time">{{ lastMessageAgo }}</span>
                       </div>
             
                       <ng-template #noLastMsg>
-                        <small class="text-muted">No messages yet</small>
+                        <small class="text-muted">{{ 'RFQ_MODULE.NO_MESSAGES_YET' | translate }}</small>
                       </ng-template>
                     </div>
                   </button>
@@ -308,7 +308,7 @@
                                     </div>
                                     <div class="text">{{ msg.comments }}</div>
                                     <div *ngIf="msg.seenByType && msg.createdByType !== msg.seenByType" class="seen-badge text-muted small mt-1">
-                                      Seen
+                                      {{ 'RFQ_MODULE.SEEN' | translate }}
                                     </div>
                                   </div>
                                 </div>
@@ -318,7 +318,7 @@
                             <ng-template #noComments>
                               <div class="no-comments">
                                 <p class="text-muted text-center">
-                                  No comments from vendors or procurement at the moment.
+                                  {{ 'RFQ_MODULE.NO_COMMENTS_RFQ' | translate }}
                                 </p>
                               </div>
                             </ng-template>
@@ -338,7 +338,7 @@
                         <form [formGroup]="form" (ngSubmit)="insertComment()" class="mt-2 d-flex align-items-center">
                           <div class="col-md-10">
                             <textarea id="vendorComment" class="form-control" rows="1"
-                              placeholder="Write a comment for this request for quotation..." formControlName="comment"
+                              [placeholder]="'RFQ_MODULE.WRITE_COMMENT_FOR_RFQ' | translate" formControlName="comment"
                               [readonly]="viewMode"
                               (keydown)="onTyping()"
                               (keydown.enter)="onEnterPress($event)"></textarea>
@@ -347,7 +347,7 @@
                           <div>
                             <button type="submit" class="btn btn-primary ms-2" [disabled]="form.invalid">
                               <i class="fa fa-paper-plane me-1"></i>
-                              Send
+                              {{ 'COMMON.SEND' | translate }}
                             </button>
                           </div>
                         </form>
@@ -381,7 +381,7 @@
   <div class="modal-header bg-light">
     <h5 class="modal-title">
       <i class="fa fa-paperclip me-2 text-white"></i>
-      Procurement Attachments - {{ selectedItem?.itemName }}
+      {{ 'RFQ_MODULE.PROCUREMENT_ATTACHMENTS' | translate }} - {{ selectedItem?.itemName }}
     </h5>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
   </div>
@@ -397,18 +397,18 @@
           </span>
           <button class="btn btn-sm btn-outline-primary" (click)="downloadProcurementAttachment(att)">
             <i class="fa fa-download me-1"></i>
-            Download
+            {{ 'COMMON.DOWNLOAD' | translate }}
           </button>
         </li>
       </ul>
     </div>
 
     <ng-template #noAttachments>
-      <p class="text-muted mb-0">No attachments available for this item.</p>
+      <p class="text-muted mb-0">{{ 'RFQ_MODULE.NO_ATTACHMENTS_AVAILABLE' | translate }}</p>
     </ng-template>
   </div>
 
   <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" (click)="modal.close()">Close</button>
+    <button type="button" class="btn btn-secondary" (click)="modal.close()">{{ 'COMMON.CLOSE' | translate }}</button>
   </div>
 </ng-template>

@@ -1,7 +1,7 @@
 <!-- Header Starts -->
 <div class="row">
   <div class="col-12">
-    <h1 class="mb-1">Request For Quotation</h1>
+    <h1 class="mb-1">{{ 'RFQ_MODULE.REQUEST_FOR_QUOTATION' | translate }}</h1>
   </div>
 </div>
 <!-- Header End -->
@@ -12,7 +12,7 @@
 
   <div class="col-xl-3 col-lg-6 col-md-6 col-12">
     <div class="card card-info">
-      <h4 class="card-title">Total RFQs</h4>
+      <h4 class="card-title">{{ 'RFQ_MODULE.TOTAL_RFQS' | translate }}</h4>
       <div class="curve-button">
         <button class="circle-button" (click)="navigateToStatus(null) ">
           <i class="ft-arrow-up-right"></i>
@@ -30,7 +30,7 @@
                   </div>
                 </div>
                 <div class="col-8 text-center mt-2">
-                  <h6>Last three months</h6>
+                  <h6>{{ 'RFQ_MODULE.LAST_THREE_MONTHS' | translate }}</h6>
                 </div>
                 <div class="col-2 d-flex justify-content-center">
                   <img src="/assets/img/icons/Vector1.svg" class="vector1" alt="">
@@ -46,7 +46,7 @@
 
   <div class="col-xl-3 col-lg-6 col-md-6 col-12">
     <div class="card card-info">
-      <h4 class="card-title">New RFQs</h4>
+      <h4 class="card-title">{{ 'RFQ_MODULE.NEW_RFQS' | translate }}</h4>
       <div class="curve-button">
         <button class="circle-button" (click)="navigateToStatus('New') ">
           <i class="ft-arrow-up-right"></i>
@@ -64,7 +64,7 @@
                   </div>
                 </div>
                 <div class="col-8 text-center mt-2">
-                  <h6>Last three months</h6>
+                  <h6>{{ 'RFQ_MODULE.LAST_THREE_MONTHS' | translate }}</h6>
                 </div>
                 <div class="col-2 d-flex justify-content-center">
                   <img src="/assets/img/icons/vector2.svg" class="vector1" alt="">
@@ -80,7 +80,7 @@
 
   <div class="col-xl-3 col-lg-6 col-md-6 col-12">
     <div class="card card-info">
-      <h4 class="card-title">In-Process RFQs</h4>
+      <h4 class="card-title">{{ 'RFQ_MODULE.IN_PROCESS_RFQS' | translate }}</h4>
       <div class="curve-button">
         <button class="circle-button" (click)="navigateToStatus('InProgress')">
           <i class="ft-arrow-up-right"></i>
@@ -98,7 +98,7 @@
                   </div>
                 </div>
                 <div class="col-8 text-center mt-2">
-                  <h6>Last three months</h6>
+                  <h6>{{ 'RFQ_MODULE.LAST_THREE_MONTHS' | translate }}</h6>
                 </div>
                 <div class="col-2 d-flex justify-content-center">
                   <img src="/assets/img/icons/vector2.svg" class="vector1" alt="">
@@ -114,7 +114,7 @@
 
   <div class="col-xl-3 col-lg-6 col-md-6 col-12">
     <div class="card card-info">
-      <h4 class="card-title">Completed RFQs</h4>
+      <h4 class="card-title">{{ 'RFQ_MODULE.COMPLETED_RFQS' | translate }}</h4>
       <div class="curve-button">
         <button class="circle-button" (click)="navigateToStatus('Completed')">
           <i class="ft-arrow-up-right"></i>
@@ -132,7 +132,7 @@
                   </div>
                 </div>
                 <div class="col-8 text-center mt-2">
-                  <h6>Last three months</h6>
+                  <h6>{{ 'RFQ_MODULE.LAST_THREE_MONTHS' | translate }}</h6>
                 </div>
                 <div class="col-2 d-flex justify-content-center">
                   <img src="/assets/img/icons/vector2.svg" class="vector1" alt="">
@@ -155,12 +155,12 @@
   <div class="col-xl-4 col-12">
     <div class="card h-100">
       <div class="card-header mt-1">
-        <h4 class="card-title dash-title">Customer Satisfaction</h4>
-        <p class="dash-desc">Customer Satisfaction Score</p>
+        <h4 class="card-title dash-title">{{ 'RFQ_MODULE.CUSTOMER_SATISFACTION' | translate }}</h4>
+        <p class="dash-desc">{{ 'RFQ_MODULE.CUSTOMER_SATISFACTION_SCORE' | translate }}</p>
       </div>
       <div class="card-content">
 
-        <p class="font-medium-2 text-center mb-0 mt-2">Project Tasks</p>
+        <p class="font-medium-2 text-center mb-0 mt-2">{{ 'RFQ_MODULE.PROJECT_TASKS' | translate }}</p>
         <div id="donut-dashboard-chart" class="donut">
           <x-chartist class="height-250" [data]="DonutChart.data" [type]="DonutChart.type"
             [options]="DonutChart.options" [responsiveOptions]="DonutChart.responsiveOptions"
@@ -172,11 +172,11 @@
           <div class="chart-info gap-3 d-flex text-center justify-content-center mb-2">
             <span class="mr-3">
               <i class="fa fa-circle primary-color font-small-3 me-1"></i>
-              <span>Positive</span>
+              <span>{{ 'RFQ_MODULE.POSITIVE' | translate }}</span>
             </span>
             <span class="mr-3">
               <i class="fa fa-circle sec-color lighten-3 font-small-3 me-1"></i>
-              <span>Negative</span>
+              <span>{{ 'RFQ_MODULE.NEGATIVE' | translate }}</span>
             </span>
           </div>
 
@@ -187,7 +187,7 @@
               </div>
             </div>
             <div class="text-center mt-2">
-              <h6>Last three months</h6>
+              <h6>{{ 'RFQ_MODULE.LAST_THREE_MONTHS' | translate }}</h6>
             </div>
           </div>
         </div>
@@ -199,7 +199,7 @@
       <div class="card-header mt-1">
         <div class="d-flex align-items-baseline gap-4">
           <h4 class="card-title dash-title">
-            <span>Statistics</span>
+            <span>{{ 'RFQ_MODULE.STATISTICS' | translate }}</span>
             <!-- <span class="float-right cursor-pointer">
                   <i class="ft-more-vertical-"></i>
                 </span> -->
@@ -207,11 +207,11 @@
           <div class="chart-info gap-3 d-flex">
             <span class="mr-3">
               <i class="fa fa-circle primary-color font-small-3 me-1"></i>
-              <span>Net Profit</span>
+              <span>{{ 'RFQ_MODULE.NET_PROFIT' | translate }}</span>
             </span>
             <span class="mr-3">
               <i class="fa fa-circle sec-color lighten-3 font-small-3 me-1"></i>
-              <span>Revenue</span>
+              <span>{{ 'RFQ_MODULE.REVENUE' | translate }}</span>
             </span>
           </div>
 

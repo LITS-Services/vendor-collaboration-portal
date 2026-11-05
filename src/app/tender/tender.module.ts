@@ -1,5 +1,6 @@
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { TenderRoutingModule } from './tender-routing.module';
 import { TenderMasterComponent } from './tender-master/tender-master.component';
@@ -31,6 +32,7 @@ import { NgApexchartsModule } from 'ng-apexcharts';
     TenderListComponent
   ],
   imports: [
+    TranslateModule,
     CommonModule,
     TenderRoutingModule,
     NgbModule,

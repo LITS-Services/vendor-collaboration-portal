@@ -40,6 +40,7 @@ import { AngularFireMessagingModule } from "@angular/fire/compat/messaging";
 
 import { Observable, of } from "rxjs";
 import { LanguageService, LanguageInterceptor } from "./core/language";
+import './shared/utils/sweetalert-i18n';
 import en from '../assets/i18n/en.json';
 import ar from '../assets/i18n/ar.json';
 

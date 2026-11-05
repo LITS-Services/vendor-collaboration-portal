@@ -381,7 +381,7 @@ export class QuotationBidModalComponent implements OnInit {
 
   addBid(itemId: number) {
     if (this.isBidClosed()) {
-      this.toastr.info("Bid submission is closed for this RFQ.");
+      this.toastr.info("Quote submission is closed for this RFQ.");
       return;
     }
     
@@ -401,7 +401,7 @@ export class QuotationBidModalComponent implements OnInit {
 
   editBid(itemId: number) {
     if (this.isBidClosed()) {
-      this.toastr.info("Bid submission is closed for this RFQ.");
+      this.toastr.info("Quote submission is closed for this RFQ.");
       return;
     }
     
@@ -413,7 +413,7 @@ export class QuotationBidModalComponent implements OnInit {
 
   deleteBid(itemId: number) {
     if (this.isBidClosed()) {
-      this.toastr.info("Bid submission is closed for this RFQ.");
+      this.toastr.info("Quote submission is closed for this RFQ.");
       return;
     }
     const bid = this.bidMap.get(itemId);
@@ -424,7 +424,7 @@ export class QuotationBidModalComponent implements OnInit {
         this.bidMap.delete(itemId);
       }
     }
-    this.toastr.success("Bid removed successfully!");
+    this.toastr.success("Quote removed successfully!");
   }
 
   saveBid(itemId: number) {
@@ -614,7 +614,7 @@ export class QuotationBidModalComponent implements OnInit {
 
   // submitBids() {
   //   if (this.isBidClosed()) {
-  //     this.toastr.info("Bid submission is closed for this RFQ.");
+  //     this.toastr.info("Quote submission is closed for this RFQ.");
   //     return;
   //   }
 
@@ -652,13 +652,13 @@ export class QuotationBidModalComponent implements OnInit {
     });
 
     if (missingBids.length > 0) {
-      this.toastr.warning('Please place bids against all items before submitting.');
+      this.toastr.warning('Please place quotes against all items before submitting.');
       return; 
     }
 
     Swal.fire({
-      title: 'Submit Bids?',
-      text: 'Once submitted, you may not be able to modify the bids until revised.',
+      title: 'Submit Quotes?',
+      text: 'Once submitted, you may not be able to modify the quotes until revised.',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Yes, submit',
@@ -688,7 +688,7 @@ export class QuotationBidModalComponent implements OnInit {
 
           Swal.fire({
             title: 'Error',
-            text: 'Failed to submit bids. Please try again.',
+            text: 'Failed to submit quotes. Please try again.',
             icon: 'error'
           });
         }
@@ -708,25 +708,40 @@ export class QuotationBidModalComponent implements OnInit {
   }
 
   timeSince(date: Date): string {
+    const isAr =
+      (typeof document !== 'undefined' &&
+        (document.documentElement.lang === 'ar' ||
+          document.documentElement.dir === 'rtl')) ||
+      localStorage.getItem('procurement_locale') === 'ar' ||
+      localStorage.getItem('language') === 'ar';
     const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
 
-    if (seconds < 30) return 'just now';
+    if (seconds < 30) return isAr ? 'الآن' : 'just now';
 
-    const units = [
-      { label: 'y', secs: 31536000 },
-      { label: 'mo', secs: 2592000 },
-      { label: 'w', secs: 604800 },
-      { label: 'd', secs: 86400 },
-      { label: 'h', secs: 3600 },
-      { label: 'm', secs: 60 },
-    ];
+    const units = isAr
+      ? [
+          { label: 'سنة', secs: 31536000 },
+          { label: 'شهر', secs: 2592000 },
+          { label: 'أسبوع', secs: 604800 },
+          { label: 'يوم', secs: 86400 },
+          { label: 'ساعة', secs: 3600 },
+          { label: 'دقيقة', secs: 60 },
+        ]
+      : [
+          { label: 'y', secs: 31536000 },
+          { label: 'mo', secs: 2592000 },
+          { label: 'w', secs: 604800 },
+          { label: 'd', secs: 86400 },
+          { label: 'h', secs: 3600 },
+          { label: 'm', secs: 60 },
+        ];
 
     for (const u of units) {
       const v = Math.floor(seconds / u.secs);
-      if (v >= 1) return `${v}${u.label} ago`;
+      if (v >= 1) return isAr ? `منذ ${v} ${u.label}` : `${v}${u.label} ago`;
     }
 
-    return '1m ago';
+    return isAr ? 'منذ دقيقة' : '1m ago';
   }
 
   get lastMessageAgo(): string | null {

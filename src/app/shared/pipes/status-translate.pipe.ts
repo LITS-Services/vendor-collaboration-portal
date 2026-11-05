@@ -72,7 +72,46 @@ export class StatusTranslatePipe implements PipeTransform {
       'FALSE': 'INACTIVE',
       'YES': 'ACTIVE',
       'NO': 'INACTIVE',
-      'APPROVE': 'APPROVED'
+      'APPROVE': 'APPROVED',
+
+      // Item types & Quotation Bid statuses
+      'INVENTORY': 'INVENTORY',
+      'NONINVENTORY': 'NON_INVENTORY',
+      'NON_INVENTORY': 'NON_INVENTORY',
+      'SERVICE': 'SERVICE',
+      'PENDINGSUBMIT': 'PENDING_SUBMIT',
+      'PENDING_SUBMIT': 'PENDING_SUBMIT',
+      'MYQUOTE': 'MY_QUOTE',
+      'MY_QUOTE': 'MY_QUOTE',
+
+      // Bid/Quote status variations
+      'BID': 'QUOTE',
+      'QUOTE': 'QUOTE',
+      'BIDS': 'QUOTES',
+      'QUOTES': 'QUOTES',
+
+      // Arabic reverse lookups (normalized without spaces)
+      'جديد': 'NEW',
+      'قيدالمعالجة': 'IN_PROGRESS',
+      'قيدالتنفيذ': 'IN_PROGRESS',
+      'قيدالتقدم': 'IN_PROGRESS',
+      'معتمد': 'APPROVED',
+      'مرفوض': 'REJECTED',
+      'مكتمل': 'COMPLETED',
+      'مسودة': 'DRAFT',
+      'نشط': 'ACTIVE',
+      'غيرنشط': 'INACTIVE',
+      'مفتوح': 'OPEN',
+      'مغلق': 'CLOSED',
+      'المخزون': 'INVENTORY',
+      'مخزون': 'INVENTORY',
+      'غيرمخزني': 'NON_INVENTORY',
+      'خدمة': 'SERVICE',
+      'بانتظارالتقديم': 'PENDING_SUBMIT',
+      'قيدالإرسال': 'PENDING_SUBMIT',
+      'قيدالارسال': 'PENDING_SUBMIT',
+      'تمالتقديم': 'SUBMITTED',
+      'معلق': 'PENDING'
     };
 
     const statusKey = keyMap[normalized];
@@ -93,4 +132,3 @@ export class StatusTranslatePipe implements PipeTransform {
     return str;
   }
 }
-

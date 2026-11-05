@@ -1,5 +1,5 @@
 <!-- <div class="modal-header">
-    <h5 class="modal-title text-white" *ngIf="status !== 'in-process'">Bid</h5>
+    <h5 class="modal-title text-white" *ngIf="status !== 'in-process'">Quote</h5>
     <h5 class="modal-title text-white" *ngIf="status === 'in-process'">In-Process Request</h5>
     <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="closeDialog()"></button>
   </div>
@@ -133,8 +133,8 @@
   </div> -->
 
 <div class="modal-header">
-  <h5 class="modal-title text-white" *ngIf="status !== 'in-process'">Bid</h5>
-  <h5 class="modal-title text-white" *ngIf="status === 'in-process'">In-Process Request</h5>
+  <h5 class="modal-title text-white" *ngIf="status !== 'in-process'">{{ 'RFQ_MODULE.QUOTE' | translate }}</h5>
+  <h5 class="modal-title text-white" *ngIf="status === 'in-process'">{{ 'RFQ_MODULE.IN_PROCESS_REQUEST' | translate }}</h5>
   <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="closeDialog()"></button>
 </div>
 
@@ -145,72 +145,72 @@
         <div class="row">
           <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
             <div class="form-group mb-2">
-              <label>RFQ No.</label>
+              <label>{{ 'COMMON.RFQ_NO' | translate }}</label>
               <input type="text" [value]="data?.rfqNo" disabled class="form-control" />
             </div>
           </div>
           <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
             <div class="form-group mb-2">
-              <label>PR No.</label>
+              <label>{{ 'COMMON.REQUISITION_NO' | translate }}</label>
               <!-- Assuming PR No. maps to requisitionNo or other property; adjust if needed -->
               <input type="text" [value]="data?.purchaseRequestNo" disabled class="form-control" />
             </div>
           </div>
           <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
             <div class="form-group mb-2">
-              <label>Status</label>
-              <input type="text" [value]="data?.requestStatus" disabled class="form-control" />
+              <label>{{ 'COMMON.STATUS' | translate }}</label>
+              <input type="text" [value]="data?.requestStatus | statusTranslate" disabled class="form-control" />
             </div>
           </div>
 
           <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
             <div class="form-group mb-2">
-              <label>Owner</label>
+              <label>{{ 'RFQ_MODULE.OWNER' | translate }}</label>
               <input type="text" [value]="data?.owner" disabled class="form-control" />
             </div>
           </div>
           <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
             <div class="form-group mb-2">
-              <label>Date</label>
+              <label>{{ 'COMMON.DATE' | translate }}</label>
               <input type="date" [value]="(data?.date | date:'yyyy-MM-dd')" disabled class="form-control" />
             </div>
           </div>
           <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
             <div class="form-group mb-2">
-              <label>Contact</label>
+              <label>{{ 'COMPANY_MODULE.CONTACT' | translate }}</label>
               <!-- If contact info is available in data, bind here -->
               <input type="text" [value]="data?.contact" disabled class="form-control" />
             </div>
           </div>
           <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
             <div class="form-group mb-2">
-              <label>Delivery Location</label>
+              <label>{{ 'COMMON.ENTITY' | translate }}</label>
               <input type="text" [value]="data?.deliveryLocation" disabled class="form-control" />
             </div>
           </div>
           <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
             <div class="form-group mb-2">
-              <label>Start Date</label>
+              <label>{{ 'RFQ_MODULE.START_DATE' | translate }}</label>
               <input type="date" [value]="(data?.startDate | date:'yyyy-MM-dd')" disabled class="form-control" />
             </div>
           </div>
           <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
             <div class="form-group mb-2">
-              <label>End Date</label>
+              <label>{{ 'RFQ_MODULE.END_DATE' | translate }}</label>
               <input type="date" [value]="(data?.endDate | date:'yyyy-MM-dd')" disabled class="form-control" />
             </div>
           </div>
           <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div class="form-group mb-2">
-              <label>Title</label>
+              <label>{{ 'HISTORY_MODULE.PR_TITLE' | translate }}</label>
               <input type="text" [value]="data?.title" disabled class="form-control" />
             </div>
           </div>
 
           <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" *ngIf="status === 'in-process'">
             <div class="form-group mb-2">
-              <label>Comments/Remarks</label>
-              <textarea placeholder="Enter your Remarks" class="form-control" rows="5"></textarea>
+              <label>{{ 'RFQ_MODULE.COMMENTS_REMARKS' | translate }}</label>
+              <textarea [placeholder]="'RFQ_MODULE.ENTER_YOUR_REMARKS' | translate" class="form-control" rows="5"></textarea>
             </div>
           </div>
 
@@ -229,37 +229,41 @@
         <div style="position: relative;">
           <ngx-datatable class="bootstrap core-bootstrap" [rows]="newRfqData" [columnMode]="'force'" [headerHeight]="50"
             [footerHeight]="50" rowHeight="50" [limit]="5" [scrollbarH]="true">
-            <ngx-datatable-column name="Sr. No." [width]="50">
+            <ngx-datatable-column [name]="'COMMON.SR_NO' | translate" [width]="50">
               <ng-template let-rowIndex="rowIndex" ngx-datatable-cell-template>
                 <span>{{ rowIndex + 1 }}</span>
               </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column name="Type" prop="itemType" [width]="70"></ngx-datatable-column>
-            <ngx-datatable-column name="Item" prop="itemName" [width]="150"></ngx-datatable-column>
-            <ngx-datatable-column name="Description" prop="description" [width]="150"></ngx-datatable-column>
-            <ngx-datatable-column name="Amount" [width]="150">
+            <ngx-datatable-column [name]="'COMMON.TYPE' | translate" prop="itemType" [width]="70">
+              <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                <span>{{ (value || 'INVENTORY') | statusTranslate }}</span>
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column [name]="'COMMON.ITEM' | translate" prop="itemName" [width]="150"></ngx-datatable-column>
+            <ngx-datatable-column [name]="'COMMON.DESCRIPTION' | translate" prop="description" [width]="150"></ngx-datatable-column>
+            <ngx-datatable-column [name]="'RFQ_MODULE.QUOTE_AMOUNT' | translate" [width]="150">
               <ng-template let-row="row" ngx-datatable-cell-template>
                 <input type="number" class="form-control" [(ngModel)]="row.amount"
-                  placeholder="Enter amount" />
+                  [placeholder]="'RFQ_MODULE.ENTER_AMOUNT' | translate" />
               </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column name="Comment" [width]="200">
+            <ngx-datatable-column [name]="'RFQ_MODULE.COMMENTS' | translate" [width]="200">
               <ng-template let-row="row" ngx-datatable-cell-template>
                 <input type="text" class="form-control" [(ngModel)]="row.comment"
-                  placeholder="Enter comment" />
+                  [placeholder]="'RFQ_MODULE.ENTER_COMMENT' | translate" />
               </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column name="Attachment" [width]="100">
+            <ngx-datatable-column [name]="'COMMON.ATTACHMENT' | translate" [width]="100">
               <ng-template let-row="row" let-rowIndex="rowIndex" ngx-datatable-cell-template>
                 <button type="button" class="btn btn-sm btn-light" (click)="openAttachmentModal(rowIndex)">
                   <i class="ft-paperclip"></i>
                 </button>
               </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column name="Status" prop="hasSubmittedBid">
+            <ngx-datatable-column [name]="'COMMON.STATUS' | translate" prop="hasSubmittedBid">
               <ng-template let-row="row" ngx-datatable-cell-template>
-                <span *ngIf="row.hasSubmittedBid" class="badge bg-success">Submitted</span>
-                <span *ngIf="!row.hasSubmittedBid" class="badge bg-warning text-dark">Pending</span>
+                <span *ngIf="row.hasSubmittedBid" class="badge bg-success">{{ 'STATUS.SUBMITTED' | translate }}</span>
+                <span *ngIf="!row.hasSubmittedBid" class="badge bg-warning text-dark">{{ 'STATUS.PENDING' | translate }}</span>
               </ng-template>
             </ngx-datatable-column>
 
@@ -271,5 +275,5 @@
 </div>
 
 <div class="modal-footer">
-  <button class="btn btn-primary" (click)="submitForm()">Submit</button>
+  <button class="btn btn-primary" (click)="submitForm()">{{ 'COMMON.SUBMIT' | translate }}</button>
 </div>

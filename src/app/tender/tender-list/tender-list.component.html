@@ -28,36 +28,41 @@
                     </div>
                 </ng-template>
             </ngx-datatable-column>
-            <ngx-datatable-column [width]="50" name="Sr. No." [resizeable]="false">
+            <ngx-datatable-column [width]="50" [name]="'COMMON.SR_NO' | translate" [resizeable]="false">
                 <ng-template let-rowIndex="rowIndex" let-value="value" ngx-datatable-cell-template>
                     <span>{{rowIndex + 1}}</span>
                 </ng-template>
             </ngx-datatable-column>
 
-            <ngx-datatable-column name="Requisition No." prop="requisitionNo" >
-
+            <ngx-datatable-column [name]="'COMMON.REQUISITION_NO' | translate" prop="requisitionNo">
             </ngx-datatable-column>
 
-            <ngx-datatable-column name="Status" prop="status" >
+            <ngx-datatable-column [name]="'COMMON.STATUS' | translate" prop="status">
+                <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    <span>{{ value | statusTranslate }}</span>
+                </ng-template>
+            </ngx-datatable-column>
 
-            </ngx-datatable-column>
-            <ngx-datatable-column name="Date" prop="date" >
+            <ngx-datatable-column [name]="'COMMON.DATE' | translate" prop="date">
+                <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                    <span>{{ value | date:'yyyy-MM-dd' }}</span>
+                </ng-template>
             </ngx-datatable-column>
 
-            <ngx-datatable-column name="Owner" prop="owner" >
+            <ngx-datatable-column [name]="'RFQ_MODULE.OWNER' | translate" prop="owner">
+            </ngx-datatable-column>
 
+            <ngx-datatable-column [name]="'RFQ_MODULE.COMMENTS' | translate" prop="subject">
             </ngx-datatable-column>
-            <ngx-datatable-column name="Comments" prop="subject">
-            </ngx-datatable-column>
-            <ngx-datatable-column name="Total Amount"  prop="totalAmount"
+
+            <ngx-datatable-column [name]="'RFQ_MODULE.TOTAL_AMOUNT' | translate" prop="totalAmount"
                 [sortable]="false">
             </ngx-datatable-column>
 
-            <ngx-datatable-column name="Bid"  prop="action"
+            <ngx-datatable-column [name]="'RFQ_MODULE.QUOTE' | translate" prop="action"
             [sortable]="false">
             <ng-template let-row="row" ngx-datatable-cell-template>
-                <button class="btn btn-sm" (click)="openQuotationBoxModal(row)"
-                >
+                <button class="btn btn-sm" (click)="openQuotationBoxModal(row)">
                 <img src="/assets/img/svg/auction.svg" width="30" height="30" alt="">
               </button>
               </ng-template>
