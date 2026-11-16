@@ -90,13 +90,19 @@
               [ngClass]="{ 'default-avatar': profilePicture === 'assets/img/profile/user.png' || !profilePicture }"
               [src]="profilePicture || 'assets/img/profile/user.png'" alt="avatar" height="34" width="34" />
           </a>
-          <div class="dropdown-menu dropdown-menu-right" ngbDropdownMenu>
-            <a class="dropdown-item" routerLink="/pages/profile">
-              <img src="assets/img/svg-icons/update-icon.svg" alt="Edit Profile" style="width: 16px; height: 16px; margin-right: 8px; vertical-align: middle;" /> Edit Profile
+          <div class="dropdown-menu dropdown-menu-right user-profile-menu m-0" ngbDropdownMenu>
+            <a class="dropdown-item user-profile-item" routerLink="/pages/profile">
+              <div class="d-flex align-items-center">
+                <img src="assets/img/svg-icons/update-icon.svg" class="me-2" style="width: 16px; height: 16px; vertical-align: middle;" alt="Edit Profile" />
+                <span>Edit Profile</span>
+              </div>
             </a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" (click)="logout()">
-              <i class="ft-power mr-3"></i> Logout
+            <a class="dropdown-item user-profile-item text-danger logout-item" (click)="logout()">
+              <div class="d-flex align-items-center">
+                <i class="ft-power me-2"></i>
+                <span>Logout</span>
+              </div>
             </a>
           </div>
         </div>
@@ -185,13 +191,19 @@
           <img class="avatar" [src]="profilePicture || 'assets/img/portrait/small/avatar-s-1.png'" alt="avatar"
             height="34" width="34" />
         </a>
-        <div class="dropdown-menu dropdown-menu-right" ngbDropdownMenu>
-          <a class="dropdown-item" routerLink="/pages/profile">
-            <img src="assets/img/svg-icons/update-icon.svg" alt="Edit Profile" style="width: 16px; height: 16px; margin-right: 8px; vertical-align: middle;" /> Edit Profile
+        <div class="dropdown-menu dropdown-menu-right user-profile-menu m-0" ngbDropdownMenu>
+          <a class="dropdown-item user-profile-item" routerLink="/pages/profile">
+            <div class="d-flex align-items-center">
+              <img src="assets/img/svg-icons/update-icon.svg" class="me-2" style="width: 16px; height: 16px; vertical-align: middle;" alt="Edit Profile" />
+              <span>Edit Profile</span>
+            </div>
           </a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" (click)="logout()">
-            <i class="ft-power mr-2"></i> Logout
+          <a class="dropdown-item user-profile-item text-danger logout-item" (click)="logout()">
+            <div class="d-flex align-items-center">
+              <i class="ft-power me-2"></i>
+              <span>Logout</span>
+            </div>
           </a>
         </div>
       </div>
