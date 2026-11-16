@@ -26,6 +26,7 @@ import { NgHcaptchaModule } from 'ng-hcaptcha';
 import { NgOtpInputModule } from 'ng-otp-input';
 import { RECAPTCHA_SETTINGS, RecaptchaFormsModule, RecaptchaModule, RecaptchaSettings } from 'ng-recaptcha';
 import { environment } from 'environments/environment';
+import { CustomSelectDirective } from 'app/shared/directives/custom-select.directive';
 
 // import { NgxIntlTelInputModule } from 'ngx-intl-tel-input';
 
@@ -58,6 +59,7 @@ import { environment } from 'environments/environment';
     NgOtpInputModule,
     RecaptchaFormsModule,
     RecaptchaModule,
+    CustomSelectDirective
   ],
   // providers: [
   //   {

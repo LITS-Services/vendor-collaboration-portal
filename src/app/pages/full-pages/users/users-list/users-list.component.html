@@ -105,7 +105,9 @@
               </ngx-datatable-column>
               <ngx-datatable-column name="Actions" [width]="50">
                 <ng-template ngx-datatable-cell-template>
-                  <a routerLink="/pages/users-edit"><i class="ft-edit text-primary cursor-pointer"></i></a>
+                  <a routerLink="/pages/users-edit" title="Edit">
+                    <img src="assets/img/svg-icons/update-icon.svg" alt="Edit" class="cursor-pointer" style="width: 16px; height: 16px; vertical-align: middle;" />
+                  </a>
                 </ng-template>
               </ngx-datatable-column>
             </ngx-datatable>

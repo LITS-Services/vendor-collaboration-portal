@@ -9,6 +9,7 @@ import { TaskboardRoutingModule } from "./taskboard-routing.module";
 
 import { TaskboardComponent } from "./taskboard.component";
 import { CrudModalComponent } from './crud-modal/crud-modal.component';
+import { CustomSelectDirective } from '../shared/directives/custom-select.directive';
 
 @NgModule({
     schemas: [NO_ERRORS_SCHEMA], // Allow dragula directives
@@ -18,7 +19,8 @@ import { CrudModalComponent } from './crud-modal/crud-modal.component';
         DragulaModule.forRoot() as ModuleWithProviders<DragulaModule>,
         FormsModule,
         ReactiveFormsModule,
-        NgbModule
+        NgbModule,
+        CustomSelectDirective
     ],
     declarations: [
         TaskboardComponent,

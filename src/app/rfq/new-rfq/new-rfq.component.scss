@@ -35,14 +35,15 @@
   
     
   .ngx-datatable ::ng-deep .datatable-header-inner{
-    background-color: #187741 !important;
-    // padding: 0.5rem;
-  // border-radius: 10px;
+    background-color: #F4F4F4 !important;
   }
   .ngx-datatable ::ng-deep .datatable-header-inner .datatable-header-cell-label,
   .ngx-datatable ::ng-deep .datatable-header-inner .sort-btn{
-    color: white !important;
-  
+    color: #747474 !important;
+    font-family: 'Onest', sans-serif !important;
+    font-weight: 400 !important;
+    font-size: 14px !important;
+    text-transform: uppercase !important;
   }
   .ngx-datatable.bootstrap .datatable-footer {
     background: unset !important;
@@ -84,29 +85,6 @@
 
 .spacer{
     flex-grow: 1;
-}
-.ngx-datatable.bootstrap ::ng-deep .datatable-footer {
-    background: #eaeaeb !important;
-    color: #187741 !important;
-    margin-top: -1px;
-}
-.ngx-datatable.bootstrap ::ng-deep .datatable-footer .datatable-pager ul li:not(.disabled).active a, .ngx-datatable.bootstrap .datatable-footer .datatable-pager ul li:not(.disabled):hover a {
-    background: #eaeaeb !important;
-    color: #187741 !important;
-    font-weight: bold;
-}
-.ngx-datatable.bootstrap ::ng-deep .datatable-footer .datatable-pager a {
-    height: 22px;
-    min-width: 24px;
-    line-height: 22px;
-    padding: 0;
-    border-radius: 3px;
-    margin: 0 3px;
-    text-align: center;
-    vertical-align: top;
-    text-decoration: none;
-    vertical-align: bottom;
-    color: #6c757d !important;
 }
 .modal-body {
   position: relative;

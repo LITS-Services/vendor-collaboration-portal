@@ -31,6 +31,8 @@ import { CompanyProfileAttachmentComponent } from './company-profile-attachment/
 import { CompanyProfileContactModalComponent } from './company-profile-contact-modal/company-profile-contact-modal.component';
 import { CompanyRegistrationComponent } from './company-registration/company-registration.component';
 import { NgxSpinnerModule } from "ngx-spinner";
+import { DatatableAutoResizeDirective } from "app/shared/directives/datatable-auto-resize.directive";
+import { CustomSelectDirective } from "app/shared/directives/custom-select.directive";
 @NgModule({
   schemas: [NO_ERRORS_SCHEMA], // Allow Chartist and Swiper components
   imports: [
@@ -45,7 +47,9 @@ import { NgxSpinnerModule } from "ngx-spinner";
     // SwiperModule, // Not compatible with Angular Ivy
     PipeModule,
     NgxDatatableModule,
-    NgxSpinnerModule
+    NgxSpinnerModule,
+    DatatableAutoResizeDirective,
+    CustomSelectDirective
   ],
   declarations: [
     GalleryPageComponent,

@@ -5,7 +5,7 @@
       <p>Please enter your username and password</p>
     </div>
 
-    <ngb-alert type="light-danger" class="my-2" *ngIf="isLoginFailed" (close)="isLoginFailed = false">
+    <ngb-alert type="light-danger" class="my-2" *ngIf="isLoginFailed" (close)="onAlertClose()">
       <p class="mb-0">
         <ng-container *ngIf="isLocked; else loginFailedText">
           Account is locked. Try again in <strong>{{ lockoutRemainingText || '—' }}</strong>
@@ -16,8 +16,8 @@
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       <div class="form-group mb-3">
-        <input type="text" formControlName="username" class="form-control" placeholder="Enter Username"
-          [ngClass]="{ 'is-invalid': loginFormSubmitted && lf.username.invalid, 'is-valid': loginFormSubmitted && !lf.username.invalid }"
+        <input type="text" formControlName="username" class="form-control login-input" placeholder="Enter Username"
+          [ngClass]="{ 'is-invalid': (loginFormSubmitted && lf.username.invalid) || isLoginFailed, 'is-valid': loginFormSubmitted && !lf.username.invalid && !isLoginFailed }"
           required>
         <div *ngIf="loginFormSubmitted && (lf.username.invalid || lf.username.errors?.required)"
           class="help-block mt-1 text-danger">
@@ -28,10 +28,10 @@
       <div class="form-group mb-2">
         <div class="form-group mb-3">
           <div class="position-relative">
-            <input [type]="hidePassword ? 'password' : 'text'" formControlName="password" class="form-control"
+            <input [type]="hidePassword ? 'password' : 'text'" formControlName="password" class="form-control login-input"
               placeholder="Enter password" [ngClass]="{
-                    'is-invalid': loginFormSubmitted && lf.password.invalid,
-                    'is-valid': loginFormSubmitted && lf.password.valid
+                    'is-invalid': (loginFormSubmitted && lf.password.invalid) || isLoginFailed,
+                    'is-valid': loginFormSubmitted && lf.password.valid && !isLoginFailed
                   }" required />
             <i [ngClass]="hidePassword ? 'ft ft-eye-off eye-icon' : 'ft ft-eye eye-icon'"
               (click)="hidePassword = !hidePassword" [title]="hidePassword ? 'Show Password' : 'Hide Password'">
@@ -82,9 +82,9 @@
       </div>
     </form>
 
-    <div class="or-divider">
+    <!-- <div class="or-divider">
       <span>OR</span>
-    </div>
+    </div> -->
 
     <!-- Round SSO Buttons in Same Line -->
     <div class="sso-buttons-container">

@@ -44,35 +44,73 @@
     </div>
 
     <!-- Table of Attached Files -->
-    <div class="col-12">
-      <div class="table-container mt-1">
-        <table class="table table-striped table-bordered">
-          <thead>
-            <tr>
-              <th>File Name</th>
-              <th>File Format</th>
-              <th>Expiry Date</th>
-              <th>Attached By</th>
-              <th>Remarks</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let file of attachedFiles; let i = index">
-              <td>{{ file.fileName }}</td>
-              <td>{{ file.format }}</td>
-              <td>{{ file.expiryDate | date:'mediumDate' }}</td>
-              <td>{{ file.attachedBy }}</td>
-              <td>{{ file.remarks }}</td>
-              <td>
-                <ng-container *ngIf="!readonly">
-                  <button class="btn ft-edit" (click)="editFile(i)"></button>
-                  <button class="btn ft-trash" (click)="openAttachmentDeletionPopup(i)"></button>
-                </ng-container>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+    <div class="col-12 mt-2">
+      <div class="pr-table-wrapper" appDatatableAutoResize [datatable]="datatable">
+        <ngx-datatable
+          #datatable
+          class="bootstrap core-bootstrap"
+          [rows]="attachedFiles"
+          [columnMode]="'force'"
+          [headerHeight]="42"
+          [footerHeight]="50"
+          rowHeight="42"
+          [limit]="10"
+          [scrollbarH]="isMobile">
+
+          <!-- File Name -->
+          <ngx-datatable-column [flexGrow]="2" [minWidth]="160" name="File Name" prop="fileName">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <span class="text-truncate fw-semibold" [title]="row.fileName">
+                {{ row.fileName }}
+              </span>
+            </ng-template>
+          </ngx-datatable-column>
+
+          <!-- File Format -->
+          <ngx-datatable-column [flexGrow]="1" [minWidth]="110" name="File Format" prop="format">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <span>{{ row.format || '-' }}</span>
+            </ng-template>
+          </ngx-datatable-column>
+
+          <!-- Expiry Date -->
+          <ngx-datatable-column [flexGrow]="1" [minWidth]="130" name="Expiry Date" prop="expiryDate">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <span>{{ (row.expiryDate | date:'dd-MMM-yyyy') || '-' }}</span>
+            </ng-template>
+          </ngx-datatable-column>
+
+          <!-- Attached By -->
+          <ngx-datatable-column [flexGrow]="1" [minWidth]="130" name="Attached By" prop="attachedBy">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <span>{{ row.attachedBy || '-' }}</span>
+            </ng-template>
+          </ngx-datatable-column>
+
+          <!-- Remarks -->
+          <ngx-datatable-column [flexGrow]="2" [minWidth]="160" name="Remarks" prop="remarks">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <span class="text-truncate" [title]="row.remarks">
+                {{ row.remarks || '-' }}
+              </span>
+            </ng-template>
+          </ngx-datatable-column>
+
+          <!-- Actions -->
+          <ngx-datatable-column name="Actions" [sortable]="false" [flexGrow]="1" [minWidth]="90" [maxWidth]="110">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <div class="d-flex align-items-center gap-1" *ngIf="!readonly">
+                <button class="btn btn-sm px-1 action-btn" type="button" (click)="editFile(row)" title="Edit">
+                  <img src="assets/img/svg-icons/update-icon.svg" alt="Edit" style="width: 18px; height: 18px;" />
+                </button>
+                <button class="btn btn-sm px-1 action-btn" type="button" (click)="openAttachmentDeletionPopup(row)" title="Delete">
+                  <img src="assets/img/svg-icons/delete-icon.svg" alt="Delete" style="width: 18px; height: 18px;" />
+                </button>
+              </div>
+            </ng-template>
+          </ngx-datatable-column>
+
+        </ngx-datatable>
       </div>
     </div>
   </div>
@@ -92,7 +130,7 @@
           <p>Are you sure you want to delete this attachment?</p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger" (click)="deleteFile(i)">Delete</button>
+          <button type="button" class="btn btn-danger" (click)="deleteFile()">Delete</button>
           <button type="button" class="btn btn-secondary" (click)="closeAttachmentDeletePopup()">Cancel</button>
         </div>
       </div>

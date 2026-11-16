@@ -26,6 +26,7 @@ import { RfqBidAttachmentComponent } from './rfq-bid-attachment/rfq-bid-attachme
 import { QuotationBidModalComponent } from './quotation-bid-modal/quotation-bid-modal.component';
 import { AutoResizeDatatableDirective } from 'app/shared/directives/table-auto-resize.directive';
 import { DatatableAutoResizeDirective } from 'app/shared/directives/datatable-auto-resize.directive';
+import { CustomSelectDirective } from 'app/shared/directives/custom-select.directive';
 
 
 @NgModule({
@@ -63,7 +64,8 @@ import { DatatableAutoResizeDirective } from 'app/shared/directives/datatable-au
     // ChartistModule, // Not compatible with Angular Ivy
     MatchHeightModule,
     AutoResizeDatatableDirective,
-    DatatableAutoResizeDirective
+    DatatableAutoResizeDirective,
+    CustomSelectDirective
   ]
 })
 export class RfqModule { }

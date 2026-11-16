@@ -27,6 +27,7 @@ import { TimepickerComponent } from './elements/timepicker/timepicker.component'
 import { TagsInputComponent } from './elements/tags-input/tags-input.component';
 import { EditorComponent } from './elements/editor/editor.component';
 import { SelectComponent } from './elements/select/select.component';
+import { CustomSelectDirective } from '../shared/directives/custom-select.directive';
 @NgModule({
     schemas: [NO_ERRORS_SCHEMA], // Allow incompatible modules
     imports: [
@@ -42,6 +43,7 @@ import { SelectComponent } from './elements/select/select.component';
         // UiSwitchModule, // Not compatible with Angular Ivy
         QuillModule.forRoot(),
         NgSelectModule,
+        CustomSelectDirective
         // TagInputModule // Not compatible with Angular Ivy
     ],
     declarations: [

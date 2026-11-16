@@ -6,7 +6,7 @@
       <div class="col-6 gap-2 d-flex align-items-center">
         <button class="btn btn-outline-secondary rounded-circle" (click)="router.navigate(['rfq/rfq-list'])"
           style="position: sticky; width: 40px; height: 40px; display: flex ; align-items: center; justify-content: center;">
-          <i class="fa fa-arrow-left"></i>
+          <img src="assets/img/svg-icons/back-icon.svg" alt="Back" class="back-icon" />
         </button>
         <h1 class="mb-0">Quotation Bid</h1>
       </div>
@@ -28,7 +28,7 @@
     <!-- <div class="card cstm-ui-card mb-3 py-2 px-3 d-flex justify-content-between flex-wrap">
       <div class="d-flex">
         <button class="btn btn-lg position-relative me-2" type="button" (click)="router.navigate(['rfq/rfq-list'])">
-          <i class="ft-arrow-left"></i>
+          <img src="assets/img/svg-icons/back-icon.svg" alt="Back" class="back-icon" />
         </button>
         <span class="custom-vl mx-2"></span>
         <button class="btn btn-sm cstm-ui-table-btn me-2" (click)="submitBids()">
@@ -180,13 +180,14 @@
                                 <div class="quote-price-actions">
                                   <span class="quote-price">{{ getBid(item.id).biddingAmount | number:'1.2-2' }}</span>
                                   <button class="btn-icon-edit" (click)="editBid(item.id)" title="Edit">
-                                    <i [ngClass]="!isBidEditable(item.id) ? 'fa fa-eye' : 'fa fa-edit'"></i>
+                                    <img *ngIf="isBidEditable(item.id)" src="assets/img/svg-icons/update-icon.svg" alt="Edit" class="action-svg-icon" />
+                                    <i *ngIf="!isBidEditable(item.id)" class="fa fa-eye"></i>
                                   </button>
                                   <button class="btn-icon-delete" 
                                     [disabled]="!isBidEditable(item.id)"
                                     (click)="deleteBid(item.id)" 
                                     title="Delete">
-                                    <i class="fa fa-trash"></i>
+                                    <img src="assets/img/svg-icons/delete-icon.svg" alt="Delete" class="action-svg-icon" />
                                   </button>
                                 </div>
                               </div>

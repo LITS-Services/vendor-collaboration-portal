@@ -9,7 +9,7 @@
         <div class="col-6 gap-2 d-flex align-items-center">
             <button class="btn btn-outline-secondary rounded-circle" (click)="goBack()"
                 style="position: sticky; width: 40px; height: 40px; display: flex ; align-items: center; justify-content: center;">
-                <i class="fa fa-arrow-left"></i>
+                <img src="assets/img/svg-icons/back-icon.svg" alt="Back" class="back-icon" />
             </button>
             <h1 class="mb-0">Company Profile</h1>
         </div>
@@ -159,7 +159,7 @@
                                                                         <select class="form-control w-cstm"
                                                                             [(ngModel)]="paymentMethod"
                                                                             [disabled]="isReadOnly">
-                                                                            <option value="">Select payment method</option>
+                                                                            <option value=""></option>
                                                                             <option *ngFor="let option of paymentMethodOptions"
                                                                                 [ngValue]="option.desc">
                                                                                 {{ option.desc }}
@@ -175,7 +175,7 @@
                                                                         <select class="form-control w-cstm"
                                                                             [(ngModel)]="paymentTerm"
                                                                             [disabled]="isReadOnly">
-                                                                            <option value="">Select payment term</option>
+                                                                            <option value=""></option>
                                                                             <option *ngFor="let option of paymentTermOptions"
                                                                                 [ngValue]="option.desc">
                                                                                 {{ option.desc }}
@@ -193,7 +193,7 @@
                                                                         <select class="form-control w-cstm"
                                                                             [(ngModel)]="vendorPostingGroup"
                                                                             [disabled]="isReadOnly">
-                                                                            <option value="">Select vendor posting group</option>
+                                                                            <option value=""></option>
                                                                             <option *ngFor="let option of vendorPostingGroupOptions"
                                                                                 [ngValue]="option.desc">
                                                                                 {{ option.desc }}
@@ -209,7 +209,7 @@
                                                                         <select class="form-control w-cstm"
                                                                             [(ngModel)]="vatBusinessPostingGroup"
                                                                             [disabled]="isReadOnly">
-                                                                            <option value="">Select VAT business posting group</option>
+                                                                            <option value=""></option>
                                                                             <option *ngFor="let option of vatBusinessPostingGroupOptions"
                                                                                 [ngValue]="option.desc">
                                                                                 {{ option.desc }}
@@ -227,7 +227,7 @@
                                                                         <select class="form-control w-cstm"
                                                                             [(ngModel)]="generalBusinessPostingGroup"
                                                                             [disabled]="isReadOnly">
-                                                                            <option value="">Select general bus posting group</option>
+                                                                            <option value=""></option>
                                                                             <option *ngFor="let option of generalBusinessPostingGroupOptions"
                                                                                 [ngValue]="option.desc">
                                                                                 {{ option.desc }}
@@ -329,10 +329,14 @@
                                                                 <td>{{ address.primary ? 'Yes' : 'No' }}</td>
                                                                 <td>
                                                                     <ng-container *ngIf="!isReadOnly">
-                                                                        <button class="ft-edit btn px-1" type="button"
-                                                                            (click)="openAddressEditor(i)"></button>
-                                                                        <button class="ft-trash btn px-1" type="button"
-                                                                            (click)="confirmAddressDeletion(i)"></button>
+                                                                        <button class="btn btn-sm px-1" type="button" title="Edit"
+                                                                            (click)="openAddressEditor(i)">
+                                                                            <img src="assets/img/svg-icons/update-icon.svg" alt="Edit" style="width: 18px; height: 18px;" />
+                                                                        </button>
+                                                                        <button class="btn btn-sm px-1" type="button" title="Delete"
+                                                                            (click)="confirmAddressDeletion(i)">
+                                                                            <img src="assets/img/svg-icons/delete-icon.svg" alt="Delete" style="width: 18px; height: 18px;" />
+                                                                        </button>
                                                                     </ng-container>
                                                                 </td>
                                                             </tr>
@@ -372,10 +376,14 @@
                                                             <td>{{ contact.primary ? 'Yes' : 'No' }}</td>
                                                             <td>
                                                                 <ng-container *ngIf="!isReadOnly">
-                                                                    <button class="ft-edit btn px-1" type="button"
-                                                                        (click)="openContactEditor(i)"></button>
-                                                                    <button class="ft-trash btn px-1" type="button"
-                                                                        (click)="confirmContactDeletion(i)"></button>
+                                                                    <button class="btn btn-sm px-1" type="button" title="Edit"
+                                                                        (click)="openContactEditor(i)">
+                                                                        <img src="assets/img/svg-icons/update-icon.svg" alt="Edit" style="width: 18px; height: 18px;" />
+                                                                    </button>
+                                                                    <button class="btn btn-sm px-1" type="button" title="Delete"
+                                                                        (click)="confirmContactDeletion(i)">
+                                                                        <img src="assets/img/svg-icons/delete-icon.svg" alt="Delete" style="width: 18px; height: 18px;" />
+                                                                    </button>
                                                                 </ng-container>
                                                             </td>
                                                         </tr>
@@ -396,7 +404,7 @@
                                                     </label>
                                                     <select class="form-control" [(ngModel)]="primaryCurrency"
                                                         [disabled]="isReadOnly">
-                                                        <option value="">Select primary currency</option>
+                                                        <option value=""></option>
                                                         <option>USD</option>
                                                         <option>GBP</option>
                                                         <option>AED</option>
@@ -412,7 +420,7 @@
                                                     </label>
                                                     <select class="form-control" [(ngModel)]="employeeResponsible"
                                                         [disabled]="isReadOnly">
-                                                        <option value="">Select primary contact</option>
+                                                        <option value=""></option>
                                                         <option *ngFor="let c of contactList">{{ c.description }}
                                                         </option>
                                                     </select>
@@ -427,7 +435,7 @@
                                                     </label>
                                                     <select class="form-control" [(ngModel)]="vendorCategory"
                                                         [disabled]="isReadOnly">
-                                                        <option>Select vendor type</option>
+                                                        <option value=""></option>
                                                         <option>Local</option>
                                                         <option>Foreign</option>
                                                     </select>
@@ -589,7 +597,7 @@
                                                         <label>Country <span class="text-danger">*</span></label>
                                                         <select class="form-control" formControlName="bankCountry"
                                                             [ngClass]="{'is-invalid': bankForm.get('bankCountry').invalid && bankForm.get('bankCountry').touched}">
-                                                            <option value="">Select country</option>
+                                                            <option value=""></option>
                                                             <option>Pakistan</option>
                                                             <option>United Arab Emirates</option>
                                                             <option>United Kingdom</option>
@@ -606,7 +614,7 @@
                                                         <label>Currency <span class="text-danger">*</span></label>
                                                         <select class="form-control" formControlName="bankCurrency"
                                                             [ngClass]="{'is-invalid': bankForm.get('bankCurrency').invalid && bankForm.get('bankCurrency').touched}">
-                                                            <option value="">Select currency</option>
+                                                            <option value=""></option>
                                                             <option>PKR</option>
                                                             <option>AED</option>
                                                             <option>USD</option>
@@ -661,11 +669,14 @@
 
                                                                 <td>
                                                                     <ng-container *ngIf="!isReadOnly">
-                                                                        <button class="ft-edit btn px-1" type="button"
-                                                                            (click)="editBank(i)"></button>
-
-                                                                        <button class="ft-trash btn px-1" type="button"
-                                                                            (click)="confirmBankDeletion(i)"></button>
+                                                                        <button class="btn btn-sm px-1" type="button" title="Edit"
+                                                                            (click)="editBank(i)">
+                                                                            <img src="assets/img/svg-icons/update-icon.svg" alt="Edit" style="width: 18px; height: 18px;" />
+                                                                        </button>
+                                                                        <button class="btn btn-sm px-1" type="button" title="Delete"
+                                                                            (click)="confirmBankDeletion(i)">
+                                                                            <img src="assets/img/svg-icons/delete-icon.svg" alt="Delete" style="width: 18px; height: 18px;" />
+                                                                        </button>
                                                                     </ng-container>
                                                                 </td>
                                                             </tr>

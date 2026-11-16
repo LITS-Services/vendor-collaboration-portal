@@ -23,6 +23,7 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 // import { ChartistModule } from 'ng-chartist'; // Not compatible with Angular Ivy
 import { PurchaseOrderDetailsComponent } from './purchase-order-details/purchase-order-details.component';
 import { GoogleMapsModule } from "@angular/google-maps";
+import { CustomSelectDirective } from "app/shared/directives/custom-select.directive";
 import { ShipmentDetailsComponent } from './purchase-order-details/shipment-details/shipment-details.component';
 import { GrnDetailsComponent } from './purchase-order-details/grn-details/grn-details.component';
 import { InvoiceComponent } from './purchase-order-details/invoice/invoice.component';
@@ -65,7 +66,8 @@ import { ShipmentLinesModalComponent } from './purchase-order-details/shipment-l
     NgApexchartsModule,
     // ChartistModule, // Not compatible with Angular Ivy
     MatchHeightModule,
-    GoogleMapsModule
+    GoogleMapsModule,
+    CustomSelectDirective
   ]
 })
 export class PurchaseOrderModule { }

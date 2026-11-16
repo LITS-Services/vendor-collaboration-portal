@@ -11,53 +11,56 @@
       }
     }
     &.ng-option-marked {
-      background-color: $primary !important;
-      color: $white !important;
+      background-color: #f3f4f6 !important;
+      color: #111827 !important;
     }
   }
   .ng-option-selected {
-    background-color: $primary !important;
-    color: $white !important;
+    background-color: #edf7f1 !important;
+    color: #249D57 !important;
+    font-weight: 600;
   }
 }
 .ng-select {
   .ng-select-container {
-    background-color: transparent !important;
-    border-color: $border-color;
-    border-radius: $border-radius;
-    color: $body-color;
+    background-color: #ffffff !important;
+    border-color: #cbd5e1;
+    border-radius: 9px;
+    color: #374151;
   }
   .ng-dropdown-panel {
-    border-color: $border-color;
-    box-shadow: none;
-    margin: 0;
+    border-color: #e5e7eb;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+    margin: 6px 0 0 0;
   }
   &.ng-select-opened>.ng-select-container {
-    border-color: $primary !important;
+    border-color: #249D57 !important;
+    box-shadow: 0 0 0 3px rgba(36, 157, 87, 0.15);
   }
   &.ng-select-focused:not(.ng-select-opened)>.ng-select-container {
-    border-color: $primary;
-    box-shadow: none;
+    border-color: #249D57;
+    box-shadow: 0 0 0 3px rgba(36, 157, 87, 0.15);
   }
   &.ng-select-multiple .ng-select-container .ng-value-container .ng-value {
-    background-color: $primary;
+    background-color: #249D57;
     color: $white;
-    border-radius: $border-radius;
+    border-radius: 6px;
     .ng-value-icon {
-      border: 1px solid map-get($primary-color, darken-1);
+      border: 1px solid #187741;
       border-right: 0 !important;
-      border-top-left-radius: $border-radius;
-      border-bottom-left-radius: $border-radius;
+      border-top-left-radius: 6px;
+      border-bottom-left-radius: 6px;
       padding: 1px 0 1px 5px;
       &:hover {
         background-color: inherit;
       }
     }
     .ng-value-label {
-      border: 1px solid map-get($primary-color, darken-1);
+      border: 1px solid #187741;
       border-left: 0 !important;
-      border-top-right-radius: $border-radius;
-      border-bottom-right-radius: $border-radius;
+      border-top-right-radius: 6px;
+      border-bottom-right-radius: 6px;
     }
   }
 }

@@ -12,8 +12,7 @@
             <ngx-datatable class="bootstrap core-bootstrap" [rows]="rfqData"
             [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50" [columns]="columns"
             rowHeight="50" [limit]="15" [scrollbarH]="true" [loadingIndicator]="loading"
-            [selected]="chkBoxSelected" [swapColumns]="false" [selectionType]="SelectionType.checkbox"
-            (sort)="onSort($event)" (select)="customChkboxOnSelect($event)">
+            (sort)="onSort($event)">
             <ngx-datatable-column name="Sr. No." [resizeable]="false" [width]="30">
                 <ng-template let-rowIndex="rowIndex" let-value="value" ngx-datatable-cell-template>
                     <span>{{rowIndex + 1}}</span>

@@ -76,8 +76,9 @@
             <div class="panel-footer">
               <button class="btn btn-markasread" (click)="markAllAsRead()"><i class="ft ft-check ml-2"></i>Mark all as
                 read</button>
-              <button class="btn btn-clearall" (click)="clearAllNotification()"><i class="ft ft-trash-2 ml-2"></i>Clear
-                All</button>
+              <button class="btn btn-clearall" (click)="clearAllNotification()">
+                <img src="assets/img/svg-icons/delete-icon.svg" alt="Clear All" style="width: 16px; height: 16px; margin-right: 6px; vertical-align: middle;" />Clear All
+              </button>
             </div>
           </div>
         </div>
@@ -91,7 +92,7 @@
           </a>
           <div class="dropdown-menu dropdown-menu-right" ngbDropdownMenu>
             <a class="dropdown-item" routerLink="/pages/profile">
-              <i class="ft-edit mr-3"></i> Edit Profile
+              <img src="assets/img/svg-icons/update-icon.svg" alt="Edit Profile" style="width: 16px; height: 16px; margin-right: 8px; vertical-align: middle;" /> Edit Profile
             </a>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" (click)="logout()">
@@ -127,7 +128,7 @@
         <i class="ft-search"></i>
       </button>
       <button class="icon-circle" aria-label="Filters">
-        <i class="ft-sliders"></i>
+        <img src="assets/img/svg-icons/filter-icon.svg" alt="Filters" style="width: 17px; height: 17px;" />
       </button>
       <!-- 
       <button class="icon-circle"  aria-label="Notifications">
@@ -186,7 +187,7 @@
         </a>
         <div class="dropdown-menu dropdown-menu-right" ngbDropdownMenu>
           <a class="dropdown-item" routerLink="/pages/profile">
-            <i class="ft-edit mr-2"></i> Edit Profile
+            <img src="assets/img/svg-icons/update-icon.svg" alt="Edit Profile" style="width: 16px; height: 16px; margin-right: 8px; vertical-align: middle;" /> Edit Profile
           </a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" (click)="logout()">

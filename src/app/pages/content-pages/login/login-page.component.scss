@@ -122,15 +122,15 @@
 }
 
 .vendor-title {
-  font-size: 36px !important;
+  font-size: 37px !important;
 }
 
 h4 {
-  font-size: 20px;
+  font-size: 21px;
 }
 
 p {
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .icon-div {
@@ -163,9 +163,9 @@ p {
 }
 
 .bg-image {
-  background-image: url('/assets/img/Background.png');
-  background-size: cover;
-  background-position: center;
+  background: linear-gradient(180deg, #249D57 0%, #187741 100%);
+  position: relative;
+  overflow: hidden;
 }
 
 .icon-container {
@@ -177,9 +177,14 @@ p {
   bottom: 30px;
 
   p {
-    font-size: 14px !important;
+    font-size: 15px !important;
     font-weight: 400 !important;
     color: #E9F5EE !important;
+
+    strong,
+    .company-name {
+      font-weight: 700 !important;
+    }
   }
 }
 
@@ -207,6 +212,67 @@ p {
 :host ::ng-deep #turnstile-container iframe {
   width: 100% !important;
   max-width: 100%;
+}
+
+.login-input,
+input[formControlName="username"],
+input[formControlName="password"] {
+  height: 50px !important;
+  border: 1px solid #D7D7D7 !important;
+  border-radius: 9px !important;
+  color: #A8A9AC !important;
+  font-family: 'Onest', sans-serif !important;
+  font-weight: 400 !important;
+  font-size: 15px !important;
+
+  &::placeholder {
+    color: #A8A9AC !important;
+    font-family: 'Onest', sans-serif !important;
+    font-weight: 400 !important;
+    font-size: 15px !important;
+    opacity: 1;
+  }
+
+  &::-webkit-input-placeholder {
+    color: #A8A9AC !important;
+    font-family: 'Onest', sans-serif !important;
+    font-weight: 400 !important;
+    font-size: 15px !important;
+  }
+
+  &::-moz-placeholder {
+    color: #A8A9AC !important;
+    font-family: 'Onest', sans-serif !important;
+    font-weight: 400 !important;
+    font-size: 15px !important;
+    opacity: 1;
+  }
+
+  &:-ms-input-placeholder {
+    color: #A8A9AC !important;
+    font-family: 'Onest', sans-serif !important;
+    font-weight: 400 !important;
+    font-size: 15px !important;
+  }
+
+  &:focus {
+    color: #A8A9AC !important;
+    border-color: #249D57 !important;
+    outline: 0;
+    box-shadow: none;
+  }
+
+  &.is-invalid {
+    border-color: #dc3545 !important;
+  }
+
+  &.is-valid {
+    border-color: #28a745 !important;
+  }
+}
+
+input[formControlName="password"] {
+  padding-right: 42px !important;
 }
 
 .login-btn {
@@ -290,7 +356,7 @@ p {
   margin: 1.2rem 0;
   color: #707070;
   font-weight: 500;
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .or-divider::before,
@@ -340,7 +406,7 @@ p {
     color: white;
     padding: 5px 10px;
     border-radius: 4px;
-    font-size: 12px;
+    font-size: 13px;
     white-space: nowrap;
     z-index: 1000;
   }

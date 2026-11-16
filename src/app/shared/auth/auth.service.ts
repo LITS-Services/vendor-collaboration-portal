@@ -133,7 +133,7 @@ export class AuthService {
     return this.http.post<any>(
       `${this.baseUrl}/Auth/VendorLogin`,
       { username, password, turnstileToken: turnstileToken || null },
-      { ...HTTP_CREDENTIALS, headers: vendorWebLoginHeaders() }
+      { ...HTTP_CREDENTIALS, headers: vendorWebLoginHeaders(), context: withSkipToast() }
     ).pipe(
       tap((res) => {
         const auth = unwrapAuthPayload(res);

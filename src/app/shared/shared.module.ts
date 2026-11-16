@@ -31,6 +31,7 @@ import { TopMenuLinkDirective } from './directives/topmenu-link.directive';
 import { TopMenuDropdownDirective } from './directives/topmenu-dropdown.directive';
 import { TopMenuAnchorToggleDirective } from './directives/topmenu-anchor-toggle.directive';
 import { HasPermissionDirective } from './auth/has-permission.directive';
+import { CustomSelectDirective } from './directives/custom-select.directive';
 
 
 @NgModule({
@@ -53,6 +54,7 @@ import { HasPermissionDirective } from './auth/has-permission.directive';
         TopMenuAnchorToggleDirective,
         TopMenuDirective,
         HasPermissionDirective,
+        CustomSelectDirective,
         NgbModule,
         TranslateModule,
         FormsModule,
@@ -70,7 +72,8 @@ import { HasPermissionDirective } from './auth/has-permission.directive';
         // ClickOutsideModule, // Not compatible with Angular Ivy
         AutocompleteModule,
         PipeModule,
-        HasPermissionDirective
+        HasPermissionDirective,
+        CustomSelectDirective
     ],
     declarations: [
         FooterComponent,

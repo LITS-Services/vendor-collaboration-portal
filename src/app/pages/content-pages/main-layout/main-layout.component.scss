@@ -86,7 +86,10 @@
 
 .vendor-title {
   font-size: 36px !important;
+  font-weight: 600 !important;
+  line-height: 1.25 !important;
   margin-bottom: 0;
+  text-align: left;
 }
 
 h4 {
@@ -97,16 +100,94 @@ p {
   font-size: 14px;
 }
 
+.sub-heading {
+  font-size: 18px;
+  font-weight: 600 !important;
+}
+
+.heading-description {
+  font-size: 13px;
+  font-weight: 400;
+  color: #E9F5EE;
+  line-height: 1.45;
+}
+
+/* Left Sidebar Wrapper: Ensures Logo, Heading, Description, and Features are strictly aligned on the same left axis */
+.portal-sidebar-wrapper {
+  max-width: 580px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 48px 0 32px 0;
+  z-index: 2;
+  box-sizing: border-box;
+
+  .portal-logo-wrapper {
+    width: 100%;
+    text-align: left;
+    margin-bottom: auto;
+  }
+
+  .portal-main-content {
+    width: 100%;
+    margin: auto 0;
+    text-align: left;
+    padding: 1.5rem 0;
+  }
+
+  .portal-features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 28px;
+    row-gap: 28px;
+    width: 100%;
+    margin-top: 2rem;
+  }
+
+  .feature-item {
+    text-align: left;
+  }
+
+  .feature-text {
+    text-align: left;
+  }
+
+  .portal-footer-wrapper {
+    width: 100%;
+    margin-top: auto;
+    padding-top: 1rem;
+
+    p {
+      font-size: 14px !important;
+      font-weight: 400 !important;
+      color: #E9F5EE !important;
+
+      strong,
+      .company-name {
+        font-weight: 700 !important;
+      }
+    }
+  }
+}
+
 .icon-div {
   text-align: center;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 12px;
-  background: #bde2cd52;
-  border-radius: 50px;
-  width: 36px;
-  height: 36px;
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  flex-shrink: 0;
+
+  .login-feature-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    display: block;
+  }
 }
 
 /* Ensure full viewport height for both halves */
@@ -137,24 +218,53 @@ p {
 
 /* Left half background image */
 .bg-image {
-  background-image: url('/assets/img/Background.png');
-  background-size: cover;
-  background-position: center;
+  background: linear-gradient(180deg, #249D57 0%, #187741 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Bottom-right decorative circular arcs */
+.bottom-right-decor {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  pointer-events: none;
+  z-index: 0;
+  line-height: 0;
+
+  .bottom-right-svg {
+    display: block;
+    width: 280px;
+    height: auto;
+    max-width: 45vw;
+  }
 }
 
 /* Icon at the top-left corner */
 .icon-container {
   top: 30px;
   left: 30px;
+  z-index: 2;
+}
+
+.content {
+  position: relative;
+  z-index: 2;
 }
 
 .icon-container1 {
   bottom: 30px;
+  z-index: 2;
 
   p {
-    font-size: 14px !important;
+    font-size: 15px !important;
     font-weight: 400 !important;
     color: #E9F5EE !important;
+
+    strong,
+    .company-name {
+      font-weight: 700 !important;
+    }
   }
 }
 
@@ -165,8 +275,11 @@ p {
 }
 
 .icon-img {
-  width: 120px;
-  height: 60px;
+  width: 130px;
+  height: auto;
+  max-height: 65px;
+  object-fit: contain;
+  display: block;
 }
 
 .icon-features {
@@ -236,7 +349,7 @@ p {
   }
 
   .vendor-title {
-    font-size: 26px !important;
+    font-size: 27px !important;
     padding: 1em 0;
   }
 
@@ -263,16 +376,26 @@ p {
 
 @media (min-width: 992px) and (max-width: 1280px) {
 
+  .portal-sidebar-wrapper {
+    padding: 32px 20px 24px 20px;
+    max-width: 480px;
+
+    .portal-features-grid {
+      column-gap: 16px;
+      row-gap: 20px;
+    }
+  }
+
   .vendor-title {
     font-size: 30px !important;
   }
 
   .sub-heading {
-    font-size: 14px !important;
+    font-size: 16px !important;
   }
 
   .heading-description {
-    font-size: 10px !important;
+    font-size: 12px !important;
   }
 
 }
@@ -286,7 +409,7 @@ p {
   margin: 1.2rem 0;
   color: #707070;
   font-weight: 500;
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .or-divider::before,
