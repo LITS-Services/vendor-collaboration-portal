@@ -23,7 +23,7 @@
 
 .history__title {
   h1 {
-    font-size: 20px !important;
+    font-size: 21px !important;
     font-weight: 500;
     color: var(--text);
   }
@@ -84,14 +84,14 @@
 }
 
 .stat-card__label {
-  font-size: 13px;
+  font-size: 14px;
   color: #262626;
   line-height: 1.1;
 }
 
 .stat-card__value {
   margin-top: 4px;
-  font-size: 22px;
+  font-size: 23px;
   font-weight: 500;
   color: var(--text);
   line-height: 1.1;
@@ -106,7 +106,7 @@
 }
 
 .stat-card__details {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--muted);
 }
 
@@ -159,7 +159,7 @@
 .po-legend {
   display: flex;
   gap: 18px;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
 }
 
@@ -197,7 +197,7 @@
   );
   display: grid;
   place-items: center;
-  font-size: 11px;
+  font-size: 12px;
   color: #166534;
 }
 
@@ -222,7 +222,7 @@
 }
 
 .po-mini__text {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
 }
 
@@ -259,13 +259,13 @@
 }
 
 .panel__title {
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 500;
   color: var(--text);
 }
 
 .panel__link {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--primary);
   cursor: pointer;
   text-decoration: none;
@@ -304,7 +304,7 @@
 }
 
 .vendor-gauge__value {
-  font-size: 28px;
+  font-size: 29px;
   font-weight: 600;
   color: #111827;
   line-height: 1;
@@ -312,13 +312,13 @@
 
 .vendor-gauge__label {
   margin-top: 4px;
-  font-size: 13px;
+  font-size: 14px;
   color: #6b7280;
 }
 
 .vendor-gauge__stars {
   margin-top: 6px;
-  font-size: 13px;
+  font-size: 14px;
   color: #facc15; // yellow stars
 }
 
@@ -329,7 +329,7 @@
 
 /* base */
 .star {
-  font-size: 16px;
+  font-size: 17px;
   color: #d1d5db;    /* gray default */
 }
 
@@ -368,7 +368,7 @@
 .table-card {
   border: 1px solid #eef2f6;
   background: #ffffff;
-  font-size: 12px;
+  font-size: 13px;
   overflow: hidden;
 }
 
@@ -380,15 +380,22 @@
 
   &:not(.table__row--head) {
     border-top: 1px solid #f1f5f9;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: rgba(36, 157, 87, 0.06);
+    }
   }
 }
 
 .table__row--head {
-  background: #F4F4F4 !important;
-  color: #606060 !important;
-  font-size: 12px !important;
+  background-color: #F4F4F4 !important;
+  color: #747474 !important;
+  font-family: 'Onest', sans-serif !important;
+  font-weight: 400 !important;
+  font-size: 14px !important;
+  text-transform: uppercase !important;
   letter-spacing: 0.06em !important;
-  font-weight: 600;
 }
 
 .table__row > div {
@@ -469,7 +476,7 @@
   justify-content: center;
   padding: 3px 10px;
   border-radius: 999px;
-  font-size: 11px;
+  font-size: 12px;
   border: 1px solid transparent;
   white-space: nowrap;
 }
@@ -530,7 +537,7 @@
   color: #fff;
   display: grid;
   place-items: center;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   box-shadow: 0 8px 16px rgba(15, 23, 42, 0.16);
 }
@@ -544,13 +551,13 @@
 }
 
 .vendor-item__name {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
   color: #111827;
 }
 
 .vendor-item__orders {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
 }
 
@@ -559,12 +566,12 @@
 }
 
 .vendor-item__stars {
-  font-size: 10px;
+  font-size: 11px;
   color: #facc15; // yellow
 }
 
 .vendor-item__score {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
   color: #111827;
 }
@@ -585,7 +592,7 @@
   gap: 8px;
   padding: 6px 14px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
   white-space: nowrap;
 }

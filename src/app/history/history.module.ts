@@ -14,6 +14,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 // import { CustomFormsModule } from 'ngx-custom-validators'; // Not compatible with Angular Ivy
 import { MatchHeightModule } from 'app/shared/directives/match-height.directive';
+import { CustomSelectDirective } from 'app/shared/directives/custom-select.directive';
 // import { UiSwitchModule } from 'ngx-ui-switch'; // Not compatible with Angular Ivy
 import { PipeModule } from 'app/shared/pipes/pipe.module';
 import { QuillModule } from 'ngx-quill';
@@ -62,6 +63,7 @@ import { NgApexchartsModule } from 'ng-apexcharts';
         NgApexchartsModule,
         // ChartistModule, // Not compatible with Angular Ivy
         MatchHeightModule,
+        CustomSelectDirective
   ]
 })
 export class HistoryModule { }

@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { FileValidationService } from 'app/shared/auth/file-validation.service';
@@ -10,11 +10,16 @@ import Swal from 'sweetalert2';
   styleUrls: ['./company-profile-attachment.component.scss'],
   standalone: false
 })
-export class CompanyProfileAttachmentComponent implements OnInit {
+export class CompanyProfileAttachmentComponent implements OnInit, OnChanges {
   @Input() attachedFiles: any[] = [];
   @Input() readonly = false;
   @Output() saveAttachment = new EventEmitter<any[]>();
   @ViewChild('fileInput') fileInput: ElementRef | undefined;
+  @ViewChild('datatable') datatable!: any;
+
+  get isMobile(): boolean {
+    return window.innerWidth <= 768;
+  }
 
   attachment: any = {
     file: null,       // ✅ keep raw File
@@ -34,6 +39,12 @@ export class CompanyProfileAttachmentComponent implements OnInit {
 
   ngOnInit(): void {
     console.log('Initial Attached Files in Modal:', this.attachedFiles);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['attachedFiles'] && this.attachedFiles) {
+      this.attachedFiles = [...this.attachedFiles];
+    }
   }
 
   onFileChange(event: any): void {
@@ -104,6 +115,7 @@ export class CompanyProfileAttachmentComponent implements OnInit {
     } else {
       this.attachedFiles.push(newAttachment);
     }
+    this.attachedFiles = [...this.attachedFiles];
 
     this.resetAttachmentForm();
     this.emitChange();
@@ -114,12 +126,28 @@ export class CompanyProfileAttachmentComponent implements OnInit {
   }
 
 
-  editFile(index: number): void {
+  editFile(fileOrIndex: any): void {
+    let index: number = -1;
+    if (typeof fileOrIndex === 'number') {
+      index = fileOrIndex;
+    } else if (fileOrIndex) {
+      index = this.attachedFiles.indexOf(fileOrIndex);
+    }
+    if (index === -1 || index >= this.attachedFiles.length) return;
+
     this.attachment = { ...this.attachedFiles[index] };
     this.editIndex = index;
   }
 
-  openAttachmentDeletionPopup(index: number): void {
+  openAttachmentDeletionPopup(fileOrIndex: any): void {
+    let index: number = -1;
+    if (typeof fileOrIndex === 'number') {
+      index = fileOrIndex;
+    } else if (fileOrIndex) {
+      index = this.attachedFiles.indexOf(fileOrIndex);
+    }
+    if (index === -1 || index >= this.attachedFiles.length) return;
+
     this.showAttachmentDeletePopup = true;
     this.deleteIndex = index;
   }
@@ -134,6 +162,7 @@ export class CompanyProfileAttachmentComponent implements OnInit {
     if (this.deleteIndex === null || this.readonly) return;
 
     this.attachedFiles.splice(this.deleteIndex, 1);
+    this.attachedFiles = [...this.attachedFiles];
     this.closeAttachmentDeletePopup();
     this.emitChange();
   }

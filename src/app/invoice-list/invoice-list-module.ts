@@ -7,6 +7,7 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { NgbAccordionModule, NgbDatepickerModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AutoResizeDatatableDirective } from 'app/shared/directives/table-auto-resize.directive';
 import { DatatableAutoResizeDirective } from 'app/shared/directives/datatable-auto-resize.directive';
+import { CustomSelectDirective } from 'app/shared/directives/custom-select.directive';
 import { FormsModule } from '@angular/forms';
 
 
@@ -21,6 +22,7 @@ import { FormsModule } from '@angular/forms';
     NgbDatepickerModule,
     AutoResizeDatatableDirective,
     DatatableAutoResizeDirective,
+    CustomSelectDirective,
     FormsModule,
     NgbModule
   ]

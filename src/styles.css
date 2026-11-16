@@ -6,142 +6,165 @@
 [data-bs-theme="light"] {
   --bs-body-font-family: "Onest", sans-serif;
 }
+
 .modal-title {
   color: #249D57 !important;
 }
 
-.modal-body{
+.modal-body {
   background-color: white !important;
 }
-.modal-footer{
+
+.modal-footer {
   background-color: white !important;
 }
-.btn-primary{
-    background: #249D57;
 
-    color: #ffffff;
-    border: #249D57;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 9px;
-  }
-  .btn-primary:hover {
-    background-color: #187741;
-    border-color: #249D57;
-    color: white;
-  }
-  .btn-primary:active {
-    background-color: #187741;
-    border-color: #249D57;
-     color: white;
-  }
-  .btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active, .show > .btn-primary.dropdown-toggle {
-    color: #fff;
-    background-color: #249D57;
-    border-color: #1E89B8;
-  }
-  .btn-outline-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active, .show > .btn-primary.dropdown-toggle {
-    color: #fff;
-    background-color: #249D57 !important;
-    border-color: #249D57 !important;
+.btn-primary {
+  background: #249D57;
 
-    
-  }
-  .btn-primary:focus, .btn-primary.focus {
-    color: #fff;
-    background-color: #249D57;
-    border-color: #249D57;
-    box-shadow: 0 0 0 0.2rem rgba(115, 204, 255, 0.5);
-  }
-  .btn-outline-primary {
-    border: 1px solid #BDE2CD !important;
-    background-color: #ffffff;
-    color: #249D57;
-    border-radius: 9px;
+  color: #ffffff;
+  border: #249D57;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
 }
+
+.btn-primary:hover {
+  background-color: #187741;
+  border-color: #249D57;
+  color: white;
+}
+
+.btn-primary:active {
+  background-color: #187741;
+  border-color: #249D57;
+  color: white;
+}
+
+.btn-primary:not(:disabled):not(.disabled):active,
+.btn-primary:not(:disabled):not(.disabled).active,
+.show>.btn-primary.dropdown-toggle {
+  color: #fff;
+  background-color: #249D57;
+  border-color: #1E89B8;
+}
+
+.btn-outline-primary:not(:disabled):not(.disabled):active,
+.btn-primary:not(:disabled):not(.disabled).active,
+.show>.btn-primary.dropdown-toggle {
+  color: #fff;
+  background-color: #249D57 !important;
+  border-color: #249D57 !important;
+
+
+}
+
+.btn-primary:focus,
+.btn-primary.focus {
+  color: #fff;
+  background-color: #249D57;
+  border-color: #249D57;
+  box-shadow: 0 0 0 0.2rem rgba(115, 204, 255, 0.5);
+}
+
+.btn-outline-primary {
+  border: 1px solid #BDE2CD !important;
+  background-color: #ffffff;
+  color: #249D57;
+  border-radius: 9px;
+}
+
 .btn-outline-primary:hover {
   background-color: #249D57 !important;
   color: #fff !important;
 }
+
 .btn-outline-primary:focus {
   background-color: transparent !important;
   color: #249D57 !important;
 }
+
 .btn-outline-primary:active {
   color: #fff;
   background-color: #249D57;
   border-color: #249D57;
 }
 
-.btn-danger{
+.btn-danger {
   color: white;
 }
 
-.btn-danger:hover{
+.btn-danger:hover {
   color: white;
 }
 
-  a {
-    color: #187741;
-    text-decoration: none;
-    background-color: transparent;
+a {
+  color: #187741;
+  text-decoration: none;
+  background-color: transparent;
 }
-.datatable-body a{
+
+.datatable-body a {
   text-decoration: underline !important;
 }
- 
-a:hover {
-    color: #187741;
-    text-decoration: none;
-}
-  .vl {
-    border-left: 1.4px solid #cccccc;
-    height: 36px;
-    position: absolute;
-    margin-left: -3px;
-    top: 3px;
-    bottom: 3px;
-  }
-  .heading{
-    color: #187741;
-    margin-top: 1rem;
-    margin-bottom: -0.5rem;
-    font-weight: 700;
-  }
-  body{
-    background-color: #fff;
-    font-family: "Onest", sans-serif !important;
-  }
-  html{
-    font-family: "Onest", sans-serif !important;
-  }
 
-  /*
+a:hover {
+  color: #187741;
+  text-decoration: none;
+}
+
+.vl {
+  border-left: 1.4px solid #cccccc;
+  height: 36px;
+  position: absolute;
+  margin-left: -3px;
+  top: 3px;
+  bottom: 3px;
+}
+
+.heading {
+  color: #187741;
+  margin-top: 1rem;
+  margin-bottom: -0.5rem;
+  font-weight: 700;
+}
+
+body {
+  background-color: #fff;
+  font-family: "Onest", sans-serif !important;
+}
+
+html {
+  font-family: "Onest", sans-serif !important;
+}
+
+/*
     Prevent layout shift when the page toggles between needing / not needing a vertical scrollbar.
     On Windows this otherwise changes viewport width and makes fixed headers appear to "jump".
   */
-  html {
-    scrollbar-gutter: stable;
-  }
+html {
+  scrollbar-gutter: stable;
+}
 
-  /* Fallback for browsers without `scrollbar-gutter` support */
-  @supports not (scrollbar-gutter: stable) {
-    body {
-      overflow-y: scroll;
-    }
+/* Fallback for browsers without `scrollbar-gutter` support */
+@supports not (scrollbar-gutter: stable) {
+  body {
+    overflow-y: scroll;
   }
-  /* .h1 .h2 .h3 .h4 .h5 .h6{
+}
+
+/* .h1 .h2 .h3 .h4 .h5 .h6{
     color: #187741;
   } */
-  .modal-header{
-    background: white !important;
-  
-    color: #249D57 !important;
-    font-size: 18px;
-     font-weight: 600;
-     border-bottom: none !important;
-  }
+.modal-header {
+  background: white !important;
+
+  color: #249D57 !important;
+  font-size: 18px;
+  font-weight: 600;
+  border-bottom: none !important;
+}
 
 /* Purchase order details modal sections */
 .modal-header.modal-header-soft {
@@ -186,17 +209,17 @@ a:hover {
   border-color: #eba75a !important;
   color: #8a4d00 !important;
 }
-  
-  .form-control:focus {
-    color: #75787d;
-    background-color: white;
-    border-color: #299c5b9c;
-    outline: 0;
-    box-shadow: none;
-  }
 
-  .form-control{
- height: 42px;
+.form-control:focus {
+  color: #75787d;
+  background-color: white;
+  border-color: #299c5b9c;
+  outline: 0;
+  box-shadow: none;
+}
+
+.form-control {
+  height: 42px;
   width: 100%;
   padding: 12px 16px;
   border: 1.5px solid #D7D7D7;
@@ -205,80 +228,103 @@ a:hover {
   font-size: 15px;
   transition: all 0.25s ease;
   background-color: white;
-    background-position: right 4px center; /* moves arrow inward */
+  background-position: right 4px center;
+  /* moves arrow inward */
   background-repeat: no-repeat;
   background-origin: content-box;
-  }
+}
 
-  .pos-relative{
-    position: relative;
-  }
+.pos-relative {
+  position: relative;
+}
 
-  textarea.form-control{
-    min-height: calc(1.5em + 1.8rem + 0px) !important;
-  }
+textarea.form-control {
+  min-height: calc(1.5em + 1.8rem + 0px) !important;
+}
 
-  select.form-control {
-  padding: 9px 16px;
-  appearance: none; /* remove default select styling */
+select.form-control {
+  padding: 9px 34px 9px 14px !important;
+  appearance: none;
+  /* remove default select styling */
   -webkit-appearance: none;
   -moz-appearance: none;
   background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path fill='%23333' d='M0 0l5 6 5-6z'/></svg>");
-  background-position: right 4px center;
+  background-position: right 14px center;
   background-repeat: no-repeat;
   background-size: 10px 6px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
-  .form-control::placeholder {
+.form-control::placeholder {
   color: #A8A9AC !important;
   opacity: 1;
 }
 
 .form-control::-ms-expand {
-  display: none; /* removes default arrow in IE/Edge */
+  display: none;
+  /* removes default arrow in IE/Edge */
 }
-  form label, .form-group label {
-    text-transform: capitalize !important;
-    font-size: 0.85rem;
-    font-weight: 500;
-  }
 
-  label{
-    margin-bottom: 4px;
-  }
-  .example-action-buttons {
-    display: flex;
-    justify-content: flex-end; /* Move buttons to the right */
-  }
-  
-  form label, .form-group label {
-    text-transform:none !important;
-    font-size: 0.85rem;
-    font-weight: 500;
-  }
-  .eye-icon {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-  }
+form label,
+.form-group label {
+  text-transform: capitalize !important;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
 
-  .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
-    font-family: "Onest", sans-serif !important;
-    color: #249D57 !important;
-  }
+label {
+  margin-bottom: 4px;
+}
 
-  h6{
-    color: black !important;
-    font-weight: 400 !important;
-  }
+.example-action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  /* Move buttons to the right */
+}
 
-  h1{
-    font-size: 26px !important;
-  }
+form label,
+.form-group label {
+  text-transform: none !important;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
 
-  /* .accordion-button {
+.eye-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Onest", sans-serif !important;
+  color: #249D57 !important;
+}
+
+h6 {
+  color: black !important;
+  font-weight: 400 !important;
+}
+
+h1 {
+  font-size: 26px !important;
+}
+
+/* .accordion-button {
     font-weight: 600 !important;
     position: relative;
     display: flex;
@@ -299,140 +345,433 @@ a:hover {
   color: #187741;
   background-color: #f5efff;
   box-shadow: none !important;
-  background-color:white !important;
+  background-color: white !important;
 }
 
 .accordion-button:focus {
   z-index: 3;
-  border-color:rgba(58, 167, 103, 0.1215686275) !important;
+  border-color: rgba(58, 167, 103, 0.1215686275) !important;
   outline: 0;
   /* box-shadow: 0 0 0 0.25rem rgba(58, 167, 103, 0.1215686275); */
   box-shadow: none !important;
 }
 
-    .ngx-datatable .datatable-header-inner {
-    background-color: #F4F4F4 !important;
-    color: #606060;
-    }
+.ngx-datatable .datatable-header-inner {
+  background-color: #F4F4F4 !important;
+  color: #606060;
+}
 
-  .ngx-datatable.bootstrap .datatable-header .datatable-header-cell {
+.ngx-datatable.bootstrap .datatable-header .datatable-header-cell {
   border-bottom: none !important;
   height: 42px !important;
 }
 
 .ngx-datatable.bootstrap .datatable-body .datatable-body-row {
-      border-bottom: 1px solid #ededed !important;
-      border-top: none;
-      transition: background-color 0.2s ease;
+  border-bottom: 1px solid #ededed !important;
+  border-top: none;
+  transition: background-color 0.2s ease;
 }
-  .ngx-datatable.bootstrap .datatable-body .datatable-body-row.datatable-row-even {
-   background-color: white;
-  }
 
-   .ngx-datatable.bootstrap .datatable-body .datatable-body-row.datatable-row-odd {
-    background-color: white !important;
-  }
+.ngx-datatable.bootstrap .datatable-body .datatable-body-row.datatable-row-even {
+  background-color: white;
+}
 
-  .ngx-datatable.bootstrap .datatable-body .datatable-body-row.active{
-    background-color: #249d57 !important;
-  }
+.ngx-datatable.bootstrap .datatable-body .datatable-body-row.datatable-row-odd {
+  background-color: white !important;
+}
 
-  /* Datatable row hover highlight (global) */
-  .ngx-datatable.bootstrap .datatable-body .datatable-body-row:not(.active):hover {
-    background-color: rgba(36, 157, 87, 0.06) !important;
-  }
+.ngx-datatable.bootstrap .datatable-body .datatable-body-row.active {
+  background-color: #249d57 !important;
+}
 
-  /* Some ngx-datatable templates hover the wrapper instead of the row */
-  .ngx-datatable.bootstrap .datatable-body .datatable-row-wrapper:hover .datatable-body-row:not(.active) {
-    background-color: rgba(36, 157, 87, 0.06) !important;
-  }
+/* Datatable row hover highlight (global) */
+.ngx-datatable.bootstrap .datatable-body .datatable-body-row:not(.active):hover {
+  background-color: rgba(36, 157, 87, 0.06) !important;
+}
 
-  .ngx-datatable .datatable-header-cell,
-  .ngx-datatable .datatable-body-cell {
-   overflow: hidden !important;
- }
- 
-  .ngx-datatable .datatable-header-cell .datatable-header-cell-label,
-  .ngx-datatable .datatable-body-cell .datatable-body-cell-label {
-   display: block !important;
-   white-space: nowrap !important;
-   overflow: hidden !important;
-   text-overflow: ellipsis !important;
-   color: #606060  !important;
- }
+/* Some ngx-datatable templates hover the wrapper instead of the row */
+.ngx-datatable.bootstrap .datatable-body .datatable-row-wrapper:hover .datatable-body-row:not(.active) {
+  background-color: rgba(36, 157, 87, 0.06) !important;
+}
+
+.ngx-datatable .datatable-header-cell,
+.ngx-datatable .datatable-body-cell {
+  overflow: hidden !important;
+}
+
+.ngx-datatable .datatable-header-cell .datatable-header-cell-label,
+.ngx-datatable .datatable-body-cell .datatable-body-cell-label {
+  display: block !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  color: #606060 !important;
+}
 
 
-  .ngx-datatable.fixed-row .datatable-scroll .datatable-body-row .datatable-body-cell{
-    padding: 0.85rem;
-    display: flex;
-    align-items: center;
-  }
+.ngx-datatable.fixed-row .datatable-scroll .datatable-body-row .datatable-body-cell {
+  padding: 0.85rem;
+  display: flex;
+  align-items: center;
+}
 
-   .ngx-datatable.bootstrap .datatable-footer {
-    color: #747474 !important;
-    background-color: transparent !important;
-  }
+/* Datatable and pagination styling */
+.ngx-datatable.bootstrap .datatable-footer,
+.ngx-datatable .datatable-footer {
+  color: #747474 !important;
+  background-color: transparent !important;
+  padding: 0 1.2rem !important;
+}
 
-  .ngx-datatable.bootstrap .datatable-footer .datatable-pager a {
-        color: #747474 !important;
-        border: 1px solid #D7D7D7 !important;
-  }
+/* Ensure datatable footer shows only total count (hiding "0 selected / ") across all tables */
+.ngx-datatable .datatable-footer .page-count span {
+  display: none !important;
+}
 
-  .ngx-datatable.bootstrap .datatable-footer .datatable-pager ul li:not(.disabled).active a {
-    background-color: #249d57 !important;
-    font-weight: bold;
-    color: #ffffff !important;
-  }
-
-  .ngx-datatable.bootstrap .datatable-footer .datatable-pager ul li:not(.disabled):hover a {
-    background-color: #249d57 !important;
-    font-weight: bold;
-    color: #ffffff !important;
-  }
-
-  .app-table-card {
-    border: 1px solid #eef2f6;
-    /* border-radius: 10px; */
-    overflow: hidden;
-    background: #ffffff;
-  }
-
-  .app-table-card .table.app-table {
-    margin-bottom: 0 !important;
-    font-size: 12px;
-    border-color: transparent !important; 
-  }
-
-  .app-table-card .table.app-table > :not(caption) > * > * {
-    padding: 10px 14px !important;
-    background-color: transparent;
-    box-shadow: none !important;
-    transition: background-color 0.3s ease;
-  }
-
-  .app-table thead th {
-    background: #F4F4F4 !important;
-    color: #606060 !important;
-    font-size: 12px !important;
-    letter-spacing: 0.06em !important;
-    font-weight: 600;
-  }
-
-  .app-table-card .table.app-table tbody td {
-    border-top: 1px solid #f1f5f9 !important;
-  }
-
-  .app-table-card .table.app-table.table-hover > tbody > tr:hover > * {
-    background-color: rgba(36, 157, 87, 0.06) !important;
-  }
-
-  .cstm-checkbox-form{
+.ngx-datatable .datatable-footer .datatable-footer-inner,
+.ngx-datatable.bootstrap .datatable-footer .datatable-footer-inner {
   display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    height: 100% !; 
+  align-items: center !important;
+  justify-content: space-between !important;
+  height: auto !important;
+  min-height: 50px !important;
 }
-  
+
+.ngx-datatable .datatable-footer .datatable-pager,
+.ngx-datatable.bootstrap .datatable-footer .datatable-pager {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  margin: 0 !important;
+  vertical-align: middle !important;
+}
+
+.ngx-datatable .datatable-footer .datatable-pager .pager,
+.ngx-datatable.bootstrap .datatable-footer .datatable-pager .pager {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none !important;
+}
+
+.ngx-datatable .datatable-footer .datatable-pager .pager li,
+.ngx-datatable.bootstrap .datatable-footer .datatable-pager .pager li {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  outline: none !important;
+}
+
+/* 35px/35px base for all pagination items */
+.ngx-datatable .datatable-footer .datatable-pager .pager li a,
+.ngx-datatable.bootstrap .datatable-footer .datatable-pager .pager li a {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 35px !important;
+  min-width: 35px !important;
+  height: 35px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border-radius: 8px !important;
+  box-sizing: border-box !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+  text-decoration: none !important;
+  outline: none !important;
+  transition: all 0.2s ease-in-out !important;
+  cursor: pointer !important;
+  position: static !important;
+}
+
+/* Border for previous, last page, next page and first page: 1.2px solid #D7D7D7 */
+.ngx-datatable .datatable-footer .datatable-pager .pager li:not(.pages) a,
+.ngx-datatable.bootstrap .datatable-footer .datatable-pager .pager li:not(.pages) a {
+  border: 1.2px solid #D7D7D7 !important;
+  background-color: #ffffff !important;
+  color: #262626 !important;
+}
+
+.ngx-datatable .datatable-footer .datatable-pager .pager li:not(.pages):not(.disabled):hover a,
+.ngx-datatable.bootstrap .datatable-footer .datatable-pager .pager li:not(.pages):not(.disabled):hover a {
+  border-color: #B0B0B0 !important;
+  background-color: #F8F9FA !important;
+}
+
+/* Disabled previous, next, first, last buttons */
+.ngx-datatable .datatable-footer .datatable-pager .pager li.disabled a,
+.ngx-datatable.bootstrap .datatable-footer .datatable-pager .pager li.disabled a {
+  opacity: 0.45 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+  border: 1.2px solid #D7D7D7 !important;
+  background-color: #ffffff !important;
+}
+
+/* SVG Icons for first-page, previous-page, next-page, last-page */
+.ngx-datatable .datatable-footer .datatable-pager .pager li i,
+.ngx-datatable.bootstrap .datatable-footer .datatable-pager .pager li i {
+  display: inline-block !important;
+  position: static !important;
+  top: auto !important;
+  left: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: contain !important;
+  line-height: normal !important;
+}
+
+.ngx-datatable .datatable-footer .datatable-pager .pager li i.datatable-icon-prev::before,
+.ngx-datatable .datatable-footer .datatable-pager .pager li i.datatable-icon-left::before,
+.ngx-datatable .datatable-footer .datatable-pager .pager li i.datatable-icon-right::before,
+.ngx-datatable .datatable-footer .datatable-pager .pager li i.datatable-icon-skip::before,
+.ngx-datatable.bootstrap .datatable-footer .datatable-pager .pager li i.datatable-icon-prev::before,
+.ngx-datatable.bootstrap .datatable-footer .datatable-pager .pager li i.datatable-icon-left::before,
+.ngx-datatable.bootstrap .datatable-footer .datatable-pager .pager li i.datatable-icon-right::before,
+.ngx-datatable.bootstrap .datatable-footer .datatable-pager .pager li i.datatable-icon-skip::before {
+  content: "" !important;
+  display: none !important;
+}
+
+/* First page icon */
+.ngx-datatable .datatable-footer .datatable-pager .pager li i.datatable-icon-prev,
+.ngx-datatable.bootstrap .datatable-footer .datatable-pager .pager li i.datatable-icon-prev {
+  width: 14px !important;
+  height: 14px !important;
+  background-image: url('/assets/img/svg-icons/first-page-icon.svg') !important;
+}
+
+/* Previous page icon */
+.ngx-datatable .datatable-footer .datatable-pager .pager li i.datatable-icon-left,
+.ngx-datatable.bootstrap .datatable-footer .datatable-pager .pager li i.datatable-icon-left {
+  width: 7px !important;
+  height: 14px !important;
+  background-image: url('/assets/img/svg-icons/previous-page-icon.svg') !important;
+}
+
+/* Next page icon */
+.ngx-datatable .datatable-footer .datatable-pager .pager li i.datatable-icon-right,
+.ngx-datatable.bootstrap .datatable-footer .datatable-pager .pager li i.datatable-icon-right {
+  width: 7px !important;
+  height: 14px !important;
+  background-image: url('/assets/img/svg-icons/next-page-icon.svg') !important;
+}
+
+/* Last page icon */
+.ngx-datatable .datatable-footer .datatable-pager .pager li i.datatable-icon-skip,
+.ngx-datatable.bootstrap .datatable-footer .datatable-pager .pager li i.datatable-icon-skip {
+  width: 14px !important;
+  height: 14px !important;
+  background-image: url('/assets/img/svg-icons/last-page-icon.svg') !important;
+}
+
+/* Normal page : text color #262626 */
+.ngx-datatable .datatable-footer .datatable-pager .pager li.pages a,
+.ngx-datatable.bootstrap .datatable-footer .datatable-pager .pager li.pages a {
+  border: 1.2px solid transparent !important;
+  background-color: transparent !important;
+  color: #262626 !important;
+  font-weight: 500 !important;
+}
+
+.ngx-datatable .datatable-footer .datatable-pager .pager li.pages:not(.active):hover a,
+.ngx-datatable.bootstrap .datatable-footer .datatable-pager .pager li.pages:not(.active):hover a {
+  border-color: transparent !important;
+  background-color: rgba(36, 157, 87, 0.08) !important;
+  color: #249D57 !important;
+}
+
+/* Active page : border: 1.2px solid #249D57 and background color : #F2FFF7 */
+.ngx-datatable .datatable-footer .datatable-pager .pager li.pages.active a,
+.ngx-datatable .datatable-footer .datatable-pager .pager li:not(.disabled).active a,
+.ngx-datatable.bootstrap .datatable-footer .datatable-pager .pager li.pages.active a,
+.ngx-datatable.bootstrap .datatable-footer .datatable-pager .pager li:not(.disabled).active a {
+  border: 1.2px solid #249D57 !important;
+  background-color: #F2FFF7 !important;
+  color: #262626 !important;
+  font-weight: 600 !important;
+}
+
+.ngx-datatable .datatable-footer .datatable-pager .pager li.pages.active:hover a,
+.ngx-datatable.bootstrap .datatable-footer .datatable-pager .pager li.pages.active:hover a {
+  border: 1.2px solid #249D57 !important;
+  background-color: #F2FFF7 !important;
+  color: #262626 !important;
+}
+
+/* Universal pagination support (e.g. ngb-pagination or custom pagination) */
+.pagination {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none !important;
+}
+
+.pagination .page-item {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.pagination .page-item .page-link {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 35px !important;
+  min-width: 35px !important;
+  height: 35px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border-radius: 8px !important;
+  box-sizing: border-box !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+  text-decoration: none !important;
+  outline: none !important;
+  transition: all 0.2s ease-in-out !important;
+  border: 1.2px solid transparent !important;
+  background-color: transparent !important;
+  color: #262626 !important;
+}
+
+.pagination .page-item:not(.active):not([class*="prev"]):not([class*="next"]) .page-link:hover {
+  background-color: rgba(36, 157, 87, 0.08) !important;
+  color: #249D57 !important;
+}
+
+.pagination .page-item.active .page-link {
+  border: 1.2px solid #249D57 !important;
+  background-color: #F2FFF7 !important;
+  color: #262626 !important;
+  font-weight: 600 !important;
+}
+
+.pagination .page-item[class*="prev"] .page-link,
+.pagination .page-item[class*="next"] .page-link,
+.pagination .page-item:first-child .page-link,
+.pagination .page-item:last-child .page-link {
+  border: 1.2px solid #D7D7D7 !important;
+  background-color: #ffffff !important;
+  color: #262626 !important;
+}
+
+.pagination .page-item.disabled .page-link {
+  opacity: 0.45 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+  border: 1.2px solid #D7D7D7 !important;
+  background-color: #ffffff !important;
+}
+
+.pagination .page-item [aria-label="First"],
+.pagination .page-item [aria-label="Previous"],
+.pagination .page-item [aria-label="Next"],
+.pagination .page-item [aria-label="Last"] {
+  font-size: 0 !important;
+  color: transparent !important;
+}
+
+.pagination .page-item [aria-label="First"]::after,
+.pagination .page-item [aria-label="Previous"]::after,
+.pagination .page-item [aria-label="Next"]::after,
+.pagination .page-item [aria-label="Last"]::after {
+  content: "" !important;
+  display: inline-block !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: contain !important;
+}
+
+.pagination .page-item [aria-label="First"]::after {
+  width: 14px !important;
+  height: 14px !important;
+  background-image: url('/assets/img/svg-icons/first-page-icon.svg') !important;
+}
+
+.pagination .page-item [aria-label="Previous"]::after {
+  width: 7px !important;
+  height: 14px !important;
+  background-image: url('/assets/img/svg-icons/previous-page-icon.svg') !important;
+}
+
+.pagination .page-item [aria-label="Next"]::after {
+  width: 7px !important;
+  height: 14px !important;
+  background-image: url('/assets/img/svg-icons/next-page-icon.svg') !important;
+}
+
+.pagination .page-item [aria-label="Last"]::after {
+  width: 14px !important;
+  height: 14px !important;
+  background-image: url('/assets/img/svg-icons/last-page-icon.svg') !important;
+}
+
+.app-table-card {
+  border: 1px solid #eef2f6;
+  /* border-radius: 10px; */
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.app-table-card .table.app-table {
+  margin-bottom: 0 !important;
+  font-size: 12px;
+  border-color: transparent !important;
+}
+
+.app-table-card .table.app-table> :not(caption)>*>* {
+  padding: 10px 14px !important;
+  background-color: transparent;
+  box-shadow: none !important;
+  transition: background-color 0.3s ease;
+}
+
+.app-table thead th {
+  background: #F4F4F4 !important;
+  color: #606060 !important;
+  font-size: 12px !important;
+  letter-spacing: 0.06em !important;
+  font-weight: 600;
+}
+
+.app-table-card .table.app-table tbody td {
+  border-top: 1px solid #f1f5f9 !important;
+}
+
+.app-table-card .table.app-table>tbody>tr:hover>*,
+.app-table-card .table.app-table.table-hover>tbody>tr:hover>* {
+  background-color: rgba(36, 157, 87, 0.06) !important;
+}
+
+/* Global hover highlight for custom grid tables matching ngx-datatable */
+.table__row:not(.table__row--head) {
+  transition: background-color 0.2s ease;
+}
+
+.table__row:not(.table__row--head):hover {
+  background-color: rgba(36, 157, 87, 0.06) !important;
+}
+
+.cstm-checkbox-form {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 100% !;
+}
+
+
 datatable-scroller {
   width: 100% !important;
 }
@@ -441,21 +780,22 @@ datatable-scroller {
   .wrapper {
     top: 74px !important;
   }
-  .vertical-overlay-menu .main-menu.menu-fixed{
+
+  .vertical-overlay-menu .main-menu.menu-fixed {
     top: 0 !important;
     height: 100% !important;
   }
 }
 
-.btn-primary:disabled{
-    color: #616161;
-    background-color: #dddddd;
+.btn-primary:disabled {
+  color: #616161;
+  background-color: #dddddd;
 }
 
 
-.btn-outline-primary:disabled{
-    color: #616161;
-    background-color: #dddddd;
+.btn-outline-primary:disabled {
+  color: #616161;
+  background-color: #dddddd;
 }
 
 .card {
@@ -590,11 +930,13 @@ datatable-scroller {
   top: 86px !important;
   position: fixed !important;
   z-index: 999999 !important;
-  pointer-events: none; /* optional */
+  pointer-events: none;
+  /* optional */
 }
 
 .toast-container .ngx-toastr {
-  pointer-events: auto; /* optional: allow close click */
+  pointer-events: auto;
+  /* optional: allow close click */
 }
 
 .pr-table-wrapper {
@@ -619,3 +961,702 @@ html.modal-open {
 body.swal2-shown {
   overflow-y: hidden !important;
 } */
+
+/* App-wide Back SVG Icon */
+.back-icon {
+  width: 18px;
+  height: 12px;
+  object-fit: contain;
+  vertical-align: middle;
+  display: inline-block;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.btn-outline-secondary:hover .back-icon,
+.btn:hover .back-icon.invert-on-hover {
+  filter: brightness(0) invert(1);
+}
+
+/* ==========================================================================
+   APP-WIDE UNIFIED DROPDOWN UI (MATCHING REFERENCE ARCHITECTURE WITH THEME COLOR)
+   Applies consistently to:
+   - All <select> controls enhanced by CustomSelectDirective
+   - All ngbDropdown menus & triggers (.dropdown-menu, .filter-dropdown, .app-ngb-select)
+   - All @ng-select/ng-select triggers (.ng-select-container) and panels (.ng-dropdown-panel)
+   - Uses downarrow-icon.svg from assets/img/svg-icons/downarrow-icon.svg
+   ========================================================================== */
+
+/* Native select hide when enhanced */
+select.app-native-select-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Custom Select Trigger Button */
+.app-select-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  height: 42px;
+  min-height: 42px;
+  padding: 0 14px 0 16px !important;
+  border: 1.5px solid #D7D7D7;
+  border-radius: 9px;
+  background-color: #ffffff;
+  color: #2B2F33;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.25;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: none !important;
+  background-image: none !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+  box-sizing: border-box;
+}
+
+.app-select-trigger.w-cstm {
+  width: 90% !important;
+}
+
+.app-select-trigger.custom-input,
+.app-select-trigger.custom-select {
+  height: 38px;
+  min-height: 38px;
+  padding: 0 12px !important;
+  font-size: 14px;
+  border-radius: 8px;
+}
+
+.app-select-trigger.form-control-sm {
+  height: 32px;
+  min-height: 32px;
+  padding: 0 10px !important;
+  font-size: 13px;
+  border-radius: 7px;
+}
+
+.app-select-trigger.d-inline-block {
+  display: inline-flex !important;
+  width: auto;
+}
+
+.input-group>.app-select-trigger {
+  position: relative;
+  flex: 1 1 auto;
+  width: 1%;
+  min-width: 0;
+}
+
+.ngx-datatable .datatable-body-cell .app-select-trigger {
+  height: 34px;
+  min-height: 34px;
+  padding: 0 10px !important;
+  font-size: 13px;
+  border-radius: 8px;
+}
+
+.app-select-trigger:hover:not(:disabled) {
+  background-color: #f9fafb;
+  border-color: #9ca3af;
+  color: #111827;
+}
+
+.app-select-trigger:focus:not(:disabled),
+.app-select-trigger.app-select-trigger--open:not(:disabled),
+.app-select-trigger[aria-expanded="true"]:not(:disabled),
+.app-ngb-select .dropdown-toggle:focus:not(:disabled),
+.app-ngb-select .dropdown-toggle[aria-expanded="true"]:not(:disabled) {
+  outline: none !important;
+  border: 1.5px solid #249D57 !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(36, 157, 87, 0.15) !important;
+}
+
+.app-select-trigger.app-select-trigger--open:not(:disabled) .app-select-trigger__text,
+.app-select-trigger[aria-expanded="true"]:not(:disabled) .app-select-trigger__text,
+.app-ngb-select .dropdown-toggle[aria-expanded="true"]:not(:disabled) .app-select-trigger__text {
+  color: #249D57;
+}
+
+.app-select-trigger--placeholder .app-select-trigger__text {
+  color: #A8A9AC;
+}
+
+.app-select-trigger__text {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Arrow Icon */
+.app-select-trigger__icon {
+  width: 12px;
+  height: 7px;
+  object-fit: contain;
+  line-height: 1;
+  flex-shrink: 0;
+  transition: transform 0.2s ease, opacity 0.15s ease;
+  pointer-events: none;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.app-select-trigger.app-select-trigger--open .app-select-trigger__icon,
+.app-select-trigger[aria-expanded="true"] .app-select-trigger__icon,
+.app-ngb-select .dropdown-toggle[aria-expanded="true"] .app-select-trigger__icon {
+  transform: rotate(180deg);
+}
+
+.app-select-trigger:disabled,
+.app-select-trigger.app-select-trigger--disabled {
+  background-color: #f3f4f6 !important;
+  border-color: #e5e7eb !important;
+  color: #9ca3af !important;
+  cursor: not-allowed !important;
+  opacity: 1 !important;
+}
+
+.app-select-trigger:disabled .app-select-trigger__text,
+.app-select-trigger.app-select-trigger--disabled .app-select-trigger__text,
+.app-select-trigger:disabled .app-select-trigger__icon,
+.app-select-trigger.app-select-trigger--disabled .app-select-trigger__icon {
+  color: #9ca3af !important;
+  opacity: 0.6;
+}
+
+.app-select-trigger.is-invalid,
+.app-select-trigger.ng-invalid.ng-touched {
+  border-color: #dc3545 !important;
+}
+
+.app-ngb-select .dropdown-toggle {
+  height: 42px;
+  min-height: 42px;
+  padding: 0 14px 0 16px !important;
+  border: 1.5px solid #D7D7D7;
+  border-radius: 9px;
+  background-color: #ffffff;
+  color: #2B2F33;
+  font-size: 15px;
+  gap: 8px;
+}
+
+.app-ngb-select .dropdown-toggle::after {
+  display: none !important;
+}
+
+/* CDK Overlay Dropdown Panel */
+.cdk-overlay-container:has(.app-select-overlay-pane),
+.app-select-overlay-pane {
+  z-index: 2000 !important;
+}
+
+.app-select-menu {
+  width: 100%;
+  max-height: 250px;
+  overflow-y: auto;
+  padding: 6px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+.app-select-menu::-webkit-scrollbar {
+  width: 5px;
+}
+
+.app-select-menu::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.app-select-menu::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.app-select-group-label {
+  padding: 6px 10px 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #6b7280;
+}
+
+.app-select-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  padding: 7px 10px;
+  margin-bottom: 2px;
+  border-radius: 6px;
+  font-size: 13.5px;
+  font-weight: 400;
+  line-height: 1.35;
+  color: #374151;
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.app-select-item:last-child {
+  margin-bottom: 0;
+}
+
+.app-select-item:hover:not(:disabled),
+.app-select-item.highlighted:not(:disabled) {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.app-select-item.active {
+  background: #edf7f1 !important;
+  color: #249D57 !important;
+  font-weight: 600 !important;
+}
+
+.app-select-item:disabled {
+  color: #9ca3af;
+  cursor: not-allowed;
+  opacity: 0.75;
+}
+
+.app-select-item__label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-select-item__check {
+  font-size: 12px;
+  color: #249D57;
+  font-weight: bold;
+  flex-shrink: 0;
+  margin-left: 8px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.app-select-empty {
+  padding: 10px 12px;
+  font-size: 13px;
+  color: #6b7280;
+  text-align: center;
+}
+
+/* Global ngbDropdown / Bootstrap dropdown-menu styling */
+.dropdown-menu:not(.sidebar-collapsed-menu):not(.entity-menu):not(.lang-dropdown-menu):not(.user-profile-menu):not(.notification-dropdown):not(.dropdown-menu-media):not(.iti__dropdown-content) {
+  padding: 6px;
+  margin-top: 6px !important;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+}
+
+.dropdown-menu:not(.sidebar-collapsed-menu):not(.entity-menu):not(.lang-dropdown-menu):not(.user-profile-menu):not(.notification-dropdown):not(.dropdown-menu-media):not(.iti__dropdown-content) .dropdown-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  padding: 7px 10px;
+  margin-bottom: 2px;
+  border-radius: 6px;
+  font-size: 13.5px;
+  font-weight: 400;
+  color: #374151;
+  background: transparent;
+  border: none;
+  transition: all 0.12s ease;
+}
+
+.dropdown-menu:not(.sidebar-collapsed-menu):not(.entity-menu):not(.lang-dropdown-menu):not(.user-profile-menu):not(.notification-dropdown):not(.dropdown-menu-media):not(.iti__dropdown-content) .dropdown-item:last-child {
+  margin-bottom: 0;
+}
+
+.dropdown-menu:not(.sidebar-collapsed-menu):not(.entity-menu):not(.lang-dropdown-menu):not(.user-profile-menu):not(.notification-dropdown):not(.dropdown-menu-media):not(.iti__dropdown-content) .dropdown-item:hover,
+.dropdown-menu:not(.sidebar-collapsed-menu):not(.entity-menu):not(.lang-dropdown-menu):not(.user-profile-menu):not(.notification-dropdown):not(.dropdown-menu-media):not(.iti__dropdown-content) .dropdown-item:focus {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.dropdown-menu:not(.sidebar-collapsed-menu):not(.entity-menu):not(.lang-dropdown-menu):not(.user-profile-menu):not(.notification-dropdown):not(.dropdown-menu-media):not(.iti__dropdown-content) .dropdown-item.active {
+  background: #edf7f1 !important;
+  color: #249D57 !important;
+  font-weight: 600 !important;
+}
+
+/* ==========================================
+   @ng-select/ng-select Unified Styling
+   ========================================== */
+.ng-select .ng-select-container {
+  border-radius: 9px !important;
+  border: 1.5px solid #D7D7D7 !important;
+  min-height: 42px;
+  height: 42px;
+  background-color: #ffffff !important;
+  color: #2B2F33 !important;
+  font-size: 15px !important;
+  padding: 0 12px 0 16px !important;
+  box-sizing: border-box !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.ng-select .ng-select-container:hover {
+  border-color: #9ca3af !important;
+}
+
+.ng-select.ng-select-focused:not(.ng-select-opened)>.ng-select-container,
+.ng-select.ng-select-opened>.ng-select-container {
+  border: 1.5px solid #249D57 !important;
+  box-shadow: 0 0 0 3px rgba(36, 157, 87, 0.15) !important;
+}
+
+.ng-select.ng-select-disabled>.ng-select-container {
+  background-color: #f3f4f6 !important;
+  border-color: #e5e7eb !important;
+  color: #9ca3af !important;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.ng-select .ng-arrow-wrapper {
+  width: 24px;
+  padding-right: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ng-select .ng-arrow-wrapper .ng-arrow {
+  width: 12px;
+  height: 7px;
+  border: none !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 9' fill='none'%3E%3Cpath d='M1.12609 2.99961e-05C1.27408 5.95729e-05 1.42061 0.0272984 1.55731 0.0801911C1.69401 0.133083 1.8182 0.210592 1.92278 0.308286L7.6828 5.68242C7.85713 5.84511 8.06409 5.97416 8.29188 6.06221C8.51966 6.15025 8.76381 6.19557 9.01037 6.19557C9.25693 6.19557 9.50107 6.15025 9.72886 6.06221C9.95664 5.97416 10.1636 5.84511 10.3379 5.68242L16.0912 0.314591C16.3036 0.123167 16.5881 0.0172452 16.8835 0.0196399C17.1788 0.0220346 17.4613 0.132553 17.6701 0.327393C17.8789 0.522232 17.9974 0.785803 18 1.06134C18.0025 1.33687 17.889 1.60232 17.6838 1.80052L11.9306 7.16835C11.1556 7.89007 10.1053 8.29541 9.01037 8.29541C7.9154 8.29541 6.86516 7.89007 6.09018 7.16835L0.329398 1.79351C0.172034 1.64651 0.0649058 1.45928 0.0215517 1.25549C-0.0218023 1.05169 0.000565227 0.840485 0.0858256 0.64855C0.171086 0.456614 0.315413 0.292567 0.500569 0.177137C0.685727 0.0617069 0.903401 7.47993e-05 1.12609 2.99961e-05Z' fill='%23606060'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  transition: transform 0.2s ease;
+}
+
+.ng-select.ng-select-opened .ng-arrow-wrapper .ng-arrow {
+  transform: rotate(180deg);
+  border: none !important;
+}
+
+.ng-dropdown-panel {
+  z-index: 2000 !important;
+  padding: 6px !important;
+  margin-top: 6px !important;
+  border-radius: 10px !important;
+  border: 1px solid #e5e7eb !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.04) !important;
+  background: #ffffff !important;
+}
+
+.ng-dropdown-panel.ng-select-top {
+  margin-top: 0 !important;
+  margin-bottom: 6px !important;
+}
+
+.ng-dropdown-panel .ng-dropdown-panel-items {
+  max-height: 240px !important;
+}
+
+.ng-dropdown-panel .ng-option {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
+  padding: 7px 10px !important;
+  margin-bottom: 2px !important;
+  border-radius: 6px !important;
+  font-size: 13.5px !important;
+  font-weight: 400 !important;
+  color: #374151 !important;
+  background: transparent !important;
+  transition: all 0.12s ease !important;
+}
+
+.ng-dropdown-panel .ng-option:last-child {
+  margin-bottom: 0 !important;
+}
+
+.ng-dropdown-panel .ng-option .ng-option-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ng-dropdown-panel .ng-option.ng-option-marked {
+  background-color: #f3f4f6 !important;
+  color: #111827 !important;
+}
+
+.ng-dropdown-panel .ng-option.ng-option-selected {
+  background-color: #edf7f1 !important;
+  color: #249D57 !important;
+  font-weight: 600 !important;
+}
+
+.ng-dropdown-panel .ng-option.ng-option-selected::after {
+  content: "";
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+  margin-left: 8px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23249D57' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+}
+
+/* RTL adjustments */
+html[dir="rtl"] .app-select-trigger,
+html.rtl .app-select-trigger,
+body.rtl .app-select-trigger,
+html[dir="rtl"] .app-select-item,
+html.rtl .app-select-item,
+body.rtl .app-select-item {
+  text-align: right;
+}
+
+html[dir="rtl"] .app-select-trigger,
+html.rtl .app-select-trigger,
+body.rtl .app-select-trigger {
+  padding: 0 16px 0 14px !important;
+}
+
+html[dir="rtl"] .app-select-item__check,
+html.rtl .app-select-item__check,
+body.rtl .app-select-item__check {
+  margin-left: 0;
+  margin-right: 8px;
+}
+
+html[dir="rtl"] .ng-dropdown-panel .ng-option.ng-option-selected::after,
+html.rtl .ng-dropdown-panel .ng-option.ng-option-selected::after,
+body.rtl .ng-dropdown-panel .ng-option.ng-option-selected::after {
+  margin-left: 0;
+  margin-right: 8px;
+}
+
+/* CDK Overlay Dropdown Panel Width and Layout Overrides */
+.cdk-overlay-container:has(.app-select-overlay-pane),
+.app-select-overlay-pane {
+  z-index: 2000 !important;
+  box-sizing: border-box !important;
+}
+
+app-custom-select-panel {
+  display: block !important;
+  width: 100% !important;
+  min-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.app-select-menu {
+  width: 100% !important;
+  min-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.app-select-item {
+  white-space: nowrap !important;
+  gap: 12px !important;
+  padding: 7px 12px !important;
+}
+
+.app-select-item__label {
+  white-space: nowrap !important;
+}
+
+/* ==========================================================================
+   GLOBAL TOOLBAR ACTION BUTTONS & FILTER DROPDOWNS (MATCHING COMPANIES PAGE)
+   ========================================================================== */
+.toolbar-action-btn,
+button#filterDropdown {
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  padding: 6px 12px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  cursor: pointer !important;
+  border-radius: 6px !important;
+  transition: all 0.2s ease !important;
+  color: #262626 !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  line-height: 1.4 !important;
+  box-shadow: none !important;
+}
+
+.toolbar-action-btn:hover,
+button#filterDropdown:hover {
+  background-color: rgba(0, 0, 0, 0.04) !important;
+  color: #111 !important;
+}
+
+.toolbar-action-btn:focus,
+.toolbar-action-btn:active,
+button#filterDropdown:focus,
+button#filterDropdown:active {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Remove dropdown chevron / down arrow completely */
+.toolbar-action-btn::after,
+button#filterDropdown::after,
+.filter-toolbar-item button::after,
+[ngbDropdownToggle].toolbar-action-btn::after {
+  display: none !important;
+}
+
+.toolbar-action-btn.active-action,
+button#filterDropdown.active-action {
+  color: #1a7c44 !important;
+  font-weight: 600 !important;
+}
+
+.toolbar-action-btn .toolbar-icon,
+button#filterDropdown .toolbar-icon,
+button#filterDropdown img {
+  width: 18px !important;
+  height: 18px !important;
+  object-fit: contain !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+}
+
+.toolbar-action-btn .toolbar-label,
+button#filterDropdown .toolbar-label {
+  user-select: none !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  color: inherit !important;
+}
+
+.toolbar-action-btn .active-dot,
+button#filterDropdown .active-dot {
+  width: 6px !important;
+  height: 6px !important;
+  border-radius: 50% !important;
+  background-color: #1a7c44 !important;
+  display: inline-block !important;
+  margin-left: -2px !important;
+}
+
+.toolbar-action-btn .active-badge,
+button#filterDropdown .active-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 18px !important;
+  height: 18px !important;
+  padding: 0 5px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #fff !important;
+  background-color: #1a7c44 !important;
+  border-radius: 999px !important;
+  margin-left: 2px !important;
+}
+
+/* Global Filter Dropdown Menu (Matches Companies Page) */
+.filter-dropdown {
+  min-width: 290px !important;
+  width: 290px !important;
+  padding: 16px 18px !important;
+  border-radius: 10px !important;
+  border: 1px solid #e5e7eb !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.06) !important;
+  background-color: #ffffff !important;
+}
+
+.filter-dropdown .filter-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin-bottom: 12px !important;
+  padding-bottom: 8px !important;
+  border-bottom: 1px solid #f0f2f5 !important;
+}
+
+.filter-dropdown .filter-title {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  color: #1f2937 !important;
+}
+
+.filter-dropdown .reset-all-btn {
+  font-size: 13px !important;
+  color: #6b7280 !important;
+  text-decoration: underline !important;
+  cursor: pointer !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+.filter-dropdown .reset-all-btn:hover {
+  color: #ef4444 !important;
+}
+
+.filter-dropdown .filter-group {
+  margin-bottom: 14px !important;
+}
+
+.filter-dropdown .filter-label {
+  display: block !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: #4b5563 !important;
+  margin-bottom: 6px !important;
+}
+
+.filter-dropdown .filter-footer {
+  padding-top: 10px !important;
+  border-top: 1px solid #f0f2f5 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+}
+
+/* Ensure auth/blank/login pages never have top margin or gap */
+body.blank-page .main-panel,
+body.auth-page .main-panel,
+app-content-layout .main-panel,
+app-content-layout .wrapper {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}

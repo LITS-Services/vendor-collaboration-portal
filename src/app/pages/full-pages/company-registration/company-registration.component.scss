@@ -35,9 +35,12 @@ thead {
   background: #F4F4F4;
 
   th {
-    font-weight: 500;
+    font-family: 'Onest', sans-serif !important;
+    font-weight: 400 !important;
+    font-size: 14px !important;
+    color: #747474 !important;
+    text-transform: uppercase !important;
     padding: 12px 12px;
-    font-size: 14px;
   }
 }
 
@@ -72,7 +75,7 @@ thead {
         border-top: none;
         color: #444;
         vertical-align: middle;
-        font-size: 14px;
+        font-size: 15px;
       }
     }
   }
@@ -117,12 +120,12 @@ thead {
 }
 
 .logo-upload-circle i {
-  font-size: 20px;
+  font-size: 21px;
   margin-bottom: 2px;
 }
 
 .logo-upload-text {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -162,7 +165,7 @@ thead {
 }
 
 .logo-upload-overlay-text {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   color: #1d4ed8;
   background: #e0e7ff;
@@ -183,7 +186,7 @@ thead {
 }
 
 .next-icon {
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .w-cstm {

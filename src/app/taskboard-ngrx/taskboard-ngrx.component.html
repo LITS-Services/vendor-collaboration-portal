@@ -11,7 +11,7 @@
         </button>
         <button type="button" class="btn bg-light-primary">
           <span class="d-flex align-items-center">
-            <i class="ft-filter mr-1"></i>
+            <img src="assets/img/svg-icons/filter-icon.svg" alt="Filter" class="mr-1" style="width: 16px; height: 16px; vertical-align: middle;" />
             <span>Filter</span>
           </span>
         </button>
@@ -35,8 +35,8 @@
             <div class="d-flex justify-content-between mb-2">
               <span class="badge bg-light-{{task.badgeClass}}">{{task.taskTitle}}</span>
               <div>
-                <i class="ft-edit mr-1 primary cursor-pointer" (click)="editTask(task);"></i>
-                <i class="ft-trash-2 danger cursor-pointer" (click)="deleteTask(task.taskId);"></i>
+                <img src="assets/img/svg-icons/update-icon.svg" alt="Edit" class="mr-1 cursor-pointer" style="width: 16px; height: 16px; vertical-align: middle;" (click)="editTask(task);" title="Edit" />
+                <img src="assets/img/svg-icons/delete-icon.svg" alt="Delete" class="cursor-pointer" style="width: 16px; height: 16px; vertical-align: middle;" (click)="deleteTask(task.taskId);" title="Delete" />
               </div>
             </div>
             <p *ngIf="task.messageType === 'text'">{{task.taskMessage}}</p>
@@ -81,8 +81,8 @@
             <div class="d-flex justify-content-between mb-2">
               <span class="badge bg-light-{{task.badgeClass}}">{{task.taskTitle}}</span>
               <div>
-                <i class="ft-edit mr-1 primary cursor-pointer" (click)="editTask(task);"></i>
-                <i class="ft-trash-2 danger cursor-pointer" (click)="deleteTask(task.taskId);"></i>
+                <img src="assets/img/svg-icons/update-icon.svg" alt="Edit" class="mr-1 cursor-pointer" style="width: 16px; height: 16px; vertical-align: middle;" (click)="editTask(task);" title="Edit" />
+                <img src="assets/img/svg-icons/delete-icon.svg" alt="Delete" class="cursor-pointer" style="width: 16px; height: 16px; vertical-align: middle;" (click)="deleteTask(task.taskId);" title="Delete" />
               </div>
             </div>
             <p *ngIf="task.messageType === 'text'">{{task.taskMessage}}</p>
@@ -127,8 +127,8 @@
             <div class="d-flex justify-content-between mb-2">
               <span class="badge bg-light-{{task.badgeClass}}">{{task.taskTitle}}</span>
               <div>
-                <i class="ft-edit mr-1 primary cursor-pointer" (click)="editTask(task);"></i>
-                <i class="ft-trash-2 danger cursor-pointer" (click)="deleteTask(task.taskId);"></i>
+                <img src="assets/img/svg-icons/update-icon.svg" alt="Edit" class="mr-1 cursor-pointer" style="width: 16px; height: 16px; vertical-align: middle;" (click)="editTask(task);" title="Edit" />
+                <img src="assets/img/svg-icons/delete-icon.svg" alt="Delete" class="cursor-pointer" style="width: 16px; height: 16px; vertical-align: middle;" (click)="deleteTask(task.taskId);" title="Delete" />
               </div>
             </div>
             <p *ngIf="task.messageType === 'text'">{{task.taskMessage}}</p>
@@ -173,8 +173,8 @@
             <div class="d-flex justify-content-between mb-2">
               <span class="badge bg-light-{{task.badgeClass}}">{{task.taskTitle}}</span>
               <div>
-                <i class="ft-edit mr-1 primary cursor-pointer" (click)="editTask(task);"></i>
-                <i class="ft-trash-2 danger cursor-pointer" (click)="deleteTask(task.taskId);"></i>
+                <img src="assets/img/svg-icons/update-icon.svg" alt="Edit" class="mr-1 cursor-pointer" style="width: 16px; height: 16px; vertical-align: middle;" (click)="editTask(task);" title="Edit" />
+                <img src="assets/img/svg-icons/delete-icon.svg" alt="Delete" class="cursor-pointer" style="width: 16px; height: 16px; vertical-align: middle;" (click)="deleteTask(task.taskId);" title="Delete" />
               </div>
             </div>
             <p *ngIf="task.messageType === 'text'">{{task.taskMessage}}</p>

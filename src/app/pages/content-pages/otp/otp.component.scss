@@ -30,15 +30,15 @@
 }
 
 .vendor-title {
-  font-size: 36px !important;
+  font-size: 37px !important;
 }
 
 h4 {
-  font-size: 20px;
+  font-size: 21px;
 }
 
 p {
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .icon-div {
@@ -134,9 +134,9 @@ p {
 
 /* Left half background image */
 .bg-image {
-  background-image: url('/assets/img/Background.png');
-  background-size: cover;
-  background-position: center;
+  background: linear-gradient(180deg, #249D57 0%, #187741 100%);
+  position: relative;
+  overflow: hidden;
 }
 
 /* Icon at the top-left corner */
@@ -149,7 +149,7 @@ p {
   bottom: 30px;
 
   p {
-    font-size: 14px !important;
+    font-size: 15px !important;
     font-weight: 400 !important;
     color: #E9F5EE !important;
   }
@@ -171,12 +171,15 @@ p {
   border-radius: 9px;
   width: 40px;
   height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition-duration: 300ms;
 
   .back-icon {
-    font-size: 18px;
-    display: flex;
-    justify-content: center;
+    width: 18px;
+    height: 12px;
+    display: inline-block;
   }
 }
 

@@ -1,74 +1,78 @@
 <section id="login" class="container-fluid">
     <div class="row register-container m-0">
-        <div class="col-md-6 d-none d-md-flex align-items-center justify-content-center bg-image">
-            <div class="icon-container position-absolute">
-                <img src="/assets/img/LITS Procurement and Sourcing.png" alt="Icon" class="icon-img">
+        <div class="col-md-6 d-none d-md-flex bg-image position-relative overflow-hidden p-0">
+            <!-- Bottom-right decorative circles matching Figma design -->
+            <div class="bottom-right-decor position-absolute">
+                <img src="assets/img/svg/bottom-right-.svg" alt="" class="bottom-right-svg">
             </div>
-            <div class="content text-white text-center">
-                <h1 class="text-white vendor-title">Procurement and Sourcing Portal</h1>
-                <div class="row mt-4 features justify-content-center">
 
-                    <div class="col-md-5 p-2 d-flex align-items-start gap-3">
-                        <div class="icon-div">
-                            <i class="ft-airplay icon-features"></i>
-                        </div>
-
-                        <div class="text-justify">
-                            <h4 class="text-white mt-0 mb-1 sub-heading">Seamless UI</h4>
-                            <p class="mb-0 heading-description">Intuitive and Responsive Interfaces<br>on all devices
-                            </p>
-                        </div>
-
-                    </div>
-
-
-                    <div class="col-md-5 p-2 d-flex align-items-start gap-3">
-                        <div class="icon-div">
-                            <i class="ft-bar-chart-2 icon-features"></i>
-                        </div>
-
-                        <div class="text-justify">
-                            <h4 class="text-white mt-0 mb-1 sub-heading">Sourcing Dashboard</h4>
-                            <p class="mb-0 heading-description">Pending orders,
-                                active contracts,<br> performance metrics, and payment statuses.</p>
-                        </div>
-
-                    </div>
-
-
-                    <div class="col-md-5 p-2 d-flex align-items-start gap-3">
-                        <div class="icon-div">
-                            <i class="ft-trending-up icon-features"></i>
-                        </div>
-
-                        <div class="text-justify">
-                            <h4 class="text-white mt-0 mb-1 sub-heading">Performance Analytics</h4>
-                            <p class="mb-0 heading-description">Vendors can view real-time <br> analytics and
-                                performance reports</p>
-                        </div>
-
-                    </div>
-
-                    <div class="col-md-5 p-2 d-flex align-items-start gap-3">
-                        <div class="icon-div">
-                            <i class="ft-pie-chart icon-features"></i>
-                        </div>
-
-                        <div class="text-justify">
-                            <h4 class="text-white mt-0 mb-1 sub-heading">Compliance Management</h4>
-                            <p class="mb-0 heading-description">Ensures Regulatory and Compliance Requirements</p>
-                        </div>
-
-                    </div>
-
-
+            <!-- Left sidebar container ensuring logo, titles, description, and features are left-aligned -->
+            <div class="portal-sidebar-wrapper w-100 h-100 d-flex flex-column justify-content-between position-relative">
+                <!-- Top Logo -->
+                <div class="portal-logo-wrapper">
+                    <img src="assets/img/LITS Procurement and Sourcing.png" alt="Procurement & Sourcing" class="icon-img">
                 </div>
-            </div>
-            <div class="icon-container1 position-absolute">
-                <p class="text-center sub-heading">© 2025 LITS Procurement and Sourcing Portal. Powered by
-                    LITS SERVICES. All
-                    rights
-                    reserved.</p>
+
+                <!-- Center Content: Title and Features -->
+                <div class="portal-main-content text-white">
+                    <h1 class="text-white vendor-title">
+                        Procurement and<br>
+                        Sourcing Portal
+                    </h1>
+
+                    <div class="portal-features-grid">
+                        <!-- Column 1, Row 1 -->
+                        <div class="feature-item d-flex align-items-start gap-3">
+                            <div class="icon-div">
+                                <img src="assets/img/svg-icons/login-icon1.svg" alt="Seamless UI" class="login-feature-icon">
+                            </div>
+                            <div class="feature-text">
+                                <h4 class="text-white mt-0 mb-1 sub-heading">Seamless UI</h4>
+                                <p class="mb-0 heading-description">Intuitive and Responsive<br>Interfaces on all devices</p>
+                            </div>
+                        </div>
+
+                        <!-- Column 2, Row 1 -->
+                        <div class="feature-item d-flex align-items-start gap-3">
+                            <div class="icon-div">
+                                <img src="assets/img/svg-icons/login-icon2.svg" alt="Vendor Dashboard" class="login-feature-icon">
+                            </div>
+                            <div class="feature-text">
+                                <h4 class="text-white mt-0 mb-1 sub-heading">Vendor Dashboard</h4>
+                                <p class="mb-0 heading-description">Pending orders, active contracts,<br>performance metrics, and<br>payment statuses</p>
+                            </div>
+                        </div>
+
+                        <!-- Column 1, Row 2 -->
+                        <div class="feature-item d-flex align-items-start gap-3">
+                            <div class="icon-div">
+                                <img src="assets/img/svg-icons/login-icon3.svg" alt="Performance Analytics" class="login-feature-icon">
+                            </div>
+                            <div class="feature-text">
+                                <h4 class="text-white mt-0 mb-1 sub-heading">Performance Analytics</h4>
+                                <p class="mb-0 heading-description">Vendors can view real-time<br>analytics and performance<br>reports</p>
+                            </div>
+                        </div>
+
+                        <!-- Column 2, Row 2 -->
+                        <div class="feature-item d-flex align-items-start gap-3">
+                            <div class="icon-div">
+                                <img src="assets/img/svg-icons/login-icon4.svg" alt="Compliance Management" class="login-feature-icon">
+                            </div>
+                            <div class="feature-text">
+                                <h4 class="text-white mt-0 mb-1 sub-heading">Compliance Management</h4>
+                                <p class="mb-0 heading-description">Ensures Regulatory and<br>Compliance Requirements</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Footer -->
+                <div class="portal-footer-wrapper">
+                    <p class="text-center sub-heading mb-0">&copy; 2026 LITS Vendor Portal. Powered by
+                        <strong class="company-name text-bold-700 fw-bold">LITS SERVICES</strong>. All rights reserved.
+                    </p>
+                </div>
             </div>
         </div>
 

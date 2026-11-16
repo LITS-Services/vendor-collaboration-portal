@@ -14,10 +14,15 @@
       }
 
       .datatable-header {
-        background-color: $body-bg;
+        background-color: #F4F4F4;
 
         .datatable-header-cell {
           border-bottom: 0;
+          color: #747474;
+          font-family: 'Onest', sans-serif;
+          font-weight: 400;
+          font-size: 14px;
+          text-transform: uppercase;
         }
       }
 
@@ -55,78 +60,128 @@
 
         .datatable-pager {
           .pager {
-            display: flex;
+            display: inline-flex;
             justify-content: flex-end;
             align-items: center;
+            gap: 8px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
 
             li {
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
               margin: 0;
+              padding: 0;
 
-              &:first-child a {
+              a {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 35px;
+                min-width: 35px;
+                height: 35px;
+                padding: 0;
                 margin: 0;
+                border-radius: 8px;
+                box-sizing: border-box;
+                font-size: 14px;
+                font-weight: 500;
+                line-height: 1;
+                text-decoration: none;
+                transition: all 0.2s ease-in-out;
+                cursor: pointer;
+                position: static;
               }
 
-              &:first-child,
-              &:last-child,
-              &:nth-child(2),
-              &:nth-last-child(2) {
+              /* First, previous, next, last page buttons */
+              &:not(.pages) {
                 a {
-                  padding: 1.1rem 1.035rem;
+                  border: 1.2px solid #D7D7D7;
+                  background-color: #ffffff;
+                  color: #262626;
 
-                  i {
-                    position: absolute;
-                    top: 0.55rem;
-                    left: 0.4rem;
+                  &:hover {
+                    border-color: #B0B0B0;
+                    background-color: #F8F9FA;
                   }
                 }
               }
 
               &.disabled {
                 a {
-                  color: map-get($grey-color, darken-1);
-                  background-color: $pagination-disabled-bg;
+                  opacity: 0.45;
+                  cursor: not-allowed;
+                  pointer-events: none;
+                  border: 1.2px solid #D7D7D7;
+                  background-color: #ffffff;
                 }
               }
 
-              &:not(.disabled) {
+              /* Page numbers */
+              &.pages {
                 a {
-                  color: $pagination-color;
+                  border: 1.2px solid transparent;
+                  background-color: transparent;
+                  color: #262626;
 
                   &:hover {
-                    background-color: $pagination-hover-bg !important;
-                    border-color: $pagination-hover-border-color;
+                    background-color: rgba(36, 157, 87, 0.08);
+                    color: #249D57;
                   }
                 }
 
-                &.active {
-                  a {
-                    z-index: 3;
-                    color: $white;
-                    background-color: $primary !important;
-                    border-color: $primary;
-                    font-weight: inherit;
-                  }
-                }
-
-                &:hover a {
-                  background-color: $pagination-bg;
-                  font-weight: inherit;
+                &.active a {
+                  border: 1.2px solid #249D57 !important;
+                  background-color: #F2FFF7 !important;
+                  color: #262626 !important;
+                  font-weight: 600;
                 }
               }
 
-              a {
-                position: relative;
-                display: block;
-                padding: 1.1rem $pagination-padding-x;
-                margin: 0 0 0 5px;
-                line-height: 0.1;
-                background-color: $pagination-bg;
-                border: $pagination-border-width solid $pagination-border-color;
-                border-radius: $border-radius;
-                font-size: $font-size-root;
+              i {
+                display: inline-block;
+                position: static;
+                top: auto;
+                left: auto;
+                margin: 0;
+                padding: 0;
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: contain;
+                line-height: normal;
 
-                i {
-                  padding: 0;
+                &.datatable-icon-prev::before,
+                &.datatable-icon-left::before,
+                &.datatable-icon-right::before,
+                &.datatable-icon-skip::before {
+                  content: "" !important;
+                  display: none !important;
+                }
+
+                &.datatable-icon-prev {
+                  width: 14px;
+                  height: 14px;
+                  background-image: url('/assets/img/svg-icons/first-page-icon.svg');
+                }
+
+                &.datatable-icon-left {
+                  width: 7px;
+                  height: 14px;
+                  background-image: url('/assets/img/svg-icons/previous-page-icon.svg');
+                }
+
+                &.datatable-icon-right {
+                  width: 7px;
+                  height: 14px;
+                  background-image: url('/assets/img/svg-icons/next-page-icon.svg');
+                }
+
+                &.datatable-icon-skip {
+                  width: 14px;
+                  height: 14px;
+                  background-image: url('/assets/img/svg-icons/last-page-icon.svg');
                 }
               }
             }
@@ -149,6 +204,10 @@
       .datatable-icon-prev {
         line-height: 24px;
       }
+    }
+
+    .datatable-footer .page-count span {
+      display: none !important;
     }
   }
 }

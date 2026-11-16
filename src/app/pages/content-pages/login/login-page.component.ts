@@ -32,6 +32,7 @@ export class LoginPageComponent implements OnInit, OnDestroy, AfterViewChecked {
   private tokenSub?: Subscription;
   private loadErrSub?: Subscription;
   private lockoutTickSub?: Subscription;
+  private formChangeSub?: Subscription;
   private blockedUntilMs = 0;
 
   loginForm = new UntypedFormGroup({
@@ -66,6 +67,13 @@ export class LoginPageComponent implements OnInit, OnDestroy, AfterViewChecked {
     });
     this.loadErrSub = this.turnstileProtection.turnstileLoadError$.subscribe(err => {
       this.turnstileLoadError = err ?? '';
+    });
+
+    this.formChangeSub = this.loginForm.valueChanges.subscribe(() => {
+      if (this.isLoginFailed) {
+        this.isLoginFailed = false;
+        this.loginFormSubmitted = false;
+      }
     });
 
     this.authService.getCaptchaConfig().subscribe(cfg => {
@@ -127,8 +135,14 @@ export class LoginPageComponent implements OnInit, OnDestroy, AfterViewChecked {
     document.body.classList.remove('login-page');
     this.tokenSub?.unsubscribe();
     this.loadErrSub?.unsubscribe();
+    this.formChangeSub?.unsubscribe();
     this.clearLockoutCountdown();
     this.turnstileProtection.teardownOnNoCaptchaNeeded();
+  }
+
+  onAlertClose(): void {
+    this.isLoginFailed = false;
+    this.loginFormSubmitted = false;
   }
 
   private showTurnstile(): void {
@@ -185,6 +199,9 @@ export class LoginPageComponent implements OnInit, OnDestroy, AfterViewChecked {
       return;
     }
 
+    this.isLoginFailed = false;
+    this.errorMessage = '';
+
     this.spinner.show(undefined, {
       type: 'ball-triangle-path',
       size: 'medium',
@@ -229,9 +246,6 @@ export class LoginPageComponent implements OnInit, OnDestroy, AfterViewChecked {
             this.showTurnstile();
             this.turnstileProtection.resetTurnstile('#turnstile-container');
           }
-          this.toastr.error(this.isLocked
-            ? `This account is temporarily locked. Try again in ${this.lockoutRemainingText || '—'}`
-            : this.errorMessage);
           this.cdr.detectChanges();
         }
       });

@@ -664,6 +664,14 @@
             i {
               font-size: 0.875rem;
             }
+
+            img,
+            .action-svg-icon {
+              width: 16px;
+              height: 16px;
+              object-fit: contain;
+              display: inline-block;
+            }
           }
 
           .btn-icon-delete:hover:not(:disabled) {
@@ -914,7 +922,7 @@ background-color: rgb(203 213 225 / 1);
   align-items: center;
   gap: 8px;
   margin-bottom: 6px;
-  font-size: 12px;
+  font-size: 13px;
   color: #6b7280;
 }
 
@@ -930,7 +938,7 @@ background-color: rgb(203 213 225 / 1);
   vertical-align: middle;
   width: 90px;
   text-align: center;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .proc{
@@ -948,7 +956,7 @@ background-color: rgb(203 213 225 / 1);
 .last-message-div{
     color: #574d4d;
     border: 1px solid #efefef;
-    font-size: 12px;
+    font-size: 13px;
     padding: 2px 12px;
     border-radius: 999px;
     background: #f8f8f8;
@@ -973,7 +981,7 @@ textarea {
   display: flex;
   align-items: center;
   gap: 6px; /* slightly bigger gap */
-  font-size: 14px; /* optional, for text if you add */
+  font-size: 15px; /* optional, for text if you add */
   color: #888;
   font-style: italic;
   padding: 6px 10px;

@@ -7,6 +7,7 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 // import { AngularResizedEventModule } from 'angular-resize-event'; // Not compatible with Angular Ivy
 import { MatchHeightModule } from "../shared/directives/match-height.directive";
+import { CustomSelectDirective } from "../shared/directives/custom-select.directive";
 
 import { Dashboard1Component } from "./dashboard1/dashboard1.component";
 import { Dashboard2Component } from "./dashboard2/dashboard2.component";
@@ -21,6 +22,7 @@ import { Dashboard2Component } from "./dashboard2/dashboard2.component";
         NgbModule,
         MatchHeightModule,
         NgApexchartsModule,
+        CustomSelectDirective
         // AngularResizedEventModule // Not compatible with Angular Ivy
     ],
     exports: [],

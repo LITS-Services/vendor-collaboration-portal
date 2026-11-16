@@ -1,20 +1,149 @@
 <section>
   <div class="row">
     <div class="col-12">
-      <div class="row mb-3">
-        <div class="col-md-12 gap-2 d-flex align-items-center justify-content-between">
-          <h5 class="mb-0">{{title}} </h5>
-          <button *ngIf="showRegisterButton" class="btn btn-primary" (click)="newCompany()" style="float: right;">
+      <!-- Toolbar Row: Title on left (if any), Search / Sort / Filter on right -->
+      <div class="row mb-3 align-items-center">
+        <div class="col-auto d-flex align-items-center gap-2">
+          <h5 class="mb-0" *ngIf="title">{{title}}</h5>
+          <button *ngIf="showRegisterButton" class="btn btn-primary btn-sm" (click)="newCompany()">
             Register New Company
           </button>
         </div>
+
+        <div class="col ms-auto d-flex align-items-center justify-content-end table-toolbar">
+          <!-- SEARCH -->
+          <div class="toolbar-item search-item">
+            <!-- Normal Button State (when closed & no search term) -->
+            <button *ngIf="!isSearchOpen && !searchTerm" type="button" class="toolbar-action-btn"
+              (click)="toggleSearch()" title="Search">
+              <img src="assets/img/svg-icons/search-icon.svg" alt="Search" class="toolbar-icon" />
+              <span class="toolbar-label">Search</span>
+            </button>
+
+            <!-- Expanded Input State -->
+            <div class="toolbar-search-box" *ngIf="isSearchOpen || searchTerm">
+              <img src="assets/img/svg-icons/search-icon.svg" alt="Search" class="toolbar-icon search-box-icon" />
+              <input #searchInput type="text" class="toolbar-search-input" [(ngModel)]="searchTerm"
+                (ngModelChange)="onSearchChange()" placeholder="Search..." />
+              <button type="button" class="toolbar-icon-btn close-btn" (click)="handleSearchAction()"
+                [title]="searchTerm ? 'Clear Search' : 'Close'">
+                <i class="ft-x"></i>
+              </button>
+            </div>
+          </div>
+
+
+
+          <!-- FILTER -->
+          <div ngbDropdown class="d-inline-block toolbar-item filter-toolbar-item" placement="bottom-end"
+            [autoClose]="'outside'">
+            <button type="button" class="toolbar-action-btn" ngbDropdownToggle
+              [class.active-action]="activeFilterCount > 0" title="Filter">
+              <img src="assets/img/svg-icons/filter-icon.svg" alt="Filter" class="toolbar-icon" />
+              <span class="toolbar-label">Filter</span>
+              <span class="active-badge" *ngIf="activeFilterCount > 0">{{ activeFilterCount }}</span>
+            </button>
+
+            <div ngbDropdownMenu class="dropdown-menu dropdown-menu-end shadow-lg toolbar-dropdown filter-dropdown">
+              <div class="filter-header d-flex align-items-center justify-content-between mb-3 border-bottom pb-2">
+                <span class="filter-title">Filters</span>
+                <button type="button" class="btn btn-link btn-sm p-0 reset-all-btn" *ngIf="activeFilterCount > 0"
+                  (click)="resetFilters()">
+                  Reset All
+                </button>
+              </div>
+
+              <!-- Status -->
+              <div class="filter-group mb-3">
+                <label class="filter-label">Status</label>
+                <select class="form-select form-select-sm filter-select" [(ngModel)]="filterStatus"
+                  (change)="applyFiltersAndSort()">
+                  <option value="ALL">All Statuses</option>
+                  <option *ngFor="let s of availableStatuses" [value]="s">{{ s }}</option>
+                </select>
+              </div>
+
+              <!-- Level -->
+              <div class="filter-group mb-3">
+                <label class="filter-label">Level</label>
+                <select class="form-select form-select-sm filter-select" [(ngModel)]="filterLevel"
+                  (change)="applyFiltersAndSort()">
+                  <option value="ALL">All Levels</option>
+                  <option *ngFor="let lvl of availableLevels" [value]="lvl">{{ lvl }}</option>
+                </select>
+              </div>
+
+              <!-- Created Date Period -->
+              <div class="filter-group mb-3">
+                <label class="filter-label">Created Date</label>
+                <select class="form-select form-select-sm filter-select" [(ngModel)]="filterDatePeriod"
+                  (change)="onDatePeriodChange()">
+                  <option value="ALL">All Time</option>
+                  <option value="TODAY">Today</option>
+                  <option value="LAST_7_DAYS">Last 7 Days</option>
+                  <option value="LAST_30_DAYS">Last 30 Days</option>
+                  <option value="THIS_MONTH">This Month</option>
+                  <option value="THIS_YEAR">This Year</option>
+                  <option value="CUSTOM">Custom Range...</option>
+                </select>
+              </div>
+
+              <!-- Custom Date Range -->
+              <div class="row g-2 mb-3" *ngIf="filterDatePeriod === 'CUSTOM'">
+                <div class="col-6">
+                  <label class="font-small-2 text-muted mb-1 d-block">From</label>
+                  <input type="date" class="form-control form-control-sm" [(ngModel)]="filterDateFrom"
+                    (change)="applyFiltersAndSort()" />
+                </div>
+                <div class="col-6">
+                  <label class="font-small-2 text-muted mb-1 d-block">To</label>
+                  <input type="date" class="form-control form-control-sm" [(ngModel)]="filterDateTo"
+                    (change)="applyFiltersAndSort()" />
+                </div>
+              </div>
+
+              <div class="filter-footer d-flex justify-content-end gap-2 pt-2 border-top">
+                <button type="button" class="btn btn-sm btn-outline-secondary px-3"
+                  (click)="resetFilters()">Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Filter Chips Bar -->
+      <div class="active-chips-bar mb-2 d-flex flex-wrap align-items-center gap-2"
+        *ngIf="activeFilterCount > 0 || searchTerm || currentSort.prop">
+        <span class="font-small-2 text-muted me-1">Active filters:</span>
+        <span class="filter-chip" *ngIf="searchTerm">
+          Search: "{{ searchTerm }}"
+          <i class="ft-x chip-close" (click)="clearSearch()"></i>
+        </span>
+        <span class="filter-chip" *ngIf="filterStatus !== 'ALL'">
+          Status: {{ filterStatus }}
+          <i class="ft-x chip-close" (click)="filterStatus = 'ALL'; applyFiltersAndSort()"></i>
+        </span>
+        <span class="filter-chip" *ngIf="filterLevel !== 'ALL'">
+          Level: {{ filterLevel }}
+          <i class="ft-x chip-close" (click)="filterLevel = 'ALL'; applyFiltersAndSort()"></i>
+        </span>
+        <span class="filter-chip" *ngIf="filterDatePeriod !== 'ALL'">
+          Date: {{ getDatePeriodLabel() }}
+          <i class="ft-x chip-close" (click)="filterDatePeriod = 'ALL'; applyFiltersAndSort()"></i>
+        </span>
+        <span class="filter-chip sort-chip" *ngIf="currentSort.prop">
+          Sort: {{ getSortLabel() }}
+          <i class="ft-x chip-close" (click)="clearSort()"></i>
+        </span>
+        <button type="button" class="btn btn-link btn-sm p-0 font-small-2 text-danger ms-1" (click)="resetAll()">
+          Clear All
+        </button>
       </div>
 
       <div class="pr-table-wrapper" appDatatableAutoResize [datatable]="datatable">
         <ngx-datatable #datatable class="bootstrap core-bootstrap" [rows]="companyData" [columnMode]="'force'"
           [headerHeight]="42" [footerHeight]="50" rowHeight="42" [limit]="15" [scrollbarH]="isMobile"
-          [loadingIndicator]="loading" [selected]="chkBoxSelected" [swapColumns]="false"
-          [selectionType]="SelectionType.checkbox" (sort)="onSort($event)" (select)="customChkboxOnSelect($event)">
+          [loadingIndicator]="loading" (sort)="onSort($event)">
 
           <!-- Company Name -->
           <ngx-datatable-column [flexGrow]="2" [minWidth]="140" name="Company Name" prop="name">

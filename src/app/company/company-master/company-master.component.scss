@@ -1,10 +1,10 @@
 .card-title{
-      font-size: 15px;
+      font-size: 16px;
     font-weight: 400;
 }
 
 h6{
-  font-size: 14px !important;
+  font-size: 15px !important;
 }
 
 .cstm-media{
@@ -41,13 +41,13 @@ h6{
 
 .media-body{
   h1{
-    font-size: 36px !important;
+    font-size: 37px !important;
   }
 
 }
 
 h1{
-  font-size: 26px !important;
+  font-size: 27px !important;
 }
 .card-body {
    padding: 0px 12px !important;
@@ -86,14 +86,15 @@ h1{
   
     
   .ngx-datatable ::ng-deep .datatable-header-inner{
-    background-color: #187741 !important;
-    // padding: 0.5rem;
-  // border-radius: 10px;
+    background-color: #F4F4F4 !important;
   }
   .ngx-datatable ::ng-deep .datatable-header-inner .datatable-header-cell-label,
   .ngx-datatable ::ng-deep .datatable-header-inner .sort-btn{
-    color: white !important;
-  
+    color: #747474 !important;
+    font-family: 'Onest', sans-serif !important;
+    font-weight: 400 !important;
+    font-size: 14px !important;
+    text-transform: uppercase !important;
   }
   .ngx-datatable.bootstrap .datatable-footer {
     background: unset !important;
@@ -291,7 +292,7 @@ h1{
 }
 
 :host ::ng-deep .donut .ct-label {
-  font-size : 20px;
+  font-size : 21px;
 }
 
 :host ::ng-deep .donut .ct-done .ct-slice-donut {
@@ -317,7 +318,7 @@ h1{
     color: #249D57;
     padding: 5px 8px;
     display: flex;
-    font-size: 12px;
+    font-size: 13px;
     gap: 6px;
     align-items: center;
   
@@ -388,7 +389,7 @@ h1{
   align-items: center;
   justify-content: center;
   color: #249D57;
-  font-size: 16px;
+  font-size: 17px;
   cursor: pointer;
   transition: all 0.3s ease; /* Smooth transition */
 }
@@ -411,7 +412,7 @@ h1{
 
 .dash-desc{
   font-weight: 400;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .primary-color{
