@@ -17,8 +17,17 @@ export const HROUTES: RouteInfo[] = [
   { path: '/purchase-order', title: 'POs/SOs', icon: 'ft-shopping-cart', class: '', badge: '', badgeClass: '', isExternalLink: false, permission: 'purchase-order.view', submenu: [] },
   { path: '/invoices', title: 'Invoices', icon: 'ft-invoice',class: '', isExternalLink: false, permission: 'purchase-order.view', submenu: [
   ] },
-  { path: '/reports', title: 'Reports', icon: 'ft-file-text',class: '', isExternalLink: false, permission: 'purchase-order.view', submenu: [
-  ] },
+  { 
+    path: '/reports', 
+    title: 'Reports', 
+    icon: 'ft-file-text', 
+    class: 'dropdown nav-item', 
+    isExternalLink: false, 
+    submenu: [
+      { path: '/reports/sales-report', title: 'Sales Report', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
+      { path: '/reports/bids-win-loss-report', title: 'Bids Win/Loss Analysis', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] }
+    ] 
+  },
   { path: '/history', title: 'History', icon: 'ft-history',class: '', isExternalLink: false, permission: 'rfq.view', submenu: [
   ] },
   

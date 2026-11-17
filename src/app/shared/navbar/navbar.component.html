@@ -13,12 +13,28 @@
       <!-- Center: Rounded Tabs (scrollable if overflow) -->
       <div class="vp-pill">
         <ul class="vp-tabs" (clickOutside)="toggleSearchOpenClass(false)">
-          <li *ngFor="let item of menuItems" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: false }">
+          <li *ngFor="let item of menuItems" 
+              [ngClass]="{ 'has-dropdown': item.submenu && item.submenu.length > 0, 'active': item.submenu && item.submenu.length > 0 && isSubmenuActive(item) }"
+              routerLinkActive="active" 
+              [routerLinkActiveOptions]="{ exact: false }">
 
-            <!-- internal route -->
-            <a *ngIf="!item.isExternalLink" [routerLink]="[item.path]">
+            <!-- Tab without submenu -->
+            <a *ngIf="(!item.submenu || item.submenu.length === 0) && !item.isExternalLink" [routerLink]="[item.path]">
               {{ item.title }}
             </a>
+
+            <!-- Tab with submenu (Dropdown - opens menu on click without navigating) -->
+            <div class="dropdown d-inline-block" *ngIf="item.submenu && item.submenu.length > 0" ngbDropdown container="body" display="dynamic" placement="bottom">
+              <a href="javascript:void(0)" class="nav-tab-dropdown-toggle dropdown-toggle" ngbDropdownToggle role="button" (click)="$event.preventDefault()">
+                {{ item.title }}
+              </a>
+              <div class="dropdown-menu vp-dropdown-menu shadow-sm" ngbDropdownMenu>
+                <a *ngFor="let sub of item.submenu" class="dropdown-item" [routerLink]="[sub.path]" routerLinkActive="active" style="justify-content: flex-start !important; gap: 8px;">
+                  <i [ngClass]="sub.icon" class="text-primary flex-shrink-0" *ngIf="sub.icon"></i>
+                  <span>{{ sub.title }}</span>
+                </a>
+              </div>
+            </div>
 
             <!-- external link -->
             <a *ngIf="item.isExternalLink" [href]="item.path" target="_blank" rel="noopener">

@@ -42,9 +42,7 @@ export const Full_ROUTES: Routes = [
   },
   {
     path: 'reports',
-    loadChildren: () => import('../../reports/reports.module').then(m => m.ReportsModule),
-    canActivate: [PermissionGuard],
-    data: { permission: 'purchase-order.view' }
+    loadChildren: () => import('../../reports/reports.module').then(m => m.ReportsModule)
   },
   {
     path: 'history',

@@ -118,8 +118,18 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Build tabs from HROUTES once (or on config stream if needed)
     this.menuItems = (HROUTES || [])
-      .filter((x) => x && x.title && (x.path || x.isExternalLink)) // basic sanity
-      .filter((x) => !x.submenu || x.submenu.length === 0);
+      .filter((x) => x && x.title && (x.path || x.isExternalLink));
+  }
+
+  isSubmenuActive(item: any): boolean {
+    if (!item) return false;
+    if (item.path && this.router.url.startsWith(item.path)) {
+      return true;
+    }
+    if (item.submenu && item.submenu.length > 0) {
+      return item.submenu.some((sub: any) => sub.path && this.router.url.startsWith(sub.path));
+    }
+    return false;
   }
 
   ngAfterViewInit() {
