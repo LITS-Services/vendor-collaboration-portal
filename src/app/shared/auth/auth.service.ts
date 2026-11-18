@@ -1,4 +1,4 @@
-import { Router } from '@angular/router';
+﻿import { Router } from '@angular/router';
 import { Injectable, Injector } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import firebase from 'firebase/compat/app';
@@ -292,7 +292,10 @@ export class AuthService {
       })
       .pipe(
         tap((resp) => this._applySessionFromRefresh(resp)),
-        map((resp) => resp?.token ?? this.tokenStorage.getAccessToken()),
+        map((resp) => {
+          const auth = unwrapAuthPayload(resp);
+          return authToken(auth) || this.tokenStorage.getAccessToken();
+        }),
         catchError(() => of(null)),
         finalize(() => this.tokenStorage.completeRefresh(this.accessToken))
       );
@@ -339,36 +342,40 @@ export class AuthService {
 
   private _applySessionFromRefresh(res: any): void {
     if (!res) return;
+    const auth = unwrapAuthPayload(res);
+    const token = authToken(auth);
+    const refresh = authRefreshToken(auth);
     if (this.useCookieAuth()) {
       this.tokenStorage.clear();
-    } else if (res.token || res.refreshToken) {
+    } else if (token || refresh) {
       this.tokenStorage.setTokens(
-        res.token || this.tokenStorage.getAccessToken() || '',
-        res.refreshToken || this.tokenStorage.getRefreshToken() || ''
+        token || this.tokenStorage.getAccessToken() || '',
+        refresh || this.tokenStorage.getRefreshToken() || ''
       );
     }
 
-    this.accessExpiresAt = res.expiresAt ?? res.ExpiresAt ?? this.accessExpiresAt;
-    this.refreshExpiresAt = res.refreshExpiresAt ?? res.RefreshExpiresAt ?? this.refreshExpiresAt;
+    this.accessExpiresAt = auth.expiresAt ?? auth.ExpiresAt ?? this.accessExpiresAt;
+    this.refreshExpiresAt = auth.refreshExpiresAt ?? auth.RefreshExpiresAt ?? this.refreshExpiresAt;
 
-    if (res.userId) localStorage.setItem('userId', res.userId);
-    const username = res.username ?? res.userName ?? res.user?.username ?? res.user?.email;
+    const userId = auth.userId || auth.UserId || auth.id || '';
+    if (userId) localStorage.setItem('userId', userId);
+    const username = auth.username ?? auth.userName ?? auth.user?.username ?? auth.user?.email;
     if (username) localStorage.setItem('username', username);
-    if (res.email) localStorage.setItem('userEmail', res.email);
-    if (res.roles) localStorage.setItem('roles', JSON.stringify(res.roles));
+    if (auth.email) localStorage.setItem('userEmail', auth.email);
+    if (auth.roles) localStorage.setItem('roles', JSON.stringify(auth.roles));
 
-    const companyIds = res.vendorCompanyIds ?? res.companyIds;
+    const companyIds = auth.vendorCompanyIds ?? auth.VendorCompanyIds ?? auth.companyIds;
     if (companyIds) {
       const ids = Array.isArray(companyIds) ? companyIds : [];
       localStorage.setItem('companyIds', JSON.stringify(ids));
       if (ids[0]) localStorage.setItem('company', ids[0]);
     }
 
-    if (res.permissions) {
-      localStorage.setItem(PERMISSIONS_KEY, JSON.stringify(res.permissions));
+    if (auth.permissions) {
+      localStorage.setItem(PERMISSIONS_KEY, JSON.stringify(auth.permissions));
     }
 
-    if (res.userId || res.token || this.useCookieAuth()) {
+    if (userId || token || this.useCookieAuth()) {
       localStorage.setItem('isAuthenticated', 'true');
     }
 

@@ -25,6 +25,8 @@ declare module 'ng2-nouislider' {
   export interface NouisliderComponent {
     [key: string]: any;
   }
+  export type NouiFormatter = any;
+  export const NouiFormatter: any;
 }
 
 declare module 'ngx-swiper-wrapper' {
@@ -58,6 +60,8 @@ declare module 'ng2-dragula' {
   export interface DragulaDirective {
     [key: string]: any;
   }
+  export const DragulaService: any;
+  export type DragulaService = any;
 }
 
 // Augment Angular's template checking to allow these properties

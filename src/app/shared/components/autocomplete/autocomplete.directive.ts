@@ -101,7 +101,7 @@ export class AutocompleteDirective implements OnInit {
   }
 }
 
-export function overlayClickOutside( overlayRef: OverlayRef, origin: HTMLElement ) {
+export function overlayClickOutside( overlayRef: OverlayRef, origin: any ) {
   return fromEvent<MouseEvent>(document, 'click')
     .pipe(
       filter(event => {
