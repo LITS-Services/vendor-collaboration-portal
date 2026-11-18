@@ -1,5 +1,4 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import {
   ReportsService,
@@ -108,7 +107,6 @@ export class BidsWinLossComponent implements OnInit {
   constructor(
     private reportsService: ReportsService,
     private toastr: ToastrService,
-    private router: Router,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -303,12 +301,6 @@ export class BidsWinLossComponent implements OnInit {
         this.cdr.detectChanges();
       }
     });
-  }
-
-  viewRfq(id: number | undefined): void {
-    if (id) {
-      this.router.navigate(['/rfq/rfq-details', id]);
-    }
   }
 
   get bidsPageQuotedTotal(): number { return this.bidsData.items.reduce((s, r) => s + r.quotedAmount, 0); }

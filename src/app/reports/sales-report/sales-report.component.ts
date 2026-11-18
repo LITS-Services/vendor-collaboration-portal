@@ -1,5 +1,4 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import {
   ApexAxisChartSeries,
@@ -122,7 +121,6 @@ export class SalesReportComponent implements OnInit {
   constructor(
     private reportsService: ReportsService,
     private toastr: ToastrService,
-    private router: Router,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -319,16 +317,6 @@ export class SalesReportComponent implements OnInit {
         this.cdr.detectChanges();
       }
     });
-  }
-
-  viewPo(id: number): void {
-    this.router.navigate(['/purchase-order/purchase-order-details', id]);
-  }
-
-  viewInvoice(poId: number | undefined, invId: number): void {
-    if (poId) {
-      this.router.navigate(['/purchase-order/purchase-order-details', poId, 'invoice', invId]);
-    }
   }
 
   get poPageTotal(): number { return this.posData.items.reduce((s, r) => s + r.totalAmount, 0); }

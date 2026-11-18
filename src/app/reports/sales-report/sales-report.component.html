@@ -178,7 +178,7 @@
           <tbody>
             <tr *ngFor="let r of posData.items; let i = index">
               <td class="col-idx">{{ (posData.pageNumber - 1) * posData.pageSize + i + 1 }}</td>
-              <td><a href="javascript:void(0)" class="fw-bold text-success text-decoration-none" (click)="viewPo(r.id)">{{ r.purchaseOrderNo }}</a></td>
+              <td class="fw-bold col-code" [title]="r.purchaseOrderNo">{{ r.purchaseOrderNo }}</td>
               <td class="text-nowrap">{{ r.poDate | date:'dd MMM yyyy' }}</td>
               <td class="text-center"><span class="status-pill" [ngClass]="getStatusPillClass(r.poStatus)">{{ r.poStatus }}</span></td>
               <td class="num">{{ r.invoiceCount | number }}</td>
@@ -216,8 +216,8 @@
           <tbody>
             <tr *ngFor="let r of invoicesData.items; let i = index">
               <td class="col-idx">{{ (invoicesData.pageNumber - 1) * invoicesData.pageSize + i + 1 }}</td>
-              <td><a href="javascript:void(0)" class="fw-bold text-success text-decoration-none" (click)="viewInvoice(r.purchaseOrderId, r.id)">{{ r.invoiceNumber }}</a></td>
-              <td>{{ r.purchaseOrderNo }}</td>
+              <td class="fw-bold col-code" [title]="r.invoiceNumber">{{ r.invoiceNumber }}</td>
+              <td class="col-code" [title]="r.purchaseOrderNo">{{ r.purchaseOrderNo }}</td>
               <td class="text-nowrap">{{ r.invoiceDate | date:'dd MMM yyyy' }}</td>
               <td class="text-nowrap">{{ r.dueDate ? (r.dueDate | date:'dd MMM yyyy') : '—' }}</td>
               <td class="num fw-bold">{{ r.invoiceAmount | number:'1.2-2' }}</td>
