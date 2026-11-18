@@ -15,6 +15,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { forkJoin } from 'rxjs';
+import { CompanyTab } from 'app/shared/models/company.models';
 
 @Component({
   selector: 'app-company-registration',
@@ -73,6 +74,68 @@ export class CompanyRegistrationComponent implements OnInit {
   note: string = '';
   userId: string = '';
 
+  // Section A: Background Information
+  postalAddress: string = '';
+  organizationType: string = '';
+  organizationTypes: string[] = [
+    'Limited Liability Company (Ltd)',
+    'Sole Proprietorship',
+    'Partnership',
+    'Corporation',
+    'Non-Governmental Organization (NGO)',
+    'State Owned Enterprise',
+    'Other'
+  ];
+  geographicalAreaList: string[] = [
+    'Nairobi Region',
+    'Western Region',
+    'Nyanza Region',
+    'Rift Valley Region',
+    'Northern Region',
+    'Coastal Region',
+    'Central Region',
+    'Eastern Region'
+  ];
+  selectedGeographicalAreas: { [key: string]: boolean } = {};
+  companyRegistrationNo: string = '';
+  dateOfRegistration: string = '';
+  durationOfBusinessOperations: string = '';
+  descriptionOfGoodsServices: string = '';
+  totalWorkForce: string = '';
+
+  // Section C: References & Credit Period
+  clienteleList: any[] = [];
+  newClientele: any = { clientName: '', supplies: '', duration: '', totalContractValue: '' };
+  editingClienteleIndex: number | null = null;
+
+  refereeList: any[] = [];
+  newReferee: any = {
+    organization: '',
+    contactName: '',
+    position: '',
+    telephoneNo: '',
+    emailAddress: '',
+    hasOfficialStamp: false,
+    hasSignature: false,
+    lpoAttachmentUrl: ''
+  };
+  editingRefereeIndex: number | null = null;
+
+  hasCreditPeriod30Days: boolean | null = null;
+  creditPeriod: string = '';
+
+  // Section D: Technical Competence
+  proofOfProfessionalism: string = '';
+  keyPersonnelQualifications: string = '';
+
+  // Section E: Management Policies
+  hasEmploymentPolicy: boolean | null = null;
+  employeeScreeningExplanation: string = '';
+  hasCodeOfConduct: boolean | null = null;
+  codeOfConductDetails: string = '';
+  employeeIntegrityMeasures: string = '';
+  hasEmployeeTrainingProgram: boolean | null = null;
+
   createdBy: string = '';
   modifiedBy: string = '';
 
@@ -103,6 +166,10 @@ export class CompanyRegistrationComponent implements OnInit {
       type: 'Mobile',
       contactNumber: '',
       extension: '',
+      contactRole: '',
+      contactPerson: '',
+      designation: '',
+      email: '',
       primary: false
     };
   }
@@ -115,6 +182,10 @@ export class CompanyRegistrationComponent implements OnInit {
       state: '',
       zip: '',
       country: '',
+      building: '',
+      floor: '',
+      town: '',
+      postalAddress: '',
       primary: false
     };
   }
@@ -133,20 +204,21 @@ export class CompanyRegistrationComponent implements OnInit {
     type: string;
   }> = [];
 
-  companyTabs: Array<'general' | 'addresses' | 'contacts' | 'purchasing' | 'bank' | 'attachments' | 'officers'> = [
+  companyTabs: Array<CompanyTab> = [
     'general',
     'addresses',
     'contacts',
     'purchasing',
     'bank',
+    'references',
+    'technical',
     'attachments',
     'officers'
   ];
 
-  // default: first tab
-  selectedTab: 'general' | 'addresses' | 'contacts' | 'purchasing' | 'bank' | 'attachments' | 'officers' = 'general';
+  selectedTab: CompanyTab = 'general';
 
-  selectTab(tab: 'general' | 'addresses' | 'contacts' | 'purchasing' | 'bank' | 'attachments' | 'officers'): void {
+  selectTab(tab: CompanyTab): void {
     this.selectedTab = tab;
   }
 
@@ -468,6 +540,32 @@ export class CompanyRegistrationComponent implements OnInit {
           this.chain = pd.chain || '';
           this.note = pd.note || '';
 
+          // Section A: Background Information
+          this.postalAddress = company.postalAddress || '';
+          this.organizationType = company.organizationType || '';
+          this.companyRegistrationNo = company.companyRegistrationNo || '';
+          this.dateOfRegistration = company.dateOfRegistration ? company.dateOfRegistration.substring(0, 10) : '';
+          this.durationOfBusinessOperations = company.durationOfBusinessOperations || '';
+          this.descriptionOfGoodsServices = company.descriptionOfGoodsServices || '';
+          this.totalWorkForce = company.totalWorkForce || '';
+          this.setGeographicalAreasFromString(company.geographicalAreaOfOperations || '');
+
+          // Section C: References & Credit Period
+          this.hasCreditPeriod30Days = company.hasCreditPeriod30Days !== undefined ? company.hasCreditPeriod30Days : null;
+          this.creditPeriod = company.creditPeriod || '';
+
+          // Section D: Technical Competence
+          this.proofOfProfessionalism = company.proofOfProfessionalism || '';
+          this.keyPersonnelQualifications = company.keyPersonnelQualifications || '';
+
+          // Section E: Management Policies
+          this.hasEmploymentPolicy = company.hasEmploymentPolicy !== undefined ? company.hasEmploymentPolicy : null;
+          this.employeeScreeningExplanation = company.employeeScreeningExplanation || '';
+          this.hasCodeOfConduct = company.hasCodeOfConduct !== undefined ? company.hasCodeOfConduct : null;
+          this.codeOfConductDetails = company.codeOfConductDetails || '';
+          this.employeeIntegrityMeasures = company.employeeIntegrityMeasures || '';
+          this.hasEmployeeTrainingProgram = company.hasEmployeeTrainingProgram !== undefined ? company.hasEmployeeTrainingProgram : null;
+
           // Addresses
           this.addressList = (company.vendorCompanyAddresses || []).map(a => ({
             street: a.street,
@@ -475,6 +573,10 @@ export class CompanyRegistrationComponent implements OnInit {
             state: a.state,
             zip: a.zip,
             country: a.country,
+            building: a.building || '',
+            floor: a.floor || '',
+            town: a.town || '',
+            postalAddress: a.postalAddress || '',
             primary: a.isPrimary || false
           }));
 
@@ -484,7 +586,35 @@ export class CompanyRegistrationComponent implements OnInit {
             type: c.type,
             contactNumber: c.contactNumber,
             extension: c.extension || '',
+            contactRole: c.contactRole || '',
+            contactPerson: c.contactPerson || '',
+            designation: c.designation || '',
+            email: c.email || '',
             primary: c.isPrimary || false
+          }));
+
+          // Clientele
+          const rawClientele = company.clientele?.$values || company.clientele || [];
+          this.clienteleList = rawClientele.map((c: any) => ({
+            id: c.id,
+            clientName: c.clientName || '',
+            supplies: c.supplies || '',
+            duration: c.duration || '',
+            totalContractValue: c.totalContractValue || ''
+          }));
+
+          // Referees
+          const rawReferees = company.referees?.$values || company.referees || [];
+          this.refereeList = rawReferees.map((r: any) => ({
+            id: r.id,
+            organization: r.organization || '',
+            contactName: r.contactName || '',
+            position: r.position || '',
+            telephoneNo: r.telephoneNo || '',
+            emailAddress: r.emailAddress || '',
+            hasOfficialStamp: r.hasOfficialStamp || false,
+            hasSignature: r.hasSignature || false,
+            lpoAttachmentUrl: r.lpoAttachmentUrl || ''
           }));
 
           // Bank Details
@@ -512,7 +642,8 @@ export class CompanyRegistrationComponent implements OnInit {
             fileContent: f.fileContent,
             attachedBy: f.attachedBy,
             remarks: f.remarks,
-            attachedAt: f.attachedAt
+            attachedAt: f.attachedAt,
+            documentType: f.documentType || ''
           }));
 
           // Officers (Procurement Officers & Finance Officers)
@@ -651,6 +782,10 @@ export class CompanyRegistrationComponent implements OnInit {
       state: a.state,
       zip: a.zip,
       country: a.country,
+      building: a.building || '',
+      floor: a.floor || '',
+      town: a.town || '',
+      postalAddress: a.postalAddress || '',
       isPrimary: (a.isPrimary !== undefined ? a.isPrimary : a.primary) || false
     }));
   }
@@ -679,7 +814,142 @@ export class CompanyRegistrationComponent implements OnInit {
       type: c.type,
       contactNumber: c.contactNumber,
       extension: c.extension || '',
+      contactRole: c.contactRole || '',
+      contactPerson: c.contactPerson || '',
+      designation: c.designation || '',
+      email: c.email || '',
       isPrimary: (c.isPrimary !== undefined ? c.isPrimary : c.primary) || false
+    }));
+  }
+
+
+  // ==================== Geographical Areas ====================
+  onGeographicalAreaChange(area: string, event: any) {
+    this.selectedGeographicalAreas[area] = event.target.checked;
+  }
+
+  getGeographicalAreasString(): string {
+    return Object.keys(this.selectedGeographicalAreas)
+      .filter(k => this.selectedGeographicalAreas[k])
+      .join(', ');
+  }
+
+  setGeographicalAreasFromString(str: string) {
+    this.selectedGeographicalAreas = {};
+    if (!str) return;
+    const areas = str.split(',').map(s => s.trim());
+    areas.forEach(a => {
+      this.selectedGeographicalAreas[a] = true;
+    });
+  }
+
+  // ==================== Clientele ====================
+  addOrUpdateClientele() {
+    if (!this.newClientele.clientName || !this.newClientele.clientName.trim()) {
+      this.toastr.warning('Please enter client name', 'Validation');
+      return;
+    }
+    if (this.editingClienteleIndex !== null) {
+      this.clienteleList[this.editingClienteleIndex] = { ...this.newClientele };
+      this.editingClienteleIndex = null;
+    } else {
+      this.clienteleList.push({ ...this.newClientele });
+    }
+    this.newClientele = { clientName: '', supplies: '', duration: '', totalContractValue: '' };
+    this.cdr.markForCheck();
+  }
+
+  editClientele(index: number) {
+    this.editingClienteleIndex = index;
+    this.newClientele = { ...this.clienteleList[index] };
+  }
+
+  cancelClienteleEdit() {
+    this.editingClienteleIndex = null;
+    this.newClientele = { clientName: '', supplies: '', duration: '', totalContractValue: '' };
+  }
+
+  removeClientele(index: number) {
+    this.clienteleList.splice(index, 1);
+    if (this.editingClienteleIndex === index) {
+      this.cancelClienteleEdit();
+    }
+    this.cdr.markForCheck();
+  }
+
+  getClienteleForPayload() {
+    return this.clienteleList.map(c => ({
+      id: c.id || 0,
+      clientName: c.clientName || '',
+      supplies: c.supplies || '',
+      duration: c.duration || '',
+      totalContractValue: c.totalContractValue || ''
+    }));
+  }
+
+  // ==================== Referees ====================
+  addOrUpdateReferee() {
+    if (!this.newReferee.organization || !this.newReferee.contactName) {
+      this.toastr.warning('Please enter referee organization and contact name', 'Validation');
+      return;
+    }
+    if (this.editingRefereeIndex !== null) {
+      this.refereeList[this.editingRefereeIndex] = { ...this.newReferee };
+      this.editingRefereeIndex = null;
+    } else {
+      this.refereeList.push({ ...this.newReferee });
+    }
+    this.newReferee = {
+      organization: '',
+      contactName: '',
+      position: '',
+      telephoneNo: '',
+      emailAddress: '',
+      hasOfficialStamp: false,
+      hasSignature: false,
+      lpoAttachmentUrl: ''
+    };
+    this.cdr.markForCheck();
+  }
+
+  editReferee(index: number) {
+    this.editingRefereeIndex = index;
+    this.newReferee = { ...this.refereeList[index] };
+  }
+
+  cancelRefereeEdit() {
+    this.editingRefereeIndex = null;
+    this.newReferee = {
+      organization: '',
+      contactName: '',
+      position: '',
+      telephoneNo: '',
+      emailAddress: '',
+      hasOfficialStamp: false,
+      hasSignature: false,
+      lpoAttachmentUrl: ''
+    };
+  }
+
+  removeReferee(index: number) {
+    this.refereeList.splice(index, 1);
+    if (this.editingRefereeIndex === index) {
+      this.cancelRefereeEdit();
+    }
+    this.cdr.markForCheck();
+  }
+
+  getRefereesForPayload() {
+    return this.refereeList.map(r => ({
+      id: r.id || 0,
+      organization: r.organization || '',
+      contactName: r.contactName || '',
+      position: r.position || '',
+      telephoneNo: r.telephoneNo || '',
+      emailAddress: r.emailAddress || '',
+      hasOfficialStamp: !!r.hasOfficialStamp,
+      hasSignature: !!r.hasSignature,
+      lpoAttachmentUrl: r.lpoAttachmentUrl || ''
     }));
   }
 
@@ -1018,10 +1288,37 @@ export class CompanyRegistrationComponent implements OnInit {
       logo: logoBase64,
       requestStatusId: 1,
 
-      // procurementCompanyId: [...this.selectedProcurementCompanyIds], // REMOVED
+      // Section A
+      postalAddress: this.postalAddress,
+      organizationType: this.organizationType,
+      geographicalAreaOfOperations: this.getGeographicalAreasString(),
+      companyRegistrationNo: this.companyRegistrationNo,
+      dateOfRegistration: this.dateOfRegistration ? new Date(this.dateOfRegistration).toISOString() : null,
+      durationOfBusinessOperations: this.durationOfBusinessOperations,
+      descriptionOfGoodsServices: this.descriptionOfGoodsServices,
+      totalWorkForce: this.totalWorkForce,
+
+      // Section C
+      hasCreditPeriod30Days: this.hasCreditPeriod30Days,
+      creditPeriod: this.creditPeriod,
+
+      // Section D
+      proofOfProfessionalism: this.proofOfProfessionalism,
+      keyPersonnelQualifications: this.keyPersonnelQualifications,
+
+      // Section E
+      hasEmploymentPolicy: this.hasEmploymentPolicy,
+      employeeScreeningExplanation: this.employeeScreeningExplanation,
+      hasCodeOfConduct: this.hasCodeOfConduct,
+      codeOfConductDetails: this.codeOfConductDetails,
+      employeeIntegrityMeasures: this.employeeIntegrityMeasures,
+      hasEmployeeTrainingProgram: this.hasEmployeeTrainingProgram,
+
       addresses: this.getAddressesForPayload(),
       contacts: this.getContactsForPayload(),
       bankDetails: this.getBankForPayload(),
+      clientele: this.getClienteleForPayload(),
+      referees: this.getRefereesForPayload(),
       purchasingDemographics: this.getPurchasingDemographicsPayload(),
       attachments: this.attachedFiles.map(f => ({
         fileName: f.fileName,
@@ -1029,9 +1326,9 @@ export class CompanyRegistrationComponent implements OnInit {
         fileContent: f.fileContent || '',
         attachedBy: f.attachedBy || this.createdBy,
         remarks: f.remarks,
+        documentType: f.documentType || '',
         attachedAt: f.attachedAt ? new Date(f.attachedAt).toISOString() : new Date().toISOString()
       })),
-      // remarks: this.companyForm?.get('remarks')?.value || this.remarks,
       createdBy: this.isEditMode ? undefined : this.createdBy,
       modifiedBy: this.isEditMode ? this.modifiedBy : undefined
     };

@@ -455,3 +455,73 @@ thead {
     color: #94a3b8;
   }
 }
+
+/* ===== Custom App Matching Styles for Registration Form ===== */
+.checkbox-text {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 14px;
+  cursor: pointer;
+  margin-bottom: 0;
+  user-select: none;
+  color: #444;
+
+  input[type='checkbox'],
+  input[type='radio'] {
+    width: 17px;
+    height: 17px;
+    accent-color: #249d57;
+    cursor: pointer;
+    margin: 0;
+  }
+}
+
+.app-info-callout {
+  background-color: #f8fffa;
+  border: 1px solid #b8d4c5;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+
+  .callout-icon-box {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: #e8f5e9;
+    color: #1e7e44;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .mandatory-doc-list {
+    list-style: none;
+    padding-left: 0;
+
+    li {
+      font-size: 13px;
+      color: #333;
+      padding: 3px 0;
+    }
+  }
+}
+
+.badge-primary {
+  background-color: #e8f5e9 !important;
+  color: #1e7e44 !important;
+  border: 1px solid #c8e6c9 !important;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+.badge-secondary {
+  background-color: #f1f5f9 !important;
+  color: #64748b !important;
+  border: 1px solid #e2e8f0 !important;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 12px;
+}

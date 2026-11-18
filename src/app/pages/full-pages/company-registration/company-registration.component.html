@@ -44,6 +44,16 @@
                 <span>BANK DETAILS</span>
             </button>
 
+            <button (click)="selectTab('references')" [ngClass]="{ 'tab-current': selectedTab === 'references' }"
+                class="po-style-tab">
+                <span>REFERENCES</span>
+            </button>
+
+            <button (click)="selectTab('technical')" [ngClass]="{ 'tab-current': selectedTab === 'technical' }"
+                class="po-style-tab">
+                <span>TECHNICAL & POLICIES</span>
+            </button>
+
             <button (click)="selectTab('attachments')" [ngClass]="{ 'tab-current': selectedTab === 'attachments' }"
                 class="po-style-tab">
                 <span>ATTACHMENTS</span>
@@ -299,6 +309,87 @@
                                                 </div>
 
                                             </div>
+
+                                            <!-- Section A: Background Information -->
+                                            <h4 class="form-section mt-4"><i class="ft-briefcase"></i> Background & Operations</h4>
+                                            <div class="row cstm-vertical-gap">
+                                                <div class="col-md-3 mt-1 form-group">
+                                                    <label>
+                                                        Organization type
+                                                        <i class="fa fa-info-circle text-muted ms-1" ngbTooltip="Select legal structure of organization" placement="right"></i>
+                                                    </label>
+                                                    <select class="form-control" [(ngModel)]="organizationType" [disabled]="isReadOnly">
+                                                        <option value="">Select Organization Type</option>
+                                                        <option *ngFor="let opt of organizationTypes" [value]="opt">{{ opt }}</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="col-md-3 mt-1 form-group">
+                                                    <label>
+                                                        Postal address
+                                                        <i class="fa fa-info-circle text-muted ms-1" ngbTooltip="P.O. Box address including postal code" placement="right"></i>
+                                                    </label>
+                                                    <input type="text" class="form-control" [(ngModel)]="postalAddress" [disabled]="isReadOnly" placeholder="e.g. P.O. Box 12345 - 00100">
+                                                </div>
+
+                                                <div class="col-md-3 mt-1 form-group">
+                                                    <label>
+                                                        Company registration no.
+                                                        <i class="fa fa-info-circle text-muted ms-1" ngbTooltip="Certificate of Incorporation / Registration number" placement="right"></i>
+                                                    </label>
+                                                    <input type="text" class="form-control" [(ngModel)]="companyRegistrationNo" [disabled]="isReadOnly" placeholder="Enter Registration No.">
+                                                </div>
+
+                                                <div class="col-md-3 mt-1 form-group">
+                                                    <label>
+                                                        Date of registration
+                                                        <i class="fa fa-info-circle text-muted ms-1" ngbTooltip="Date business was formally registered" placement="right"></i>
+                                                    </label>
+                                                    <input type="date" class="form-control" [(ngModel)]="dateOfRegistration" [disabled]="isReadOnly">
+                                                </div>
+
+                                                <div class="col-md-3 mt-1 form-group">
+                                                    <label>
+                                                        Duration of business operations
+                                                        <i class="fa fa-info-circle text-muted ms-1" ngbTooltip="Number of years in active operation" placement="right"></i>
+                                                    </label>
+                                                    <input type="text" class="form-control" [(ngModel)]="durationOfBusinessOperations" [disabled]="isReadOnly" placeholder="e.g. 5 Years">
+                                                </div>
+
+                                                <div class="col-md-3 mt-1 form-group">
+                                                    <label>
+                                                        Total work force
+                                                        <i class="fa fa-info-circle text-muted ms-1" ngbTooltip="Current total number of staff / employees" placement="right"></i>
+                                                    </label>
+                                                    <input type="text" class="form-control" [(ngModel)]="totalWorkForce" [disabled]="isReadOnly" placeholder="e.g. 50">
+                                                </div>
+
+                                                <div class="col-12 mt-1 form-group">
+                                                    <label>
+                                                        Brief description of goods / services / works offered
+                                                        <i class="fa fa-info-circle text-muted ms-1" ngbTooltip="Detailed description of commercial offerings" placement="right"></i>
+                                                    </label>
+                                                    <textarea class="form-control" rows="3" [(ngModel)]="descriptionOfGoodsServices" [disabled]="isReadOnly" placeholder="Describe the goods, services, or technical works your company provides..."></textarea>
+                                                </div>
+
+                                                <div class="col-12 mt-2 form-group">
+                                                    <label class="d-block mb-2 font-weight-bold">
+                                                        Geographical area of operations
+                                                        <small class="text-muted font-weight-normal ms-1">(Tick areas you are operating from)</small>
+                                                    </label>
+                                                    <div class="row">
+                                                        <div class="col-lg-3 col-md-4 col-sm-6 mb-2" *ngFor="let area of geographicalAreaList">
+                                                            <label class="checkbox-text">
+                                                                <input type="checkbox"
+                                                                    [checked]="selectedGeographicalAreas[area]"
+                                                                    (change)="onGeographicalAreaChange(area, $event)"
+                                                                    [disabled]="isReadOnly">
+                                                                <span>{{ area }}</span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
 
 
@@ -315,10 +406,13 @@
                                                     <table class="my-table">
                                                         <thead>
                                                             <tr>
+                                                                <th>Town</th>
+                                                                <th>Building</th>
+                                                                <th>Floor</th>
                                                                 <th>Street</th>
                                                                 <th>City</th>
                                                                 <th>State</th>
-                                                                <th>Zip Code</th>
+                                                                <th>Postal Address</th>
                                                                 <th>Country</th>
                                                                 <th>Primary</th>
                                                                 <th>Actions</th>
@@ -326,12 +420,15 @@
                                                         </thead>
                                                         <tbody>
                                                             <tr *ngFor="let address of addressList; let i = index">
-                                                                <td>{{ address.street }}</td>
-                                                                <td>{{ address.city }}</td>
-                                                                <td>{{ address.state }}</td>
-                                                                <td>{{ address.zip }}</td>
-                                                                <td>{{ address.country }}</td>
-                                                                <td>{{ address.primary ? 'Yes' : 'No' }}</td>
+                                                                <td>{{ address.town || '-' }}</td>
+                                                                <td>{{ address.building || '-' }}</td>
+                                                                <td>{{ address.floor || '-' }}</td>
+                                                                <td>{{ address.street || '-' }}</td>
+                                                                <td>{{ address.city || '-' }}</td>
+                                                                <td>{{ address.state || '-' }}</td>
+                                                                <td>{{ address.postalAddress || '-' }}</td>
+                                                                <td>{{ address.country || '-' }}</td>
+                                                                <td>{{ (address.primary || address.isPrimary) ? 'Yes' : 'No' }}</td>
                                                                 <td>
                                                                     <ng-container *ngIf="!isReadOnly">
                                                                         <button class="btn btn-sm px-1" type="button" title="Edit"
@@ -364,21 +461,25 @@
                                                 <table class="my-table">
                                                     <thead>
                                                         <tr>
-                                                            <th>Description</th>
-                                                            <th>Type</th>
+                                                            <th>Role</th>
+                                                            <th>Contact Person</th>
+                                                            <th>Designation</th>
+                                                            <th>Email</th>
                                                             <th>Contact Number</th>
-                                                            <th>Extension</th>
+                                                            <th>Type</th>
                                                             <th>Primary</th>
                                                             <th>Actions</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         <tr *ngFor="let contact of contactList; let i = index">
-                                                            <td>{{ contact.description }}</td>
-                                                            <td>{{ contact.type }}</td>
-                                                            <td>{{ contact.contactNumber }}</td>
-                                                            <td>{{ contact.extension }}</td>
-                                                            <td>{{ contact.primary ? 'Yes' : 'No' }}</td>
+                                                            <td><span class="badge badge-info">{{ contact.contactRole || '-' }}</span></td>
+                                                            <td>{{ contact.contactPerson || contact.description || '-' }}</td>
+                                                            <td>{{ contact.designation || '-' }}</td>
+                                                            <td>{{ contact.email || '-' }}</td>
+                                                            <td>{{ contact.contactNumber || '-' }}</td>
+                                                            <td>{{ contact.type || '-' }}</td>
+                                                            <td>{{ (contact.primary || contact.isPrimary) ? 'Yes' : 'No' }}</td>
                                                             <td>
                                                                 <ng-container *ngIf="!isReadOnly">
                                                                     <button class="btn btn-sm px-1" type="button" title="Edit"
@@ -691,7 +792,309 @@
                                             </div>
                                         </div>
 
-                                        <div *ngIf="selectedTab === 'attachments'">
+                                        <!-- ==================== REFERENCES TAB (Section C) ==================== -->
+                                        <div *ngIf="selectedTab === 'references'">
+                                            <!-- Section 14: List of Clientele (Min. 4) -->
+                                            <h4 class="form-section"><i class="ft-users"></i> 14. List of Clientele (Min. 4)</h4>
+                                            <p class="desc">Provide a list of previous or current clients for similar services or supplies.</p>
+
+                                            <!-- Form to Add/Edit Clientele -->
+                                            <div class="row align-items-end mb-2" *ngIf="!isReadOnly">
+                                                <div class="form-group col-md-3">
+                                                    <label>Client Name <span class="text-danger">*</span></label>
+                                                    <input type="text" class="form-control" [(ngModel)]="newClientele.clientName" placeholder="Enter client name">
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <label>Supplies / Services Delivered</label>
+                                                    <input type="text" class="form-control" [(ngModel)]="newClientele.supplies" placeholder="e.g. IT Equipment, Logistics">
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <label>Duration</label>
+                                                    <input type="text" class="form-control" [(ngModel)]="newClientele.duration" placeholder="e.g. 2 Years">
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <label>Total Contract Value</label>
+                                                    <input type="text" class="form-control" [(ngModel)]="newClientele.totalContractValue" placeholder="e.g. $50,000">
+                                                </div>
+                                            </div>
+                                            <div class="d-flex justify-content-end mb-3" *ngIf="!isReadOnly">
+                                                <button type="button" class="btn btn-outline-secondary me-2" *ngIf="editingClienteleIndex !== null" (click)="cancelClienteleEdit()">
+                                                    Cancel
+                                                </button>
+                                                <button type="button" class="btn btn-primary" (click)="addOrUpdateClientele()">
+                                                    <i class="ft-chevrons-down me-1"></i>{{ editingClienteleIndex !== null ? 'Update' : 'Add' }} Client
+                                                </button>
+                                            </div>
+
+                                            <!-- Clientele Table -->
+                                            <div class="table-responsive mt-2 mb-4">
+                                                <table class="my-table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Client</th>
+                                                            <th>Supplies / Services</th>
+                                                            <th>Duration</th>
+                                                            <th>Total Contract Value</th>
+                                                            <th *ngIf="!isReadOnly">Actions</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr *ngFor="let client of clienteleList; let i = index">
+                                                            <td class="font-weight-bold">{{ client.clientName }}</td>
+                                                            <td>{{ client.supplies || '-' }}</td>
+                                                            <td>{{ client.duration || '-' }}</td>
+                                                            <td>{{ client.totalContractValue || '-' }}</td>
+                                                            <td *ngIf="!isReadOnly">
+                                                                <button class="btn btn-sm px-1" type="button" title="Edit" (click)="editClientele(i)">
+                                                                    <img src="assets/img/svg-icons/update-icon.svg" alt="Edit" style="width: 18px; height: 18px;" />
+                                                                </button>
+                                                                <button class="btn btn-sm px-1" type="button" title="Delete" (click)="removeClientele(i)">
+                                                                    <img src="assets/img/svg-icons/delete-icon.svg" alt="Delete" style="width: 18px; height: 18px;" />
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                        <tr *ngIf="clienteleList.length === 0">
+                                                            <td [attr.colspan]="!isReadOnly ? 5 : 4" class="text-center text-muted py-3">No clientele added yet. Please add at least 4 clients.</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                            <!-- Section 15: Referees (3 Referees) -->
+                                            <h4 class="form-section mt-4"><i class="ft-award"></i> 15. Referees (Provide contact details for 3 referees)</h4>
+                                            <p class="desc">Provide contact details for referees for work that is similar or the same. PS: Attach copies of LPOs showing work performed under the Attachments tab.</p>
+
+                                            <!-- Form to Add/Edit Referee -->
+                                            <div class="row align-items-end mb-2" *ngIf="!isReadOnly">
+                                                <div class="form-group col-md-3">
+                                                    <label>Organization <span class="text-danger">*</span></label>
+                                                    <input type="text" class="form-control" [(ngModel)]="newReferee.organization" placeholder="Organization name">
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <label>Contact Name <span class="text-danger">*</span></label>
+                                                    <input type="text" class="form-control" [(ngModel)]="newReferee.contactName" placeholder="Full contact name">
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <label>Position / Title</label>
+                                                    <input type="text" class="form-control" [(ngModel)]="newReferee.position" placeholder="Designation / Title">
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <label>Telephone No.</label>
+                                                    <input type="text" class="form-control" [(ngModel)]="newReferee.telephoneNo" placeholder="Phone number">
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <label>Email Address</label>
+                                                    <input type="email" class="form-control" [(ngModel)]="newReferee.emailAddress" placeholder="contact@org.com">
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <label class="checkbox-text mt-3">
+                                                        <input type="checkbox" [(ngModel)]="newReferee.hasOfficialStamp">
+                                                        <span>Official Stamp Available</span>
+                                                    </label>
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <label class="checkbox-text mt-3">
+                                                        <input type="checkbox" [(ngModel)]="newReferee.hasSignature">
+                                                        <span>Signature Available</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex justify-content-end mb-3" *ngIf="!isReadOnly">
+                                                <button type="button" class="btn btn-outline-secondary me-2" *ngIf="editingRefereeIndex !== null" (click)="cancelRefereeEdit()">
+                                                    Cancel
+                                                </button>
+                                                <button type="button" class="btn btn-primary" (click)="addOrUpdateReferee()">
+                                                    <i class="ft-chevrons-down me-1"></i>{{ editingRefereeIndex !== null ? 'Update' : 'Add' }} Referee
+                                                </button>
+                                            </div>
+
+                                            <!-- Referees Table -->
+                                            <div class="table-responsive mt-2 mb-4">
+                                                <table class="my-table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Organization</th>
+                                                            <th>Contact Name</th>
+                                                            <th>Position</th>
+                                                            <th>Telephone</th>
+                                                            <th>Email</th>
+                                                            <th>Stamp</th>
+                                                            <th>Signature</th>
+                                                            <th *ngIf="!isReadOnly">Actions</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr *ngFor="let ref of refereeList; let i = index">
+                                                            <td class="font-weight-bold">{{ ref.organization }}</td>
+                                                            <td>{{ ref.contactName }}</td>
+                                                            <td>{{ ref.position || '-' }}</td>
+                                                            <td>{{ ref.telephoneNo || '-' }}</td>
+                                                            <td>{{ ref.emailAddress || '-' }}</td>
+                                                            <td><span class="badge" [ngClass]="ref.hasOfficialStamp ? 'badge-primary' : 'badge-secondary'">{{ ref.hasOfficialStamp ? 'Yes' : 'No' }}</span></td>
+                                                            <td><span class="badge" [ngClass]="ref.hasSignature ? 'badge-primary' : 'badge-secondary'">{{ ref.hasSignature ? 'Yes' : 'No' }}</span></td>
+                                                            <td *ngIf="!isReadOnly">
+                                                                <button class="btn btn-sm px-1" type="button" title="Edit" (click)="editReferee(i)">
+                                                                    <img src="assets/img/svg-icons/update-icon.svg" alt="Edit" style="width: 18px; height: 18px;" />
+                                                                </button>
+                                                                <button class="btn btn-sm px-1" type="button" title="Delete" (click)="removeReferee(i)">
+                                                                    <img src="assets/img/svg-icons/delete-icon.svg" alt="Delete" style="width: 18px; height: 18px;" />
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                        <tr *ngIf="refereeList.length === 0">
+                                                            <td [attr.colspan]="!isReadOnly ? 8 : 7" class="text-center text-muted py-3">No referees added yet. Please add 3 referees.</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                            <!-- Section 16: Credit Period -->
+                                            <h4 class="form-section mt-4"><i class="ft-calendar"></i> 16. Credit Period</h4>
+                                            <div class="row cstm-vertical-gap align-items-center">
+                                                <div class="col-md-6 form-group">
+                                                    <label class="d-block mb-2 font-weight-bold">Can your company offer a Credit Period of 30 Days and above?</label>
+                                                    <div class="d-flex gap-4">
+                                                        <label class="checkbox-text">
+                                                            <input type="radio" name="credit30" [value]="true" [(ngModel)]="hasCreditPeriod30Days" [disabled]="isReadOnly">
+                                                            <span>Yes [Y]</span>
+                                                        </label>
+                                                        <label class="checkbox-text">
+                                                            <input type="radio" name="credit30" [value]="false" [(ngModel)]="hasCreditPeriod30Days" [disabled]="isReadOnly">
+                                                            <span>No [N]</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 form-group">
+                                                    <label>Credit Period Details / Terms</label>
+                                                    <input type="text" class="form-control" [(ngModel)]="creditPeriod" [disabled]="isReadOnly" placeholder="e.g. 30 Days, 60 Days, 90 Days">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- ==================== TECHNICAL & POLICIES TAB (Section D & E) ==================== -->
+                                        <div *ngIf="selectedTab === 'technical'">
+                                            <!-- Section D: Technical Competence -->
+                                            <h4 class="form-section"><i class="ft-check-circle"></i> Section D: Technical Competence</h4>
+                                            <div class="row cstm-vertical-gap">
+                                                <div class="col-12 form-group">
+                                                    <label>
+                                                        17. Proof of Professionalism, Accreditation
+                                                        <i class="fa fa-info-circle text-muted ms-1" ngbTooltip="Provide a list and attach copies under the Attachments tab" placement="right"></i>
+                                                    </label>
+                                                    <p class="desc">Provide a list of professional accreditations, certifications, or licenses held by your firm. Please attach copies under the Attachments tab.</p>
+                                                    <textarea class="form-control" rows="3" [(ngModel)]="proofOfProfessionalism" [disabled]="isReadOnly" placeholder="List professional accreditations, ISO certifications, trade affiliations..."></textarea>
+                                                </div>
+
+                                                <div class="col-12 form-group mt-2">
+                                                    <label>
+                                                        Qualifications of KEY Management and Technical Personnel
+                                                        <i class="fa fa-info-circle text-muted ms-1" ngbTooltip="For Professional & Technical Services, provide brief summary. Attach CVs under Attachments tab" placement="right"></i>
+                                                    </label>
+                                                    <p class="desc">For Professional & Technical Services, provide a brief summary of qualifications and experience of key personnel. (Attach CVs under Attachments tab).</p>
+                                                    <textarea class="form-control" rows="3" [(ngModel)]="keyPersonnelQualifications" [disabled]="isReadOnly" placeholder="Summarize key management and technical team qualifications..."></textarea>
+                                                </div>
+                                            </div>
+
+                                            <!-- Section E: Management Policies -->
+                                            <h4 class="form-section mt-4"><i class="ft-shield"></i> Section E: Management Policies</h4>
+                                            <div class="row cstm-vertical-gap">
+                                                <!-- i) Employment Policy -->
+                                                <div class="col-md-6 form-group">
+                                                    <label class="d-block mb-2 font-weight-bold">18. i) Does the firm have an Employment Policy?</label>
+                                                    <div class="d-flex gap-4">
+                                                        <label class="checkbox-text">
+                                                            <input type="radio" name="empPolicy" [value]="true" [(ngModel)]="hasEmploymentPolicy" [disabled]="isReadOnly">
+                                                            <span>YES</span>
+                                                        </label>
+                                                        <label class="checkbox-text">
+                                                            <input type="radio" name="empPolicy" [value]="false" [(ngModel)]="hasEmploymentPolicy" [disabled]="isReadOnly">
+                                                            <span>NO</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Explanation if NO -->
+                                                <div class="col-md-6 form-group" *ngIf="hasEmploymentPolicy === false">
+                                                    <label class="text-danger font-weight-bold">If NO, explain how employee screening / background checks are done:</label>
+                                                    <textarea class="form-control" rows="2" [(ngModel)]="employeeScreeningExplanation" [disabled]="isReadOnly" placeholder="Explain employee background check procedures..."></textarea>
+                                                </div>
+
+                                                <!-- ii) Code of Conduct -->
+                                                <div class="col-md-6 form-group mt-2">
+                                                    <label class="d-block mb-2 font-weight-bold">ii) Does the firm have a Code of Conduct / subscribe to a professional body?</label>
+                                                    <div class="d-flex gap-4">
+                                                        <label class="checkbox-text">
+                                                            <input type="radio" name="codeCond" [value]="true" [(ngModel)]="hasCodeOfConduct" [disabled]="isReadOnly">
+                                                            <span>YES</span>
+                                                        </label>
+                                                        <label class="checkbox-text">
+                                                            <input type="radio" name="codeCond" [value]="false" [(ngModel)]="hasCodeOfConduct" [disabled]="isReadOnly">
+                                                            <span>NO</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Details if YES -->
+                                                <div class="col-md-6 form-group mt-2" *ngIf="hasCodeOfConduct === true">
+                                                    <label class="font-weight-bold">Professional body name / Code of conduct details:</label>
+                                                    <textarea class="form-control" rows="2" [(ngModel)]="codeOfConductDetails" [disabled]="isReadOnly" placeholder="Enter details or professional body name..."></textarea>
+                                                </div>
+
+                                                <!-- iii) Employee Integrity -->
+                                                <div class="col-12 form-group mt-2">
+                                                    <label class="font-weight-bold">iii) How does the firm ensure integrity of its employees?</label>
+                                                    <textarea class="form-control" rows="3" [(ngModel)]="employeeIntegrityMeasures" [disabled]="isReadOnly" placeholder="Describe measures taken to ensure employee integrity, anti-corruption policies, audits, etc..."></textarea>
+                                                </div>
+
+                                                <!-- iv) Training Program -->
+                                                <div class="col-md-6 form-group mt-2">
+                                                    <label class="d-block mb-2 font-weight-bold">iv) Does the firm have an Employee Training Program?</label>
+                                                    <div class="d-flex gap-4">
+                                                        <label class="checkbox-text">
+                                                            <input type="radio" name="trainProg" [value]="true" [(ngModel)]="hasEmployeeTrainingProgram" [disabled]="isReadOnly">
+                                                            <span>YES</span>
+                                                        </label>
+                                                        <label class="checkbox-text">
+                                                            <input type="radio" name="trainProg" [value]="false" [(ngModel)]="hasEmployeeTrainingProgram" [disabled]="isReadOnly">
+                                                            <span>NO</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Mandatory Requirements Callout -->
+                                            <div class="app-info-callout mt-4 p-3 d-flex align-items-start gap-3">
+                                                <div class="callout-icon-box">
+                                                    <i class="ft-file-text"></i>
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <h6 class="font-weight-bold mb-1 text-dark">Mandatory Document Requirements</h6>
+                                                    <p class="desc mb-2">Please ensure the following mandatory documents are uploaded under the <strong>ATTACHMENTS</strong> tab:</p>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <ul class="mandatory-doc-list mb-0">
+                                                                <li><i class="fa fa-check-circle text-success me-1"></i> 1. Certificate of Incorporation / Registration</li>
+                                                                <li><i class="fa fa-check-circle text-success me-1"></i> 2. PIN & VAT Certificate</li>
+                                                                <li><i class="fa fa-check-circle text-success me-1"></i> 3. TAX Compliance Certificate</li>
+                                                            </ul>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <ul class="mandatory-doc-list mb-0">
+                                                                <li><i class="fa fa-check-circle text-success me-1"></i> 4. Current Reference Letters</li>
+                                                                <li><i class="fa fa-check-circle text-success me-1"></i> 5. CR12 Form</li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <button type="button" class="btn btn-outline-primary btn-sm" (click)="selectTab('attachments')">
+                                                        <i class="ft-paperclip me-1"></i> Attachments
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                                                                <div *ngIf="selectedTab === 'attachments'">
                                             <app-company-profile-attachment [attachedFiles]="attachedFiles"
                                                 [readonly]="isReadOnly" (saveAttachment)="onAttachmentsUpdated($event)">
                                             </app-company-profile-attachment>

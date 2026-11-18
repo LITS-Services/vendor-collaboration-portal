@@ -1,5 +1,14 @@
 <div class="modal-body">
   <div class="row">
+    <!-- Document Type -->
+    <div class="col-6 mb-3">
+      <label for="documentType" class="form-label">Document Type</label>
+      <select id="documentType" class="form-control" [(ngModel)]="attachment.documentType" [disabled]="readonly">
+        <option value="">Select Document Type</option>
+        <option *ngFor="let dt of documentTypes" [value]="dt">{{ dt }}</option>
+      </select>
+    </div>
+
     <!-- Attach File -->
     <div class="col-6 mb-3">
       <label for="fileInput" class="form-label">Attach File</label>
@@ -56,6 +65,15 @@
           rowHeight="42"
           [limit]="10"
           [scrollbarH]="isMobile">
+
+          <!-- Document Type -->
+          <ngx-datatable-column [flexGrow]="2" [minWidth]="160" name="Document Type" prop="documentType">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <span class="text-truncate fw-semibold" [title]="row.documentType">
+                {{ row.documentType || '-' }}
+              </span>
+            </ng-template>
+          </ngx-datatable-column>
 
           <!-- File Name -->
           <ngx-datatable-column [flexGrow]="2" [minWidth]="160" name="File Name" prop="fileName">

@@ -9,23 +9,33 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class CompanyContactModalComponent implements OnInit {
   @Input() contact: any = {
+    contactRole: '',
+    contactPerson: '',
+    designation: '',
+    email: '',
     description: '',
-    type: 'Mobile',
+    type: 'phoneNo',
     contactNumber: '',
     extension: '',
     primary: false
   };
 
   @Input() isEditMode: boolean = false;
-   @Output() submit = new EventEmitter<any>();
+  @Output() submit = new EventEmitter<any>();
 
-  contactLabel: string = 'Phone Number';
-  contactPlaceholder: string = 'Enter Phone number';
-  inputType: string = 'number';
+  contactRoleOptions: string[] = [
+    'Procurement/Sales',
+    'Accounts/Finance',
+    'Directors/Partners',
+    'General Management'
+  ];
+
+  contactLabel: string = 'Mobile / Phone Number';
+  contactPlaceholder: string = 'Enter phone number';
+  inputType: string = 'tel';
   showExtension: boolean = true;
 
   constructor(
-    //@Optional() public activeModal: NgbActiveModal,  // <-- optional
     private cdr: ChangeDetectorRef
   ) { }
 
@@ -36,20 +46,18 @@ export class CompanyContactModalComponent implements OnInit {
 
   submitForm() {
     this.submit.emit(this.contact);
-
   }
-
 
   updateContactLabel(): void {
     switch (this.contact.type) {
       case 'phoneNo':
-        this.contactLabel = 'Phone Number';
+        this.contactLabel = 'Mobile / Phone Number';
         this.contactPlaceholder = 'Enter phone no.';
-        this.inputType = 'number';
+        this.inputType = 'tel';
         this.showExtension = true;
         break;
       case 'Email':
-        this.contactLabel = 'Email';
+        this.contactLabel = 'Email Address';
         this.contactPlaceholder = 'Enter email';
         this.inputType = 'email';
         this.showExtension = false;
@@ -57,13 +65,13 @@ export class CompanyContactModalComponent implements OnInit {
       case 'Fax':
         this.contactLabel = 'Fax';
         this.contactPlaceholder = 'Enter fax no.';
-        this.inputType = 'number';
+        this.inputType = 'tel';
         this.showExtension = false;
         break;
       default:
-        this.contactLabel = 'Phone Number';
+        this.contactLabel = 'Mobile / Phone Number';
         this.contactPlaceholder = 'Enter phone no.';
-        this.inputType = 'number';
+        this.inputType = 'tel';
         this.showExtension = true;
     }
   }

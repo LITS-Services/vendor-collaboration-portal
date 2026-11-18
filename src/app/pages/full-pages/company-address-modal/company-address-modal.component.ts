@@ -16,6 +16,10 @@ export class CompanyAddressModalComponent implements OnInit {
     state: '',
     zip: '',
     country: '',
+    town: '',
+    building: '',
+    floor: '',
+    postalAddress: '',
     primary: false
   };
 

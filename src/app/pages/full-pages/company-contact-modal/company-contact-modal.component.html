@@ -1,30 +1,46 @@
-<!-- <div class="modal-header">
-    <h4 class="modal-title">{{ isEditMode ? 'Edit Contact' : 'Add Contact' }}</h4>
-    <button class="ft-x btn white" (click)="activeModal.dismiss()">
-    </button>
-  </div> -->
   <div class="">
     <form #contactForm="ngForm" class="row">
       <div class="form-group col-md-3">
-        <label>Description</label>
-        <input type="text" class="form-control" [(ngModel)]="contact.description" name="description" required>
+        <label>Contact Role / Department</label>
+        <select class="form-control" [(ngModel)]="contact.contactRole" name="contactRole">
+          <option value="">Select Role</option>
+          <option *ngFor="let role of contactRoleOptions" [value]="role">{{ role }}</option>
+        </select>
       </div>
+
+      <div class="form-group col-md-3">
+        <label>Contact Person (Name)</label>
+        <input type="text" class="form-control" [(ngModel)]="contact.contactPerson" name="contactPerson" placeholder="Full name">
+      </div>
+
+      <div class="form-group col-md-3">
+        <label>Designation</label>
+        <input type="text" class="form-control" [(ngModel)]="contact.designation" name="designation" placeholder="e.g. Sales Manager, CFO">
+      </div>
+
+      <div class="form-group col-md-3">
+        <label>Email Address</label>
+        <input type="email" class="form-control" [(ngModel)]="contact.email" name="email" placeholder="contact@domain.com">
+      </div>
+
+      <div class="form-group col-md-3">
+        <label>Description</label>
+        <input type="text" class="form-control" [(ngModel)]="contact.description" name="description" placeholder="Description / Title" required>
+      </div>
+
       <div class="form-group col-md-3">
         <label>Type</label>
         <select class="form-control" [(ngModel)]="contact.type" name="type" (change)="updateContactLabel()" required>
-          <option value="phoneNo">Phone No</option>
+          <option value="phoneNo">Phone / Mobile</option>
           <option value="Email">Email</option>
           <option value="Fax">Fax</option>
         </select>
       </div>
-      <!-- <div class="form-group">
-        <label>Contact Number</label>
-        <input type="text" class="form-control" [(ngModel)]="contact.contactNumber" name="contactNumber" required>
-      </div> -->
+
       <div class="form-group col-md-3">
         <label>{{ contactLabel }}</label>
         <input
-        [type]="inputType"
+          [type]="inputType"
           class="form-control"
           [(ngModel)]="contact.contactNumber"
           [placeholder]="contactPlaceholder"
@@ -32,22 +48,24 @@
           required
         >
       </div>
+
       <div class="form-group col-md-3" *ngIf="showExtension">
         <label>Extension</label>
-        <input type="text" class="form-control" [(ngModel)]="contact.extension" name="extension">
+        <input type="text" class="form-control" [(ngModel)]="contact.extension" name="extension" placeholder="Ext.">
       </div>
-      <div class="row mt-2">
-         <div class="form-group">
-        <label class="checkbox-text">
-          <input type="checkbox" [(ngModel)]="contact.primary" name="primary">
-          Primary
-        </label>
+
+      <div class="col-12 mt-1">
+        <div class="form-group">
+          <label class="checkbox-text">
+            <input type="checkbox" [(ngModel)]="contact.primary" name="primary">
+            Primary Contact
+          </label>
+        </div>
       </div>
-      </div>
-     
-      <!-- <button type="submit" class="btn btn-primary">Add Contact</button> -->
     </form>
-      <div class="d-flex justify-content-end">
-    <button type="button" class="btn btn-primary" (click)="submitForm()"><i class="ft-chevrons-down me-1"></i>{{ isEditMode ? 'Update' : 'Add' }} Contact</button>
-  </div>
+    <div class="d-flex justify-content-end">
+      <button type="button" class="btn btn-primary" (click)="submitForm()">
+        <i class="ft-chevrons-down me-1"></i>{{ isEditMode ? 'Update' : 'Add' }} Contact
+      </button>
+    </div>
   </div>

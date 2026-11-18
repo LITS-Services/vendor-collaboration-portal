@@ -21,6 +21,18 @@ export class CompanyProfileAttachmentComponent implements OnInit, OnChanges {
     return window.innerWidth <= 768;
   }
 
+  documentTypes: string[] = [
+    'Certificate of Incorporation/Registration',
+    'PIN & VAT Certificate',
+    'TAX Compliance Certificate',
+    'Current Reference Letters',
+    'CR12',
+    'LPO Copies showing work performed',
+    'Proof of Professionalism / Accreditation',
+    'Key Personnel Qualifications / CVs',
+    'Other Document'
+  ];
+
   attachment: any = {
     file: null,       // ✅ keep raw File
     fileName: '',
@@ -28,7 +40,8 @@ export class CompanyProfileAttachmentComponent implements OnInit, OnChanges {
     attachedBy: '',
     remarks: '',
     attachedAt: '',
-    expiryDate: '' // Added expiry date
+    expiryDate: '', // Added expiry date
+    documentType: ''
   };
 
   editIndex: number | null = null;
