@@ -12,7 +12,7 @@ export const ROUTES: RouteInfo[] = [
   {
     path: '', title: 'Reports', icon: 'ft-file-text', class: 'has-sub', badge: 'New', badgeClass: 'badge badge-pill badge-success float-right mr-1 mt-1', isExternalLink: false, submenu: [
       { path: '/reports/sales-report', title: 'Sales Report', icon: 'ft-arrow-right submenu-icon', class: '', badge: '', badgeClass: '', isExternalLink: false, submenu: [] },
-      { path: '/reports/bids-win-loss-report', title: 'Bids Win/Loss Analysis', icon: 'ft-arrow-right submenu-icon', class: '', badge: '', badgeClass: '', isExternalLink: false, submenu: [] },
+      { path: '/reports/bids-win-loss-report', title: 'Quote Win/Loss Analysis Report', icon: 'ft-arrow-right submenu-icon', class: '', badge: '', badgeClass: '', isExternalLink: false, submenu: [] },
     ]
   },
   { path: '/inbox', title: 'Email', icon: 'ft-mail', class: '', badge: '', badgeClass: '', isExternalLink: false, submenu: [] },

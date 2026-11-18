@@ -2,48 +2,16 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import {
-  ApexAxisChartSeries,
-  ApexNonAxisChartSeries,
-  ApexChart,
-  ApexXAxis,
-  ApexYAxis,
-  ApexDataLabels,
-  ApexPlotOptions,
-  ApexStroke,
-  ApexFill,
-  ApexGrid,
-  ApexTooltip,
-  ApexLegend,
-  ApexResponsive
-} from 'ng-apexcharts';
-import {
   ReportsService,
   ReportFilterParams,
   BidAnalysisSummary,
   BidWinLossCharts,
   BidAnalysisRow,
-  VendorBidPerformance,
   RfqSummaryRow,
   ReportsFilterMetadata,
   PaginatedResult
 } from '../services/reports.service';
-
-export type ChartOptions = {
-  series: ApexAxisChartSeries | ApexNonAxisChartSeries;
-  chart: ApexChart;
-  xaxis?: ApexXAxis;
-  yaxis?: ApexYAxis;
-  dataLabels?: ApexDataLabels;
-  plotOptions?: ApexPlotOptions;
-  stroke?: ApexStroke;
-  fill?: ApexFill;
-  grid?: ApexGrid;
-  tooltip?: ApexTooltip;
-  legend?: ApexLegend;
-  colors?: string[];
-  labels?: string[];
-  responsive?: ApexResponsive[];
-};
+import { ChartOptions } from '../sales-report/sales-report.component';
 
 @Component({
   selector: 'app-bids-win-loss',
@@ -81,51 +49,52 @@ export class BidsWinLossComponent implements OnInit {
   summary: BidAnalysisSummary | null = null;
   chartsData: BidWinLossCharts | null = null;
 
-  activeTab: 'bids' | 'vendors' | 'rfqs' = 'bids';
-
-  bidsData: PaginatedResult<BidAnalysisRow> = { items: [], totalCount: 0, pageNumber: 1, pageSize: 10, totalPages: 0, hasPreviousPage: false, hasNextPage: false };
-  vendorsData: PaginatedResult<VendorBidPerformance> = { items: [], totalCount: 0, pageNumber: 1, pageSize: 10, totalPages: 0, hasPreviousPage: false, hasNextPage: false };
-  rfqsData: PaginatedResult<RfqSummaryRow> = { items: [], totalCount: 0, pageNumber: 1, pageSize: 10, totalPages: 0, hasPreviousPage: false, hasNextPage: false };
+  // Section 3: Bid & RFQ Outcomes
+  activeSection: 'bids' | 'rfqs' = 'bids';
+  bidsData: PaginatedResult<BidAnalysisRow> = this.emptyPage();
+  rfqsData: PaginatedResult<RfqSummaryRow> = this.emptyPage();
 
   searchTerm: string = '';
   sortBy: string = '';
   sortDirection: 'asc' | 'desc' = 'desc';
 
-  loadingSummary = false;
   loadingCharts = false;
   loadingTable = false;
   exportingPdf = false;
 
-  // 1. Outcome Donut
+  // Exhibit 1.1: Monthly Won vs Lost Bids Trend
+  winLossTrendChart: ChartOptions = {
+    series: [],
+    chart: { type: 'line', height: 225, toolbar: { show: false } },
+    stroke: { curve: 'smooth', width: 2.2 },
+    colors: ['#16a34a', '#dc2626'],
+    dataLabels: { enabled: false },
+    xaxis: { categories: [], labels: { style: { colors: '#64748b', fontSize: '10.5px' } } },
+    yaxis: { labels: { style: { colors: '#64748b', fontSize: '10.5px' } } },
+    grid: { strokeDashArray: 3, borderColor: '#e2e8f0' },
+    legend: { position: 'top', horizontalAlign: 'right', fontWeight: 600, fontSize: '11px' }
+  };
+
+  // Exhibit 1.2: Bid Outcome Distribution
   outcomeDonutChart: ChartOptions = {
     series: [],
-    chart: { type: 'donut', height: 270 },
+    chart: { type: 'donut', height: 225 },
     labels: ['Won', 'Lost', 'Pending'],
-    colors: ['#22c55e', '#ef4444', '#f59e0b'],
-    legend: { position: 'bottom', horizontalAlign: 'center', fontWeight: 600 },
+    colors: ['#16a34a', '#dc2626', '#d97706'],
+    legend: { position: 'bottom', horizontalAlign: 'center', fontWeight: 600, fontSize: '11px' },
     dataLabels: { enabled: false },
     plotOptions: {
       pie: {
         donut: {
-          size: '72%',
+          size: '68%',
           labels: {
             show: true,
-            name: {
-              show: true,
-              fontSize: '13px',
-              fontWeight: 700,
-              color: '#334155'
-            },
-            value: {
-              show: true,
-              fontSize: '22px',
-              fontWeight: 800,
-              color: '#0f172a'
-            },
+            name: { show: true, fontSize: '12px', fontWeight: 700, color: '#334155' },
+            value: { show: true, fontSize: '18px', fontWeight: 800, color: '#0f172a' },
             total: {
               show: true,
-              label: 'Total Bids',
-              fontSize: '13px',
+              label: 'Total Quotes',
+              fontSize: '11.5px',
               fontWeight: 700,
               color: '#0f172a',
               formatter: () => `${this.summary?.totalBidsReceived ?? 0}`
@@ -134,68 +103,6 @@ export class BidsWinLossComponent implements OnInit {
         }
       }
     }
-  };
-
-  // 2. Win / Loss Trend Line
-  winLossTrendChart: ChartOptions = {
-    series: [],
-    chart: { type: 'line', height: 280, toolbar: { show: false } },
-    stroke: { curve: 'smooth', width: 2.5 },
-    colors: ['#22c55e', '#ef4444'],
-    dataLabels: { enabled: false },
-    xaxis: { categories: [], labels: { style: { colors: '#64748b', fontSize: '11px' } } },
-    yaxis: { labels: { style: { colors: '#64748b' } } },
-    grid: { strokeDashArray: 4, borderColor: '#f1f5f9' },
-    legend: { position: 'top', horizontalAlign: 'right' }
-  };
-
-  // 3. Vendor Win/Loss Performance Stacked Bar
-  vendorPerfChart: ChartOptions = {
-    series: [],
-    chart: { type: 'bar', height: 280, stacked: true, toolbar: { show: false } },
-    plotOptions: { bar: { horizontal: true, barHeight: '55%', borderRadius: 3 } },
-    colors: ['#22c55e', '#ef4444'],
-    dataLabels: { enabled: false },
-    xaxis: { categories: [] },
-    legend: { position: 'top', horizontalAlign: 'right' },
-    grid: { strokeDashArray: 4, borderColor: '#f1f5f9' }
-  };
-
-  // 4. RFQ Participation Bar
-  rfqParticipationChart: ChartOptions = {
-    series: [],
-    chart: { type: 'bar', height: 270, toolbar: { show: false } },
-    plotOptions: { bar: { columnWidth: '45%', distributed: true, borderRadius: 4 } },
-    colors: ['#3b82f6', '#22c55e', '#f59e0b', '#8b5cf6'],
-    dataLabels: { enabled: false },
-    xaxis: { categories: ['Published', 'With Bids', 'No Bids', 'Awarded'], labels: { style: { colors: '#64748b', fontSize: '11px' } } },
-    legend: { show: false },
-    grid: { strokeDashArray: 4, borderColor: '#f1f5f9' }
-  };
-
-  // 5. Bid Value Analysis
-  bidValueTrendChart: ChartOptions = {
-    series: [],
-    chart: { type: 'bar', height: 280, stacked: true, toolbar: { show: false } },
-    plotOptions: { bar: { columnWidth: '40%', borderRadius: 4 } },
-    colors: ['#22c55e', '#ef4444'],
-    dataLabels: { enabled: false },
-    xaxis: { categories: [] },
-    yaxis: { labels: { formatter: (val: any) => `${Number(val) >= 1000 ? (Number(val) / 1000).toFixed(0) + 'k' : Number(val).toFixed(0)}` } },
-    legend: { position: 'top', horizontalAlign: 'right' },
-    grid: { strokeDashArray: 4, borderColor: '#f1f5f9' },
-    tooltip: { y: { formatter: (val: any) => `${(Number(val) || 0).toLocaleString()} SAR` } }
-  };
-
-  // 6. Vendor Win Rate Ranking
-  vendorWinRateChart: ChartOptions = {
-    series: [],
-    chart: { type: 'bar', height: 270, toolbar: { show: false } },
-    plotOptions: { bar: { horizontal: true, barHeight: '50%', borderRadius: 4 } },
-    colors: ['#249d57'],
-    dataLabels: { enabled: true, formatter: (val: any) => `${val}%`, style: { fontSize: '10px' } },
-    xaxis: { categories: [], max: 100, labels: { formatter: (val: any) => `${val}%` } },
-    grid: { strokeDashArray: 4, borderColor: '#f1f5f9' }
   };
 
   constructor(
@@ -208,6 +115,10 @@ export class BidsWinLossComponent implements OnInit {
   ngOnInit(): void {
     this.loadMetadata();
     this.applyFilters();
+  }
+
+  private emptyPage<T>(): PaginatedResult<T> {
+    return { items: [], totalCount: 0, pageNumber: 1, pageSize: 15, totalPages: 0, hasPreviousPage: false, hasNextPage: false };
   }
 
   loadMetadata(): void {
@@ -249,6 +160,7 @@ export class BidsWinLossComponent implements OnInit {
 
     this.loadSummary();
     this.loadCharts();
+    this.loadAllCountsAndActiveTable(1);
   }
 
   resetFilters(): void {
@@ -266,18 +178,12 @@ export class BidsWinLossComponent implements OnInit {
   }
 
   loadSummary(): void {
-    this.loadingSummary = true;
     this.reportsService.getBidAnalysisSummary(this.getFilterParams()).subscribe({
       next: (res) => {
         this.summary = res;
-        this.loadingSummary = false;
         this.cdr.detectChanges();
       },
-      error: () => {
-        this.loadingSummary = false;
-        this.toastr.error('Failed to load bid analysis summary.');
-        this.cdr.detectChanges();
-      }
+      error: () => {}
     });
   }
 
@@ -298,92 +204,60 @@ export class BidsWinLossComponent implements OnInit {
   }
 
   updateCharts(charts: BidWinLossCharts): void {
-    // 1. Outcome Donut
     this.outcomeDonutChart = {
       ...this.outcomeDonutChart,
       series: charts.bidOutcomeDistribution.map(b => b.count),
       labels: charts.bidOutcomeDistribution.map(b => b.status)
     };
 
-    // 2. Win / Loss Trend
     this.winLossTrendChart = {
       ...this.winLossTrendChart,
       series: [
-        { name: 'Won Bids', data: charts.winLossTrend.map(t => t.wonCount) },
-        { name: 'Lost Bids', data: charts.winLossTrend.map(t => t.lostCount) }
+        { name: 'Won Quotes', data: charts.winLossTrend.map(t => t.wonCount) },
+        { name: 'Lost Quotes', data: charts.winLossTrend.map(t => t.lostCount) }
       ],
       xaxis: { ...this.winLossTrendChart.xaxis, categories: charts.winLossTrend.map(t => t.period) }
     };
-
-    // 3. Vendor Performance Stacked Bar
-    this.vendorPerfChart = {
-      ...this.vendorPerfChart,
-      series: [
-        { name: 'Won Bids', data: charts.vendorPerformance.map(v => v.wonBids) },
-        { name: 'Lost Bids', data: charts.vendorPerformance.map(v => v.lostBids) }
-      ],
-      xaxis: { categories: charts.vendorPerformance.map(v => v.vendorName) }
-    };
-
-    // 4. RFQ Participation
-    this.rfqParticipationChart = {
-      ...this.rfqParticipationChart,
-      series: [{
-        name: 'RFQs',
-        data: [
-          charts.rfqParticipation.rfqsPublished,
-          charts.rfqParticipation.rfqsReceivingBids,
-          charts.rfqParticipation.rfqsWithoutBids,
-          charts.rfqParticipation.rfqsAwarded
-        ]
-      }]
-    };
-
-    // 5. Bid Value Analysis
-    this.bidValueTrendChart = {
-      ...this.bidValueTrendChart,
-      series: [
-        { name: 'Won Value (SAR)', data: charts.bidValueTrend.map(v => v.wonValue) },
-        { name: 'Lost Value (SAR)', data: charts.bidValueTrend.map(v => v.lostValue) }
-      ],
-      xaxis: { categories: charts.bidValueTrend.map(v => v.period) }
-    };
-
-    // 6. Vendor Win Rate Ranking
-    const rankedVendors = charts.topVendorsByWinRate.slice(0, 8);
-    this.vendorWinRateChart = {
-      ...this.vendorWinRateChart,
-      series: [{ name: 'Win Rate (%)', data: rankedVendors.map(v => v.winRate) }],
-      xaxis: { ...this.vendorWinRateChart.xaxis, categories: rankedVendors.map(v => `${v.vendorName} (${v.totalBids})`) }
-    };
   }
 
-  switchTab(tab: 'bids' | 'vendors' | 'rfqs'): void {
-    this.activeTab = tab;
+  loadAllCountsAndActiveTable(page: number = 1): void {
+    this.loadTable(page);
+    const countParams = this.getFilterParams();
+    countParams.pageNumber = 1;
+    countParams.pageSize = 1;
+    if (this.activeSection !== 'rfqs') {
+      this.reportsService.getRfqAnalysisDetails(countParams).subscribe({
+        next: (res) => { this.rfqsData.totalCount = res.totalCount; this.cdr.detectChanges(); },
+        error: () => {}
+      });
+    } else {
+      this.reportsService.getBidAnalysisDetails(countParams).subscribe({
+        next: (res) => { this.bidsData.totalCount = res.totalCount; this.cdr.detectChanges(); },
+        error: () => {}
+      });
+    }
+  }
+
+  switchSection(sec: 'bids' | 'rfqs'): void {
+    this.activeSection = sec;
     this.searchTerm = '';
     this.sortBy = '';
     this.sortDirection = 'desc';
-    this.loadTableData();
+    this.loadTable(1);
   }
 
-  loadTableData(page: number = 1): void {
+  loadTable(page: number = 1): void {
     this.loadingTable = true;
     const params = this.getFilterParams();
     params.pageNumber = page;
 
-    if (this.activeTab === 'bids') {
+    if (this.activeSection === 'bids') {
       params.pageSize = this.bidsData.pageSize;
       this.reportsService.getBidAnalysisDetails(params).subscribe({
         next: (res) => { this.bidsData = res; this.loadingTable = false; this.cdr.detectChanges(); },
         error: () => { this.loadingTable = false; this.cdr.detectChanges(); }
       });
-    } else if (this.activeTab === 'vendors') {
-      params.pageSize = this.vendorsData.pageSize;
-      this.reportsService.getVendorBidPerformance(params).subscribe({
-        next: (res) => { this.vendorsData = res; this.loadingTable = false; this.cdr.detectChanges(); },
-        error: () => { this.loadingTable = false; this.cdr.detectChanges(); }
-      });
-    } else if (this.activeTab === 'rfqs') {
+    } else {
       params.pageSize = this.rfqsData.pageSize;
       this.reportsService.getRfqAnalysisDetails(params).subscribe({
         next: (res) => { this.rfqsData = res; this.loadingTable = false; this.cdr.detectChanges(); },
@@ -392,49 +266,40 @@ export class BidsWinLossComponent implements OnInit {
     }
   }
 
-  onSearch(): void {
-    this.loadTableData(1);
+  onSearchTable(): void {
+    this.loadTable(1);
   }
 
-  onSort(column: string): void {
+  onSortTable(column: string): void {
     if (this.sortBy === column) {
       this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
     } else {
       this.sortBy = column;
-      this.sortDirection = 'asc';
+      this.sortDirection = 'desc';
     }
-    this.loadTableData(1);
+    this.loadTable(1);
   }
 
-  onPageChange(page: number): void {
-    this.loadTableData(page);
+  printReport(): void {
+    window.print();
   }
 
-  drillDownToOutcome(outcome: string): void {
-    this.activeTab = 'bids';
-    this.selectedOutcome = outcome;
-    this.loadTableData(1);
-
-    const el = document.getElementById('details-section');
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
-  }
-
-  exportPdf(type: 'summary' | 'detailed'): void {
+  exportPdf(): void {
     this.exportingPdf = true;
-    this.toastr.info(`Preparing ${type === 'summary' ? 'Summary' : 'Detailed'} PDF...`);
+    this.toastr.info('Generating Quote Win/Loss Analysis Report PDF...');
     const params = this.getFilterParams();
 
-    this.reportsService.exportBidWinLossPdf(params, type).subscribe({
+    this.reportsService.exportBidWinLossPdf(params, 'detailed').subscribe({
       next: (blob) => {
         this.exportingPdf = false;
-        const filename = `BidsWinLossReport_${type}_${params.preset || 'report'}_${new Date().toISOString().slice(0, 10)}.pdf`;
+        const filename = `Quote_Win_Loss_Analysis_Report_${params.preset || 'Report'}_${new Date().toISOString().slice(0, 10)}.pdf`;
         this.reportsService.downloadPdfBlob(blob, filename);
-        this.toastr.success('Bids report downloaded successfully.');
+        this.toastr.success('Quote Win/Loss report downloaded successfully.');
         this.cdr.detectChanges();
       },
       error: () => {
         this.exportingPdf = false;
-        this.toastr.error('Failed to generate PDF report.');
+        this.toastr.error('Failed to generate Quote Win/Loss Analysis Report PDF.');
         this.cdr.detectChanges();
       }
     });
@@ -446,10 +311,20 @@ export class BidsWinLossComponent implements OnInit {
     }
   }
 
-  getOutcomeBadge(outcome: string): string {
+  get bidsPageQuotedTotal(): number { return this.bidsData.items.reduce((s, r) => s + r.quotedAmount, 0); }
+  get rfqsPageWinningTotal(): number { return this.rfqsData.items.reduce((s, r) => s + r.winningBidAmount, 0); }
+
+  get loggedInVendorLabel(): string {
+    if (this.metadata?.vendors?.length === 1) return this.metadata.vendors[0].label;
+    if (this.chartsData?.vendorPerformance?.length === 1) return this.chartsData.vendorPerformance[0].vendorName;
+    return 'Authenticated Vendor Account';
+  }
+
+  getOutcomePillClass(outcome: string): string {
     const o = (outcome || '').toLowerCase();
-    if (o === 'won') return 'badge-success';
-    if (o === 'lost') return 'badge-danger';
-    return 'badge-warning';
+    if (o === 'won' || o.includes('complete') || o.includes('award')) return 'status-pill--success';
+    if (o === 'lost' || o.includes('reject') || o.includes('cancel')) return 'status-pill--danger';
+    if (o.includes('progress') || o === 'new') return 'status-pill--info';
+    return 'status-pill--warning';
   }
 }

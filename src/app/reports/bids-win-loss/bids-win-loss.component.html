@@ -1,449 +1,329 @@
-<div class="reports-page">
-  <!-- Top Header -->
-  <div class="reports-header d-flex flex-wrap justify-content-between align-items-center mb-3">
-    <div>
-      <h1 class="reports-title m-0">Bids Win/Loss Analysis & RFQ Performance</h1>
-      <p class="reports-subtitle m-0 text-muted">
-        In-depth intelligence on vendor bidding behavior, RFQ outcomes, and win-rate trends for 
-        <span class="badge badge-subtle-primary">{{ summary?.periodLabel || selectedPreset }}</span>
-        <span class="badge badge-subtle-success ms-2" style="margin-left: 8px;" *ngIf="metadata?.vendors && metadata.vendors.length === 1">
-          <i class="ft-shield me-1"></i>{{ metadata.vendors[0].label }}
-        </span>
-      </p>
-    </div>
-
-    <!-- Export Actions -->
-    <div class="reports-actions d-flex align-items-center gap-2 mt-2 mt-md-0">
-      <div ngbDropdown class="d-inline-block">
-        <button type="button" class="btn btn-primary d-flex align-items-center gap-2" id="exportBidDropdown" ngbDropdownToggle [disabled]="exportingPdf">
+<div class="report-workspace">
+  <!-- Non-Print Report Parameter & Export Bar -->
+  <div class="report-toolbar no-print">
+    <div class="report-toolbar__top">
+      <div class="report-toolbar__label">
+        <i class="ft-sliders text-success"></i>
+        <span>Report Parameters &amp; Output Controls</span>
+      </div>
+      <div class="report-toolbar__actions">
+        <button type="button" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1" (click)="resetFilters()">
+          <i class="ft-rotate-ccw"></i> Reset
+        </button>
+        <button type="button" class="btn btn-sm btn-primary d-inline-flex align-items-center gap-1 px-3" (click)="applyFilters()">
+          <i class="ft-play"></i> Generate Report
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-dark d-inline-flex align-items-center gap-1" (click)="printReport()">
+          <i class="ft-printer"></i> Print
+        </button>
+        <button type="button" class="btn btn-sm btn-primary d-inline-flex align-items-center gap-1" (click)="exportPdf()" [disabled]="exportingPdf">
           <i class="ft-download" *ngIf="!exportingPdf"></i>
           <span class="spinner-border spinner-border-sm" *ngIf="exportingPdf" role="status"></span>
-          <span>{{ exportingPdf ? 'Generating PDF...' : 'Export Report' }}</span>
+          <span>{{ exportingPdf ? 'Exporting PDF...' : 'Export PDF' }}</span>
         </button>
-        <div ngbDropdownMenu aria-labelledby="exportBidDropdown" class="dropdown-menu-end shadow-sm">
-          <button ngbDropdownItem (click)="exportPdf('summary')" class="d-flex align-items-center justify-content-start text-start py-2" style="justify-content: flex-start !important; gap: 10px;">
-            <i class="ft-file-text text-primary flex-shrink-0"></i>
-            <div>
-              <div class="fw-bold">Summary PDF</div>
-              <small class="text-muted">KPIs, win/loss charts & metrics</small>
+      </div>
+    </div>
+
+    <div class="row g-2 align-items-end">
+      <div class="col-xl-2 col-md-4 col-sm-6">
+        <label class="param-label">Reporting Period</label>
+        <select class="form-select form-select-sm" [(ngModel)]="selectedPreset" (change)="selectedPreset !== 'Custom' && applyFilters()">
+          <option *ngFor="let p of presets" [value]="p.value">{{ p.label }}</option>
+        </select>
+      </div>
+      <div class="col-xl-2 col-md-4 col-sm-6" *ngIf="selectedPreset === 'Custom'">
+        <label class="param-label">From Date</label>
+        <input type="date" class="form-control form-control-sm" [(ngModel)]="customFromDate" />
+      </div>
+      <div class="col-xl-2 col-md-4 col-sm-6" *ngIf="selectedPreset === 'Custom'">
+        <label class="param-label">To Date</label>
+        <input type="date" class="form-control form-control-sm" [(ngModel)]="customToDate" />
+      </div>
+      <div class="col-xl-2 col-md-4 col-sm-6" *ngIf="metadata.vendors && metadata.vendors.length > 1">
+        <label class="param-label">Vendor</label>
+        <select class="form-select form-select-sm" [(ngModel)]="selectedVendor">
+          <option value="">All Vendors</option>
+          <option *ngFor="let v of metadata.vendors" [value]="v.value">{{ v.label }}</option>
+        </select>
+      </div>
+      <div class="col-xl-2 col-md-4 col-sm-6">
+        <label class="param-label">RFQ Status</label>
+        <select class="form-select form-select-sm" [(ngModel)]="selectedRfqStatus">
+          <option value="">All RFQ Statuses</option>
+          <option *ngFor="let s of metadata.rfqStatuses" [value]="s.value">{{ s.label }}</option>
+        </select>
+      </div>
+      <div class="col-xl-2 col-md-4 col-sm-6">
+        <label class="param-label">Quote Outcome</label>
+        <select class="form-select form-select-sm" [(ngModel)]="selectedOutcome">
+          <option value="">All Outcomes</option>
+          <option value="Won">Won</option>
+          <option value="Lost">Lost</option>
+          <option value="Pending">Pending</option>
+        </select>
+      </div>
+      <div class="col-xl-2 col-md-4 col-sm-6">
+        <label class="param-label">Currency</label>
+        <select class="form-select form-select-sm" [(ngModel)]="selectedCurrency">
+          <option value="">All (SAR)</option>
+          <option *ngFor="let c of metadata.currencies" [value]="c.value">{{ c.label }}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== FORMAL REPORT DOCUMENT SHEET ==================== -->
+  <div class="report-sheet">
+    <!-- Document Masthead -->
+    <div class="report-masthead">
+      <div class="report-masthead__left">
+        <div class="report-masthead__eyebrow">Vendor Collaboration Portal &middot; Quoting Intelligence Report &middot; Ref: VP-RPT-02</div>
+        <h1 class="report-masthead__title">Quote Win/Loss Analysis Report</h1>
+        <p class="report-masthead__desc">
+          Formal vendor-scoped assessment of RFQ participation, submitted quotations, award win/loss conversion, and quote outcomes for {{ loggedInVendorLabel }}.
+        </p>
+      </div>
+    </div>
+
+    <!-- ==================== CHARTS & ANALYTICS ==================== -->
+    <section class="report-section">
+      <div class="report-section__header">
+        <h2 class="report-section__title">Charts &amp; Analytics</h2>
+        <span class="report-section__meta">Quoting trajectory and outcome distribution</span>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-lg-7">
+          <div class="exhibit-box">
+            <div class="exhibit-box__head">
+              <h3 class="exhibit-box__title">Periodic Won vs. Lost Quotes Trend</h3>
+              <span class="exhibit-box__tag">Quote Count</span>
             </div>
-          </button>
-          <div class="dropdown-divider"></div>
-          <button ngbDropdownItem (click)="exportPdf('detailed')" class="d-flex align-items-center justify-content-start text-start py-2" style="justify-content: flex-start !important; gap: 10px;">
-            <i class="ft-layers text-success flex-shrink-0"></i>
-            <div>
-              <div class="fw-bold">Detailed PDF</div>
-              <small class="text-muted">Complete RFQ and bid transactional records</small>
+            <div class="exhibit-box__body">
+              <apx-chart *ngIf="!loadingCharts && winLossTrendChart.series?.length"
+                [series]="winLossTrendChart.series" [chart]="winLossTrendChart.chart"
+                [xaxis]="winLossTrendChart.xaxis" [yaxis]="winLossTrendChart.yaxis"
+                [stroke]="winLossTrendChart.stroke" [colors]="winLossTrendChart.colors"
+                [grid]="winLossTrendChart.grid" [legend]="winLossTrendChart.legend"
+                [dataLabels]="winLossTrendChart.dataLabels">
+              </apx-chart>
+              <div *ngIf="!loadingCharts && !winLossTrendChart.series?.length" class="exhibit-empty">No trend data for this period.</div>
             </div>
-          </button>
+          </div>
         </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Filters Card -->
-  <div class="card filter-card mb-4 shadow-sm border-0">
-    <div class="card-body p-3">
-      <div class="row g-2 align-items-end">
-        <!-- Date Preset -->
-        <div class="col-xl-2 col-md-3 col-sm-6">
-          <label class="form-label text-xs fw-semibold text-muted mb-1">DATE PERIOD</label>
-          <select class="form-select form-select-sm custom-select" [(ngModel)]="selectedPreset" (change)="selectedPreset !== 'Custom' && applyFilters()">
-            <option *ngFor="let p of presets" [value]="p.value">{{ p.label }}</option>
-          </select>
-        </div>
-
-        <!-- Custom From Date -->
-        <div class="col-xl-2 col-md-3 col-sm-6" *ngIf="selectedPreset === 'Custom'">
-          <label class="form-label text-xs fw-semibold text-muted mb-1">FROM DATE</label>
-          <input type="date" class="form-control form-control-sm" [(ngModel)]="customFromDate" />
-        </div>
-
-        <!-- Custom To Date -->
-        <div class="col-xl-2 col-md-3 col-sm-6" *ngIf="selectedPreset === 'Custom'">
-          <label class="form-label text-xs fw-semibold text-muted mb-1">TO DATE</label>
-          <input type="date" class="form-control form-control-sm" [(ngModel)]="customToDate" />
-        </div>
-
-        <!-- Vendor Filter (if admin) -->
-        <div class="col-xl-2 col-md-3 col-sm-6" *ngIf="metadata.vendors && metadata.vendors.length > 1">
-          <label class="form-label text-xs fw-semibold text-muted mb-1">VENDOR</label>
-          <select class="form-select form-select-sm custom-select" [(ngModel)]="selectedVendor">
-            <option value="">All Vendors</option>
-            <option *ngFor="let v of metadata.vendors" [value]="v.value">{{ v.label }}</option>
-          </select>
-        </div>
-
-        <!-- RFQ Status Filter -->
-        <div class="col-xl-2 col-md-3 col-sm-6">
-          <label class="form-label text-xs fw-semibold text-muted mb-1">RFQ STATUS</label>
-          <select class="form-select form-select-sm custom-select" [(ngModel)]="selectedRfqStatus">
-            <option value="">All RFQ Statuses</option>
-            <option *ngFor="let s of metadata.rfqStatuses" [value]="s.value">{{ s.label }}</option>
-          </select>
-        </div>
-
-        <!-- Bid Outcome Filter -->
-        <div class="col-xl-2 col-md-3 col-sm-6">
-          <label class="form-label text-xs fw-semibold text-muted mb-1">BID OUTCOME</label>
-          <select class="form-select form-select-sm custom-select" [(ngModel)]="selectedOutcome">
-            <option value="">All Outcomes</option>
-            <option value="Won">Won</option>
-            <option value="Lost">Lost</option>
-            <option value="Pending">Pending</option>
-          </select>
-        </div>
-
-        <!-- Currency Filter -->
-        <div class="col-xl-1 col-md-2 col-sm-6">
-          <label class="form-label text-xs fw-semibold text-muted mb-1">CURRENCY</label>
-          <select class="form-select form-select-sm custom-select" [(ngModel)]="selectedCurrency">
-            <option value="">All</option>
-            <option *ngFor="let c of metadata.currencies" [value]="c.value">{{ c.label }}</option>
-          </select>
-        </div>
-
-        <!-- Filter Actions -->
-        <div class="col-xl-3 col-md-4 col-sm-12 d-flex gap-2 justify-content-end ms-auto">
-          <button type="button" class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1" (click)="resetFilters()" title="Reset Filters">
-            <i class="ft-rotate-ccw"></i>
-            <span>Reset</span>
-          </button>
-          <button type="button" class="btn btn-sm btn-primary d-flex align-items-center gap-1 px-3" (click)="applyFilters()">
-            <i class="ft-filter"></i>
-            <span>Apply Filters</span>
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- KPI Cards Grid (11 KPI Cards) -->
-  <div class="kpi-grid mb-4">
-    <!-- Card 1: Total RFQs -->
-    <div class="kpi-card">
-      <div class="kpi-card__top">
-        <span class="kpi-card__title">Total RFQs Published</span>
-        <div class="kpi-card__icon kpi-card__icon--blue">
-          <i class="ft-file-text"></i>
-        </div>
-      </div>
-      <div class="kpi-card__value">
-        {{ summary?.totalRfqs | number }}
-      </div>
-      <div class="kpi-card__footer">
-        <span class="trend-badge" [ngClass]="(summary?.rfqGrowthPercentage || 0) >= 0 ? 'trend-badge--up' : 'trend-badge--down'">
-          <i [class]="(summary?.rfqGrowthPercentage || 0) >= 0 ? 'ft-arrow-up-right' : 'ft-arrow-down-right'"></i>
-          {{ summary?.rfqGrowthPercentage !== null ? (summary?.rfqGrowthPercentage | number:'1.1-1') + '%' : 'N/A' }}
-        </span>
-        <span class="text-muted text-xs ms-1">vs {{ summary?.previousPeriodLabel }}</span>
-      </div>
-    </div>
-
-    <!-- Card 2: RFQs with Bids -->
-    <div class="kpi-card">
-      <div class="kpi-card__top">
-        <span class="kpi-card__title">RFQs with Vendor Bids</span>
-        <div class="kpi-card__icon kpi-card__icon--primary">
-          <i class="ft-users"></i>
-        </div>
-      </div>
-      <div class="kpi-card__value">
-        {{ summary?.rfqsWithBids | number }}
-      </div>
-      <div class="kpi-card__footer">
-        <span class="text-muted text-xs">
-          {{ summary?.totalRfqs ? ((summary?.rfqsWithBids || 0) / summary!.totalRfqs * 100 | number:'1.0-1') : 0 }}% participation rate
-        </span>
-      </div>
-    </div>
-
-    <!-- Card 3: Total Bids Received -->
-    <div class="kpi-card">
-      <div class="kpi-card__top">
-        <span class="kpi-card__title">Total Bids Received</span>
-        <div class="kpi-card__icon kpi-card__icon--purple">
-          <i class="ft-layers"></i>
-        </div>
-      </div>
-      <div class="kpi-card__value">
-        {{ summary?.totalBidsReceived | number }}
-      </div>
-      <div class="kpi-card__footer">
-        <span class="trend-badge" [ngClass]="(summary?.bidsGrowthPercentage || 0) >= 0 ? 'trend-badge--up' : 'trend-badge--down'">
-          <i [class]="(summary?.bidsGrowthPercentage || 0) >= 0 ? 'ft-arrow-up-right' : 'ft-arrow-down-right'"></i>
-          {{ summary?.bidsGrowthPercentage !== null ? (summary?.bidsGrowthPercentage | number:'1.1-1') + '%' : 'N/A' }}
-        </span>
-        <span class="text-muted text-xs ms-1">vs {{ summary?.previousPeriodLabel }}</span>
-      </div>
-    </div>
-
-    <!-- Card 4: Won Bids -->
-    <div class="kpi-card">
-      <div class="kpi-card__top">
-        <span class="kpi-card__title">Awarded (Won) Bids</span>
-        <div class="kpi-card__icon kpi-card__icon--success">
-          <i class="ft-award"></i>
-        </div>
-      </div>
-      <div class="kpi-card__value text-success">
-        {{ summary?.wonBids | number }}
-      </div>
-      <div class="kpi-card__footer">
-        <span class="text-muted text-xs">Awarded to vendors</span>
-      </div>
-    </div>
-
-    <!-- Card 5: Lost Bids -->
-    <div class="kpi-card">
-      <div class="kpi-card__top">
-        <span class="kpi-card__title">Lost Bids</span>
-        <div class="kpi-card__icon kpi-card__icon--danger">
-          <i class="ft-x-circle"></i>
-        </div>
-      </div>
-      <div class="kpi-card__value text-danger">
-        {{ summary?.lostBids | number }}
-      </div>
-      <div class="kpi-card__footer">
-        <span class="text-muted text-xs">Unsuccessful or rejected bids</span>
-      </div>
-    </div>
-
-    <!-- Card 6: Pending Bids -->
-    <div class="kpi-card">
-      <div class="kpi-card__top">
-        <span class="kpi-card__title">Pending Bids</span>
-        <div class="kpi-card__icon kpi-card__icon--amber">
-          <i class="ft-clock"></i>
-        </div>
-      </div>
-      <div class="kpi-card__value text-warning">
-        {{ summary?.pendingBids | number }}
-      </div>
-      <div class="kpi-card__footer">
-        <span class="text-muted text-xs">Awaiting final award evaluation</span>
-      </div>
-    </div>
-
-    <!-- Card 7: Overall Win Rate -->
-    <div class="kpi-card">
-      <div class="kpi-card__top">
-        <span class="kpi-card__title">Overall Win Rate</span>
-        <div class="kpi-card__icon kpi-card__icon--success">
-          <i class="ft-trending-up"></i>
-        </div>
-      </div>
-      <div class="kpi-card__value text-success">
-        {{ summary?.winRate | number:'1.1-1' }}%
-      </div>
-      <div class="kpi-card__footer">
-        <span class="trend-badge" [ngClass]="(summary?.winRateGrowthPercentage || 0) >= 0 ? 'trend-badge--up' : 'trend-badge--down'">
-          <i [class]="(summary?.winRateGrowthPercentage || 0) >= 0 ? 'ft-arrow-up-right' : 'ft-arrow-down-right'"></i>
-          {{ summary?.winRateGrowthPercentage !== null ? (summary?.winRateGrowthPercentage | number:'1.1-1') + '%' : 'N/A' }}
-        </span>
-        <span class="text-muted text-xs ms-1">vs {{ summary?.previousPeriodLabel }}</span>
-      </div>
-    </div>
-
-    <!-- Card 8: Overall Loss Rate -->
-    <div class="kpi-card">
-      <div class="kpi-card__top">
-        <span class="kpi-card__title">Overall Loss Rate</span>
-        <div class="kpi-card__icon kpi-card__icon--danger">
-          <i class="ft-trending-down"></i>
-        </div>
-      </div>
-      <div class="kpi-card__value text-danger">
-        {{ summary?.lossRate | number:'1.1-1' }}%
-      </div>
-      <div class="kpi-card__footer">
-        <span class="text-muted text-xs">Lost / (Won + Lost)</span>
-      </div>
-    </div>
-
-    <!-- Card 9: Total Won Value -->
-    <div class="kpi-card">
-      <div class="kpi-card__top">
-        <span class="kpi-card__title">Total Won Bid Value</span>
-        <div class="kpi-card__icon kpi-card__icon--primary">
-          <i class="ft-check"></i>
-        </div>
-      </div>
-      <div class="kpi-card__value text-success">
-        {{ summary?.totalWonBidValue | number:'1.2-2' }} <span class="kpi-card__currency">{{ summary?.currency }}</span>
-      </div>
-      <div class="kpi-card__footer">
-        <span class="text-muted text-xs">Total commercial contract value won</span>
-      </div>
-    </div>
-
-    <!-- Card 10: Total Lost Value -->
-    <div class="kpi-card">
-      <div class="kpi-card__top">
-        <span class="kpi-card__title">Total Lost Bid Value</span>
-        <div class="kpi-card__icon kpi-card__icon--danger">
-          <span class="fw-bold" style="font-size: 11px; letter-spacing: 0.02em; line-height: 1;">SAR</span>
-        </div>
-      </div>
-      <div class="kpi-card__value text-danger">
-        {{ summary?.totalLostBidValue | number:'1.2-2' }} <span class="kpi-card__currency">{{ summary?.currency }}</span>
-      </div>
-      <div class="kpi-card__footer">
-        <span class="text-muted text-xs">Unsuccessful bid volume</span>
-      </div>
-    </div>
-
-    <!-- Card 11: RFQ to PO Conversion -->
-    <div class="kpi-card">
-      <div class="kpi-card__top">
-        <span class="kpi-card__title">RFQ-to-PO Conversion</span>
-        <div class="kpi-card__icon kpi-card__icon--cyan">
-          <i class="ft-git-pull-request"></i>
-        </div>
-      </div>
-      <div class="kpi-card__value text-primary">
-        {{ summary?.rfqToPoConversionRate | number:'1.1-1' }}%
-      </div>
-      <div class="kpi-card__footer">
-        <span class="text-muted text-xs">RFQs resulting in active Purchase Orders</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Visual Analytics Charts (6 Charts) -->
-  <div class="row g-3 mb-4">
-    <!-- Bid Outcome Donut (col-lg-4) -->
-    <div class="col-lg-4">
-      <div class="card chart-card h-100 shadow-sm border-0">
-        <div class="card-header bg-white border-0 py-3">
-          <h6 class="chart-card__title m-0">Bid Outcome Distribution</h6>
-        </div>
-        <div class="card-body p-3 d-flex align-items-center justify-content-center">
-          <apx-chart *ngIf="!loadingCharts && outcomeDonutChart.series && outcomeDonutChart.series.length > 0"
-            [series]="outcomeDonutChart.series"
-            [chart]="outcomeDonutChart.chart"
-            [labels]="outcomeDonutChart.labels"
-            [colors]="outcomeDonutChart.colors"
-            [plotOptions]="outcomeDonutChart.plotOptions"
-            [legend]="outcomeDonutChart.legend">
-          </apx-chart>
-          <div *ngIf="!loadingCharts && (!outcomeDonutChart.series || outcomeDonutChart.series.length === 0)" class="empty-chart">
-            <p>No bid outcome data.</p>
+        <div class="col-lg-5">
+          <div class="exhibit-box">
+            <div class="exhibit-box__head">
+              <h3 class="exhibit-box__title">Quote Outcome Distribution</h3>
+              <span class="exhibit-box__tag">Won / Lost / Pending</span>
+            </div>
+            <div class="exhibit-box__body d-flex align-items-center justify-content-center">
+              <apx-chart *ngIf="!loadingCharts && outcomeDonutChart.series?.length"
+                [series]="outcomeDonutChart.series" [chart]="outcomeDonutChart.chart"
+                [labels]="outcomeDonutChart.labels" [colors]="outcomeDonutChart.colors"
+                [plotOptions]="outcomeDonutChart.plotOptions" [legend]="outcomeDonutChart.legend"
+                [dataLabels]="outcomeDonutChart.dataLabels">
+              </apx-chart>
+              <div *ngIf="!loadingCharts && !outcomeDonutChart.series?.length" class="exhibit-empty">No quote outcome data available.</div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- Win/Loss Trend Line (col-lg-8) -->
-    <div class="col-lg-8">
-      <div class="card chart-card h-100 shadow-sm border-0">
-        <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center py-3">
-          <h6 class="chart-card__title m-0">Won vs Lost Bids Over Time</h6>
-          <span class="badge badge-subtle-primary">Volume Comparison</span>
+    <!-- ==================== RFQ PARTICIPATION PIPELINE SCHEDULE ==================== -->
+    <section class="report-section" *ngIf="chartsData?.rfqParticipation">
+      <div class="report-section__header">
+        <h2 class="report-section__title">RFQ Participation Pipeline Schedule</h2>
+        <span class="report-section__meta">Conversion from invitation to final award</span>
+      </div>
+
+      <div class="ledger-table-wrap">
+        <table class="report-ledger-table">
+          <thead>
+            <tr>
+              <th class="col-idx">#</th>
+              <th>Pipeline Stage</th>
+              <th>Description</th>
+              <th class="num">RFQ Count</th>
+              <th class="num">% of Published RFQs</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="col-idx">1</td>
+              <td class="fw-bold">RFQs Published / Invited</td>
+              <td class="text-muted">Total quotations issued within the reporting period</td>
+              <td class="num fw-bold">{{ chartsData?.rfqParticipation?.rfqsPublished | number }}</td>
+              <td class="num">100.0%</td>
+            </tr>
+            <tr>
+              <td class="col-idx">2</td>
+              <td class="fw-bold">RFQs Participated (Quotes Submitted)</td>
+              <td class="text-muted">RFQs where a quote submission was recorded</td>
+              <td class="num text-primary fw-bold">{{ chartsData?.rfqParticipation?.rfqsReceivingBids | number }}</td>
+              <td class="num">{{ chartsData?.rfqParticipation?.rfqsPublished ? ((chartsData!.rfqParticipation.rfqsReceivingBids / chartsData!.rfqParticipation.rfqsPublished) * 100 | number:'1.1-1') : '0.0' }}%</td>
+            </tr>
+            <tr>
+              <td class="col-idx">3</td>
+              <td class="fw-bold">RFQs Without Quote</td>
+              <td class="text-muted">Published RFQs with no submitted quote</td>
+              <td class="num text-warning">{{ chartsData?.rfqParticipation?.rfqsWithoutBids | number }}</td>
+              <td class="num">{{ chartsData?.rfqParticipation?.rfqsPublished ? ((chartsData!.rfqParticipation.rfqsWithoutBids / chartsData!.rfqParticipation.rfqsPublished) * 100 | number:'1.1-1') : '0.0' }}%</td>
+            </tr>
+            <tr>
+              <td class="col-idx">4</td>
+              <td class="fw-bold">RFQs Awarded</td>
+              <td class="text-muted">RFQs converted into awarded Purchase Orders</td>
+              <td class="num text-success fw-bold">{{ chartsData?.rfqParticipation?.rfqsAwarded | number }}</td>
+              <td class="num">{{ chartsData?.rfqParticipation?.rfqsPublished ? ((chartsData!.rfqParticipation.rfqsAwarded / chartsData!.rfqParticipation.rfqsPublished) * 100 | number:'1.1-1') : '0.0' }}%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ==================== QUOTE & RFQ OUTCOMES ==================== -->
+    <section class="report-section">
+      <div class="report-section__header">
+        <h2 class="report-section__title">Quote &amp; RFQ Outcomes</h2>
+        <span class="report-section__meta">Itemized quotation submissions and RFQ award records</span>
+      </div>
+
+      <div class="ledger-controls no-print">
+        <div class="register-switcher">
+          <button type="button" [class.active]="activeSection === 'bids'" (click)="switchSection('bids')">
+            Quote Outcomes ({{ bidsData.totalCount }})
+          </button>
+          <button type="button" [class.active]="activeSection === 'rfqs'" (click)="switchSection('rfqs')">
+            RFQ Summary ({{ rfqsData.totalCount }})
+          </button>
         </div>
-        <div class="card-body p-3">
-          <apx-chart *ngIf="!loadingCharts && winLossTrendChart.series && winLossTrendChart.series.length > 0"
-            [series]="winLossTrendChart.series"
-            [chart]="winLossTrendChart.chart"
-            [xaxis]="winLossTrendChart.xaxis"
-            [stroke]="winLossTrendChart.stroke"
-            [colors]="winLossTrendChart.colors"
-            [grid]="winLossTrendChart.grid"
-            [legend]="winLossTrendChart.legend">
-          </apx-chart>
-          <div *ngIf="!loadingCharts && (!winLossTrendChart.series || winLossTrendChart.series.length === 0)" class="empty-chart">
-            <p>No trend records found.</p>
+
+        <div class="d-flex align-items-center gap-2">
+          <div class="ledger-search">
+            <i class="ft-search"></i>
+            <input type="text" class="form-control form-control-sm" placeholder="Search RFQ #, title, PO #..." [(ngModel)]="searchTerm" (keyup.enter)="onSearchTable()" />
           </div>
+          <select class="form-select form-select-sm w-auto"
+            [ngModel]="activeSection === 'bids' ? bidsData.pageSize : rfqsData.pageSize"
+            (ngModelChange)="activeSection === 'bids' ? bidsData.pageSize = $event : rfqsData.pageSize = $event; loadTable(1)">
+            <option [value]="10">10 rows</option>
+            <option [value]="15">15 rows</option>
+            <option [value]="25">25 rows</option>
+            <option [value]="50">50 rows</option>
+          </select>
         </div>
       </div>
-    </div>
-  </div>
 
-  <div class="row g-3 mb-4">
-    <!-- Vendor Win/Loss Performance Stacked Bar (col-lg-6) -->
-    <div class="col-lg-6">
-      <div class="card chart-card h-100 shadow-sm border-0">
-        <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center py-3">
-          <h6 class="chart-card__title m-0">Vendor Win/Loss Performance</h6>
-          <span class="text-muted text-xs">Won vs Lost by Vendor</span>
+      <div class="ledger-table-wrap">
+        <div *ngIf="loadingTable" class="text-center py-4">
+          <div class="spinner-border spinner-border-sm text-success"></div>
         </div>
-        <div class="card-body p-3">
-          <apx-chart *ngIf="!loadingCharts && vendorPerfChart.series && vendorPerfChart.series.length > 0"
-            [series]="vendorPerfChart.series"
-            [chart]="vendorPerfChart.chart"
-            [xaxis]="vendorPerfChart.xaxis"
-            [plotOptions]="vendorPerfChart.plotOptions"
-            [colors]="vendorPerfChart.colors"
-            [legend]="vendorPerfChart.legend"
-            [grid]="vendorPerfChart.grid">
-          </apx-chart>
+
+        <!-- Quote Outcomes (Awarded Vendor removed, balanced 7 columns) -->
+        <table class="report-ledger-table" style="table-layout: fixed;" *ngIf="!loadingTable && activeSection === 'bids'">
+          <thead>
+            <tr>
+              <th class="col-idx" style="width: 5%;">#</th>
+              <th (click)="onSortTable('rfqnumber')" class="sortable" style="width: 15%;">RFQ Number</th>
+              <th style="width: 27%;">RFQ Title</th>
+              <th (click)="onSortTable('biddate')" class="sortable" style="width: 14%;">Submission Date</th>
+              <th (click)="onSortTable('quotedamount')" class="sortable num" style="width: 16%;">Quoted Amount (SAR)</th>
+              <th class="text-center" style="width: 11%;">Outcome</th>
+              <th style="width: 12%;">Resulting PO</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let r of bidsData.items; let i = index">
+              <td class="col-idx">{{ (bidsData.pageNumber - 1) * bidsData.pageSize + i + 1 }}</td>
+              <td><a href="javascript:void(0)" class="fw-bold text-success text-decoration-none" (click)="viewRfq(r.quotationRequestId)">{{ r.rfqNumber }}</a></td>
+              <td>{{ r.rfqTitle }}</td>
+              <td class="text-nowrap">{{ r.bidSubmissionDate | date:'dd MMM yyyy' }}</td>
+              <td class="num fw-bold">{{ r.quotedAmount | number:'1.2-2' }}</td>
+              <td class="text-center"><span class="status-pill" [ngClass]="getOutcomePillClass(r.bidOutcome)">{{ r.bidOutcome }}</span></td>
+              <td class="fw-semibold">{{ r.poNumber || '—' }}</td>
+            </tr>
+            <tr *ngIf="bidsData.items.length === 0">
+              <td colspan="7" class="text-center py-4 text-muted">No quote records found for the selected parameters.</td>
+            </tr>
+          </tbody>
+          <tfoot *ngIf="bidsData.items.length > 0">
+            <tr>
+              <td colspan="4">PAGE SUBTOTAL ({{ bidsData.items.length }} quotes shown)</td>
+              <td class="num">{{ bidsPageQuotedTotal | number:'1.2-2' }} SAR</td>
+              <td colspan="2"></td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <!-- RFQ Summary (Winning Vendor removed, balanced 8 columns) -->
+        <table class="report-ledger-table" style="table-layout: fixed;" *ngIf="!loadingTable && activeSection === 'rfqs'">
+          <thead>
+            <tr>
+              <th class="col-idx" style="width: 5%;">#</th>
+              <th (click)="onSortTable('rfqnumber')" class="sortable" style="width: 14%;">RFQ Number</th>
+              <th style="width: 25%;">RFQ Title</th>
+              <th (click)="onSortTable('rfqdate')" class="sortable" style="width: 12%;">RFQ Date</th>
+              <th class="num" style="width: 10%;">Total Quotes</th>
+              <th class="num" style="width: 14%;">Winning Value (SAR)</th>
+              <th class="text-center" style="width: 10%;">RFQ Status</th>
+              <th style="width: 10%;">PO Number</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let r of rfqsData.items; let i = index">
+              <td class="col-idx">{{ (rfqsData.pageNumber - 1) * rfqsData.pageSize + i + 1 }}</td>
+              <td><a href="javascript:void(0)" class="fw-bold text-success text-decoration-none" (click)="viewRfq(r.id)">{{ r.rfqNumber }}</a></td>
+              <td>{{ r.rfqTitle }}</td>
+              <td class="text-nowrap">{{ r.rfqDate | date:'dd MMM yyyy' }}</td>
+              <td class="num">{{ r.totalBidsReceived | number }}</td>
+              <td class="num fw-bold">{{ r.winningBidAmount | number:'1.2-2' }}</td>
+              <td class="text-center"><span class="status-pill" [ngClass]="getOutcomePillClass(r.rfqStatus)">{{ r.rfqStatus }}</span></td>
+              <td class="fw-semibold">{{ r.poNumber || '—' }}</td>
+            </tr>
+            <tr *ngIf="rfqsData.items.length === 0">
+              <td colspan="8" class="text-center py-4 text-muted">No RFQ records found for the selected parameters.</td>
+            </tr>
+          </tbody>
+          <tfoot *ngIf="rfqsData.items.length > 0">
+            <tr>
+              <td colspan="5">PAGE SUBTOTAL ({{ rfqsData.items.length }} RFQs shown)</td>
+              <td class="num">{{ rfqsPageWinningTotal | number:'1.2-2' }} SAR</td>
+              <td colspan="2"></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div class="ledger-pagination no-print"
+        *ngIf="(activeSection === 'bids' && bidsData.totalPages > 1) || (activeSection === 'rfqs' && rfqsData.totalPages > 1)">
+        <span>
+          Page {{ activeSection === 'bids' ? bidsData.pageNumber : rfqsData.pageNumber }}
+          of {{ activeSection === 'bids' ? bidsData.totalPages : rfqsData.totalPages }}
+        </span>
+        <div class="d-flex gap-1">
+          <button type="button" class="btn btn-sm btn-outline-secondary"
+            [disabled]="activeSection === 'bids' ? !bidsData.hasPreviousPage : !rfqsData.hasPreviousPage"
+            (click)="loadTable((activeSection === 'bids' ? bidsData.pageNumber : rfqsData.pageNumber) - 1)">
+            Prev
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-secondary"
+            [disabled]="activeSection === 'bids' ? !bidsData.hasNextPage : !rfqsData.hasNextPage"
+            (click)="loadTable((activeSection === 'bids' ? bidsData.pageNumber : rfqsData.pageNumber) + 1)">
+            Next
+          </button>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- Bid Value Analysis Stacked Bar (col-lg-6) -->
-    <div class="col-lg-6">
-      <div class="card chart-card h-100 shadow-sm border-0">
-        <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center py-3">
-          <h6 class="chart-card__title m-0">Won vs Lost Bid Values (SAR)</h6>
-          <span class="text-muted text-xs">Financial Value Comparison</span>
-        </div>
-        <div class="card-body p-3">
-          <apx-chart *ngIf="!loadingCharts && bidValueTrendChart.series && bidValueTrendChart.series.length > 0"
-            [series]="bidValueTrendChart.series"
-            [chart]="bidValueTrendChart.chart"
-            [xaxis]="bidValueTrendChart.xaxis"
-            [yaxis]="bidValueTrendChart.yaxis"
-            [plotOptions]="bidValueTrendChart.plotOptions"
-            [colors]="bidValueTrendChart.colors"
-            [legend]="bidValueTrendChart.legend"
-            [grid]="bidValueTrendChart.grid"
-            [tooltip]="bidValueTrendChart.tooltip">
-          </apx-chart>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="row g-3 mb-4">
-    <!-- RFQ Participation Analysis (col-lg-6) -->
-    <div class="col-lg-6">
-      <div class="card chart-card h-100 shadow-sm border-0">
-        <div class="card-header bg-white border-0 py-3">
-          <h6 class="chart-card__title m-0">RFQ Participation Pipeline</h6>
-        </div>
-        <div class="card-body p-3">
-          <apx-chart *ngIf="!loadingCharts && rfqParticipationChart.series && rfqParticipationChart.series.length > 0"
-            [series]="rfqParticipationChart.series"
-            [chart]="rfqParticipationChart.chart"
-            [xaxis]="rfqParticipationChart.xaxis"
-            [plotOptions]="rfqParticipationChart.plotOptions"
-            [colors]="rfqParticipationChart.colors"
-            [grid]="rfqParticipationChart.grid">
-          </apx-chart>
-        </div>
-      </div>
-    </div>
-
-    <!-- Vendor Win Rate Ranking (col-lg-6) -->
-    <div class="col-lg-6">
-      <div class="card chart-card h-100 shadow-sm border-0">
-        <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center py-3">
-          <h6 class="chart-card__title m-0">Vendor Win Rate Ranking (%)</h6>
-          <span class="text-muted text-xs">With Total Bids Submitted</span>
-        </div>
-        <div class="card-body p-3">
-          <apx-chart *ngIf="!loadingCharts && vendorWinRateChart.series && vendorWinRateChart.series.length > 0"
-            [series]="vendorWinRateChart.series"
-            [chart]="vendorWinRateChart.chart"
-            [xaxis]="vendorWinRateChart.xaxis"
-            [plotOptions]="vendorWinRateChart.plotOptions"
-            [colors]="vendorWinRateChart.colors"
-            [dataLabels]="vendorWinRateChart.dataLabels"
-            [grid]="vendorWinRateChart.grid">
-          </apx-chart>
-        </div>
+    <!-- Formal Document Footer -->
+    <div class="report-footer">
+      <div class="report-footer__end">&mdash; End of Quote Win/Loss Analysis Report &mdash;</div>
+      <div class="report-footer__notes">
+        <span><strong>Statement Scope:</strong> Restricted strictly to {{ loggedInVendorLabel }}. All amounts expressed in Saudi Riyal (SAR).</span>
+        <span>Confidential &middot; Vendor Quoting Intelligence Report</span>
       </div>
     </div>
   </div>

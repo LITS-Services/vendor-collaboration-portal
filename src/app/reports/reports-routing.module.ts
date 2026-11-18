@@ -19,7 +19,7 @@ const routes: Routes = [
         path: 'bids-win-loss-report',
         component: BidsWinLossComponent,
         data: {
-          title: 'Bids Win/Loss Analysis'
+          title: 'Quote Win/Loss Analysis Report'
         }
       },
       {

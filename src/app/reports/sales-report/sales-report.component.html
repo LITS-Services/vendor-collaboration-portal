@@ -1,360 +1,275 @@
-<div class="reports-page">
-  <!-- Top Header -->
-  <div class="reports-header d-flex flex-wrap justify-content-between align-items-center mb-3">
-    <div>
-      <h1 class="reports-title m-0">Sales Report & Commercial Performance</h1>
-      <p class="reports-subtitle m-0 text-muted">
-        Comprehensive overview of purchase orders, deliveries, invoices, and payments for 
-        <span class="badge badge-subtle-primary">{{ summary?.periodLabel || selectedPreset }}</span>
-        <span class="badge badge-subtle-success ms-2" style="margin-left: 8px;" *ngIf="metadata?.vendors && metadata.vendors.length === 1">
-          <i class="ft-shield me-1"></i>{{ metadata.vendors[0].label }}
-        </span>
-      </p>
-    </div>
-
-    <!-- Export Actions -->
-    <div class="reports-actions d-flex align-items-center gap-2 mt-2 mt-md-0">
-      <div ngbDropdown class="d-inline-block">
-        <button type="button" class="btn btn-primary d-flex align-items-center gap-2" id="exportDropdown" ngbDropdownToggle [disabled]="exportingPdf">
+<div class="report-workspace">
+  <!-- Non-Print Report Parameter & Export Bar -->
+  <div class="report-toolbar no-print">
+    <div class="report-toolbar__top">
+      <div class="report-toolbar__label">
+        <i class="ft-sliders text-success"></i>
+        <span>Report Parameters &amp; Output Controls</span>
+      </div>
+      <div class="report-toolbar__actions">
+        <button type="button" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1" (click)="resetFilters()">
+          <i class="ft-rotate-ccw"></i> Reset
+        </button>
+        <button type="button" class="btn btn-sm btn-primary d-inline-flex align-items-center gap-1 px-3" (click)="applyFilters()">
+          <i class="ft-play"></i> Generate Report
+        </button>
+        <button type="button" class="btn btn-sm btn-outline-dark d-inline-flex align-items-center gap-1" (click)="printReport()">
+          <i class="ft-printer"></i> Print
+        </button>
+        <button type="button" class="btn btn-sm btn-primary d-inline-flex align-items-center gap-1" (click)="exportPdf()" [disabled]="exportingPdf">
           <i class="ft-download" *ngIf="!exportingPdf"></i>
           <span class="spinner-border spinner-border-sm" *ngIf="exportingPdf" role="status"></span>
-          <span>{{ exportingPdf ? 'Generating PDF...' : 'Export Report' }}</span>
+          <span>{{ exportingPdf ? 'Exporting PDF...' : 'Export PDF' }}</span>
         </button>
-        <div ngbDropdownMenu aria-labelledby="exportDropdown" class="dropdown-menu-end shadow-sm">
-          <button ngbDropdownItem (click)="exportPdf('summary')" class="d-flex align-items-center justify-content-start text-start py-2" style="justify-content: flex-start !important; gap: 10px;">
-            <i class="ft-file-text text-primary flex-shrink-0"></i>
-            <div>
-              <div class="fw-bold">Summary PDF</div>
-              <small class="text-muted">KPIs, visual analytics & highlights</small>
+      </div>
+    </div>
+
+    <div class="row g-2 align-items-end">
+      <div class="col-xl-2 col-md-4 col-sm-6">
+        <label class="param-label">Reporting Period</label>
+        <select class="form-select form-select-sm" [(ngModel)]="selectedPreset" (change)="selectedPreset !== 'Custom' && applyFilters()">
+          <option *ngFor="let p of presets" [value]="p.value">{{ p.label }}</option>
+        </select>
+      </div>
+      <div class="col-xl-2 col-md-4 col-sm-6" *ngIf="selectedPreset === 'Custom'">
+        <label class="param-label">From Date</label>
+        <input type="date" class="form-control form-control-sm" [(ngModel)]="customFromDate" />
+      </div>
+      <div class="col-xl-2 col-md-4 col-sm-6" *ngIf="selectedPreset === 'Custom'">
+        <label class="param-label">To Date</label>
+        <input type="date" class="form-control form-control-sm" [(ngModel)]="customToDate" />
+      </div>
+      <div class="col-xl-2 col-md-4 col-sm-6" *ngIf="metadata.vendors && metadata.vendors.length > 1">
+        <label class="param-label">Vendor</label>
+        <select class="form-select form-select-sm" [(ngModel)]="selectedVendor">
+          <option value="">All Vendors</option>
+          <option *ngFor="let v of metadata.vendors" [value]="v.value">{{ v.label }}</option>
+        </select>
+      </div>
+      <div class="col-xl-2 col-md-4 col-sm-6">
+        <label class="param-label">PO Status</label>
+        <select class="form-select form-select-sm" [(ngModel)]="selectedPoStatus">
+          <option value="">All PO Statuses</option>
+          <option *ngFor="let s of metadata.poStatuses" [value]="s.value">{{ s.label }}</option>
+        </select>
+      </div>
+      <div class="col-xl-2 col-md-4 col-sm-6">
+        <label class="param-label">Currency</label>
+        <select class="form-select form-select-sm" [(ngModel)]="selectedCurrency">
+          <option value="">All (SAR)</option>
+          <option *ngFor="let c of metadata.currencies" [value]="c.value">{{ c.label }}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== FORMAL REPORT DOCUMENT SHEET ==================== -->
+  <div class="report-sheet">
+    <!-- Document Masthead -->
+    <div class="report-masthead">
+      <div class="report-masthead__left">
+        <div class="report-masthead__eyebrow">Vendor Collaboration Portal &middot; Sales Statement &middot; Ref: VP-RPT-01</div>
+        <h1 class="report-masthead__title">Sales Report</h1>
+        <p class="report-masthead__desc">
+          Formal vendor-scoped statement of confirmed Purchase Order sales, invoice billing, and payment receivables for {{ loggedInVendorLabel }}.
+        </p>
+      </div>
+    </div>
+
+    <!-- ==================== CHARTS & ANALYTICS ==================== -->
+    <section class="report-section">
+      <div class="report-section__header">
+        <h2 class="report-section__title">Charts &amp; Analytics</h2>
+        <span class="report-section__meta">Supporting revenue trajectory and receivables composition (SAR)</span>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-lg-7">
+          <div class="exhibit-box">
+            <div class="exhibit-box__head">
+              <h3 class="exhibit-box__title">Periodic Sales Revenue Trend</h3>
+              <span class="exhibit-box__tag">SAR</span>
             </div>
-          </button>
-          <div class="dropdown-divider"></div>
-          <button ngbDropdownItem (click)="exportPdf('detailed')" class="d-flex align-items-center justify-content-start text-start py-2" style="justify-content: flex-start !important; gap: 10px;">
-            <i class="ft-layers text-success flex-shrink-0"></i>
-            <div>
-              <div class="fw-bold">Detailed PDF</div>
-              <small class="text-muted">Includes complete transaction tables</small>
+            <div class="exhibit-box__body">
+              <apx-chart *ngIf="!loadingCharts && salesTrendChart.series?.length"
+                [series]="salesTrendChart.series" [chart]="salesTrendChart.chart"
+                [xaxis]="salesTrendChart.xaxis" [yaxis]="salesTrendChart.yaxis"
+                [dataLabels]="salesTrendChart.dataLabels" [stroke]="salesTrendChart.stroke"
+                [fill]="salesTrendChart.fill" [colors]="salesTrendChart.colors"
+                [grid]="salesTrendChart.grid" [tooltip]="salesTrendChart.tooltip"
+                [legend]="salesTrendChart.legend">
+              </apx-chart>
+              <div *ngIf="!loadingCharts && !salesTrendChart.series?.length" class="exhibit-empty">No sales records found for this period.</div>
             </div>
+          </div>
+        </div>
+        <div class="col-lg-5">
+          <div class="exhibit-box">
+            <div class="exhibit-box__head">
+              <h3 class="exhibit-box__title">Payment &amp; Receivables Breakdown</h3>
+              <span class="exhibit-box__tag">SAR</span>
+            </div>
+            <div class="exhibit-box__body">
+              <apx-chart *ngIf="!loadingCharts && paymentAnalysisChart.series?.length"
+                [series]="paymentAnalysisChart.series" [chart]="paymentAnalysisChart.chart"
+                [xaxis]="paymentAnalysisChart.xaxis" [yaxis]="paymentAnalysisChart.yaxis"
+                [colors]="paymentAnalysisChart.colors" [plotOptions]="paymentAnalysisChart.plotOptions"
+                [grid]="paymentAnalysisChart.grid" [legend]="paymentAnalysisChart.legend"
+                [tooltip]="paymentAnalysisChart.tooltip" [dataLabels]="paymentAnalysisChart.dataLabels">
+              </apx-chart>
+              <div *ngIf="!loadingCharts && !paymentAnalysisChart.series?.length" class="exhibit-empty">No payment breakdown data.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TRANSACTION LEDGERS ==================== -->
+    <section class="report-section">
+      <div class="report-section__header">
+        <h2 class="report-section__title">Transaction Ledgers</h2>
+        <span class="report-section__meta">Itemized Purchase Order Awarded and Invoice schedules</span>
+      </div>
+
+      <div class="ledger-controls no-print">
+        <div class="register-switcher">
+          <button type="button" [class.active]="activeSection === 'pos'" (click)="switchSection('pos')">
+            Purchase Order Awarded ({{ posData.totalCount }})
+          </button>
+          <button type="button" [class.active]="activeSection === 'invoices'" (click)="switchSection('invoices')">
+            Invoice Ledger ({{ invoicesData.totalCount }})
+          </button>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+          <div class="ledger-search">
+            <i class="ft-search"></i>
+            <input type="text" class="form-control form-control-sm" placeholder="Search PO or invoice..." [(ngModel)]="searchTerm" (keyup.enter)="onSearchTable()" />
+          </div>
+          <select class="form-select form-select-sm w-auto"
+            [ngModel]="activeSection === 'pos' ? posData.pageSize : invoicesData.pageSize"
+            (ngModelChange)="activeSection === 'pos' ? posData.pageSize = $event : invoicesData.pageSize = $event; loadTable(1)">
+            <option [value]="10">10 rows</option>
+            <option [value]="15">15 rows</option>
+            <option [value]="25">25 rows</option>
+            <option [value]="50">50 rows</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="ledger-table-wrap">
+        <div *ngIf="loadingTable" class="text-center py-4">
+          <div class="spinner-border spinner-border-sm text-success"></div>
+        </div>
+
+        <!-- Purchase Order Awarded (balanced 7-column spacing, Uninvoiced removed) -->
+        <table class="report-ledger-table" style="table-layout: fixed;" *ngIf="!loadingTable && activeSection === 'pos'">
+          <thead>
+            <tr>
+              <th class="col-idx" style="width: 6%;">#</th>
+              <th (click)="onSortTable('purchaseorderno')" class="sortable" style="width: 20%;">PO Number</th>
+              <th (click)="onSortTable('podate')" class="sortable" style="width: 16%;">PO Date</th>
+              <th class="text-center" style="width: 14%;">PO Status</th>
+              <th class="num" style="width: 12%;">Invoices</th>
+              <th (click)="onSortTable('totalamount')" class="sortable num" style="width: 16%;">PO Amount (SAR)</th>
+              <th class="num" style="width: 16%;">Invoiced (SAR)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let r of posData.items; let i = index">
+              <td class="col-idx">{{ (posData.pageNumber - 1) * posData.pageSize + i + 1 }}</td>
+              <td><a href="javascript:void(0)" class="fw-bold text-success text-decoration-none" (click)="viewPo(r.id)">{{ r.purchaseOrderNo }}</a></td>
+              <td class="text-nowrap">{{ r.poDate | date:'dd MMM yyyy' }}</td>
+              <td class="text-center"><span class="status-pill" [ngClass]="getStatusPillClass(r.poStatus)">{{ r.poStatus }}</span></td>
+              <td class="num">{{ r.invoiceCount | number }}</td>
+              <td class="num fw-bold">{{ r.totalAmount | number:'1.2-2' }}</td>
+              <td class="num">{{ r.invoicedAmount | number:'1.2-2' }}</td>
+            </tr>
+            <tr *ngIf="posData.items.length === 0">
+              <td colspan="7" class="text-center py-4 text-muted">No Purchase Orders awarded for this period.</td>
+            </tr>
+          </tbody>
+          <tfoot *ngIf="posData.items.length > 0">
+            <tr>
+              <td colspan="5">PAGE SUBTOTAL ({{ posData.items.length }} POs shown)</td>
+              <td class="num">{{ poPageTotal | number:'1.2-2' }} SAR</td>
+              <td class="num">{{ poPageInvoiced | number:'1.2-2' }}</td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <!-- Invoice Ledger -->
+        <table class="report-ledger-table" *ngIf="!loadingTable && activeSection === 'invoices'">
+          <thead>
+            <tr>
+              <th class="col-idx">#</th>
+              <th (click)="onSortTable('invoicenumber')" class="sortable">Invoice Number</th>
+              <th>PO Number</th>
+              <th (click)="onSortTable('invoicedate')" class="sortable">Invoice Date</th>
+              <th>Due Date</th>
+              <th (click)="onSortTable('invoiceamount')" class="sortable num">Invoice Amount (SAR)</th>
+              <th class="num">Paid (SAR)</th>
+              <th class="num">Outstanding (SAR)</th>
+              <th class="text-center">Payment Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let r of invoicesData.items; let i = index">
+              <td class="col-idx">{{ (invoicesData.pageNumber - 1) * invoicesData.pageSize + i + 1 }}</td>
+              <td><a href="javascript:void(0)" class="fw-bold text-success text-decoration-none" (click)="viewInvoice(r.purchaseOrderId, r.id)">{{ r.invoiceNumber }}</a></td>
+              <td>{{ r.purchaseOrderNo }}</td>
+              <td class="text-nowrap">{{ r.invoiceDate | date:'dd MMM yyyy' }}</td>
+              <td class="text-nowrap">{{ r.dueDate ? (r.dueDate | date:'dd MMM yyyy') : '—' }}</td>
+              <td class="num fw-bold">{{ r.invoiceAmount | number:'1.2-2' }}</td>
+              <td class="num text-success">{{ r.paidAmount | number:'1.2-2' }}</td>
+              <td class="num text-danger">{{ r.outstandingAmount | number:'1.2-2' }}</td>
+              <td class="text-center"><span class="status-pill" [ngClass]="getStatusPillClass(r.paymentStatus)">{{ r.paymentStatus }}</span></td>
+            </tr>
+            <tr *ngIf="invoicesData.items.length === 0">
+              <td colspan="9" class="text-center py-4 text-muted">No invoices found for this period.</td>
+            </tr>
+          </tbody>
+          <tfoot *ngIf="invoicesData.items.length > 0">
+            <tr>
+              <td colspan="5">PAGE SUBTOTAL ({{ invoicesData.items.length }} invoices shown)</td>
+              <td class="num">{{ invPageTotal | number:'1.2-2' }} SAR</td>
+              <td class="num text-success">{{ invPagePaid | number:'1.2-2' }}</td>
+              <td class="num text-danger">{{ invPageOutstanding | number:'1.2-2' }}</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div class="ledger-pagination no-print"
+        *ngIf="(activeSection === 'pos' && posData.totalPages > 1) || (activeSection === 'invoices' && invoicesData.totalPages > 1)">
+        <span>
+          Page {{ activeSection === 'pos' ? posData.pageNumber : invoicesData.pageNumber }}
+          of {{ activeSection === 'pos' ? posData.totalPages : invoicesData.totalPages }}
+        </span>
+        <div class="d-flex gap-1">
+          <button type="button" class="btn btn-sm btn-outline-secondary"
+            [disabled]="activeSection === 'pos' ? !posData.hasPreviousPage : !invoicesData.hasPreviousPage"
+            (click)="loadTable((activeSection === 'pos' ? posData.pageNumber : invoicesData.pageNumber) - 1)">
+            Prev
+          </button>
+          <button type="button" class="btn btn-sm btn-outline-secondary"
+            [disabled]="activeSection === 'pos' ? !posData.hasNextPage : !invoicesData.hasNextPage"
+            (click)="loadTable((activeSection === 'pos' ? posData.pageNumber : invoicesData.pageNumber) + 1)">
+            Next
           </button>
         </div>
       </div>
-    </div>
-  </div>
+    </section>
 
-  <!-- Filters Card -->
-  <div class="card filter-card mb-4 shadow-sm border-0">
-    <div class="card-body p-3">
-      <div class="row g-2 align-items-end">
-        <!-- Date Preset -->
-        <div class="col-xl-2 col-md-3 col-sm-6">
-          <label class="form-label text-xs fw-semibold text-muted mb-1">DATE PERIOD</label>
-          <select class="form-select form-select-sm custom-select" [(ngModel)]="selectedPreset" (change)="selectedPreset !== 'Custom' && applyFilters()">
-            <option *ngFor="let p of presets" [value]="p.value">{{ p.label }}</option>
-          </select>
-        </div>
-
-        <!-- Custom From Date -->
-        <div class="col-xl-2 col-md-3 col-sm-6" *ngIf="selectedPreset === 'Custom'">
-          <label class="form-label text-xs fw-semibold text-muted mb-1">FROM DATE</label>
-          <input type="date" class="form-control form-control-sm" [(ngModel)]="customFromDate" />
-        </div>
-
-        <!-- Custom To Date -->
-        <div class="col-xl-2 col-md-3 col-sm-6" *ngIf="selectedPreset === 'Custom'">
-          <label class="form-label text-xs fw-semibold text-muted mb-1">TO DATE</label>
-          <input type="date" class="form-control form-control-sm" [(ngModel)]="customToDate" />
-        </div>
-
-        <!-- Vendor Filter (if multiple vendors available) -->
-        <div class="col-xl-2 col-md-3 col-sm-6" *ngIf="metadata.vendors && metadata.vendors.length > 1">
-          <label class="form-label text-xs fw-semibold text-muted mb-1">VENDOR</label>
-          <select class="form-select form-select-sm custom-select" [(ngModel)]="selectedVendor">
-            <option value="">All Vendors</option>
-            <option *ngFor="let v of metadata.vendors" [value]="v.value">{{ v.label }}</option>
-          </select>
-        </div>
-
-        <!-- Status Filter -->
-        <div class="col-xl-2 col-md-3 col-sm-6">
-          <label class="form-label text-xs fw-semibold text-muted mb-1">STATUS</label>
-          <select class="form-select form-select-sm custom-select" [(ngModel)]="selectedPoStatus">
-            <option value="">All PO Statuses</option>
-            <option *ngFor="let s of metadata.poStatuses" [value]="s.value">{{ s.label }}</option>
-          </select>
-        </div>
-
-        <!-- Currency Filter -->
-        <div class="col-xl-1 col-md-2 col-sm-6">
-          <label class="form-label text-xs fw-semibold text-muted mb-1">CURRENCY</label>
-          <select class="form-select form-select-sm custom-select" [(ngModel)]="selectedCurrency">
-            <option value="">All</option>
-            <option *ngFor="let c of metadata.currencies" [value]="c.value">{{ c.label }}</option>
-          </select>
-        </div>
-
-        <!-- Filter Actions -->
-        <div class="col-xl-3 col-md-4 col-sm-12 d-flex gap-2 justify-content-end ms-auto">
-          <button type="button" class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1" (click)="resetFilters()" title="Reset Filters">
-            <i class="ft-rotate-ccw"></i>
-            <span>Reset</span>
-          </button>
-          <button type="button" class="btn btn-sm btn-primary d-flex align-items-center gap-1 px-3" (click)="applyFilters()">
-            <i class="ft-filter"></i>
-            <span>Apply Filters</span>
-          </button>
-        </div>
+    <!-- Formal Document Footer -->
+    <div class="report-footer">
+      <div class="report-footer__end">&mdash; End of Sales Report &mdash;</div>
+      <div class="report-footer__notes">
+        <span><strong>Statement Scope:</strong> Restricted strictly to {{ loggedInVendorLabel }}. All amounts expressed in Saudi Riyal (SAR).</span>
+        <span>Confidential &middot; Vendor Sales Statement</span>
       </div>
-    </div>
-  </div>
-
-  <!-- KPI Cards Grid (7 Cards) -->
-  <div class="kpi-grid mb-4">
-    <!-- Card 1: Total Sales -->
-    <div class="kpi-card">
-      <div class="kpi-card__top">
-        <span class="kpi-card__title">Total Confirmed Sales</span>
-        <div class="kpi-card__icon kpi-card__icon--primary">
-          <span class="fw-bold" style="font-size: 11px; letter-spacing: 0.02em; line-height: 1;">SAR</span>
-        </div>
-      </div>
-      <div class="kpi-card__value">
-        {{ summary?.totalSales | number:'1.2-2' }} <span class="kpi-card__currency">{{ summary?.currency }}</span>
-      </div>
-      <div class="kpi-card__footer">
-        <span class="trend-badge" [ngClass]="(summary?.salesGrowthPercentage || 0) >= 0 ? 'trend-badge--up' : 'trend-badge--down'">
-          <i [class]="(summary?.salesGrowthPercentage || 0) >= 0 ? 'ft-arrow-up-right' : 'ft-arrow-down-right'"></i>
-          {{ summary?.salesGrowthPercentage !== null ? (summary?.salesGrowthPercentage | number:'1.1-1') + '%' : 'N/A' }}
-        </span>
-        <span class="text-muted text-xs ms-1">vs {{ summary?.previousPeriodLabel }}</span>
-      </div>
-    </div>
-
-    <!-- Card 2: Total Purchase Orders -->
-    <div class="kpi-card">
-      <div class="kpi-card__top">
-        <span class="kpi-card__title">Total Purchase Orders</span>
-        <div class="kpi-card__icon kpi-card__icon--blue">
-          <i class="ft-shopping-cart"></i>
-        </div>
-      </div>
-      <div class="kpi-card__value">
-        {{ summary?.totalPurchaseOrders | number }}
-      </div>
-      <div class="kpi-card__footer">
-        <span class="trend-badge" [ngClass]="(summary?.poGrowthPercentage || 0) >= 0 ? 'trend-badge--up' : 'trend-badge--down'">
-          <i [class]="(summary?.poGrowthPercentage || 0) >= 0 ? 'ft-arrow-up-right' : 'ft-arrow-down-right'"></i>
-          {{ summary?.poGrowthPercentage !== null ? (summary?.poGrowthPercentage | number:'1.1-1') + '%' : 'N/A' }}
-        </span>
-        <span class="text-muted text-xs ms-1">vs {{ summary?.previousPeriodLabel }}</span>
-      </div>
-    </div>
-
-    <!-- Card 3: Total Invoiced Amount -->
-    <div class="kpi-card">
-      <div class="kpi-card__top">
-        <span class="kpi-card__title">Total Invoiced Amount</span>
-        <div class="kpi-card__icon kpi-card__icon--purple">
-          <i class="ft-file-text"></i>
-        </div>
-      </div>
-      <div class="kpi-card__value">
-        {{ summary?.totalInvoicedAmount | number:'1.2-2' }} <span class="kpi-card__currency">{{ summary?.currency }}</span>
-      </div>
-      <div class="kpi-card__footer">
-        <span class="trend-badge" [ngClass]="(summary?.invoicedGrowthPercentage || 0) >= 0 ? 'trend-badge--up' : 'trend-badge--down'">
-          <i [class]="(summary?.invoicedGrowthPercentage || 0) >= 0 ? 'ft-arrow-up-right' : 'ft-arrow-down-right'"></i>
-          {{ summary?.invoicedGrowthPercentage !== null ? (summary?.invoicedGrowthPercentage | number:'1.1-1') + '%' : 'N/A' }}
-        </span>
-        <span class="text-muted text-xs ms-1">vs {{ summary?.previousPeriodLabel }}</span>
-      </div>
-    </div>
-
-    <!-- Card 4: Outstanding Invoices -->
-    <div class="kpi-card">
-      <div class="kpi-card__top">
-        <span class="kpi-card__title">Outstanding Balance</span>
-        <div class="kpi-card__icon kpi-card__icon--danger">
-          <i class="ft-alert-circle"></i>
-        </div>
-      </div>
-      <div class="kpi-card__value text-danger">
-        {{ summary?.outstandingInvoiceAmount | number:'1.2-2' }} <span class="kpi-card__currency">{{ summary?.currency }}</span>
-      </div>
-      <div class="kpi-card__footer">
-        <span class="text-muted text-xs">Remaining unpaid amount</span>
-      </div>
-    </div>
-
-    <!-- Card 5: Approved for Payment -->
-    <div class="kpi-card">
-      <div class="kpi-card__top">
-        <span class="kpi-card__title">Approved for Payment</span>
-        <div class="kpi-card__icon kpi-card__icon--cyan">
-          <i class="ft-credit-card"></i>
-        </div>
-      </div>
-      <div class="kpi-card__value text-info">
-        {{ summary?.approvedForPaymentAmount | number:'1.2-2' }} <span class="kpi-card__currency">{{ summary?.currency }}</span>
-      </div>
-      <div class="kpi-card__footer">
-        <span class="text-muted text-xs">Approved, pending transfer</span>
-      </div>
-    </div>
-
-    <!-- Card 6: Total Paid Amount -->
-    <div class="kpi-card">
-      <div class="kpi-card__top">
-        <span class="kpi-card__title">Total Paid Amount</span>
-        <div class="kpi-card__icon kpi-card__icon--success">
-          <i class="ft-shield"></i>
-        </div>
-      </div>
-      <div class="kpi-card__value text-success">
-        {{ summary?.totalPaidAmount | number:'1.2-2' }} <span class="kpi-card__currency">{{ summary?.currency }}</span>
-      </div>
-      <div class="kpi-card__footer">
-        <span class="trend-badge" [ngClass]="(summary?.paidGrowthPercentage || 0) >= 0 ? 'trend-badge--up' : 'trend-badge--down'">
-          <i [class]="(summary?.paidGrowthPercentage || 0) >= 0 ? 'ft-arrow-up-right' : 'ft-arrow-down-right'"></i>
-          {{ summary?.paidGrowthPercentage !== null ? (summary?.paidGrowthPercentage | number:'1.1-1') + '%' : 'N/A' }}
-        </span>
-        <span class="text-muted text-xs ms-1">vs {{ summary?.previousPeriodLabel }}</span>
-      </div>
-    </div>
-
-    <!-- Card 7: Pending Invoices -->
-    <div class="kpi-card">
-      <div class="kpi-card__top">
-        <span class="kpi-card__title">Pending Invoices</span>
-        <div class="kpi-card__icon kpi-card__icon--amber">
-          <i class="ft-clock"></i>
-        </div>
-      </div>
-      <div class="kpi-card__value text-warning">
-        {{ summary?.pendingInvoiceAmount | number:'1.2-2' }} <span class="kpi-card__currency">{{ summary?.currency }}</span>
-      </div>
-      <div class="kpi-card__footer">
-        <span class="text-muted text-xs">Awaiting review/approval</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Visual Analytics & Charts Section -->
-  <div class="row g-3 mb-4">
-    <!-- Sales Trend Chart (col-lg-8) -->
-    <div class="col-lg-8">
-      <div class="card chart-card h-100 shadow-sm border-0">
-        <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center py-3">
-          <h6 class="chart-card__title m-0 fw-bold">Sales Revenue Trend Analysis</h6>
-          <span class="badge badge-subtle-success">Revenue (SAR)</span>
-        </div>
-        <div class="card-body p-3">
-          <div *ngIf="loadingCharts" class="chart-loader">
-            <span class="spinner-border text-primary" role="status"></span>
-          </div>
-          <apx-chart *ngIf="!loadingCharts && salesTrendChart.series && salesTrendChart.series.length > 0"
-            [series]="salesTrendChart.series"
-            [chart]="salesTrendChart.chart"
-            [xaxis]="salesTrendChart.xaxis"
-            [yaxis]="salesTrendChart.yaxis"
-            [dataLabels]="salesTrendChart.dataLabels"
-            [stroke]="salesTrendChart.stroke"
-            [colors]="salesTrendChart.colors"
-            [grid]="salesTrendChart.grid"
-            [tooltip]="salesTrendChart.tooltip"
-            [legend]="salesTrendChart.legend">
-          </apx-chart>
-          <div *ngIf="!loadingCharts && (!salesTrendChart.series || salesTrendChart.series.length === 0)" class="empty-chart">
-            <i class="ft-bar-chart-2"></i>
-            <p>No sales records found for this period.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- PO Status Distribution (col-lg-4) -->
-    <div class="col-lg-4">
-      <div class="card chart-card h-100 shadow-sm border-0">
-        <div class="card-header bg-white border-0 py-3">
-          <h6 class="chart-card__title m-0 fw-bold">Purchase Order Status</h6>
-        </div>
-        <div class="card-body p-3 d-flex align-items-center justify-content-center">
-          <apx-chart *ngIf="!loadingCharts && poStatusChart.series && poStatusChart.series.length > 0"
-            [series]="poStatusChart.series"
-            [chart]="poStatusChart.chart"
-            [labels]="poStatusChart.labels"
-            [colors]="poStatusChart.colors"
-            [plotOptions]="poStatusChart.plotOptions"
-            [legend]="poStatusChart.legend">
-          </apx-chart>
-          <div *ngIf="!loadingCharts && (!poStatusChart.series || poStatusChart.series.length === 0)" class="empty-chart">
-            <p>No PO status data.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="row g-3 mb-4">
-    <!-- Invoice Status Distribution (col-lg-6) -->
-    <div class="col-lg-6">
-      <div class="card chart-card h-100 shadow-sm border-0">
-        <div class="card-header bg-white border-0 py-3">
-          <h6 class="chart-card__title m-0 fw-bold">Invoice Status Distribution</h6>
-        </div>
-        <div class="card-body p-3 d-flex align-items-center justify-content-center">
-          <apx-chart *ngIf="!loadingCharts && invoiceStatusChart.series && invoiceStatusChart.series.length > 0"
-            [series]="invoiceStatusChart.series"
-            [chart]="invoiceStatusChart.chart"
-            [labels]="invoiceStatusChart.labels"
-            [colors]="invoiceStatusChart.colors"
-            [plotOptions]="invoiceStatusChart.plotOptions"
-            [legend]="invoiceStatusChart.legend">
-          </apx-chart>
-          <div *ngIf="!loadingCharts && (!invoiceStatusChart.series || invoiceStatusChart.series.length === 0)" class="empty-chart">
-            <p>No invoice status data.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Payment Analysis (col-lg-6) -->
-    <div class="col-lg-6">
-      <div class="card chart-card h-100 shadow-sm border-0">
-        <div class="card-header bg-white border-0 py-3">
-          <h6 class="chart-card__title m-0 fw-bold">Payment Analysis (SAR)</h6>
-        </div>
-        <div class="card-body p-3">
-          <apx-chart *ngIf="!loadingCharts && paymentAnalysisChart.series && paymentAnalysisChart.series.length > 0"
-            [series]="paymentAnalysisChart.series"
-            [chart]="paymentAnalysisChart.chart"
-            [xaxis]="paymentAnalysisChart.xaxis"
-            [yaxis]="paymentAnalysisChart.yaxis"
-            [colors]="paymentAnalysisChart.colors"
-            [plotOptions]="paymentAnalysisChart.plotOptions"
-            [grid]="paymentAnalysisChart.grid"
-            [tooltip]="paymentAnalysisChart.tooltip">
-          </apx-chart>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Vendor Sales Performance (Full width) -->
-  <div class="card chart-card mb-4 shadow-sm border-0" *ngIf="chartsData?.topVendors && chartsData!.topVendors.length > 0">
-    <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center py-3">
-      <h6 class="chart-card__title m-0 fw-bold">Sales Volume</h6>
-      <span class="text-muted text-xs">Confirmed PO sales volume</span>
-    </div>
-    <div class="card-body p-3">
-      <apx-chart *ngIf="!loadingCharts"
-        [series]="vendorSalesChart.series"
-        [chart]="vendorSalesChart.chart"
-        [xaxis]="vendorSalesChart.xaxis"
-        [plotOptions]="vendorSalesChart.plotOptions"
-        [colors]="vendorSalesChart.colors"
-        [grid]="vendorSalesChart.grid"
-        [tooltip]="vendorSalesChart.tooltip">
-      </apx-chart>
     </div>
   </div>
 </div>

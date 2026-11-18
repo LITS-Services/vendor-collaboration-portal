@@ -25,7 +25,7 @@ export const HROUTES: RouteInfo[] = [
     isExternalLink: false, 
     submenu: [
       { path: '/reports/sales-report', title: 'Sales Report', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] },
-      { path: '/reports/bids-win-loss-report', title: 'Bids Win/Loss Analysis', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] }
+      { path: '/reports/bids-win-loss-report', title: 'Quote Win/Loss Analysis Report', icon: 'ft-arrow-right submenu-icon', class: 'dropdown-item', isExternalLink: false, submenu: [] }
     ] 
   },
   { path: '/history', title: 'History', icon: 'ft-history',class: '', isExternalLink: false, permission: 'rfq.view', submenu: [
