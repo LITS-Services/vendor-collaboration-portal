@@ -119,20 +119,48 @@ export class CompanyRegistrationComponent implements OnInit {
     };
   }
 
-  companyTabs: Array<'general' | 'addresses' | 'contacts' | 'purchasing' | 'bank' | 'attachments'> = [
+  procurementOfficers: Array<{
+    fullName: string;
+    email: string;
+    phoneNumber: string;
+    type: string;
+  }> = [];
+
+  financeOfficers: Array<{
+    fullName: string;
+    email: string;
+    phoneNumber: string;
+    type: string;
+  }> = [];
+
+  companyTabs: Array<'general' | 'addresses' | 'contacts' | 'purchasing' | 'bank' | 'attachments' | 'officers'> = [
     'general',
     'addresses',
     'contacts',
     'purchasing',
     'bank',
-    'attachments'
+    'attachments',
+    'officers'
   ];
 
   // default: first tab
-  selectedTab: 'general' | 'addresses' | 'contacts' | 'purchasing' | 'bank' | 'attachments' = 'general';
+  selectedTab: 'general' | 'addresses' | 'contacts' | 'purchasing' | 'bank' | 'attachments' | 'officers' = 'general';
 
-  selectTab(tab: 'general' | 'addresses' | 'contacts' | 'purchasing' | 'bank' | 'attachments'): void {
+  selectTab(tab: 'general' | 'addresses' | 'contacts' | 'purchasing' | 'bank' | 'attachments' | 'officers'): void {
     this.selectedTab = tab;
+  }
+
+  getInitials(name?: string): string {
+    if (!name) return 'OF';
+    const baseName = name.replace(/_[A-Za-z0-9]+$/, '').trim();
+    const words = baseName.replace(/([a-z])([A-Z])/g, '$1 $2').split(/[.\s_-]+/).filter(w => w.length > 0);
+    if (words.length >= 2) {
+      return (words[0][0] + words[1][0]).toUpperCase();
+    }
+    if (words.length === 1 && words[0].length >= 2) {
+      return words[0].substring(0, 2).toUpperCase();
+    }
+    return (name.substring(0, 2) || 'OF').toUpperCase();
   }
   @ViewChild(SwiperDirective, { static: false }) directiveRef?: SwiperDirective;
 
@@ -387,7 +415,7 @@ export class CompanyRegistrationComponent implements OnInit {
       }))
       .subscribe({
         next: (res: any) => {
-          const company = res?.data || res;
+          const company = res?.value || res?.data || res;
           if (!company) {
             return;
           }
@@ -486,6 +514,61 @@ export class CompanyRegistrationComponent implements OnInit {
             remarks: f.remarks,
             attachedAt: f.attachedAt
           }));
+
+          // Officers (Procurement Officers & Finance Officers)
+          const rawProcOfficers = company.procurementOfficers?.$values || company.procurementOfficers;
+          if (Array.isArray(rawProcOfficers) && rawProcOfficers.length > 0) {
+            this.procurementOfficers = rawProcOfficers.map((o: any) => ({
+              fullName: o.fullName || o.FullName || o.userName || o.UserName || '',
+              email: o.email || o.Email || '',
+              phoneNumber: o.phoneNumber || o.PhoneNumber || o.phoneNo || o.PhoneNo || '',
+              type: o.type || o.Type || 'Procurement Officer'
+            }));
+          } else if (company.procurementOfficer) {
+            const o = company.procurementOfficer;
+            this.procurementOfficers = [{
+              fullName: o.fullName || o.FullName || o.userName || o.UserName || '',
+              email: o.email || o.Email || '',
+              phoneNumber: o.phoneNumber || o.PhoneNumber || o.phoneNo || o.PhoneNo || '',
+              type: o.type || o.Type || 'Procurement Officer'
+            }];
+          } else if (company.procurementOfficerName) {
+            this.procurementOfficers = [{
+              fullName: company.procurementOfficerName,
+              email: company.procurementOfficerEmail || '',
+              phoneNumber: company.procurementOfficerPhone || '',
+              type: 'Procurement Officer'
+            }];
+          } else {
+            this.procurementOfficers = [];
+          }
+
+          const rawFinOfficers = company.financeOfficers?.$values || company.financeOfficers;
+          if (Array.isArray(rawFinOfficers) && rawFinOfficers.length > 0) {
+            this.financeOfficers = rawFinOfficers.map((o: any) => ({
+              fullName: o.fullName || o.FullName || o.userName || o.UserName || '',
+              email: o.email || o.Email || '',
+              phoneNumber: o.phoneNumber || o.PhoneNumber || o.phoneNo || o.PhoneNo || '',
+              type: o.type || o.Type || 'Finance Officer'
+            }));
+          } else if (company.financeOfficer) {
+            const o = company.financeOfficer;
+            this.financeOfficers = [{
+              fullName: o.fullName || o.FullName || o.userName || o.UserName || '',
+              email: o.email || o.Email || '',
+              phoneNumber: o.phoneNumber || o.PhoneNumber || o.phoneNo || o.PhoneNo || '',
+              type: o.type || o.Type || 'Finance Officer'
+            }];
+          } else if (company.financeOfficerName) {
+            this.financeOfficers = [{
+              fullName: company.financeOfficerName,
+              email: company.financeOfficerEmail || '',
+              phoneNumber: company.financeOfficerPhone || '',
+              type: 'Finance Officer'
+            }];
+          } else {
+            this.financeOfficers = [];
+          }
 
           this.isEditMode = true;
 
