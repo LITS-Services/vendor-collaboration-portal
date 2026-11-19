@@ -122,6 +122,9 @@ export interface CompanyProfile {
     dateOfRegistration?: string | Date;
     durationOfBusinessOperations?: string;
     descriptionOfGoodsServices?: string;
+    descriptionOfGoods?: string;
+    descriptionOfServices?: string;
+    descriptionOfWorks?: string;
     totalWorkForce?: string;
 
     // Section C: References & Credit Period

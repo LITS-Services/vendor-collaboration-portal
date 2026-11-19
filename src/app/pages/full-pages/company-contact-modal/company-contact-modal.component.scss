@@ -1,12 +1,22 @@
-.checkbox-text{
-    display: flex;
-    gap: 6px;
-    align-items: center;
-    font-size: 15px;
+.cstm-vertical-gap {
+  gap: 14px 0px !important;
+}
 
-    input[type='checkbox'] {
-    width:16px;
-    height:16px;
-    }
+.checkbox-text {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 14px;
+  cursor: pointer;
+  user-select: none;
+  color: #444;
+
+  input[type='checkbox'] {
+    width: 17px;
+    height: 17px;
+    accent-color: #249d57;
+    cursor: pointer;
+    margin: 0;
+  }
 }
 

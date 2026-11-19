@@ -101,6 +101,9 @@ export class CompanyRegistrationComponent implements OnInit {
   dateOfRegistration: string = '';
   durationOfBusinessOperations: string = '';
   descriptionOfGoodsServices: string = '';
+  descriptionOfGoods: string = '';
+  descriptionOfServices: string = '';
+  descriptionOfWorks: string = '';
   totalWorkForce: string = '';
 
   // Section C: References & Credit Period
@@ -547,6 +550,12 @@ export class CompanyRegistrationComponent implements OnInit {
           this.dateOfRegistration = company.dateOfRegistration ? company.dateOfRegistration.substring(0, 10) : '';
           this.durationOfBusinessOperations = company.durationOfBusinessOperations || '';
           this.descriptionOfGoodsServices = company.descriptionOfGoodsServices || '';
+          this.descriptionOfGoods = (company as any).descriptionOfGoods || '';
+          this.descriptionOfServices = (company as any).descriptionOfServices || '';
+          this.descriptionOfWorks = (company as any).descriptionOfWorks || '';
+          if (!this.descriptionOfGoods && !this.descriptionOfServices && !this.descriptionOfWorks && this.descriptionOfGoodsServices) {
+            this.parseGoodsServicesWorks(this.descriptionOfGoodsServices);
+          }
           this.totalWorkForce = company.totalWorkForce || '';
           this.setGeographicalAreasFromString(company.geographicalAreaOfOperations || '');
 
@@ -841,6 +850,43 @@ export class CompanyRegistrationComponent implements OnInit {
     areas.forEach(a => {
       this.selectedGeographicalAreas[a] = true;
     });
+  }
+
+  // ==================== Description of Goods / Services / Works ====================
+  parseGoodsServicesWorks(raw: string) {
+    if (!raw) {
+      this.descriptionOfGoods = '';
+      this.descriptionOfServices = '';
+      this.descriptionOfWorks = '';
+      return;
+    }
+    const goodsMatch = raw.match(/Goods:\s*([\s\S]*?)(?=(?:Services:|Works:|$))/i);
+    const servicesMatch = raw.match(/Services:\s*([\s\S]*?)(?=(?:Goods:|Works:|$))/i);
+    const worksMatch = raw.match(/Works:\s*([\s\S]*?)(?=(?:Goods:|Services:|$))/i);
+
+    if (goodsMatch || servicesMatch || worksMatch) {
+      this.descriptionOfGoods = goodsMatch ? goodsMatch[1].trim() : '';
+      this.descriptionOfServices = servicesMatch ? servicesMatch[1].trim() : '';
+      this.descriptionOfWorks = worksMatch ? worksMatch[1].trim() : '';
+    } else {
+      this.descriptionOfGoods = raw;
+      this.descriptionOfServices = '';
+      this.descriptionOfWorks = '';
+    }
+  }
+
+  getCombinedGoodsServicesWorks(): string {
+    const parts: string[] = [];
+    if (this.descriptionOfGoods && this.descriptionOfGoods.trim()) {
+      parts.push(`Goods: ${this.descriptionOfGoods.trim()}`);
+    }
+    if (this.descriptionOfServices && this.descriptionOfServices.trim()) {
+      parts.push(`Services: ${this.descriptionOfServices.trim()}`);
+    }
+    if (this.descriptionOfWorks && this.descriptionOfWorks.trim()) {
+      parts.push(`Works: ${this.descriptionOfWorks.trim()}`);
+    }
+    return parts.join('\n\n');
   }
 
   // ==================== Clientele ====================
@@ -1295,7 +1341,10 @@ export class CompanyRegistrationComponent implements OnInit {
       companyRegistrationNo: this.companyRegistrationNo,
       dateOfRegistration: this.dateOfRegistration ? new Date(this.dateOfRegistration).toISOString() : null,
       durationOfBusinessOperations: this.durationOfBusinessOperations,
-      descriptionOfGoodsServices: this.descriptionOfGoodsServices,
+      descriptionOfGoodsServices: this.getCombinedGoodsServicesWorks() || this.descriptionOfGoodsServices,
+      descriptionOfGoods: this.descriptionOfGoods,
+      descriptionOfServices: this.descriptionOfServices,
+      descriptionOfWorks: this.descriptionOfWorks,
       totalWorkForce: this.totalWorkForce,
 
       // Section C

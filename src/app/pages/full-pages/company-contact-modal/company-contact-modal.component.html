@@ -1,6 +1,6 @@
-  <div class="">
-    <form #contactForm="ngForm" class="row">
-      <div class="form-group col-md-3">
+  <div>
+    <form #contactForm="ngForm" class="row cstm-vertical-gap">
+      <div class="col-md-3 mt-1 form-group">
         <label>Contact Role / Department</label>
         <select class="form-control" [(ngModel)]="contact.contactRole" name="contactRole">
           <option value="">Select Role</option>
@@ -8,27 +8,27 @@
         </select>
       </div>
 
-      <div class="form-group col-md-3">
-        <label>Contact Person (Name)</label>
+      <div class="col-md-3 mt-1 form-group">
+        <label>Contact Person</label>
         <input type="text" class="form-control" [(ngModel)]="contact.contactPerson" name="contactPerson" placeholder="Full name">
       </div>
 
-      <div class="form-group col-md-3">
+      <div class="col-md-3 mt-1 form-group">
         <label>Designation</label>
         <input type="text" class="form-control" [(ngModel)]="contact.designation" name="designation" placeholder="e.g. Sales Manager, CFO">
       </div>
 
-      <div class="form-group col-md-3">
+      <div class="col-md-3 mt-1 form-group">
         <label>Email Address</label>
         <input type="email" class="form-control" [(ngModel)]="contact.email" name="email" placeholder="contact@domain.com">
       </div>
 
-      <div class="form-group col-md-3">
+      <div class="col-md-3 mt-1 form-group">
         <label>Description</label>
         <input type="text" class="form-control" [(ngModel)]="contact.description" name="description" placeholder="Description / Title" required>
       </div>
 
-      <div class="form-group col-md-3">
+      <div class="col-md-3 mt-1 form-group">
         <label>Type</label>
         <select class="form-control" [(ngModel)]="contact.type" name="type" (change)="updateContactLabel()" required>
           <option value="phoneNo">Phone / Mobile</option>
@@ -37,7 +37,7 @@
         </select>
       </div>
 
-      <div class="form-group col-md-3">
+      <div class="col-md-3 mt-1 form-group">
         <label>{{ contactLabel }}</label>
         <input
           [type]="inputType"
@@ -49,23 +49,23 @@
         >
       </div>
 
-      <div class="form-group col-md-3" *ngIf="showExtension">
+      <div class="col-md-3 mt-1 form-group" *ngIf="showExtension">
         <label>Extension</label>
         <input type="text" class="form-control" [(ngModel)]="contact.extension" name="extension" placeholder="Ext.">
       </div>
 
-      <div class="col-12 mt-1">
-        <div class="form-group">
+      <div class="col-12 mt-2">
+        <div class="form-group mb-0">
           <label class="checkbox-text">
             <input type="checkbox" [(ngModel)]="contact.primary" name="primary">
-            Primary Contact
+            <span>Primary Contact</span>
           </label>
         </div>
       </div>
     </form>
-    <div class="d-flex justify-content-end">
+    <div class="d-flex justify-content-end mt-2 mb-3">
       <button type="button" class="btn btn-primary" (click)="submitForm()">
-        <i class="ft-chevrons-down me-1"></i>{{ isEditMode ? 'Update' : 'Add' }} Contact
+        {{ isEditMode ? 'Update' : 'Add' }} Contact
       </button>
     </div>
   </div>

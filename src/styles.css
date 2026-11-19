@@ -1817,3 +1817,7 @@ app-content-layout .wrapper {
   margin-top: 0 !important;
   padding-top: 0 !important;
 }
+
+.cstm-vertical-gap {
+  gap: 14px 0px !important;
+}

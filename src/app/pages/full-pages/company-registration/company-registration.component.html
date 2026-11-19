@@ -310,73 +310,59 @@
 
                                             </div>
 
-                                            <!-- Section A: Background Information -->
-                                            <h4 class="form-section mt-4"><i class="ft-briefcase"></i> Background & Operations</h4>
+                                            <!-- Background & Operational Information -->
+                                            <h4 class="form-section mt-4 mb-3">Background & Operational Information</h4>
                                             <div class="row cstm-vertical-gap">
-                                                <div class="col-md-3 mt-1 form-group">
-                                                    <label>
-                                                        Organization type
-                                                        <i class="fa fa-info-circle text-muted ms-1" ngbTooltip="Select legal structure of organization" placement="right"></i>
-                                                    </label>
+                                                <div class="col-md-4 col-12 mt-1 form-group">
+                                                    <label>Organization type</label>
                                                     <select class="form-control" [(ngModel)]="organizationType" [disabled]="isReadOnly">
                                                         <option value="">Select Organization Type</option>
                                                         <option *ngFor="let opt of organizationTypes" [value]="opt">{{ opt }}</option>
                                                     </select>
                                                 </div>
 
-                                                <div class="col-md-3 mt-1 form-group">
-                                                    <label>
-                                                        Postal address
-                                                        <i class="fa fa-info-circle text-muted ms-1" ngbTooltip="P.O. Box address including postal code" placement="right"></i>
-                                                    </label>
+                                                <div class="col-md-4 col-12 mt-1 form-group">
+                                                    <label>Postal address</label>
                                                     <input type="text" class="form-control" [(ngModel)]="postalAddress" [disabled]="isReadOnly" placeholder="e.g. P.O. Box 12345 - 00100">
                                                 </div>
 
-                                                <div class="col-md-3 mt-1 form-group">
-                                                    <label>
-                                                        Company registration no.
-                                                        <i class="fa fa-info-circle text-muted ms-1" ngbTooltip="Certificate of Incorporation / Registration number" placement="right"></i>
-                                                    </label>
+                                                <div class="col-md-4 col-12 mt-1 form-group">
+                                                    <label>Company registration no.</label>
                                                     <input type="text" class="form-control" [(ngModel)]="companyRegistrationNo" [disabled]="isReadOnly" placeholder="Enter Registration No.">
                                                 </div>
 
-                                                <div class="col-md-3 mt-1 form-group">
-                                                    <label>
-                                                        Date of registration
-                                                        <i class="fa fa-info-circle text-muted ms-1" ngbTooltip="Date business was formally registered" placement="right"></i>
-                                                    </label>
+                                                <div class="col-md-4 col-12 mt-1 form-group">
+                                                    <label>Date of registration</label>
                                                     <input type="date" class="form-control" [(ngModel)]="dateOfRegistration" [disabled]="isReadOnly">
                                                 </div>
 
-                                                <div class="col-md-3 mt-1 form-group">
-                                                    <label>
-                                                        Duration of business operations
-                                                        <i class="fa fa-info-circle text-muted ms-1" ngbTooltip="Number of years in active operation" placement="right"></i>
-                                                    </label>
+                                                <div class="col-md-4 col-12 mt-1 form-group">
+                                                    <label>Duration of business operations</label>
                                                     <input type="text" class="form-control" [(ngModel)]="durationOfBusinessOperations" [disabled]="isReadOnly" placeholder="e.g. 5 Years">
                                                 </div>
 
-                                                <div class="col-md-3 mt-1 form-group">
-                                                    <label>
-                                                        Total work force
-                                                        <i class="fa fa-info-circle text-muted ms-1" ngbTooltip="Current total number of staff / employees" placement="right"></i>
-                                                    </label>
+                                                <div class="col-md-4 col-12 mt-1 form-group">
+                                                    <label>Total work force</label>
                                                     <input type="text" class="form-control" [(ngModel)]="totalWorkForce" [disabled]="isReadOnly" placeholder="e.g. 50">
                                                 </div>
 
-                                                <div class="col-12 mt-1 form-group">
-                                                    <label>
-                                                        Brief description of goods / services / works offered
-                                                        <i class="fa fa-info-circle text-muted ms-1" ngbTooltip="Detailed description of commercial offerings" placement="right"></i>
-                                                    </label>
-                                                    <textarea class="form-control" rows="3" [(ngModel)]="descriptionOfGoodsServices" [disabled]="isReadOnly" placeholder="Describe the goods, services, or technical works your company provides..."></textarea>
+                                                <div class="col-md-4 col-12 mt-1 form-group">
+                                                    <label>Description of goods offered</label>
+                                                    <textarea class="form-control" rows="3" [(ngModel)]="descriptionOfGoods" [disabled]="isReadOnly" placeholder="Describe goods offered..."></textarea>
+                                                </div>
+
+                                                <div class="col-md-4 col-12 mt-1 form-group">
+                                                    <label>Description of services offered</label>
+                                                    <textarea class="form-control" rows="3" [(ngModel)]="descriptionOfServices" [disabled]="isReadOnly" placeholder="Describe services offered..."></textarea>
+                                                </div>
+
+                                                <div class="col-md-4 col-12 mt-1 form-group">
+                                                    <label>Description of works offered</label>
+                                                    <textarea class="form-control" rows="3" [(ngModel)]="descriptionOfWorks" [disabled]="isReadOnly" placeholder="Describe works offered..."></textarea>
                                                 </div>
 
                                                 <div class="col-12 mt-2 form-group">
-                                                    <label class="d-block mb-2 font-weight-bold">
-                                                        Geographical area of operations
-                                                        <small class="text-muted font-weight-normal ms-1">(Tick areas you are operating from)</small>
-                                                    </label>
+                                                    <label class="d-block mb-2">Geographical area of operations</label>
                                                     <div class="row">
                                                         <div class="col-lg-3 col-md-4 col-sm-6 mb-2" *ngFor="let area of geographicalAreaList">
                                                             <label class="checkbox-text">
@@ -792,11 +778,10 @@
                                             </div>
                                         </div>
 
-                                        <!-- ==================== REFERENCES TAB (Section C) ==================== -->
+                                        <!-- ==================== REFERENCES TAB ==================== -->
                                         <div *ngIf="selectedTab === 'references'">
-                                            <!-- Section 14: List of Clientele (Min. 4) -->
-                                            <h4 class="form-section"><i class="ft-users"></i> 14. List of Clientele (Min. 4)</h4>
-                                            <p class="desc">Provide a list of previous or current clients for similar services or supplies.</p>
+                                            <!-- List of Clientele -->
+                                            <h4 class="form-section mb-3">List of Clientele</h4>
 
                                             <!-- Form to Add/Edit Clientele -->
                                             <div class="row align-items-end mb-2" *ngIf="!isReadOnly">
@@ -822,7 +807,7 @@
                                                     Cancel
                                                 </button>
                                                 <button type="button" class="btn btn-primary" (click)="addOrUpdateClientele()">
-                                                    <i class="ft-chevrons-down me-1"></i>{{ editingClienteleIndex !== null ? 'Update' : 'Add' }} Client
+                                                    {{ editingClienteleIndex !== null ? 'Update Client' : 'Add Client' }}
                                                 </button>
                                             </div>
 
@@ -854,15 +839,14 @@
                                                             </td>
                                                         </tr>
                                                         <tr *ngIf="clienteleList.length === 0">
-                                                            <td [attr.colspan]="!isReadOnly ? 5 : 4" class="text-center text-muted py-3">No clientele added yet. Please add at least 4 clients.</td>
+                                                            <td [attr.colspan]="!isReadOnly ? 5 : 4" class="text-center text-muted py-3">No clientele added yet.</td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
                                             </div>
 
-                                            <!-- Section 15: Referees (3 Referees) -->
-                                            <h4 class="form-section mt-4"><i class="ft-award"></i> 15. Referees (Provide contact details for 3 referees)</h4>
-                                            <p class="desc">Provide contact details for referees for work that is similar or the same. PS: Attach copies of LPOs showing work performed under the Attachments tab.</p>
+                                            <!-- Referees -->
+                                            <h4 class="form-section mt-4 mb-3">Referees</h4>
 
                                             <!-- Form to Add/Edit Referee -->
                                             <div class="row align-items-end mb-2" *ngIf="!isReadOnly">
@@ -886,13 +870,13 @@
                                                     <label>Email Address</label>
                                                     <input type="email" class="form-control" [(ngModel)]="newReferee.emailAddress" placeholder="contact@org.com">
                                                 </div>
-                                                <div class="form-group col-md-3">
+                                                <div class="col-md-3 form-group">
                                                     <label class="checkbox-text mt-3">
                                                         <input type="checkbox" [(ngModel)]="newReferee.hasOfficialStamp">
                                                         <span>Official Stamp Available</span>
                                                     </label>
                                                 </div>
-                                                <div class="form-group col-md-3">
+                                                <div class="col-md-3 form-group">
                                                     <label class="checkbox-text mt-3">
                                                         <input type="checkbox" [(ngModel)]="newReferee.hasSignature">
                                                         <span>Signature Available</span>
@@ -904,7 +888,7 @@
                                                     Cancel
                                                 </button>
                                                 <button type="button" class="btn btn-primary" (click)="addOrUpdateReferee()">
-                                                    <i class="ft-chevrons-down me-1"></i>{{ editingRefereeIndex !== null ? 'Update' : 'Add' }} Referee
+                                                    {{ editingRefereeIndex !== null ? 'Update Referee' : 'Add Referee' }}
                                                 </button>
                                             </div>
 
@@ -942,25 +926,25 @@
                                                             </td>
                                                         </tr>
                                                         <tr *ngIf="refereeList.length === 0">
-                                                            <td [attr.colspan]="!isReadOnly ? 8 : 7" class="text-center text-muted py-3">No referees added yet. Please add 3 referees.</td>
+                                                            <td [attr.colspan]="!isReadOnly ? 8 : 7" class="text-center text-muted py-3">No referees added yet.</td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
                                             </div>
 
-                                            <!-- Section 16: Credit Period -->
-                                            <h4 class="form-section mt-4"><i class="ft-calendar"></i> 16. Credit Period</h4>
+                                            <!-- Credit Period -->
+                                            <h4 class="form-section mt-4 mb-3">Credit Period</h4>
                                             <div class="row cstm-vertical-gap align-items-center">
                                                 <div class="col-md-6 form-group">
-                                                    <label class="d-block mb-2 font-weight-bold">Can your company offer a Credit Period of 30 Days and above?</label>
+                                                    <label class="d-block mb-2">Can your company offer a Credit Period of 30 Days and above?</label>
                                                     <div class="d-flex gap-4">
                                                         <label class="checkbox-text">
                                                             <input type="radio" name="credit30" [value]="true" [(ngModel)]="hasCreditPeriod30Days" [disabled]="isReadOnly">
-                                                            <span>Yes [Y]</span>
+                                                            <span>Yes</span>
                                                         </label>
                                                         <label class="checkbox-text">
                                                             <input type="radio" name="credit30" [value]="false" [(ngModel)]="hasCreditPeriod30Days" [disabled]="isReadOnly">
-                                                            <span>No [N]</span>
+                                                            <span>No</span>
                                                         </label>
                                                     </div>
                                                 </div>
@@ -971,36 +955,28 @@
                                             </div>
                                         </div>
 
-                                        <!-- ==================== TECHNICAL & POLICIES TAB (Section D & E) ==================== -->
+                                        <!-- ==================== TECHNICAL & POLICIES TAB ==================== -->
                                         <div *ngIf="selectedTab === 'technical'">
-                                            <!-- Section D: Technical Competence -->
-                                            <h4 class="form-section"><i class="ft-check-circle"></i> Section D: Technical Competence</h4>
+                                            <!-- Technical Competence -->
+                                            <h4 class="form-section mb-3">Technical Competence</h4>
                                             <div class="row cstm-vertical-gap">
                                                 <div class="col-12 form-group">
-                                                    <label>
-                                                        17. Proof of Professionalism, Accreditation
-                                                        <i class="fa fa-info-circle text-muted ms-1" ngbTooltip="Provide a list and attach copies under the Attachments tab" placement="right"></i>
-                                                    </label>
-                                                    <p class="desc">Provide a list of professional accreditations, certifications, or licenses held by your firm. Please attach copies under the Attachments tab.</p>
+                                                    <label>Proof of Professionalism, Accreditation</label>
                                                     <textarea class="form-control" rows="3" [(ngModel)]="proofOfProfessionalism" [disabled]="isReadOnly" placeholder="List professional accreditations, ISO certifications, trade affiliations..."></textarea>
                                                 </div>
 
                                                 <div class="col-12 form-group mt-2">
-                                                    <label>
-                                                        Qualifications of KEY Management and Technical Personnel
-                                                        <i class="fa fa-info-circle text-muted ms-1" ngbTooltip="For Professional & Technical Services, provide brief summary. Attach CVs under Attachments tab" placement="right"></i>
-                                                    </label>
-                                                    <p class="desc">For Professional & Technical Services, provide a brief summary of qualifications and experience of key personnel. (Attach CVs under Attachments tab).</p>
+                                                    <label>Qualifications of Key Management and Technical Personnel</label>
                                                     <textarea class="form-control" rows="3" [(ngModel)]="keyPersonnelQualifications" [disabled]="isReadOnly" placeholder="Summarize key management and technical team qualifications..."></textarea>
                                                 </div>
                                             </div>
 
-                                            <!-- Section E: Management Policies -->
-                                            <h4 class="form-section mt-4"><i class="ft-shield"></i> Section E: Management Policies</h4>
+                                            <!-- Management Policies -->
+                                            <h4 class="form-section mt-4 mb-3">Management Policies</h4>
                                             <div class="row cstm-vertical-gap">
-                                                <!-- i) Employment Policy -->
+                                                <!-- Employment Policy -->
                                                 <div class="col-md-6 form-group">
-                                                    <label class="d-block mb-2 font-weight-bold">18. i) Does the firm have an Employment Policy?</label>
+                                                    <label class="d-block mb-2">Does the firm have an Employment Policy?</label>
                                                     <div class="d-flex gap-4">
                                                         <label class="checkbox-text">
                                                             <input type="radio" name="empPolicy" [value]="true" [(ngModel)]="hasEmploymentPolicy" [disabled]="isReadOnly">
@@ -1015,13 +991,13 @@
 
                                                 <!-- Explanation if NO -->
                                                 <div class="col-md-6 form-group" *ngIf="hasEmploymentPolicy === false">
-                                                    <label class="text-danger font-weight-bold">If NO, explain how employee screening / background checks are done:</label>
+                                                    <label class="text-danger">If NO, explain how employee screening / background checks are done:</label>
                                                     <textarea class="form-control" rows="2" [(ngModel)]="employeeScreeningExplanation" [disabled]="isReadOnly" placeholder="Explain employee background check procedures..."></textarea>
                                                 </div>
 
-                                                <!-- ii) Code of Conduct -->
+                                                <!-- Code of Conduct -->
                                                 <div class="col-md-6 form-group mt-2">
-                                                    <label class="d-block mb-2 font-weight-bold">ii) Does the firm have a Code of Conduct / subscribe to a professional body?</label>
+                                                    <label class="d-block mb-2">Does the firm have a Code of Conduct / subscribe to a professional body?</label>
                                                     <div class="d-flex gap-4">
                                                         <label class="checkbox-text">
                                                             <input type="radio" name="codeCond" [value]="true" [(ngModel)]="hasCodeOfConduct" [disabled]="isReadOnly">
@@ -1036,19 +1012,19 @@
 
                                                 <!-- Details if YES -->
                                                 <div class="col-md-6 form-group mt-2" *ngIf="hasCodeOfConduct === true">
-                                                    <label class="font-weight-bold">Professional body name / Code of conduct details:</label>
+                                                    <label>Professional body name / Code of conduct details:</label>
                                                     <textarea class="form-control" rows="2" [(ngModel)]="codeOfConductDetails" [disabled]="isReadOnly" placeholder="Enter details or professional body name..."></textarea>
                                                 </div>
 
-                                                <!-- iii) Employee Integrity -->
+                                                <!-- Employee Integrity -->
                                                 <div class="col-12 form-group mt-2">
-                                                    <label class="font-weight-bold">iii) How does the firm ensure integrity of its employees?</label>
+                                                    <label class="d-block mb-2">How does the firm ensure integrity of its employees?</label>
                                                     <textarea class="form-control" rows="3" [(ngModel)]="employeeIntegrityMeasures" [disabled]="isReadOnly" placeholder="Describe measures taken to ensure employee integrity, anti-corruption policies, audits, etc..."></textarea>
                                                 </div>
 
-                                                <!-- iv) Training Program -->
+                                                <!-- Training Program -->
                                                 <div class="col-md-6 form-group mt-2">
-                                                    <label class="d-block mb-2 font-weight-bold">iv) Does the firm have an Employee Training Program?</label>
+                                                    <label class="d-block mb-2">Does the firm have an Employee Training Program?</label>
                                                     <div class="d-flex gap-4">
                                                         <label class="checkbox-text">
                                                             <input type="radio" name="trainProg" [value]="true" [(ngModel)]="hasEmployeeTrainingProgram" [disabled]="isReadOnly">
@@ -1059,37 +1035,6 @@
                                                             <span>NO</span>
                                                         </label>
                                                     </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- Mandatory Requirements Callout -->
-                                            <div class="app-info-callout mt-4 p-3 d-flex align-items-start gap-3">
-                                                <div class="callout-icon-box">
-                                                    <i class="ft-file-text"></i>
-                                                </div>
-                                                <div class="flex-grow-1">
-                                                    <h6 class="font-weight-bold mb-1 text-dark">Mandatory Document Requirements</h6>
-                                                    <p class="desc mb-2">Please ensure the following mandatory documents are uploaded under the <strong>ATTACHMENTS</strong> tab:</p>
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <ul class="mandatory-doc-list mb-0">
-                                                                <li><i class="fa fa-check-circle text-success me-1"></i> 1. Certificate of Incorporation / Registration</li>
-                                                                <li><i class="fa fa-check-circle text-success me-1"></i> 2. PIN & VAT Certificate</li>
-                                                                <li><i class="fa fa-check-circle text-success me-1"></i> 3. TAX Compliance Certificate</li>
-                                                            </ul>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <ul class="mandatory-doc-list mb-0">
-                                                                <li><i class="fa fa-check-circle text-success me-1"></i> 4. Current Reference Letters</li>
-                                                                <li><i class="fa fa-check-circle text-success me-1"></i> 5. CR12 Form</li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <button type="button" class="btn btn-outline-primary btn-sm" (click)="selectTab('attachments')">
-                                                        <i class="ft-paperclip me-1"></i> Attachments
-                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
