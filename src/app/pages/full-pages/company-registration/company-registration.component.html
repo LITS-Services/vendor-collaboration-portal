@@ -255,6 +255,22 @@
 
                                                                     <div class="col-lg col-md-6 form-group"></div>
                                                                 </div>
+
+                                                                <div class="row mt-2">
+                                                                    <div class="col-12 form-group">
+                                                                        <label>Categories</label>
+                                                                        <ng-select class="w-cstm"
+                                                                            [items]="procurementCategoryList"
+                                                                            bindLabel="name"
+                                                                            bindValue="id"
+                                                                            [multiple]="true"
+                                                                            [closeOnSelect]="false"
+                                                                            [(ngModel)]="selectedCategoryIds"
+                                                                            [disabled]="isReadOnly"
+                                                                            placeholder="Select Categories">
+                                                                        </ng-select>
+                                                                    </div>
+                                                                </div>
                                                            
                                                            
                                                        

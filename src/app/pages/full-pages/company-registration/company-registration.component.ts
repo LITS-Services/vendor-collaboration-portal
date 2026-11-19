@@ -52,6 +52,9 @@ export class CompanyRegistrationComponent implements OnInit {
   vatBusinessPostingGroupOptions: Array<{ id: string | number; desc: string }> = [];
   generalBusinessPostingGroupOptions: Array<{ id: string | number; desc: string }> = [];
 
+  procurementCategoryList: Array<{ id: number; name: string; code?: string }> = [];
+  selectedCategoryIds: number[] = [];
+
   showContactDeletePopup: boolean = false;
   showAddressDeletePopup: boolean = false;
   showBankDeletePopup: boolean = false;
@@ -295,6 +298,7 @@ export class CompanyRegistrationComponent implements OnInit {
     });
 
     this.loadAccountingLookups();
+    this.loadProcurementCategories();
     this.generateVendorAccountNumber();
 
     this.layoutSub = this.configService.templateConf$.subscribe((templateConf) => {
@@ -478,6 +482,25 @@ export class CompanyRegistrationComponent implements OnInit {
     });
   }
 
+  loadProcurementCategories(): void {
+    this.companyService.getProcurementCategories().subscribe({
+      next: (res: any) => {
+        const list = res?.value || res?.data || res || [];
+        if (Array.isArray(list)) {
+          this.procurementCategoryList = list.map((item: any) => ({
+            id: item.id || item.Id,
+            name: item.name || item.Name,
+            code: item.code || item.Code
+          }));
+        }
+        this.cdr.markForCheck();
+      },
+      error: (err: any) => {
+        console.error('Failed to load categories', err);
+      }
+    });
+  }
+
   loadCompanyById(companyId: number) {
     this.isLoading = true;
     this.spinner.show();
@@ -521,6 +544,14 @@ export class CompanyRegistrationComponent implements OnInit {
             '';
           this.remarks = company.remarks || '';
           this.companyType = company.companyType || 'Organization';
+
+          if (company.categoryIds && Array.isArray(company.categoryIds)) {
+            this.selectedCategoryIds = [...company.categoryIds];
+          } else if (company.vendorCategories && Array.isArray(company.vendorCategories)) {
+            this.selectedCategoryIds = company.vendorCategories.map((vc: any) => vc.categoryId || vc.id);
+          } else {
+            this.selectedCategoryIds = [];
+          }
 
           // Handle existing logo - add data URI prefix if missing
           if (company.logo) {
@@ -1394,13 +1425,11 @@ export class CompanyRegistrationComponent implements OnInit {
     const payload = {
       vendorCompany: {
         ...vendorCompanyPayload,
-        // procurementCompanyId: [...this.selectedProcurementCompanyIds] // REMOVED
+        categoryIds: this.selectedCategoryIds || []
       },
       SubmitterId: this.userId,
-      // procurementCompanyId: [...this.selectedProcurementCompanyIds], // REMOVED
-      // VendorEntityAssociationId: this.selectedVendorEntityAssociationId , // REMOVED
+      categoryIds: this.selectedCategoryIds || [],
       remarks: this.isEditMode ? this.remarks : (this.companyForm?.get('remarks')?.value || this.remarks),
-      // <-- ADD
     };
 
 
