@@ -11,6 +11,7 @@ import { SignalRService } from 'app/shared/services/signalr.service';
 import { SystemService } from 'app/shared/services/system.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { FileValidationService } from 'app/shared/auth/file-validation.service';
+import { PdfExportService } from 'app/shared/services/pdf-export.service';
 import Swal from 'sweetalert2';
 
 enum CreatedByType {
@@ -48,6 +49,7 @@ export class QuotationBidModalComponent implements OnInit {
   isTyping = false;
   typingTimeout: any;
   currentUserType: CreatedByType = CreatedByType.Vendor;
+  isGeneratingPdf: boolean = false;
   form = this.fb.group({
     comment: ["", [Validators.required, Validators.maxLength(1000)]],
   });
@@ -63,7 +65,8 @@ export class QuotationBidModalComponent implements OnInit {
     private signalRService: SignalRService,
     private systemService: SystemService,
     private spinner: NgxSpinnerService,
-    private fileValidation: FileValidationService
+    private fileValidation: FileValidationService,
+    private pdfExportService: PdfExportService
   ) { }
 
   ngOnInit(): void {
@@ -764,5 +767,164 @@ export class QuotationBidModalComponent implements OnInit {
     return !bid.id || (bid.id && bid.requestStatus === 'Revised');
   }
 
-  
+  downloadPdf(): void {
+    const id = this.quotationId || this.rfqId;
+    if (!id) {
+      this.toastr.warning('Please select an RFQ first.');
+      return;
+    }
+    this.isGeneratingPdf = true;
+    this.spinner.show();
+    this.rfqService.downloadRfqPdf(id).subscribe({
+      next: (blob: Blob) => {
+        this.isGeneratingPdf = false;
+        this.spinner.hide();
+        const rfqNo = this.rfq?.rfqNo || id;
+        this.pdfExportService.downloadBlob(blob, `RFQ_${rfqNo}.pdf`);
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.isGeneratingPdf = false;
+        this.spinner.hide();
+        this.fallbackPrintRfq();
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  private fallbackPrintRfq(): void {
+    const rfq = this.rfq;
+    const rfqNo = rfq?.rfqNo || `RFQ-${this.quotationId || this.rfqId || 'Draft'}`;
+    const items = rfq?.quotationItems || [];
+    let itemsRows = '';
+    items.forEach((item: any, idx: number) => {
+      const qty = item.orderQuantity || item.quantity || 0;
+      const uom = item.unitOfMeasurementCode || item.unitOfMeasurementSymbol || item.uom || 'EA';
+      const reqDate = item.reqByDate ? new Date(item.reqByDate).toLocaleDateString() : '-';
+      const myBid = this.bidMap?.get(item.id);
+      const bidRate = (myBid && myBid.biddingAmount) ? `AED ${Number(myBid.biddingAmount).toFixed(2)}` : '-';
+      const bidAmount = (myBid && myBid.biddingAmount) ? `AED ${Number(myBid.biddingAmount * qty).toFixed(2)}` : '-';
+
+      itemsRows += `
+        <tr>
+          <td class="text-center">${idx + 1}</td>
+          <td>
+            <strong>${item.itemName || item.itemDescription || '-'}</strong>
+            ${item.itemDescription && item.itemDescription !== item.itemName ? `<br><small style="color:#64748b">${item.itemDescription}</small>` : ''}
+          </td>
+          <td class="text-center">${uom}</td>
+          <td class="text-end"><strong>${qty}</strong></td>
+          <td>${reqDate}</td>
+          <td class="text-end">${bidRate}</td>
+          <td class="text-end">${bidAmount}</td>
+          <td>${item.remarks || '-'}</td>
+        </tr>
+      `;
+    });
+
+    const statusText = rfq?.requestStatus || 'Open';
+    const subDate = rfq?.date ? new Date(rfq.date).toLocaleDateString() : '-';
+    const deadlineDate = rfq?.endDate ? new Date(rfq.endDate).toLocaleDateString() : '-';
+    const deliveryDate = rfq?.startDate ? new Date(rfq.startDate).toLocaleDateString() : (this.deliveryDate || '-');
+
+    const html = `
+      <div class="header-bar">
+        <div>
+          <h1>Request For Quotation (RFQ)</h1>
+          <div class="subtitle">Vendor Collaboration Portal</div>
+        </div>
+        <div class="meta-box">
+          <div class="doc-number">RFQ #: ${rfqNo}</div>
+          <div class="doc-date">Issue Date: ${subDate}</div>
+          <div class="status-badge status-open">${statusText}</div>
+        </div>
+      </div>
+
+      ${rfq?.title ? `
+        <div class="purpose-banner">
+          <span class="purpose-label">Scope / Title:</span>
+          <span class="purpose-text">${rfq.title}</span>
+        </div>
+      ` : ''}
+
+      <div class="info-cards info-cards-3">
+        <div class="info-card">
+          <div class="info-card-header">RFQ Overview</div>
+          <div class="info-card-body">
+            <div class="info-row"><span class="info-label">RFQ Number</span><span class="info-value">${rfqNo}</span></div>
+            <div class="info-row"><span class="info-label">PR Reference</span><span class="info-value">${rfq?.purchaseRequestNo || '-'}</span></div>
+            <div class="info-row"><span class="info-label">Issue Date</span><span class="info-value">${subDate}</span></div>
+            <div class="info-row"><span class="info-label">Status</span><span class="info-value">${statusText}</span></div>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-card-header">Timeline & Schedule</div>
+          <div class="info-card-body">
+            <div class="info-row"><span class="info-label">Start Date</span><span class="info-value">${deliveryDate}</span></div>
+            <div class="info-row"><span class="info-label">Deadline</span><span class="info-value">${deadlineDate}</span></div>
+            <div class="info-row"><span class="info-label">Vendor Proposed Delivery</span><span class="info-value">${this.deliveryDate || '-'}</span></div>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-card-header">Delivery & Contact</div>
+          <div class="info-card-body">
+            <div class="info-row"><span class="info-label">Delivery Location</span><span class="info-value">${rfq?.deliveryLocation || '-'}</span></div>
+            <div class="info-row"><span class="info-label">Buyer Contact</span><span class="info-value">${rfq?.contact || rfq?.owner || '-'}</span></div>
+            <div class="info-row"><span class="info-label">Owner</span><span class="info-value">${rfq?.owner || '-'}</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 10px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: baseline;">
+        <h4 style="margin: 0; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.5px; color: #1e3a8a; font-weight: 700;">
+          Quotation Items & Bid Specifications <small style="color: #64748b; font-weight: 500;">(${items.length} Items)</small>
+        </h4>
+      </div>
+
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th style="width: 32px;" class="text-center">#</th>
+            <th>Item & Description</th>
+            <th style="width: 55px;" class="text-center">UOM</th>
+            <th style="width: 60px;" class="text-end">Qty</th>
+            <th style="width: 95px;">Req. Date</th>
+            <th style="width: 90px;" class="text-end">Quoted Rate</th>
+            <th style="width: 95px;" class="text-end">Total Amount</th>
+            <th>Remarks</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${itemsRows || '<tr><td colspan="8" class="text-center" style="padding: 20px; color: #94a3b8;">No RFQ items found</td></tr>'}
+        </tbody>
+      </table>
+
+      <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 14px; margin-top: 15px; margin-bottom: 20px;">
+        <div style="font-size: 10.5px; font-weight: 700; color: #1e3a8a; text-transform: uppercase; margin-bottom: 4px;">Terms & Conditions:</div>
+        <div style="font-size: 11px; color: #475569; line-height: 1.5;">
+          1. All submitted bid quotes must remain firm and valid for a minimum of 30 days from the submission deadline.<br>
+          2. Rates are inclusive of all freight, handling, and delivery to the designated location.<br>
+          3. Deliveries must adhere strictly to agreed delivery schedules.
+        </div>
+      </div>
+
+      <div class="footer-section">
+        <div class="signature-block">
+          <div class="signature-title">Procurement Authority</div>
+          <div class="signature-line"></div>
+          <div class="signature-name">${rfq?.owner || 'Procurement Department'}</div>
+          <div class="signature-role">Issued RFQ</div>
+        </div>
+        <div class="signature-block">
+          <div class="signature-title">Vendor Submission</div>
+          <div class="signature-line"></div>
+          <div class="signature-name">Authorized Bidder Representative</div>
+          <div class="signature-role">Quotation Confirmed</div>
+        </div>
+      </div>
+    `;
+    this.pdfExportService.printFormattedDocument(`RFQ_${rfqNo}`, html);
+  }
 }

@@ -1,13 +1,23 @@
 <section class="submit-bid-page">
   <div class="container-fluid">
 
-    <div class="col-6 gap-2 d-flex align-items-center">
-      <button class="btn btn-outline-secondary rounded-circle" (click)="goBacktoPOList()"
-        style="position: sticky; width: 40px; height: 40px; display: flex ; align-items: center; justify-content: center;">
-        <img src="assets/img/svg-icons/back-icon.svg" alt="Back" class="back-icon" />
-      </button>
+    <div class="row align-items-center mb-3">
+      <div class="col-6 gap-2 d-flex align-items-center">
+        <button class="btn btn-outline-secondary rounded-circle" (click)="goBacktoPOList()"
+          style="position: sticky; width: 40px; height: 40px; display: flex ; align-items: center; justify-content: center;">
+          <img src="assets/img/svg-icons/back-icon.svg" alt="Back" class="back-icon" />
+        </button>
 
-      <h1 class="mb-0">Purchase Order Details</h1>
+        <h1 class="mb-0">Purchase Order Details</h1>
+      </div>
+      <div class="col-6 d-flex align-items-center justify-content-end gap-2">
+        <button type="button" class="btn btn-outline-secondary d-inline-flex align-items-center gap-1"
+          (click)="downloadPdf()" [disabled]="isGeneratingPdf" title="Download PO PDF">
+          <i class="fa fa-spinner fa-spin" *ngIf="isGeneratingPdf"></i>
+          <img *ngIf="!isGeneratingPdf" src="assets/img/svg-icons/pdf-icon.svg" alt="PDF" style="width: 16px; height: 16px;" />
+          <span>Download PDF</span>
+        </button>
+      </div>
     </div>
 
 
@@ -59,23 +69,6 @@
 
 
     <div *ngIf="selectedTab === 'po-details'">
-      <!-- Action Bar -->
-      <!-- <div class="card cstm-ui-card mb-3 py-2 px-3 d-flex justify-content-start flex-wrap">
-        <div class="d-flex align-items-center">
-          <button class="btn btn-lg position-relative me-2" type="button" (click)="goBack()">
-            <img src="assets/img/svg-icons/back-icon.svg" alt="Back" class="back-icon" />
-          </button>
-          <h5 class="mt-2 fw-bold">Purchase Order Details</h5>
-        </div>
-      </div> -->
-
-      <!-- Reject Button Above PO Info Card -->
-      <!-- <div class="mb-2 d-flex justify-content-end">
-      <button class="btn btn-danger" (click)="rejectPurchaseOrder()">
-        Reject Purchase Order
-      </button>
-    </div> -->
-
       <!-- PO Info -->
       <div class="card shadow-sm mb-3">
         <div class="card-body" style="border: 0.5px solid #53bd53; padding: 1rem; border-radius: 8px;">
@@ -86,16 +79,30 @@
             </h5>
 
             <div class="d-flex align-items-center gap-2 flex-wrap">
+              <button type="button" class="btn btn-outline-secondary d-inline-flex align-items-center gap-1"
+                (click)="downloadPdf()" [disabled]="isGeneratingPdf" title="Download PO PDF">
+                <i class="fa fa-spinner fa-spin" *ngIf="isGeneratingPdf"></i>
+                <img *ngIf="!isGeneratingPdf" src="assets/img/svg-icons/pdf-icon.svg" alt="PDF" style="width: 16px; height: 16px;" />
+                <span>Download PDF</span>
+              </button>
+
+              <!-- Acknowledge Order Button -->
+              <button *ngIf="!poDetails?.isAcknowledged && poDetails?.requestStatus === 'Open'" class="btn btn-success d-inline-flex align-items-center gap-1" (click)="openAcknowledgeOrderModal()">
+                <i class="ft-check-circle"></i>
+                <span>Acknowledge Order</span>
+              </button>
+
+              <!-- Acknowledged Badge -->
+              <span *ngIf="poDetails?.isAcknowledged" class="badge bg-light-success text-success px-3 py-2 d-inline-flex align-items-center gap-1 border border-success font-small-3">
+                <i class="ft-check"></i>
+                <span>Order Acknowledged</span>
+              </span>
+
               <!-- DELETE button only on update -->
-              <button class="btn btn-danger" (click)="rejectPurchaseOrder()">
+              <button *ngIf="!poDetails?.isAcknowledged && poDetails?.requestStatus === 'Open'" class="btn btn-danger" (click)="rejectPurchaseOrder()">
                 <i class="ft-x-circle me-1"></i>
                 Reject PO
               </button>
-
-              <!-- SAVE / UPDATE button -->
-              <!-- <button class="btn btn-primary btn-sm" (click)="save()">
-                {{ isEdit ? 'Update Shipment Details' : 'Submit Shipment Details' }}
-            </button> -->
             </div>
           </div>
 
@@ -145,6 +152,40 @@
               <input class="form-control form-control-sm" [value]="poDetails?.shipToPostCode" disabled>
             </div>
           </div>
+
+          <!-- Acknowledgment Summary Card (When Acknowledged) -->
+          <div *ngIf="poDetails?.isAcknowledged" class="mt-2 p-3 rounded" style="background-color: #f6ffed; border: 1px solid #b7eb8f;">
+            <div class="d-flex align-items-center justify-content-between mb-2 pb-2 border-bottom">
+              <h6 class="fw-bold mb-0 text-success d-flex align-items-center gap-1">
+                <i class="ft-shield"></i> Digital Order Acknowledgment & Dispatch Details
+              </h6>
+              <span class="badge bg-success text-white px-2 py-1 font-small-2">
+                <i class="ft-check me-1"></i> Contractual Acceptance Confirmed
+              </span>
+            </div>
+            <div class="row">
+              <div class="col-lg-3 col-md-6 mb-2">
+                <label class="form-label small text-muted mb-0">Acknowledged Date</label>
+                <div class="fw-bold text-dark">{{ poDetails?.acknowledgedDate | date:'yyyy-MM-dd HH:mm' }}</div>
+              </div>
+              <div class="col-lg-3 col-md-6 mb-2">
+                <label class="form-label small text-muted mb-0">Acknowledged By</label>
+                <div class="fw-bold text-dark">{{ poDetails?.acknowledgedBy || 'Vendor Representative' }}</div>
+              </div>
+              <div class="col-lg-3 col-md-6 mb-2">
+                <label class="form-label small text-muted mb-0">Estimated Dispatch Date</label>
+                <div class="fw-bold text-primary">{{ poDetails?.estimatedDispatchDate | date:'yyyy-MM-dd' }}</div>
+              </div>
+              <div class="col-lg-3 col-md-6 mb-2">
+                <label class="form-label small text-muted mb-0">Transport Carrier</label>
+                <div class="fw-bold text-dark">{{ poDetails?.transportCarrier || '-' }}</div>
+              </div>
+              <div class="col-12 mt-1" *ngIf="poDetails?.acknowledgmentRemarks">
+                <label class="form-label small text-muted mb-0">Acknowledgment Remarks</label>
+                <div class="small fst-italic text-dark">{{ poDetails?.acknowledgmentRemarks }}</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -160,6 +201,7 @@
             <div>ITEM</div>
             <div>DESCRIPTION</div>
             <div class="text-center">QTY</div>
+            <div class="text-center">DELIVERY MILESTONE</div>
             <div class="text-end">AMOUNT</div>
           </div>
 
@@ -168,6 +210,7 @@
               <div><span class="item-title">{{ item.itemName }}</span></div>
               <div class="small table-cell-description">{{ item.itemDescription }}</div>
               <div class="text-center mono">{{ item.quantity }}</div>
+              <div class="text-center mono text-primary fw-semibold">{{ item.deliveryDate ? (item.deliveryDate | date:'yyyy-MM-dd') : 'Pending' }}</div>
               <div class="text-end mono fw-semibold">{{ item.amount | number:'1.2-2' }}</div>
             </div>
           </div>
@@ -249,13 +292,19 @@
             </span>
           </ng-template>
         </ngx-datatable-column>
-        <ngx-datatable-column name="Action" [sortable]="false">
+        <ngx-datatable-column name="Action" [sortable]="false" [width]="130">
           <ng-template let-row="row" ngx-datatable-cell-template>
-            <button class="btn btn-sm csm-remarks-btn d-inline-flex align-items-center gap-1"
-              (click)="openGrnDetail(row)">
-              <i class="ft-eye"></i>
-              <span>View</span>
-            </button>
+            <div class="d-flex align-items-center gap-1">
+              <button type="button" class="btn btn-sm btn-link p-0 text-dark" (click)="downloadGrnPdf(row, $event)" title="Download GRN PDF" [disabled]="loadingGrnPdfId === (row.id || poId)">
+                <i class="fa fa-spinner fa-spin" *ngIf="loadingGrnPdfId === (row.id || poId)"></i>
+                <img *ngIf="loadingGrnPdfId !== (row.id || poId)" src="assets/img/svg-icons/pdf-icon.svg" class="btn-action-icon" alt="PDF" style="width: 17px; height: 17px;" />
+              </button>
+              <button class="btn btn-sm csm-remarks-btn d-inline-flex align-items-center gap-1"
+                (click)="openGrnDetail(row)">
+                <i class="ft-eye"></i>
+                <span>View</span>
+              </button>
+            </div>
           </ng-template>
         </ngx-datatable-column>
       </ngx-datatable>
@@ -334,6 +383,13 @@
           <span>Save</span>
         </button>
       </ng-container>
+      <ng-container *ngIf="selectedGrnId">
+        <button class="btn btn-primary modal-action-btn" [disabled]="!modalGrnReady"
+          (click)="downloadGrnFromModal()">
+          <i class="ft-download me-1"></i>
+          <span>Download PDF</span>
+        </button>
+      </ng-container>
       <ng-container *ngIf="selectedInvoicePoId">
         <button class="btn btn-primary modal-action-btn" [disabled]="!modalInvoiceReady || !modalInvoiceIsEdit"
           (click)="downloadInvoiceFromModal()">
@@ -341,6 +397,136 @@
           <span>Download PDF</span>
         </button>
       </ng-container>
+    </div>
+  </ng-template>
+
+  <!-- Acknowledge Order Modal -->
+  <ng-template #acknowledgeOrderModal let-modal>
+    <div class="modal-header modal-header-soft" style="background-color: #f8f9fa;">
+      <h5 class="modal-title d-flex align-items-center gap-2">
+        <i class="ft-check-square text-success"></i>
+        <span>Electronic Order Acknowledgment & Dispatch Schedule</span>
+      </h5>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+    </div>
+    <div class="modal-body modal-body-soft p-4" [formGroup]="acknowledgeForm">
+      <!-- Order Info Box -->
+      <div class="alert alert-light border p-3 mb-3 rounded d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div>
+          <div class="small text-muted">Purchase Order No:</div>
+          <div class="fw-bold fs-6 text-dark">{{ poDetails?.purchaseOrderNo }}</div>
+        </div>
+        <div>
+          <div class="small text-muted">Requisition / RFQ No:</div>
+          <div class="fw-bold text-dark">{{ poDetails?.requisitionNo || '-' }} / {{ poDetails?.rfqNo || '-' }}</div>
+        </div>
+        <div>
+          <div class="small text-muted">Total Order Amount:</div>
+          <div class="fw-bold text-success">{{ poDetails?.totalAmount | number:'1.2-2' }}</div>
+        </div>
+      </div>
+
+      <!-- Section 1: Dispatch Date & Transport Carrier -->
+      <h6 class="fw-bold text-primary mb-2 border-bottom pb-1 d-flex align-items-center gap-1">
+        <i class="ft-truck"></i> Dispatch & Logistics Information
+      </h6>
+      <div class="row mb-3">
+        <div class="col-md-6 mb-2">
+          <label class="form-label small fw-bold">Estimated Dispatch Date <span class="text-danger">*</span></label>
+          <input type="date" class="form-control form-control-sm" formControlName="estimatedDispatchDate" [min]="minDispatchDate"
+            [class.is-invalid]="acknowledgeForm.get('estimatedDispatchDate')?.invalid && acknowledgeForm.get('estimatedDispatchDate')?.touched">
+          <div class="invalid-feedback">Estimated dispatch date is required.</div>
+        </div>
+        <div class="col-md-6 mb-2">
+          <label class="form-label small fw-bold">Transport Carrier <span class="text-danger">*</span></label>
+          <select class="form-select form-select-sm" formControlName="transportCarrier" (change)="onCarrierChange()"
+            [class.is-invalid]="acknowledgeForm.get('transportCarrier')?.invalid && acknowledgeForm.get('transportCarrier')?.touched">
+            <option value="" disabled>Select Transport Carrier</option>
+            <option *ngFor="let c of carrierList" [value]="c">{{ c }}</option>
+          </select>
+          <input *ngIf="acknowledgeForm.get('transportCarrier')?.value === 'Other'" type="text"
+            class="form-control form-control-sm mt-2" placeholder="Specify carrier name / method..." formControlName="carrierOther">
+          <div class="text-danger small mt-1" *ngIf="acknowledgeForm.get('transportCarrier')?.invalid && acknowledgeForm.get('transportCarrier')?.touched">
+            Transport carrier is required.
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: Milestone Delivery Schedules -->
+      <h6 class="fw-bold text-primary mb-2 border-bottom pb-1 d-flex align-items-center gap-1">
+        <i class="ft-calendar"></i> Milestone Delivery Schedule
+      </h6>
+      <p class="small text-muted mb-2">Review line items and set estimated milestone delivery dates:</p>
+      <div class="table-responsive border rounded mb-3" style="max-height: 220px; overflow-y: auto;">
+        <table class="table table-sm table-striped align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th style="width: 40px;">#</th>
+              <th>Item</th>
+              <th class="text-center" style="width: 80px;">Qty</th>
+              <th style="width: 170px;">Estimated Delivery Date <span class="text-danger">*</span></th>
+              <th>Milestone Remarks</th>
+            </tr>
+          </thead>
+          <tbody formArrayName="itemSchedules">
+            <tr *ngFor="let lineGroup of itemSchedulesArray.controls; let i = index" [formGroupName]="i">
+              <td>{{ i + 1 }}</td>
+              <td>
+                <div class="fw-bold small">{{ lineGroup.get('itemName')?.value }}</div>
+                <div class="text-muted" style="font-size: 0.75rem;">{{ lineGroup.get('itemDescription')?.value }}</div>
+              </td>
+              <td class="text-center fw-bold">{{ lineGroup.get('quantity')?.value }}</td>
+              <td>
+                <input type="date" class="form-control form-control-sm" formControlName="estimatedDeliveryDate" [min]="minDispatchDate">
+              </td>
+              <td>
+                <input type="text" class="form-control form-control-sm" placeholder="e.g. Batch milestone / Full delivery" formControlName="remarks">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Section 3: Formal Contractual Acceptance -->
+      <h6 class="fw-bold text-primary mb-2 border-bottom pb-1 d-flex align-items-center gap-1">
+        <i class="ft-file-text"></i> Formal Contractual Acceptance
+      </h6>
+      <div class="card bg-light border p-3 mb-3">
+        <p class="small text-dark mb-2" style="line-height: 1.5;">
+          <strong>Contractual Acceptance Terms:</strong> By executing this electronic order acknowledgment, the Vendor explicitly accepts Purchase Order <strong>{{ poDetails?.purchaseOrderNo }}</strong>, confirms the delivery commitments outlined above, and agrees to deliver in full accordance with the contractual specifications, pricing, and agreed terms.
+        </p>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="contractualAcceptanceCheck" formControlName="contractualAcceptance">
+          <label class="form-check-label small fw-bold text-dark cursor-pointer" for="contractualAcceptanceCheck">
+            I confirm and formally accept this Purchase Order and agree to the contractual terms and delivery schedules. <span class="text-danger">*</span>
+          </label>
+        </div>
+        <div class="text-danger small mt-1" *ngIf="acknowledgeForm.get('contractualAcceptance')?.invalid && acknowledgeForm.get('contractualAcceptance')?.touched">
+          You must check the acceptance box to formally acknowledge this purchase order.
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-2">
+          <label class="form-label small fw-bold">Acknowledged By (Representative Name) <span class="text-danger">*</span></label>
+          <input type="text" class="form-control form-control-sm" formControlName="acknowledgedBy" placeholder="Authorized representative name">
+          <div class="text-danger small mt-1" *ngIf="acknowledgeForm.get('acknowledgedBy')?.invalid && acknowledgeForm.get('acknowledgedBy')?.touched">
+            Authorized representative name is required.
+          </div>
+        </div>
+        <div class="col-md-6 mb-2">
+          <label class="form-label small">Additional Remarks (Optional)</label>
+          <textarea class="form-control form-control-sm" rows="2" placeholder="Any special dispatch or packing remarks..." formControlName="remarks"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer modal-footer-soft bg-light">
+      <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss()" [disabled]="isSubmittingAcknowledgment">Cancel</button>
+      <button type="button" class="btn btn-success d-inline-flex align-items-center gap-1" (click)="submitOrderAcknowledgment()" [disabled]="acknowledgeForm.invalid || isSubmittingAcknowledgment">
+        <i class="fa fa-spinner fa-spin" *ngIf="isSubmittingAcknowledgment"></i>
+        <i class="ft-check-circle" *ngIf="!isSubmittingAcknowledgment"></i>
+        <span>{{ isSubmittingAcknowledgment ? 'Submitting...' : 'Submit Order Acknowledgment' }}</span>
+      </button>
     </div>
   </ng-template>
 </section>

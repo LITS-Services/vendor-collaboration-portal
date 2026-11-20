@@ -10,18 +10,16 @@
         </button>
         <h1 class="mb-0">Quotation Bid</h1>
       </div>
-      <div class="col-6 d-flex align-items-center justify-content-end">
-        <!-- <button class="btn btn-outline-primary me-2">Cancel</button> -->
+      <div class="col-6 d-flex align-items-center justify-content-end gap-2">
+        <button type="button" class="btn btn-outline-secondary d-inline-flex align-items-center gap-1"
+          (click)="downloadPdf()" [disabled]="isGeneratingPdf" title="Download RFQ PDF">
+          <i class="fa fa-spinner fa-spin" *ngIf="isGeneratingPdf"></i>
+          <img *ngIf="!isGeneratingPdf" src="assets/img/svg-icons/pdf-icon.svg" alt="PDF" style="width: 16px; height: 16px;" />
+          <span>Download PDF</span>
+        </button>
         <button class="btn btn-primary" (click)="submitBids()">
             <i class="ft-check me-1"></i>
           Submit Bid</button>
-        <!-- <button 
-        class="btn btn-primary"
-        [disabled]="isLoading"
-        (click)="submitForm()">
-        {{ isEditMode ? 'Update Company' : 'Add Company' }}
-    </button> -->
-    
       </div>
     </div>
 

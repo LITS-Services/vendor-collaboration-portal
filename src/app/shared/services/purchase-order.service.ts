@@ -41,6 +41,10 @@ export class PurchaseOrderService {
     return this.http.post<any>(`${this.baseUrl}/reject-purchase-order`, payload);
   }
 
+  acknowledgePurchaseOrder(payload: any): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/acknowledge-purchase-order`, payload);
+  }
+
   getGoodsReceiptNoteById(purchaseOrderId: number) {
     return this.http.get<any>(`${this.baseUrl}/get-grn?id=${purchaseOrderId}`);
   }
@@ -68,6 +72,14 @@ export class PurchaseOrderService {
 
   downloadInvoicePdf(invoiceId: number): Observable<Blob> {
     return this.http.get(`${this.baseUrl}/download-pdf/${invoiceId}`, { responseType: 'blob' });
+  }
+
+  downloadPurchaseOrderPdf(id: number): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/download-po-pdf/${id}`, { responseType: 'blob' });
+  }
+
+  downloadGrnPdf(purchaseOrderId: number): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/download-grn-pdf/${purchaseOrderId}`, { responseType: 'blob' });
   }
 
   getAllInvoices(q: InvoiceQuery): Observable<any> {

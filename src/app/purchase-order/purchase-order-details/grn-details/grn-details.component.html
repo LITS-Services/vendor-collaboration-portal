@@ -9,11 +9,17 @@
         </div> -->
 @if (grnDetails?.grNumber) {
 <div [class]="inModal ? 'px-1 py-2' : 'card shadow-sm p-3 border border-success rounded mb-3'">
-    <div class="d-flex justify-content-between align-items-start mb-2">
-    <h5 class="mt-2 fw-bold" *ngIf="!inModal">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mt-2 fw-bold mb-0" *ngIf="!inModal">
             Goods Receipt Note
         </h5>
-        </div>
+        <button type="button" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1 ms-auto"
+            (click)="downloadPdf()" [disabled]="isGeneratingPdf" title="Download GRN PDF">
+            <i class="fa fa-spinner fa-spin" *ngIf="isGeneratingPdf"></i>
+            <img *ngIf="!isGeneratingPdf" src="assets/img/svg-icons/pdf-icon.svg" alt="PDF" style="width: 16px; height: 16px;" />
+            <span>Download PDF</span>
+        </button>
+    </div>
     <div class="row">
         <div class="col-md-4 mb-2">
             <label class="form-label small">GRN No</label>

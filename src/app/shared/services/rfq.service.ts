@@ -66,4 +66,8 @@ export class RfqService {
   addRfqComment(data: any): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/quotation-request-comment`, data);
   }
+
+  downloadRfqPdf(id: number): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/download-pdf/${id}`, { responseType: 'blob' });
+  }
 }

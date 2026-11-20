@@ -101,6 +101,15 @@
                     </ng-template>
                 </ngx-datatable-column>
 
+                <ngx-datatable-column name="Action" [sortable]="false" [width]="70">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        <button type="button" class="btn btn-sm btn-link p-0 text-dark" (click)="downloadPdf(row, $event)" title="Download PO PDF" [disabled]="loadingPdfId === row.id">
+                            <i class="fa fa-spinner fa-spin" *ngIf="loadingPdfId === row.id"></i>
+                            <img *ngIf="loadingPdfId !== row.id" src="assets/img/svg-icons/pdf-icon.svg" class="btn-action-icon" alt="PDF" style="width: 17px; height: 17px;" />
+                        </button>
+                    </ng-template>
+                </ngx-datatable-column>
+
             </ngx-datatable>
         </div>
     </div>

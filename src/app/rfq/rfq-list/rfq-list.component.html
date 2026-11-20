@@ -97,14 +97,19 @@
               </ngx-datatable-column> -->
       
         <!-- Action -->
-        <ngx-datatable-column name="Action" [sortable]="false"  [flexGrow]="1" minWidth="100" maxWidth="300" >
+        <ngx-datatable-column name="Action" [sortable]="false" [flexGrow]="1" minWidth="150" maxWidth="300">
           <ng-template ngx-datatable-cell-template let-row="row">
-            <div class="d-flex justify-content-end w-100 pe-3 py-3">
+            <div class="d-flex justify-content-end align-items-center gap-2 w-100 pe-3 py-1">
+              <button type="button" class="btn btn-sm btn-outline-secondary p-0 d-inline-flex align-items-center justify-content-center"
+                style="width: 32px; height: 32px; border-radius: 6px;"
+                (click)="downloadPdf(row, $event)"
+                ngbTooltip="Download RFQ PDF" container="body" [disabled]="loadingPdfId === row.id">
+                <i class="fa fa-spinner fa-spin" *ngIf="loadingPdfId === row.id"></i>
+                <img *ngIf="loadingPdfId !== row.id" src="assets/img/svg-icons/pdf-icon.svg" alt="PDF" style="width: 17px; height: 17px;" />
+              </button>
               <button type="button" class="proposal-btn position-relative" (click)="openBidModal(row)"
                 ngbTooltip="View Proposal details" container="body">
-      
                 Proposal
-      
                 <span class="proposal-badge" *ngIf="row.qrItems?.length > 0">
                   {{ row.qrItems.length }}
                 </span>
