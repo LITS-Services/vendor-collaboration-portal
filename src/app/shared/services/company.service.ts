@@ -116,4 +116,8 @@ export class CompanyService {
     return this.http.get<any>(`${this.systemBaseUrl}/dropdowns`, { params: { name: code } });
   }
 
+  getProcurementCategories(): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrl}/ProcurementCategory/get-all`);
+  }
+
 }
