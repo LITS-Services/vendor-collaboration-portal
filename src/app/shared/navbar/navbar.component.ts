@@ -132,6 +132,10 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnDestroy {
     return false;
   }
 
+  isSvg(icon: string): boolean {
+    return !!icon && (icon.endsWith('.svg') || icon.includes('.svg'));
+  }
+
   ngAfterViewInit() {
     this.configSub = this.configService.templateConf$.subscribe(
       (templateConf) => {

@@ -63,6 +63,10 @@ export class HorizontalMenuComponent implements OnInit, AfterViewInit, OnDestroy
 
   }
 
+  isSvg(icon: string): boolean {
+    return !!icon && (icon.endsWith('.svg') || icon.includes('.svg'));
+  }
+
   ngOnDestroy() {
     if (this.layoutSub) {
       this.layoutSub.unsubscribe();

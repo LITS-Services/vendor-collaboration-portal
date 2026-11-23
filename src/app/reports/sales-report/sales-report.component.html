@@ -1,115 +1,192 @@
-<div class="report-workspace">
-  <!-- Non-Print Report Parameter & Export Bar -->
-  <div class="report-toolbar no-print">
-    <div class="report-toolbar__top">
-      <div class="report-toolbar__label">
-        <i class="ft-sliders text-success"></i>
-        <span>Report Parameters &amp; Output Controls</span>
-      </div>
-      <div class="report-toolbar__actions">
-        <button type="button" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1" (click)="resetFilters()">
-          <i class="ft-rotate-ccw"></i> Reset
-        </button>
-        <button type="button" class="btn btn-sm btn-primary d-inline-flex align-items-center gap-1 px-3" (click)="applyFilters()">
-          <i class="ft-play"></i> Generate Report
-        </button>
-        <button type="button" class="btn btn-sm btn-outline-dark d-inline-flex align-items-center gap-1" (click)="printReport()">
-          <i class="ft-printer"></i> Print
-        </button>
-        <button type="button" class="btn btn-sm btn-primary d-inline-flex align-items-center gap-1" (click)="exportPdf()" [disabled]="exportingPdf">
-          <i class="ft-download" *ngIf="!exportingPdf"></i>
-          <span class="spinner-border spinner-border-sm" *ngIf="exportingPdf" role="status"></span>
-          <span>{{ exportingPdf ? 'Exporting PDF...' : 'Export PDF' }}</span>
-        </button>
-      </div>
-    </div>
+<section>
+  <div class="row">
+    <div class="col-12">
 
-    <div class="row g-2 align-items-end">
-      <div class="col-xl-2 col-md-4 col-sm-6">
-        <label class="param-label">Reporting Period</label>
-        <select class="form-select form-select-sm" [(ngModel)]="selectedPreset" (change)="selectedPreset !== 'Custom' && applyFilters()">
-          <option *ngFor="let p of presets" [value]="p.value">{{ p.label }}</option>
-        </select>
-      </div>
-      <div class="col-xl-2 col-md-4 col-sm-6" *ngIf="selectedPreset === 'Custom'">
-        <label class="param-label">From Date</label>
-        <input type="date" class="form-control form-control-sm" [(ngModel)]="customFromDate" />
-      </div>
-      <div class="col-xl-2 col-md-4 col-sm-6" *ngIf="selectedPreset === 'Custom'">
-        <label class="param-label">To Date</label>
-        <input type="date" class="form-control form-control-sm" [(ngModel)]="customToDate" />
-      </div>
-      <div class="col-xl-2 col-md-4 col-sm-6" *ngIf="metadata.vendors && metadata.vendors.length > 1">
-        <label class="param-label">Vendor</label>
-        <select class="form-select form-select-sm" [(ngModel)]="selectedVendor">
-          <option value="">All Vendors</option>
-          <option *ngFor="let v of metadata.vendors" [value]="v.value">{{ v.label }}</option>
-        </select>
-      </div>
-      <div class="col-xl-2 col-md-4 col-sm-6">
-        <label class="param-label">PO Status</label>
-        <select class="form-select form-select-sm" [(ngModel)]="selectedPoStatus">
-          <option value="">All PO Statuses</option>
-          <option *ngFor="let s of metadata.poStatuses" [value]="s.value">{{ s.label }}</option>
-        </select>
-      </div>
-      <div class="col-xl-2 col-md-4 col-sm-6">
-        <label class="param-label">Currency</label>
-        <select class="form-select form-select-sm" [(ngModel)]="selectedCurrency">
-          <option value="">All (SAR)</option>
-          <option *ngFor="let c of metadata.currencies" [value]="c.value">{{ c.label }}</option>
-        </select>
-      </div>
-    </div>
-  </div>
+      <!-- Header with Go Back Title & Action Controls -->
+      <div class="row mb-3 align-items-center">
+        <div class="col-auto d-flex align-items-center gap-2">
+          <button class="btn btn-outline-secondary rounded-circle" (click)="goBack()"
+            style="position: sticky; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+            <img src="assets/img/svg-icons/back-icon.svg" alt="Back" class="back-icon" />
+          </button>
+          <h1 class="mb-0">Sales Report</h1>
+        </div>
+        <div class="col ms-auto d-flex align-items-center justify-content-end table-toolbar flex-wrap no-print">
+          <!-- Filter -->
+          <div class="toolbar-item">
+            <button type="button" class="toolbar-action-btn" [class.active-action]="showFilterBar"
+              (click)="toggleFilterBar()" title="Filter">
+              <img src="assets/img/svg-icons/filter-icon.svg" alt="Filter" class="toolbar-icon" />
+              <span class="toolbar-label">Filter</span>
+            </button>
+          </div>
 
-  <!-- ==================== FORMAL REPORT DOCUMENT SHEET ==================== -->
-  <div class="report-sheet">
-    <!-- Document Masthead -->
-    <div class="report-masthead">
-      <div class="report-masthead__left">
-        <div class="report-masthead__eyebrow">Vendor Collaboration Portal &middot; Sales Statement &middot; Ref: VP-RPT-01</div>
-        <h1 class="report-masthead__title">Sales Report</h1>
-        <p class="report-masthead__desc">
-          Formal vendor-scoped statement of confirmed Purchase Order sales, invoice billing, and payment receivables for {{ loggedInVendorLabel }}.
-        </p>
-      </div>
-    </div>
+          <!-- Reset -->
+          <div class="toolbar-item">
+            <button type="button" class="toolbar-action-btn" (click)="resetFilters()" title="Reset">
+              <i class="ft-rotate-ccw toolbar-icon"></i>
+              <span class="toolbar-label">Reset</span>
+            </button>
+          </div>
 
-    <!-- ==================== CHARTS & ANALYTICS ==================== -->
-    <section class="report-section">
-      <div class="report-section__header">
-        <h2 class="report-section__title">Charts &amp; Analytics</h2>
-        <span class="report-section__meta">Supporting revenue trajectory and receivables composition (SAR)</span>
+          <!-- Generate Report -->
+          <div class="toolbar-item">
+            <button type="button" class="toolbar-action-btn" (click)="applyFilters()" title="Generate Report">
+              <i class="ft-play toolbar-icon"></i>
+              <span class="toolbar-label">Generate Report</span>
+            </button>
+          </div>
+
+          <!-- Print -->
+          <div class="toolbar-item">
+            <button type="button" class="toolbar-action-btn" (click)="printReport()" title="Print">
+              <i class="ft-printer toolbar-icon"></i>
+              <span class="toolbar-label">Print</span>
+            </button>
+          </div>
+
+          <!-- Export PDF -->
+          <div class="toolbar-item">
+            <button type="button" class="toolbar-action-btn" (click)="exportPdf()" [disabled]="exportingPdf" title="Export PDF">
+              <i class="ft-download toolbar-icon" *ngIf="!exportingPdf"></i>
+              <span class="spinner-border spinner-border-sm me-1" *ngIf="exportingPdf" role="status" style="width: 14px; height: 14px;"></span>
+              <span class="toolbar-label">{{ exportingPdf ? 'Exporting PDF...' : 'Export PDF' }}</span>
+            </button>
+          </div>
+        </div>
       </div>
 
-      <div class="row g-3">
-        <div class="col-lg-7">
-          <div class="exhibit-box">
-            <div class="exhibit-box__head">
-              <h3 class="exhibit-box__title">Periodic Sales Revenue Trend</h3>
-              <span class="exhibit-box__tag">SAR</span>
+      <!-- Filters Pane -->
+      <div *ngIf="showFilterBar" class="card filter-card mb-2 no-print">
+        <div class="card-body py-2 px-3">
+          <div class="row g-2 align-items-end">
+            <div class="col-xl-2 col-md-4 col-sm-6">
+              <label class="filter-param-label">Reporting Period</label>
+              <select class="form-control custom-input" [(ngModel)]="selectedPreset" (change)="selectedPreset !== 'Custom' && applyFilters()">
+                <option *ngFor="let p of presets" [value]="p.value">{{ p.label }}</option>
+              </select>
             </div>
-            <div class="exhibit-box__body">
+            <div class="col-xl-2 col-md-4 col-sm-6" *ngIf="selectedPreset === 'Custom'">
+              <label class="filter-param-label">From Date</label>
+              <input type="date" class="form-control custom-input" [(ngModel)]="customFromDate" />
+            </div>
+            <div class="col-xl-2 col-md-4 col-sm-6" *ngIf="selectedPreset === 'Custom'">
+              <label class="filter-param-label">To Date</label>
+              <input type="date" class="form-control custom-input" [(ngModel)]="customToDate" />
+            </div>
+            <div class="col-xl-2 col-md-4 col-sm-6" *ngIf="metadata.vendors && metadata.vendors.length > 1">
+              <label class="filter-param-label">Vendor</label>
+              <select class="form-control custom-input" [(ngModel)]="selectedVendor">
+                <option value="">All Vendors</option>
+                <option *ngFor="let v of metadata.vendors" [value]="v.value">{{ v.label }}</option>
+              </select>
+            </div>
+            <div class="col-xl-2 col-md-4 col-sm-6">
+              <label class="filter-param-label">PO Status</label>
+              <select class="form-control custom-input" [(ngModel)]="selectedPoStatus">
+                <option value="">All PO Statuses</option>
+                <option *ngFor="let s of metadata.poStatuses" [value]="s.value">{{ s.label }}</option>
+              </select>
+            </div>
+            <div class="col-xl-2 col-md-4 col-sm-6">
+              <label class="filter-param-label">Currency</label>
+              <select class="form-control custom-input" [(ngModel)]="selectedCurrency">
+                <option value="">All (SAR)</option>
+                <option *ngFor="let c of metadata.currencies" [value]="c.value">{{ c.label }}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Section (Dashboard Panel Cards with Skeleton Loaders) -->
+      <div class="row spend-card-row">
+        <!-- Exhibit 1: Periodic Sales Revenue Trend -->
+        <div class="col-lg-7">
+          <div class="panel-card h-100">
+            <div class="panel-card__header">
+              <div>
+                <h3 class="panel-card__title">Periodic Sales Revenue Trend</h3>
+                <p class="panel-card__subtitle">Supporting revenue trajectory and sales performance over time</p>
+              </div>
+            </div>
+            <div class="panel-card__body">
+              <!-- Skeleton Loader while API is loading -->
+              <div *ngIf="loadingCharts" class="chart-skeleton">
+                <div class="chart-skeleton__body">
+                  <div class="chart-skeleton__axis-y">
+                    <div class="skeleton-bar" style="width: 26px; height: 10px;"></div>
+                    <div class="skeleton-bar" style="width: 22px; height: 10px;"></div>
+                    <div class="skeleton-bar" style="width: 26px; height: 10px;"></div>
+                    <div class="skeleton-bar" style="width: 18px; height: 10px;"></div>
+                    <div class="skeleton-bar" style="width: 14px; height: 10px;"></div>
+                  </div>
+                  <div class="chart-skeleton__plot">
+                    <div class="chart-skeleton__grid-line"></div>
+                    <div class="chart-skeleton__grid-line"></div>
+                    <div class="chart-skeleton__grid-line"></div>
+                    <div class="chart-skeleton__grid-line"></div>
+                    <div class="chart-skeleton__wave"></div>
+                  </div>
+                </div>
+                <div class="chart-skeleton__footer">
+                  <div class="skeleton-bar" style="width: 85px; height: 12px; border-radius: 999px;"></div>
+                  <div class="skeleton-bar" style="width: 85px; height: 12px; border-radius: 999px;"></div>
+                </div>
+              </div>
+
+              <!-- Real Chart once loaded -->
               <apx-chart *ngIf="!loadingCharts && salesTrendChart.series?.length"
                 [series]="salesTrendChart.series" [chart]="salesTrendChart.chart"
                 [xaxis]="salesTrendChart.xaxis" [yaxis]="salesTrendChart.yaxis"
                 [dataLabels]="salesTrendChart.dataLabels" [stroke]="salesTrendChart.stroke"
                 [fill]="salesTrendChart.fill" [colors]="salesTrendChart.colors"
                 [grid]="salesTrendChart.grid" [tooltip]="salesTrendChart.tooltip"
-                [legend]="salesTrendChart.legend">
+                [legend]="salesTrendChart.legend" [markers]="salesTrendChart.markers">
               </apx-chart>
-              <div *ngIf="!loadingCharts && !salesTrendChart.series?.length" class="exhibit-empty">No sales records found for this period.</div>
+              <div *ngIf="!loadingCharts && !salesTrendChart.series?.length" class="chart-empty-placeholder">
+                No sales records found for this period.
+              </div>
             </div>
           </div>
         </div>
+
+        <!-- Exhibit 2: Payment & Receivables Breakdown -->
         <div class="col-lg-5">
-          <div class="exhibit-box">
-            <div class="exhibit-box__head">
-              <h3 class="exhibit-box__title">Payment &amp; Receivables Breakdown</h3>
-              <span class="exhibit-box__tag">SAR</span>
+          <div class="panel-card h-100">
+            <div class="panel-card__header">
+              <div>
+                <h3 class="panel-card__title">Payment &amp; Receivables Breakdown</h3>
+                <p class="panel-card__subtitle">Receivables status and invoice settlement distribution</p>
+              </div>
             </div>
-            <div class="exhibit-box__body">
+            <div class="panel-card__body">
+              <!-- Skeleton Loader while API is loading -->
+              <div *ngIf="loadingCharts" class="chart-skeleton">
+                <div class="chart-skeleton__body">
+                  <div class="chart-skeleton__axis-y">
+                    <div class="skeleton-bar" style="width: 26px; height: 10px;"></div>
+                    <div class="skeleton-bar" style="width: 22px; height: 10px;"></div>
+                    <div class="skeleton-bar" style="width: 26px; height: 10px;"></div>
+                    <div class="skeleton-bar" style="width: 18px; height: 10px;"></div>
+                    <div class="skeleton-bar" style="width: 14px; height: 10px;"></div>
+                  </div>
+                  <div class="chart-skeleton__plot d-flex align-items-end justify-content-around pb-1">
+                    <div class="skeleton-bar" style="width: 18%; height: 70%; border-radius: 4px;"></div>
+                    <div class="skeleton-bar" style="width: 18%; height: 42%; border-radius: 4px;"></div>
+                    <div class="skeleton-bar" style="width: 18%; height: 32%; border-radius: 4px;"></div>
+                    <div class="skeleton-bar" style="width: 18%; height: 16%; border-radius: 4px;"></div>
+                  </div>
+                </div>
+                <div class="chart-skeleton__footer justify-content-around ps-4">
+                  <div class="skeleton-bar" style="width: 48px; height: 10px;"></div>
+                  <div class="skeleton-bar" style="width: 44px; height: 10px;"></div>
+                  <div class="skeleton-bar" style="width: 38px; height: 10px;"></div>
+                  <div class="skeleton-bar" style="width: 52px; height: 10px;"></div>
+                </div>
+              </div>
+
+              <!-- Real Chart once loaded -->
               <apx-chart *ngIf="!loadingCharts && paymentAnalysisChart.series?.length"
                 [series]="paymentAnalysisChart.series" [chart]="paymentAnalysisChart.chart"
                 [xaxis]="paymentAnalysisChart.xaxis" [yaxis]="paymentAnalysisChart.yaxis"
@@ -117,159 +194,236 @@
                 [grid]="paymentAnalysisChart.grid" [legend]="paymentAnalysisChart.legend"
                 [tooltip]="paymentAnalysisChart.tooltip" [dataLabels]="paymentAnalysisChart.dataLabels">
               </apx-chart>
-              <div *ngIf="!loadingCharts && !paymentAnalysisChart.series?.length" class="exhibit-empty">No payment breakdown data.</div>
+              <div *ngIf="!loadingCharts && !paymentAnalysisChart.series?.length" class="chart-empty-placeholder">
+                No payment breakdown data.
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </section>
 
-    <!-- ==================== TRANSACTION LEDGERS ==================== -->
-    <section class="report-section">
-      <div class="report-section__header">
-        <h2 class="report-section__title">Transaction Ledgers</h2>
-        <span class="report-section__meta">Itemized Purchase Order Awarded and Invoice schedules</span>
-      </div>
+      <!-- Transaction Ledgers Panel Card -->
+      <div class="row spend-card-row mb-3">
+        <div class="col-12">
+          <div class="panel-card table-panel-card">
+            <div class="panel-card__header flex-wrap gap-2">
+              <div>
+                <h3 class="panel-card__title">Transaction Ledgers</h3>
+                <p class="panel-card__subtitle">Itemized Purchase Order Awarded and Invoice schedules</p>
+              </div>
+            </div>
 
-      <div class="ledger-controls no-print">
-        <div class="register-switcher">
-          <button type="button" [class.active]="activeSection === 'pos'" (click)="switchSection('pos')">
-            Purchase Order Awarded ({{ posData.totalCount }})
-          </button>
-          <button type="button" [class.active]="activeSection === 'invoices'" (click)="switchSection('invoices')">
-            Invoice Ledger ({{ invoicesData.totalCount }})
-          </button>
-        </div>
+            <!-- Controls Row: Tabs on Left, Search box & Page size on Right -->
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2 no-print">
+              <!-- Application-Wide Tabs -->
+              <ul class="nav nav-tabs bids-tab" role="tablist">
+                <li class="nav-item" role="presentation">
+                  <a class="nav-link" [class.active]="activeSection === 'pos'" (click)="switchSection('pos')"
+                    href="javascript:void(0)" role="tab">
+                    Purchase Order Awarded ({{ posData.totalCount }})
+                  </a>
+                </li>
+                <li class="nav-item" role="presentation">
+                  <a class="nav-link" [class.active]="activeSection === 'invoices'" (click)="switchSection('invoices')"
+                    href="javascript:void(0)" role="tab">
+                    Invoice Ledger ({{ invoicesData.totalCount }})
+                  </a>
+                </li>
+              </ul>
 
-        <div class="d-flex align-items-center gap-2">
-          <div class="ledger-search">
-            <i class="ft-search"></i>
-            <input type="text" class="form-control form-control-sm" placeholder="Search PO or invoice..." [(ngModel)]="searchTerm" (keyup.enter)="onSearchTable()" />
+              <!-- Search and Page Size on Right -->
+              <div class="d-flex align-items-center gap-2">
+                <div class="ledger-search-box">
+                  <i class="ft-search"></i>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    placeholder="Search PO or invoice..."
+                    [(ngModel)]="searchTerm"
+                    (keyup.enter)="onSearchTable()" />
+                </div>
+              </div>
+            </div>
+
+            <div class="panel-card__body dashboard-table-body">
+              <div class="table-responsive dashboard-listing-table-wrap">
+
+                <!-- Table Skeleton Loader when Table is Loading -->
+                <table class="table dashboard-listing-table mb-0" *ngIf="loadingTable">
+                  <thead>
+                    <tr>
+                      <th style="width: 70px;">SR. NO</th>
+                      <th>REFERENCE NUMBER</th>
+                      <th>DATE</th>
+                      <th class="text-center">STATUS</th>
+                      <th class="text-right">COUNT</th>
+                      <th class="text-right">AMOUNT (SAR)</th>
+                      <th class="text-right">INVOICED / OUTSTANDING</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let s of [1,2,3,4,5]">
+                      <td><div class="skeleton-bar" style="width: 24px; height: 14px;"></div></td>
+                      <td><div class="skeleton-bar" style="width: 130px; height: 14px;"></div></td>
+                      <td><div class="skeleton-bar" style="width: 100px; height: 14px;"></div></td>
+                      <td class="text-center"><div class="skeleton-bar mx-auto" style="width: 70px; height: 20px; border-radius: 999px;"></div></td>
+                      <td class="text-right"><div class="skeleton-bar ms-auto" style="width: 50px; height: 14px;"></div></td>
+                      <td class="text-right"><div class="skeleton-bar ms-auto" style="width: 90px; height: 14px;"></div></td>
+                      <td class="text-right"><div class="skeleton-bar ms-auto" style="width: 90px; height: 14px;"></div></td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <!-- Tab 1: Purchase Order Awarded Table -->
+                <table class="table dashboard-listing-table mb-0" *ngIf="!loadingTable && activeSection === 'pos'">
+                  <thead>
+                    <tr>
+                      <th style="width: 70px;">SR. NO</th>
+                      <th (click)="onSortTable('purchaseorderno')" class="cursor-pointer">
+                        PO NUMBER
+                        <i class="ft-arrow-up" *ngIf="sortBy === 'purchaseorderno' && sortDirection === 'asc'"></i>
+                        <i class="ft-arrow-down" *ngIf="sortBy === 'purchaseorderno' && sortDirection === 'desc'"></i>
+                      </th>
+                      <th (click)="onSortTable('podate')" class="cursor-pointer">
+                        PO DATE
+                        <i class="ft-arrow-up" *ngIf="sortBy === 'podate' && sortDirection === 'asc'"></i>
+                        <i class="ft-arrow-down" *ngIf="sortBy === 'podate' && sortDirection === 'desc'"></i>
+                      </th>
+                      <th class="text-center">PO STATUS</th>
+                      <th class="text-right">INVOICES</th>
+                      <th (click)="onSortTable('totalamount')" class="text-right cursor-pointer">
+                        PO AMOUNT (SAR)
+                        <i class="ft-arrow-up" *ngIf="sortBy === 'totalamount' && sortDirection === 'asc'"></i>
+                        <i class="ft-arrow-down" *ngIf="sortBy === 'totalamount' && sortDirection === 'desc'"></i>
+                      </th>
+                      <th class="text-right">INVOICED (SAR)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let r of posData.items; let i = index">
+                      <td>{{ (posData.pageNumber - 1) * posData.pageSize + i + 1 }}</td>
+                      <td class="font-weight-bold text-primary" [title]="r.purchaseOrderNo">{{ r.purchaseOrderNo }}</td>
+                      <td>{{ r.poDate | date:'yyyy-MM-dd' }}</td>
+                      <td class="text-center">
+                        <span [ngClass]="getStatusChipClass(r.poStatus)">{{ r.poStatus }}</span>
+                      </td>
+                      <td class="text-right">{{ r.invoiceCount | number }}</td>
+                      <td class="text-right font-weight-bold">{{ r.totalAmount | number:'1.2-2' }}</td>
+                      <td class="text-right">{{ r.invoicedAmount | number:'1.2-2' }}</td>
+                    </tr>
+                    <tr *ngIf="posData.items.length === 0">
+                      <td colspan="7" class="text-center py-4 text-muted">No Purchase Orders awarded for this period.</td>
+                    </tr>
+                  </tbody>
+                  <tfoot *ngIf="posData.items.length > 0">
+                    <tr class="table-subtotal-row">
+                      <td colspan="5" class="font-weight-bold text-dark">PAGE SUBTOTAL ({{ posData.items.length }} POs shown)</td>
+                      <td class="text-right font-weight-bold text-primary">{{ poPageTotal | number:'1.2-2' }}</td>
+                      <td class="text-right font-weight-bold">{{ poPageInvoiced | number:'1.2-2' }}</td>
+                    </tr>
+                  </tfoot>
+                </table>
+
+                <!-- Tab 2: Invoice Ledger Table -->
+                <table class="table dashboard-listing-table mb-0" *ngIf="!loadingTable && activeSection === 'invoices'">
+                  <thead>
+                    <tr>
+                      <th style="width: 70px;">SR. NO</th>
+                      <th (click)="onSortTable('invoicenumber')" class="cursor-pointer">
+                        INVOICE NUMBER
+                        <i class="ft-arrow-up" *ngIf="sortBy === 'invoicenumber' && sortDirection === 'asc'"></i>
+                        <i class="ft-arrow-down" *ngIf="sortBy === 'invoicenumber' && sortDirection === 'desc'"></i>
+                      </th>
+                      <th>PO NUMBER</th>
+                      <th (click)="onSortTable('invoicedate')" class="cursor-pointer">
+                        INVOICE DATE
+                        <i class="ft-arrow-up" *ngIf="sortBy === 'invoicedate' && sortDirection === 'asc'"></i>
+                        <i class="ft-arrow-down" *ngIf="sortBy === 'invoicedate' && sortDirection === 'desc'"></i>
+                      </th>
+                      <th>DUE DATE</th>
+                      <th (click)="onSortTable('invoiceamount')" class="text-right cursor-pointer">
+                        INVOICE AMOUNT (SAR)
+                        <i class="ft-arrow-up" *ngIf="sortBy === 'invoiceamount' && sortDirection === 'asc'"></i>
+                        <i class="ft-arrow-down" *ngIf="sortBy === 'invoiceamount' && sortDirection === 'desc'"></i>
+                      </th>
+                      <th class="text-right">PAID (SAR)</th>
+                      <th class="text-right">OUTSTANDING (SAR)</th>
+                      <th class="text-center">PAYMENT STATUS</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let r of invoicesData.items; let i = index">
+                      <td>{{ (invoicesData.pageNumber - 1) * invoicesData.pageSize + i + 1 }}</td>
+                      <td class="font-weight-bold text-primary" [title]="r.invoiceNumber">{{ r.invoiceNumber }}</td>
+                      <td [title]="r.purchaseOrderNo">{{ r.purchaseOrderNo }}</td>
+                      <td>{{ r.invoiceDate | date:'yyyy-MM-dd' }}</td>
+                      <td>{{ r.dueDate ? (r.dueDate | date:'yyyy-MM-dd') : '—' }}</td>
+                      <td class="text-right font-weight-bold">{{ r.invoiceAmount | number:'1.2-2' }}</td>
+                      <td class="text-right text-success font-weight-500">{{ r.paidAmount | number:'1.2-2' }}</td>
+                      <td class="text-right" [class.text-danger]="r.outstandingAmount > 0">{{ r.outstandingAmount | number:'1.2-2' }}</td>
+                      <td class="text-center">
+                        <span [ngClass]="getStatusChipClass(r.paymentStatus)">{{ r.paymentStatus }}</span>
+                      </td>
+                    </tr>
+                    <tr *ngIf="invoicesData.items.length === 0">
+                      <td colspan="9" class="text-center py-4 text-muted">No invoices found for this period.</td>
+                    </tr>
+                  </tbody>
+                  <tfoot *ngIf="invoicesData.items.length > 0">
+                    <tr class="table-subtotal-row">
+                      <td colspan="5" class="font-weight-bold text-dark">PAGE SUBTOTAL ({{ invoicesData.items.length }} invoices shown)</td>
+                      <td class="text-right font-weight-bold text-primary">{{ invPageTotal | number:'1.2-2' }}</td>
+                      <td class="text-right font-weight-bold text-success">{{ invPagePaid | number:'1.2-2' }}</td>
+                      <td class="text-right font-weight-bold" [class.text-danger]="invPageOutstanding > 0">{{ invPageOutstanding | number:'1.2-2' }}</td>
+                      <td></td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+
+              <!-- Application-Wide Table Footer Pagination Matching Current Project -->
+              <div class="ngx-datatable bootstrap core-bootstrap" *ngIf="(activeSection === 'pos' ? posData.totalCount : invoicesData.totalCount) > 0">
+                <div class="datatable-footer">
+                  <div class="datatable-footer-inner">
+                    <div class="page-count">
+                      <span>{{ (activeSection === 'pos' ? posData.totalCount : invoicesData.totalCount) }} total</span>
+                    </div>
+                    <div class="datatable-pager">
+                      <ul class="pager">
+                        <li [class.disabled]="(activeSection === 'pos' ? posData.pageNumber : invoicesData.pageNumber) <= 1">
+                          <a href="javascript:void(0)" (click)="(activeSection === 'pos' ? posData.pageNumber : invoicesData.pageNumber) > 1 && loadTable(1)" role="button" aria-label="go to first page">
+                            <i class="datatable-icon-prev"></i>
+                          </a>
+                        </li>
+                        <li [class.disabled]="activeSection === 'pos' ? !posData.hasPreviousPage : !invoicesData.hasPreviousPage">
+                          <a href="javascript:void(0)" (click)="(activeSection === 'pos' ? posData.hasPreviousPage : invoicesData.hasPreviousPage) && loadTable((activeSection === 'pos' ? posData.pageNumber : invoicesData.pageNumber) - 1)" role="button" aria-label="go to previous page">
+                            <i class="datatable-icon-left"></i>
+                          </a>
+                        </li>
+                        <li *ngFor="let p of getPages()" class="pages" [class.active]="p === (activeSection === 'pos' ? posData.pageNumber : invoicesData.pageNumber)">
+                          <a href="javascript:void(0)" (click)="loadTable(p)" role="button">{{ p }}</a>
+                        </li>
+                        <li [class.disabled]="activeSection === 'pos' ? !posData.hasNextPage : !invoicesData.hasNextPage">
+                          <a href="javascript:void(0)" (click)="(activeSection === 'pos' ? posData.hasNextPage : invoicesData.hasNextPage) && loadTable((activeSection === 'pos' ? posData.pageNumber : invoicesData.pageNumber) + 1)" role="button" aria-label="go to next page">
+                            <i class="datatable-icon-right"></i>
+                          </a>
+                        </li>
+                        <li [class.disabled]="(activeSection === 'pos' ? posData.pageNumber : invoicesData.pageNumber) >= (activeSection === 'pos' ? posData.totalPages : invoicesData.totalPages)">
+                          <a href="javascript:void(0)" (click)="(activeSection === 'pos' ? posData.pageNumber : invoicesData.pageNumber) < (activeSection === 'pos' ? posData.totalPages : invoicesData.totalPages) && loadTable(activeSection === 'pos' ? posData.totalPages : invoicesData.totalPages)" role="button" aria-label="go to last page">
+                            <i class="datatable-icon-skip"></i>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
           </div>
-          <select class="form-select form-select-sm w-auto"
-            [ngModel]="activeSection === 'pos' ? posData.pageSize : invoicesData.pageSize"
-            (ngModelChange)="activeSection === 'pos' ? posData.pageSize = $event : invoicesData.pageSize = $event; loadTable(1)">
-            <option [value]="10">10 rows</option>
-            <option [value]="15">15 rows</option>
-            <option [value]="25">25 rows</option>
-            <option [value]="50">50 rows</option>
-          </select>
         </div>
       </div>
 
-      <div class="ledger-table-wrap">
-        <div *ngIf="loadingTable" class="text-center py-4">
-          <div class="spinner-border spinner-border-sm text-success"></div>
-        </div>
-
-        <!-- Purchase Order Awarded (balanced 7-column spacing, Uninvoiced removed) -->
-        <table class="report-ledger-table" style="table-layout: fixed;" *ngIf="!loadingTable && activeSection === 'pos'">
-          <thead>
-            <tr>
-              <th class="col-idx" style="width: 6%;">#</th>
-              <th (click)="onSortTable('purchaseorderno')" class="sortable" style="width: 20%;">PO Number</th>
-              <th (click)="onSortTable('podate')" class="sortable" style="width: 16%;">PO Date</th>
-              <th class="text-center" style="width: 14%;">PO Status</th>
-              <th class="num" style="width: 12%;">Invoices</th>
-              <th (click)="onSortTable('totalamount')" class="sortable num" style="width: 16%;">PO Amount (SAR)</th>
-              <th class="num" style="width: 16%;">Invoiced (SAR)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let r of posData.items; let i = index">
-              <td class="col-idx">{{ (posData.pageNumber - 1) * posData.pageSize + i + 1 }}</td>
-              <td class="fw-bold col-code" [title]="r.purchaseOrderNo">{{ r.purchaseOrderNo }}</td>
-              <td class="text-nowrap">{{ r.poDate | date:'dd MMM yyyy' }}</td>
-              <td class="text-center"><span class="status-pill" [ngClass]="getStatusPillClass(r.poStatus)">{{ r.poStatus }}</span></td>
-              <td class="num">{{ r.invoiceCount | number }}</td>
-              <td class="num fw-bold">{{ r.totalAmount | number:'1.2-2' }}</td>
-              <td class="num">{{ r.invoicedAmount | number:'1.2-2' }}</td>
-            </tr>
-            <tr *ngIf="posData.items.length === 0">
-              <td colspan="7" class="text-center py-4 text-muted">No Purchase Orders awarded for this period.</td>
-            </tr>
-          </tbody>
-          <tfoot *ngIf="posData.items.length > 0">
-            <tr>
-              <td colspan="5">PAGE SUBTOTAL ({{ posData.items.length }} POs shown)</td>
-              <td class="num">{{ poPageTotal | number:'1.2-2' }} SAR</td>
-              <td class="num">{{ poPageInvoiced | number:'1.2-2' }}</td>
-            </tr>
-          </tfoot>
-        </table>
-
-        <!-- Invoice Ledger -->
-        <table class="report-ledger-table" *ngIf="!loadingTable && activeSection === 'invoices'">
-          <thead>
-            <tr>
-              <th class="col-idx">#</th>
-              <th (click)="onSortTable('invoicenumber')" class="sortable">Invoice Number</th>
-              <th>PO Number</th>
-              <th (click)="onSortTable('invoicedate')" class="sortable">Invoice Date</th>
-              <th>Due Date</th>
-              <th (click)="onSortTable('invoiceamount')" class="sortable num">Invoice Amount (SAR)</th>
-              <th class="num">Paid (SAR)</th>
-              <th class="num">Outstanding (SAR)</th>
-              <th class="text-center">Payment Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let r of invoicesData.items; let i = index">
-              <td class="col-idx">{{ (invoicesData.pageNumber - 1) * invoicesData.pageSize + i + 1 }}</td>
-              <td class="fw-bold col-code" [title]="r.invoiceNumber">{{ r.invoiceNumber }}</td>
-              <td class="col-code" [title]="r.purchaseOrderNo">{{ r.purchaseOrderNo }}</td>
-              <td class="text-nowrap">{{ r.invoiceDate | date:'dd MMM yyyy' }}</td>
-              <td class="text-nowrap">{{ r.dueDate ? (r.dueDate | date:'dd MMM yyyy') : '—' }}</td>
-              <td class="num fw-bold">{{ r.invoiceAmount | number:'1.2-2' }}</td>
-              <td class="num text-success">{{ r.paidAmount | number:'1.2-2' }}</td>
-              <td class="num text-danger">{{ r.outstandingAmount | number:'1.2-2' }}</td>
-              <td class="text-center"><span class="status-pill" [ngClass]="getStatusPillClass(r.paymentStatus)">{{ r.paymentStatus }}</span></td>
-            </tr>
-            <tr *ngIf="invoicesData.items.length === 0">
-              <td colspan="9" class="text-center py-4 text-muted">No invoices found for this period.</td>
-            </tr>
-          </tbody>
-          <tfoot *ngIf="invoicesData.items.length > 0">
-            <tr>
-              <td colspan="5">PAGE SUBTOTAL ({{ invoicesData.items.length }} invoices shown)</td>
-              <td class="num">{{ invPageTotal | number:'1.2-2' }} SAR</td>
-              <td class="num text-success">{{ invPagePaid | number:'1.2-2' }}</td>
-              <td class="num text-danger">{{ invPageOutstanding | number:'1.2-2' }}</td>
-              <td></td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-
-      <!-- Pagination -->
-      <div class="ledger-pagination no-print"
-        *ngIf="(activeSection === 'pos' && posData.totalPages > 1) || (activeSection === 'invoices' && invoicesData.totalPages > 1)">
-        <span>
-          Page {{ activeSection === 'pos' ? posData.pageNumber : invoicesData.pageNumber }}
-          of {{ activeSection === 'pos' ? posData.totalPages : invoicesData.totalPages }}
-        </span>
-        <div class="d-flex gap-1">
-          <button type="button" class="btn btn-sm btn-outline-secondary"
-            [disabled]="activeSection === 'pos' ? !posData.hasPreviousPage : !invoicesData.hasPreviousPage"
-            (click)="loadTable((activeSection === 'pos' ? posData.pageNumber : invoicesData.pageNumber) - 1)">
-            Prev
-          </button>
-          <button type="button" class="btn btn-sm btn-outline-secondary"
-            [disabled]="activeSection === 'pos' ? !posData.hasNextPage : !invoicesData.hasNextPage"
-            (click)="loadTable((activeSection === 'pos' ? posData.pageNumber : invoicesData.pageNumber) + 1)">
-            Next
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- Formal Document Footer -->
-    <div class="report-footer">
-      <div class="report-footer__end">&mdash; End of Sales Report &mdash;</div>
-      <div class="report-footer__notes">
-        <span><strong>Statement Scope:</strong> Restricted strictly to {{ loggedInVendorLabel }}. All amounts expressed in Saudi Riyal (SAR).</span>
-        <span>Confidential &middot; Vendor Sales Statement</span>
-      </div>
     </div>
   </div>
-</div>
+</section>

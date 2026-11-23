@@ -107,15 +107,55 @@
     font-size: 13px;
     font-weight: 500;
     color: #334155;
-    padding: 9px 18px;
+    padding: 8px 14px;
     display: flex;
     align-items: center;
+    border-radius: 6px;
     transition: all 0.15s ease;
 
-    &:hover, &.active {
+    .menu-icon-img {
+      width: 16px;
+      height: 16px;
+      min-width: 16px;
+      min-height: 16px;
+      flex-shrink: 0;
+      margin-right: 6px;
+      vertical-align: middle;
+      object-fit: contain;
+      transition: filter 0.15s ease;
+    }
+
+    &.active:not(:hover):not(:focus) {
       background-color: #e8f5ee;
       color: #249d57;
       font-weight: 600;
+
+      .menu-icon-img {
+        filter: invert(36%) sepia(87%) saturate(415%) hue-rotate(94deg) brightness(92%) contrast(89%);
+      }
+
+      i {
+        color: #249d57;
+      }
+    }
+
+    &:hover, &:focus, &:active,
+    &.active:hover, &.active:focus {
+      background-color: #249d57 !important;
+      color: #ffffff !important;
+      font-weight: 600;
+
+      span {
+        color: #ffffff !important;
+      }
+
+      .menu-icon-img {
+        filter: brightness(0) invert(1) !important;
+      }
+
+      i {
+        color: #ffffff !important;
+      }
     }
 
     i {

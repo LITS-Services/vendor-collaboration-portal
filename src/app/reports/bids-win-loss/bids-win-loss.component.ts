@@ -60,18 +60,105 @@ export class BidsWinLossComponent implements OnInit {
   loadingCharts = false;
   loadingTable = false;
   exportingPdf = false;
+  showFilterBar = true;
 
-  // Exhibit 1.1: Monthly Won vs Lost Bids Trend
+  // Exhibit 1.1: Won vs Lost Quotes Trend
   winLossTrendChart: ChartOptions = {
     series: [],
-    chart: { type: 'line', height: 225, toolbar: { show: false } },
-    stroke: { curve: 'smooth', width: 2.2 },
-    colors: ['#16a34a', '#dc2626'],
+    chart: {
+      type: 'area',
+      height: 240,
+      toolbar: { show: false },
+      animations: { enabled: false },
+      zoom: { enabled: false },
+      fontFamily: 'Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial'
+    },
+    colors: [
+      'rgba(102, 199, 155, 0.65)',
+      'rgba(248, 113, 113, 0.55)'
+    ],
+    stroke: {
+      curve: 'smooth',
+      width: [1.8, 1.8],
+      dashArray: [0, 4],
+      lineCap: 'round'
+    },
+    fill: {
+      type: ['gradient', 'solid'],
+      gradient: {
+        shadeIntensity: 0,
+        opacityFrom: 0.40,
+        opacityTo: 0.06,
+        stops: [0, 85, 100]
+      }
+    },
+    markers: {
+      size: [0, 0],
+      strokeWidth: 0,
+      hover: { size: 6 },
+      discrete: []
+    },
+    grid: {
+      borderColor: '#E7EFEA',
+      strokeDashArray: 4,
+      xaxis: { lines: { show: false } },
+      yaxis: { lines: { show: true } },
+      padding: { left: 8, right: 8 }
+    },
+    xaxis: {
+      categories: [],
+      axisBorder: { show: false },
+      axisTicks: { show: false },
+      labels: { style: { colors: '#8B9B93', fontSize: '12px' } },
+      crosshairs: {
+        show: true,
+        stroke: { color: '#2B2F2D', width: 1, dashArray: 4 }
+      },
+      tooltip: { enabled: false }
+    },
+    yaxis: {
+      tickAmount: 4,
+      labels: {
+        style: { colors: '#8B9B93', fontSize: '12px' },
+        formatter: (v: number) => `${Math.round(v)}`
+      }
+    },
     dataLabels: { enabled: false },
-    xaxis: { categories: [], labels: { style: { colors: '#64748b', fontSize: '10.5px' } } },
-    yaxis: { labels: { style: { colors: '#64748b', fontSize: '10.5px' } } },
-    grid: { strokeDashArray: 3, borderColor: '#e2e8f0' },
-    legend: { position: 'top', horizontalAlign: 'right', fontWeight: 600, fontSize: '11px' }
+    legend: {
+      show: true,
+      position: 'top',
+      horizontalAlign: 'right',
+      fontSize: '12px',
+      fontFamily: 'Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial',
+      fontWeight: 500,
+      labels: { colors: '#8B9B93' },
+      itemMargin: { horizontal: 8, vertical: 0 }
+    },
+    tooltip: {
+      shared: true,
+      intersect: false,
+      custom: ({ series, dataPointIndex, w }) => {
+        const period = w?.globals?.categoryLabels?.[dataPointIndex] || w?.globals?.labels?.[dataPointIndex] || '';
+        const won = series?.[0]?.[dataPointIndex] ?? 0;
+        const lost = series?.[1]?.[dataPointIndex] ?? 0;
+
+        return `
+          <div class="income-tooltip">
+            <div class="income-tooltip__title">${period}</div>
+            <div class="income-tooltip__row">
+              <span class="income-tooltip__dot" style="background: rgba(102, 199, 155, 1);"></span>
+              <span class="income-tooltip__label">Won Quotes:</span>
+              <div class="income-tooltip__value">${won}</div>
+            </div>
+            <div class="income-tooltip__row" style="margin-top: 4px;">
+              <span class="income-tooltip__dot" style="background: rgba(248, 113, 113, 1);"></span>
+              <span class="income-tooltip__label">Lost Quotes:</span>
+              <div class="income-tooltip__value" style="font-size: 15px; opacity: 0.85;">${lost}</div>
+            </div>
+          </div>
+        `;
+      }
+    }
   };
 
   // Exhibit 1.2: Bid Outcome Distribution
@@ -116,7 +203,7 @@ export class BidsWinLossComponent implements OnInit {
   }
 
   private emptyPage<T>(): PaginatedResult<T> {
-    return { items: [], totalCount: 0, pageNumber: 1, pageSize: 15, totalPages: 0, hasPreviousPage: false, hasNextPage: false };
+    return { items: [], totalCount: 0, pageNumber: 1, pageSize: 10, totalPages: 0, hasPreviousPage: false, hasNextPage: false };
   }
 
   loadMetadata(): void {
@@ -310,6 +397,43 @@ export class BidsWinLossComponent implements OnInit {
     if (this.metadata?.vendors?.length === 1) return this.metadata.vendors[0].label;
     if (this.chartsData?.vendorPerformance?.length === 1) return this.chartsData.vendorPerformance[0].vendorName;
     return 'Authenticated Vendor Account';
+  }
+
+  toggleFilterBar(): void {
+    this.showFilterBar = !this.showFilterBar;
+  }
+
+  goBack(): void {
+    window.history.back();
+  }
+
+  getPages(): number[] {
+    const data = this.activeSection === 'bids' ? this.bidsData : this.rfqsData;
+    const totalPages = data?.totalPages || 1;
+    const current = data?.pageNumber || 1;
+    const pages: number[] = [];
+    const maxVisible = 5;
+
+    let start = Math.max(1, current - Math.floor(maxVisible / 2));
+    let end = Math.min(totalPages, start + maxVisible - 1);
+
+    if (end - start + 1 < maxVisible) {
+      start = Math.max(1, end - maxVisible + 1);
+    }
+
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+    return pages;
+  }
+
+  getStatusChipClass(status: string): string {
+    const s = (status || '').toLowerCase();
+    if (s === 'won' || s.includes('award') || s.includes('complete') || s.includes('delivered')) return 'chip chip--success';
+    if (s === 'lost' || s.includes('reject') || s.includes('cancel')) return 'chip chip--rejected';
+    if (s.includes('pending') || s.includes('evaluation')) return 'chip chip--pending';
+    if (s.includes('open') || s.includes('progress') || s === 'new') return 'chip chip--approved';
+    return 'chip chip--draft';
   }
 
   getOutcomePillClass(outcome: string): string {

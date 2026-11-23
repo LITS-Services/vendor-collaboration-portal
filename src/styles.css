@@ -1326,7 +1326,7 @@ select.app-native-select-hidden {
   color: #111827;
 }
 
-.dropdown-menu:not(.sidebar-collapsed-menu):not(.entity-menu):not(.lang-dropdown-menu):not(.user-profile-menu):not(.notification-dropdown):not(.dropdown-menu-media):not(.iti__dropdown-content) .dropdown-item.active {
+.dropdown-menu:not(.sidebar-collapsed-menu):not(.entity-menu):not(.lang-dropdown-menu):not(.user-profile-menu):not(.notification-dropdown):not(.dropdown-menu-media):not(.iti__dropdown-content) .dropdown-item.active:not(:hover):not(:focus) {
   background: #edf7f1 !important;
   color: #249D57 !important;
   font-weight: 600 !important;
@@ -1715,6 +1715,40 @@ button#filterDropdown img {
   vertical-align: middle !important;
 }
 
+.toolbar-action-btn i.toolbar-icon,
+button#filterDropdown i.toolbar-icon {
+  width: 18px !important;
+  height: 18px !important;
+  font-size: 16px !important;
+  line-height: 1 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.toolbar-action-btn:disabled,
+.toolbar-action-btn[disabled] {
+  opacity: 0.55 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+}
+
+.toolbar-action-btn.active-action img.toolbar-icon {
+  filter: invert(36%) sepia(87%) saturate(415%) hue-rotate(94deg) brightness(92%) contrast(89%);
+}
+
+.table-toolbar {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.table-toolbar .toolbar-item {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
 .toolbar-action-btn .toolbar-label,
 button#filterDropdown .toolbar-label {
   user-select: none !important;
@@ -1816,4 +1850,120 @@ app-content-layout .main-panel,
 app-content-layout .wrapper {
   margin-top: 0 !important;
   padding-top: 0 !important;
+}
+
+/* Horizontal Menu & Dropdown Icon Alignment */
+.navbar-horizontal .dropdown-menu,
+.vp-dropdown-menu {
+  padding: 6px !important;
+}
+
+.navbar-horizontal .dropdown-menu .dropdown-item,
+.vp-dropdown-menu .dropdown-item {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 8px !important;
+  padding: 8px 14px !important;
+  border-radius: 6px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: #334155 !important;
+  background-color: transparent !important;
+  transition: all 0.15s ease !important;
+}
+
+.navbar-horizontal .dropdown-menu .dropdown-item span,
+.vp-dropdown-menu .dropdown-item span {
+  color: inherit !important;
+}
+
+.menu-icon-img,
+.vp-dropdown-menu .dropdown-item .menu-icon-img {
+  width: 16px !important;
+  height: 16px !important;
+  min-width: 16px !important;
+  min-height: 16px !important;
+  max-width: 16px !important;
+  max-height: 16px !important;
+  flex-shrink: 0 !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+  margin-right: 6px !important;
+  object-fit: contain !important;
+  transition: filter 0.15s ease !important;
+}
+
+/* 1) Active item when NOT hovered or focused (soft green pill) */
+.navbar-horizontal .dropdown-menu .dropdown-item.active:not(:hover):not(:focus),
+.vp-dropdown-menu .dropdown-item.active:not(:hover):not(:focus) {
+  background-color: #e8f5ee !important;
+  color: #249d57 !important;
+  font-weight: 600 !important;
+}
+
+.navbar-horizontal .dropdown-menu .dropdown-item.active:not(:hover):not(:focus) .menu-icon-img,
+.vp-dropdown-menu .dropdown-item.active:not(:hover):not(:focus) .menu-icon-img {
+  filter: invert(36%) sepia(87%) saturate(415%) hue-rotate(94deg) brightness(92%) contrast(89%) !important;
+}
+
+.navbar-horizontal .dropdown-menu .dropdown-item.active:not(:hover):not(:focus) i,
+.vp-dropdown-menu .dropdown-item.active:not(:hover):not(:focus) i {
+  color: #249d57 !important;
+}
+
+/* 2) Hover, Focus, and Active Click: Solid Green background, Pure White text and White icon */
+.navbar-horizontal .dropdown-menu .dropdown-item:hover,
+.navbar-horizontal .dropdown-menu .dropdown-item:focus,
+.navbar-horizontal .dropdown-menu .dropdown-item:active,
+.navbar-horizontal .dropdown-menu .dropdown-item.active:hover,
+.navbar-horizontal .dropdown-menu .dropdown-item.active:focus,
+.vp-dropdown-menu .dropdown-item:hover,
+.vp-dropdown-menu .dropdown-item:focus,
+.vp-dropdown-menu .dropdown-item:active,
+.vp-dropdown-menu .dropdown-item.active:hover,
+.vp-dropdown-menu .dropdown-item.active:focus {
+  background: #249D57 !important;
+  background-color: #249D57 !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+.navbar-horizontal .dropdown-menu .dropdown-item:hover span,
+.navbar-horizontal .dropdown-menu .dropdown-item:focus span,
+.navbar-horizontal .dropdown-menu .dropdown-item:active span,
+.navbar-horizontal .dropdown-menu .dropdown-item.active:hover span,
+.navbar-horizontal .dropdown-menu .dropdown-item.active:focus span,
+.vp-dropdown-menu .dropdown-item:hover span,
+.vp-dropdown-menu .dropdown-item:focus span,
+.vp-dropdown-menu .dropdown-item:active span,
+.vp-dropdown-menu .dropdown-item.active:hover span,
+.vp-dropdown-menu .dropdown-item.active:focus span {
+  color: #ffffff !important;
+}
+
+.navbar-horizontal .dropdown-menu .dropdown-item:hover .menu-icon-img,
+.navbar-horizontal .dropdown-menu .dropdown-item:focus .menu-icon-img,
+.navbar-horizontal .dropdown-menu .dropdown-item:active .menu-icon-img,
+.navbar-horizontal .dropdown-menu .dropdown-item.active:hover .menu-icon-img,
+.navbar-horizontal .dropdown-menu .dropdown-item.active:focus .menu-icon-img,
+.vp-dropdown-menu .dropdown-item:hover .menu-icon-img,
+.vp-dropdown-menu .dropdown-item:focus .menu-icon-img,
+.vp-dropdown-menu .dropdown-item:active .menu-icon-img,
+.vp-dropdown-menu .dropdown-item.active:hover .menu-icon-img,
+.vp-dropdown-menu .dropdown-item.active:focus .menu-icon-img {
+  filter: brightness(0) invert(1) !important;
+}
+
+.navbar-horizontal .dropdown-menu .dropdown-item:hover i,
+.navbar-horizontal .dropdown-menu .dropdown-item:focus i,
+.navbar-horizontal .dropdown-menu .dropdown-item:active i,
+.navbar-horizontal .dropdown-menu .dropdown-item.active:hover i,
+.navbar-horizontal .dropdown-menu .dropdown-item.active:focus i,
+.vp-dropdown-menu .dropdown-item:hover i,
+.vp-dropdown-menu .dropdown-item:focus i,
+.vp-dropdown-menu .dropdown-item:active i,
+.vp-dropdown-menu .dropdown-item.active:hover i,
+.vp-dropdown-menu .dropdown-item.active:focus i {
+  color: #ffffff !important;
 }
