@@ -381,7 +381,7 @@ export class QuotationBidModalComponent implements OnInit {
 
   addBid(itemId: number) {
     if (this.isBidClosed()) {
-      this.toastr.info("Bid submission is closed for this RFQ.");
+      this.toastr.info("Quote submission is closed for this RFQ.");
       return;
     }
     
@@ -401,7 +401,7 @@ export class QuotationBidModalComponent implements OnInit {
 
   editBid(itemId: number) {
     if (this.isBidClosed()) {
-      this.toastr.info("Bid submission is closed for this RFQ.");
+      this.toastr.info("Quote submission is closed for this RFQ.");
       return;
     }
     
@@ -413,7 +413,7 @@ export class QuotationBidModalComponent implements OnInit {
 
   deleteBid(itemId: number) {
     if (this.isBidClosed()) {
-      this.toastr.info("Bid submission is closed for this RFQ.");
+      this.toastr.info("Quote submission is closed for this RFQ.");
       return;
     }
     const bid = this.bidMap.get(itemId);
@@ -424,7 +424,7 @@ export class QuotationBidModalComponent implements OnInit {
         this.bidMap.delete(itemId);
       }
     }
-    this.toastr.success("Bid removed successfully!");
+    this.toastr.success("Quote removed successfully!");
   }
 
   saveBid(itemId: number) {
@@ -641,7 +641,7 @@ export class QuotationBidModalComponent implements OnInit {
   // }
   submitBids() {
     if (this.isBidClosed()) {
-      this.toastr.info('Bid submission is closed for this RFQ.');
+      this.toastr.info('Quote submission is closed for this RFQ.');
       return;
     }
 
@@ -652,13 +652,13 @@ export class QuotationBidModalComponent implements OnInit {
     });
 
     if (missingBids.length > 0) {
-      this.toastr.warning('Please place bids against all items before submitting.');
+      this.toastr.warning('Please place quotes against all items before submitting.');
       return; 
     }
 
     Swal.fire({
-      title: 'Submit Bids?',
-      text: 'Once submitted, you may not be able to modify the bids until revised.',
+      title: 'Submit Quotes?',
+      text: 'Once submitted, you may not be able to modify the quotes until revised.',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Yes, submit',
@@ -688,7 +688,7 @@ export class QuotationBidModalComponent implements OnInit {
 
           Swal.fire({
             title: 'Error',
-            text: 'Failed to submit bids. Please try again.',
+            text: 'Failed to submit quotes. Please try again.',
             icon: 'error'
           });
         }

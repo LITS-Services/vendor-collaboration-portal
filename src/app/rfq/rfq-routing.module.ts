@@ -74,7 +74,7 @@ const routes: Routes = [
       {
         path: 'submit-bid/:rfqId',
         component: QuotationBidModalComponent,
-        data: { title: 'Submit Bid' }
+        data: { title: 'Submit Quote' }
       },
       {
         path: '',

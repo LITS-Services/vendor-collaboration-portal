@@ -170,15 +170,15 @@ export class NewRfqComponent implements OnInit {
 
     console.log('📤 Submitting payload:', submissionList); // helpful debug log
 if (submissionList.length === 0) {
-    this.toastr.info('Submission of Bid includes an already submitted bid. Please check your bids.');
+    this.toastr.info('Submission of Quote includes an already submitted quote. Please check your quotes.');
     return; // stop execution, don’t show SweetAlert
   }
     Swal.fire({
       title: 'Are you sure?',
-      text: 'Have you carefully reviewed your bids before submitting?',
+      text: 'Have you carefully reviewed your quotes before submitting?',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Yes, submit bids',
+      confirmButtonText: 'Yes, submit quotes',
       cancelButtonText: 'Cancel',
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33'
@@ -188,7 +188,7 @@ if (submissionList.length === 0) {
           next: () => {
             Swal.fire({
               title: 'Submitted!',
-              text: 'Your bids have been submitted successfully.',
+              text: 'Your quotes have been submitted successfully.',
               icon: 'success',
               confirmButtonColor: '#3085d6'
             });
@@ -196,10 +196,10 @@ if (submissionList.length === 0) {
             this.activeModal.close(true);
           },
           error: (err) => {
-            console.error('Error submitting bids:', err);
+            console.error('Error submitting quotes:', err);
             Swal.fire({
               title: 'Error!',
-              text: 'Failed to submit bids. Please try again later.',
+              text: 'Failed to submit quotes. Please try again later.',
               icon: 'error',
               confirmButtonColor: '#d33'
             });

@@ -8,13 +8,13 @@
           style="position: sticky; width: 40px; height: 40px; display: flex ; align-items: center; justify-content: center;">
           <img src="assets/img/svg-icons/back-icon.svg" alt="Back" class="back-icon" />
         </button>
-        <h1 class="mb-0">Quotation Bid</h1>
+        <h1 class="mb-0">Quotation Quote</h1>
       </div>
       <div class="col-6 d-flex align-items-center justify-content-end">
         <!-- <button class="btn btn-outline-primary me-2">Cancel</button> -->
         <button class="btn btn-primary" (click)="submitBids()">
             <i class="ft-check me-1"></i>
-          Submit Bid</button>
+          Submit Quote</button>
         <!-- <button 
         class="btn btn-primary"
         [disabled]="isLoading"
@@ -33,7 +33,7 @@
         <span class="custom-vl mx-2"></span>
         <button class="btn btn-sm cstm-ui-table-btn me-2" (click)="submitBids()">
           <i class="ft-check"></i>
-          <label class="ms-1 mt-1">Submit Bids</label>
+          <label class="ms-1 mt-1">Submit Quotes</label>
         </button>
       </div>
     </div> -->
@@ -193,11 +193,11 @@
                               </div>
                             </div>
                             
-                            <!-- Place Bid Button (Right Side) -->
+                            <!-- Place Quote Button (Right Side) -->
                             <div *ngIf="(!bidMap.has(item.id) || getBid(item.id).isDeleted) && editingBidItemId !== item.id" 
                               class="place-bid-section-inline">
                               <button class="btn btn-primary" (click)="addBid(item.id)">
-                               <i class="ft-plus me-1"></i> Place Bid
+                               <i class="ft-plus me-1"></i> Place Quote
                               </button>
                             </div>
                           </div>
@@ -206,7 +206,7 @@
                           <div *ngIf="editingBidItemId === item.id" class="edit-quotation-section">
                             <div class="edit-form-row">
                               <div class="edit-form-col">
-                                <label class="form-label">Bidding Amount<span class="text-danger">*</span></label>
+                                <label class="form-label">Quote Amount<span class="text-danger">*</span></label>
                                 <input type="number" 
                                   class="form-control unit-price-input" 
                                   [(ngModel)]="getBid(item.id).biddingAmount"
@@ -230,7 +230,7 @@
                                   <button class="btn btn-primary" 
                                     [disabled]="!isBidEditable(item.id)  || !(getBid(item.id)?.biddingAmount > 0)"
                                     (click)="saveBid(item.id)">
-                                    <i [ngClass]="getBid(item.id)?.id ? 'ft-check me-1' : 'ft-plus me-1'"></i> {{ getBid(item.id)?.id ? 'Update Bid' : 'Add Bid' }}
+                                    <i [ngClass]="getBid(item.id)?.id ? 'ft-check me-1' : 'ft-plus me-1'"></i> {{ getBid(item.id)?.id ? 'Update Quote' : 'Add Quote' }}
                                   </button>
                                 </div>
                               </div>
