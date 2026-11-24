@@ -50,6 +50,8 @@ export class CompanyRegistrationComponent implements OnInit {
   vendorPostingGroupOptions: Array<{ id: string | number; desc: string }> = [];
   vatBusinessPostingGroupOptions: Array<{ id: string | number; desc: string }> = [];
   generalBusinessPostingGroupOptions: Array<{ id: string | number; desc: string }> = [];
+  categoryOptions: Array<{ id: number; name: string; code?: string; desc: string }> = [];
+  selectedCategoryIds: number[] = [];
 
   showContactDeletePopup: boolean = false;
   showAddressDeletePopup: boolean = false;
@@ -192,6 +194,7 @@ export class CompanyRegistrationComponent implements OnInit {
     });
 
     this.loadAccountingLookups();
+    this.loadCategories();
     this.generateVendorAccountNumber();
 
     this.layoutSub = this.configService.templateConf$.subscribe((templateConf) => {
@@ -375,6 +378,26 @@ export class CompanyRegistrationComponent implements OnInit {
     });
   }
 
+  loadCategories(): void {
+    this.companyService.getCategoriesDropdown().subscribe({
+      next: (res: any) => {
+        const list = res?.value || res?.data || res?.result || res?.$values || res || [];
+        if (Array.isArray(list)) {
+          this.categoryOptions = list.map((item: any) => ({
+            id: item?.id ?? item?.Id,
+            name: item?.name ?? item?.Name ?? item?.description ?? item?.desc ?? '',
+            code: item?.code ?? item?.Code ?? '',
+            desc: item?.name ?? item?.Name ?? item?.description ?? item?.desc ?? ''
+          }));
+        }
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('Error loading categories dropdown:', err);
+      }
+    });
+  }
+
   loadCompanyById(companyId: number) {
     this.isLoading = true;
     this.spinner.show();
@@ -427,6 +450,10 @@ export class CompanyRegistrationComponent implements OnInit {
           }
 
           this.companyForm.patchValue({ remarks: this.remarks });
+
+          // Categories
+          const incomingCategoryIds = company.categoryIds || (company.categories ? company.categories.map((c: any) => c.id || c.Id) : []);
+          this.selectedCategoryIds = Array.isArray(incomingCategoryIds) ? incomingCategoryIds : [];
 
           // Purchasing Demographics
           const pd = company.vendorCompanyPurchasingDemographics || {};
@@ -940,6 +967,7 @@ export class CompanyRegistrationComponent implements OnInit {
       contacts: this.getContactsForPayload(),
       bankDetails: this.getBankForPayload(),
       purchasingDemographics: this.getPurchasingDemographicsPayload(),
+      categoryIds: this.selectedCategoryIds || [],
       attachments: this.attachedFiles.map(f => ({
         fileName: f.fileName,
         fileFormat: f.format?.split('/').pop() || f.format || 'unknown',
@@ -968,6 +996,7 @@ export class CompanyRegistrationComponent implements OnInit {
         // procurementCompanyId: [...this.selectedProcurementCompanyIds] // REMOVED
       },
       SubmitterId: this.userId,
+      categoryIds: this.selectedCategoryIds || [],
       // procurementCompanyId: [...this.selectedProcurementCompanyIds], // REMOVED
       // VendorEntityAssociationId: this.selectedVendorEntityAssociationId , // REMOVED
       remarks: this.isEditMode ? this.remarks : (this.companyForm?.get('remarks')?.value || this.remarks),

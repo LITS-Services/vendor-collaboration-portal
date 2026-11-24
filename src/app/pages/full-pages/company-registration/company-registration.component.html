@@ -240,6 +240,27 @@
 
                                                                     <div class="col-lg col-md-6 form-group"></div>
                                                                 </div>
+
+                                                                <div class="row mt-2">
+                                                                    <div class="col-12 form-group">
+                                                                        <label>Categories
+                                                                            <i class="fa fa-info-circle text-muted ms-1"
+                                                                                ngbTooltip="Select categories associated with your company"
+                                                                                placement="right"></i>
+                                                                        </label>
+                                                                        <ng-select
+                                                                            class="w-cstm"
+                                                                            [items]="categoryOptions"
+                                                                            bindLabel="name"
+                                                                            bindValue="id"
+                                                                            [multiple]="true"
+                                                                            [closeOnSelect]="false"
+                                                                            placeholder="Select categories"
+                                                                            [(ngModel)]="selectedCategoryIds"
+                                                                            [disabled]="isReadOnly">
+                                                                        </ng-select>
+                                                                    </div>
+                                                                </div>
                                                            
                                                            
                                                        

@@ -193,6 +193,11 @@ thead {
   width: 90% !important;
 }
 
+::ng-deep ng-select.w-cstm,
+ng-select.w-cstm {
+  width: 90% !important;
+}
+
 .logo-div {
   border-left: 1px solid #f3f4f6;
 }
