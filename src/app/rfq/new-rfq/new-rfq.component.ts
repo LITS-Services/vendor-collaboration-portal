@@ -85,6 +85,7 @@ export class NewRfqComponent implements OnInit {
     itemType: item.itemType,
     itemId: item.itemId,
     itemName: item.itemName,
+    categoryName: item.categoryName || item.procurementCategoryName || item.category || '',
     description: item.itemDescription,
     amount: item.amount,
     vendorUserId: item.vendorUserId,
