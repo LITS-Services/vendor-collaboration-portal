@@ -1474,13 +1474,100 @@ select.app-native-select-hidden {
   border-radius: 9px !important;
   border: 1.5px solid #D7D7D7 !important;
   min-height: 42px;
-  height: 42px;
   background-color: #ffffff !important;
   color: #2B2F33 !important;
   font-size: 15px !important;
   padding: 0 12px 0 16px !important;
   box-sizing: border-box !important;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* Single select keeps fixed height matching form controls */
+.ng-select.ng-select-single .ng-select-container {
+  height: 42px;
+}
+
+/* Multiple select auto-expands to accommodate wrapped pills/tags */
+.ng-select.ng-select-multiple .ng-select-container {
+  height: auto !important;
+  min-height: 42px !important;
+  padding: 4px 10px 4px 12px !important;
+  align-items: center;
+}
+
+.ng-select.ng-select-multiple .ng-select-container .ng-value-container {
+  padding: 2px 0 !important;
+  gap: 4px 6px !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+}
+
+.ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-value {
+  display: inline-flex !important;
+  align-items: center !important;
+  background-color: #edf7f1 !important;
+  color: #1e7e44 !important;
+  border: 1px solid #c8e6c9 !important;
+  border-radius: 6px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  padding: 2px 8px 2px 5px !important;
+  margin: 0 !important;
+  line-height: 1.4 !important;
+  box-sizing: border-box !important;
+  white-space: nowrap !important;
+}
+
+.ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-value .ng-value-icon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 16px !important;
+  height: 16px !important;
+  margin-right: 4px !important;
+  border: none !important;
+  border-radius: 4px !important;
+  padding: 0 !important;
+  font-size: 14px !important;
+  line-height: 1 !important;
+  color: #1e7e44 !important;
+  cursor: pointer !important;
+  transition: background-color 0.15s ease, color 0.15s ease !important;
+}
+
+.ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-value .ng-value-icon:hover {
+  background-color: rgba(30, 126, 68, 0.18) !important;
+  color: #14532d !important;
+}
+
+.ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-value .ng-value-label {
+  padding: 0 !important;
+  color: inherit !important;
+}
+
+.ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-input {
+  padding: 2px 4px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  margin: 0 !important;
+}
+
+.ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-input > input {
+  font-size: 14px !important;
+  color: #2B2F33 !important;
+}
+
+.ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-placeholder {
+  top: auto !important;
+  padding: 0 !important;
+  color: #9ca3af !important;
+  font-size: 14px !important;
+}
+
+.ng-select .ng-clear-wrapper {
+  align-self: center;
+  padding: 0 4px;
 }
 
 .ng-select .ng-select-container:hover {
