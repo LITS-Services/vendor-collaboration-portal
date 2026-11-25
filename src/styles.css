@@ -994,9 +994,54 @@ body.swal2-shown {
   transition: transform 0.2s ease, filter 0.2s ease;
 }
 
-.btn-outline-secondary:hover .back-icon,
+/* App-wide Back Button Styling (Matching App Green Theme #249D57) */
+button.btn-outline-secondary.rounded-circle,
+.app-back-btn {
+  background-color: #ffffff !important;
+  border: 1.5px solid #249D57 !important;
+  color: #249D57 !important;
+  box-shadow: 0 1px 4px rgba(36, 157, 87, 0.1) !important;
+  transition: all 0.2s ease-in-out !important;
+}
+
+button.btn-outline-secondary.rounded-circle .back-icon,
+.app-back-btn .back-icon {
+  filter: invert(48%) sepia(55%) saturate(777%) hue-rotate(95deg) brightness(96%) contrast(87%);
+  transition: filter 0.2s ease, transform 0.2s ease;
+}
+
+button.btn-outline-secondary.rounded-circle:hover,
+.app-back-btn:hover {
+  background-color: #249D57 !important;
+  border-color: #249D57 !important;
+  color: #ffffff !important;
+  transform: translateX(-2px);
+  box-shadow: 0 3px 8px rgba(36, 157, 87, 0.25) !important;
+}
+
+button.btn-outline-secondary.rounded-circle:hover .back-icon,
+.app-back-btn:hover .back-icon,
 .btn:hover .back-icon.invert-on-hover {
-  filter: brightness(0) invert(1);
+  filter: brightness(0) invert(1) !important;
+}
+
+button.btn-outline-secondary.rounded-circle:focus,
+button.btn-outline-secondary.rounded-circle:active,
+button.btn-outline-secondary.rounded-circle:not(:disabled):not(.disabled):active,
+.app-back-btn:focus,
+.app-back-btn:active {
+  background-color: #f2fff7 !important;
+  border-color: #249D57 !important;
+  color: #249D57 !important;
+  box-shadow: 0 0 0 0.2rem rgba(36, 157, 87, 0.25) !important;
+  outline: none !important;
+}
+
+button.btn-outline-secondary.rounded-circle:focus .back-icon,
+button.btn-outline-secondary.rounded-circle:active .back-icon,
+.app-back-btn:focus .back-icon,
+.app-back-btn:active .back-icon {
+  filter: invert(48%) sepia(55%) saturate(777%) hue-rotate(95deg) brightness(96%) contrast(87%) !important;
 }
 
 /* ==========================================================================

@@ -2,7 +2,7 @@
   <div class="container-fluid">
 
     <div class="col-6 gap-2 d-flex align-items-center">
-      <button class="btn btn-outline-secondary rounded-circle" (click)="goBacktoPOList()"
+      <button class="btn btn-outline-secondary rounded-circle app-back-btn" (click)="goBacktoPOList()"
         style="position: sticky; width: 40px; height: 40px; display: flex ; align-items: center; justify-content: center;">
         <img src="assets/img/svg-icons/back-icon.svg" alt="Back" class="back-icon" />
       </button>
@@ -53,6 +53,11 @@
         <button (click)="selectTab('invoice-details')" [ngClass]="{ 'tab-current': selectedTab === 'invoice-details' }"
           class="po-style-tab">
           <span>INVOICING</span>
+        </button>
+
+        <button (click)="selectTab('returns-details')" [ngClass]="{ 'tab-current': selectedTab === 'returns-details' }"
+          class="po-style-tab">
+          <span>RETURNS</span>
         </button>
       </nav>
     </div>
@@ -295,6 +300,41 @@
       </ngx-datatable>
     </div>
 
+    <div *ngIf="selectedTab === 'returns-details'">
+      <ngx-datatable class="bootstrap core-bootstrap" [rows]="returnsList" [columnMode]="'force'" [headerHeight]="50"
+        [footerHeight]="50" rowHeight="50" [limit]="10" [scrollbarH]="true" [loadingIndicator]="loading">
+        <ngx-datatable-column name="Sr. No." [sortable]="false" [width]="70">
+          <ng-template let-rowIndex="rowIndex" ngx-datatable-cell-template>
+            <span>{{ rowIndex + 1 }}</span>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Return No" prop="returnNumber" [sortable]="false"></ngx-datatable-column>
+        <ngx-datatable-column name="Return Date" prop="returnDate" [sortable]="false">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            {{ row.returnDate | date:'yyyy-MM-dd' }}
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Return Type" prop="returnType" [sortable]="false"></ngx-datatable-column>
+        <ngx-datatable-column name="Receiver" prop="receiverName" [sortable]="false"></ngx-datatable-column>
+        <ngx-datatable-column name="Status" prop="requestStatus" [sortable]="false">
+          <ng-template ngx-datatable-cell-template let-value="value">
+            <span class="status-pill" [ngClass]="mapStatusKey(value)">
+              {{ value || '-' }}
+            </span>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="Action" [sortable]="false" [width]="90">
+          <ng-template let-row="row" ngx-datatable-cell-template>
+            <button class="btn btn-sm csm-remarks-btn d-inline-flex align-items-center gap-1"
+              (click)="openReturnDetail(row)">
+              <i class="ft-eye"></i>
+              <span>View</span>
+            </button>
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+    </div>
+
   </div>
 
   <ng-template #detailModal>
@@ -313,6 +353,8 @@
         (stateChange)="onGrnStateChange($event)"></app-grn-details>
       <app-invoice #invoiceDetailComp *ngIf="selectedInvoicePoId" [poId]="selectedInvoicePoId" [inModal]="true"
         (stateChange)="onInvoiceStateChange($event)"></app-invoice>
+      <app-return-details #returnDetailComp *ngIf="selectedReturnId" [returnId]="selectedReturnId" [poId]="poId"
+        [inModal]="true" (stateChange)="onReturnStateChange($event)"></app-return-details>
     </div>
     <div class="modal-footer modal-footer-soft">
       <ng-container *ngIf="selectedShipmentId && !modalShipmentReadyForPosting">

@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { PurchaseOrdersCountVM } from 'app/dashboard/dashboard1/dashboard1.component';
+import { withSkipToast } from 'app/shared/interceptor/response-handler.interceptor';
 import { environment } from 'environments/environment';
 import { Observable } from 'rxjs';
 
@@ -88,5 +89,16 @@ export class PurchaseOrderService {
    .set("pageSize", pageSize);
 
    return this.http.get<any>(`${this.baseUrl}/get-all-invoices-by-ponumber`, { params });
+  }
+
+  getPurchaseReturnsByPurchaseOrderId(purchaseOrderId: number): Observable<any> {
+    return this.http.get<any>(
+      `${this.baseUrl}/get-purchase-returns-by-purchase-order-id?purchaseOrderId=${purchaseOrderId}`,
+      { context: withSkipToast() }
+    );
+  }
+
+  getPurchaseReturnById(id: number): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/get-purchase-return-by-id?id=${id}`);
   }
 }

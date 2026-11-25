@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, OnInit, TemplateRef, ViewChild } from '@a
 import { ActivatedRoute, Router } from '@angular/router';
 import { GrnDetailsComponent } from 'app/purchase-order/purchase-order-details/grn-details/grn-details.component';
 import { InvoiceComponent } from 'app/purchase-order/purchase-order-details/invoice/invoice.component';
+import { ReturnDetailsComponent } from 'app/purchase-order/purchase-order-details/return-details/return-details.component';
 import { ShipmentDetailsComponent } from 'app/purchase-order/purchase-order-details/shipment-details/shipment-details.component';
 import { ShipmentLinesModalComponent } from 'app/purchase-order/purchase-order-details/shipment-lines-modal/shipment-lines-modal.component';
 import { PurchaseOrderService } from 'app/shared/services/purchase-order.service';
@@ -23,6 +24,7 @@ export class PurchaseOrderDetailsComponent implements OnInit {
   @ViewChild('shipmentDetailComp') shipmentDetailComp?: ShipmentDetailsComponent;
   @ViewChild('grnDetailComp') grnDetailComp?: GrnDetailsComponent;
   @ViewChild('invoiceDetailComp') invoiceDetailComp?: InvoiceComponent;
+  @ViewChild('returnDetailComp') returnDetailComp?: ReturnDetailsComponent;
   poDetails: any;
   loading = true;
   poId!: number;
@@ -31,20 +33,24 @@ export class PurchaseOrderDetailsComponent implements OnInit {
   shipments: any[] = [];
   grnList: any[] = [];
   invoiceList: any[] = [];
+  returnsList: any[] = [];
   selectedShipmentId?: number;
   selectedGrnId?: number;
   selectedInvoicePoId?: number;
+  selectedReturnId?: number;
   modalTitle = '';
   modalRef?: NgbModalRef;
   shipmentLoaded = false;
   grnLoaded = false;
   invoiceLoaded = false;
+  returnsLoaded = false;
   modalShipmentReady = false;
   modalShipmentIsEdit = false;
   modalShipmentReadyForPosting = false;
   modalInvoiceReady = false;
   modalInvoiceIsEdit = false;
   modalGrnReady = false;
+  modalReturnReady = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -109,6 +115,10 @@ export class PurchaseOrderDetailsComponent implements OnInit {
 
     if (tab === 'invoice-details' && !this.invoiceLoaded) {
       this.loadInvoiceList();
+    }
+
+    if (tab === 'returns-details' && !this.returnsLoaded) {
+      this.loadReturnsList();
     }
   }
 
@@ -176,10 +186,32 @@ export class PurchaseOrderDetailsComponent implements OnInit {
     });
   }
 
+  loadReturnsList() {
+    this.loading = true;
+    this.spinner.show();
+    this.purchaseOrderService.getPurchaseReturnsByPurchaseOrderId(this.poId).subscribe({
+      next: (res) => {
+        this.returnsList = this.extractRows(res);
+        this.returnsLoaded = true;
+        this.loading = false;
+        this.spinner.hide();
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.returnsList = [];
+        this.returnsLoaded = true;
+        this.loading = false;
+        this.spinner.hide();
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
   openShipmentDetail(row: any) {
     this.selectedShipmentId = row.id;
     this.selectedGrnId = undefined;
     this.selectedInvoicePoId = undefined;
+    this.selectedReturnId = undefined;
     this.modalShipmentReady = false;
     this.modalShipmentIsEdit = false;
     this.modalShipmentReadyForPosting = false;
@@ -191,6 +223,7 @@ export class PurchaseOrderDetailsComponent implements OnInit {
     this.selectedGrnId = row.id;
     this.selectedShipmentId = undefined;
     this.selectedInvoicePoId = undefined;
+    this.selectedReturnId = undefined;
     this.modalGrnReady = false;
     this.modalTitle = 'Goods Receipt Note';
     this.modalRef = this.modalService.open(this.detailModal, { size: 'xl', centered: true, scrollable: true });
@@ -200,10 +233,27 @@ export class PurchaseOrderDetailsComponent implements OnInit {
     this.selectedInvoicePoId = Number(row.purchaseOrderId);
     this.selectedShipmentId = undefined;
     this.selectedGrnId = undefined;
+    this.selectedReturnId = undefined;
     this.modalInvoiceReady = false;
     this.modalInvoiceIsEdit = false;
     this.modalTitle = 'Invoice Detail';
     this.modalRef = this.modalService.open(this.detailModal, { size: 'xl', centered: true, scrollable: true });
+  }
+
+  openReturnDetail(row: any) {
+    this.selectedReturnId = row.id;
+    this.selectedShipmentId = undefined;
+    this.selectedGrnId = undefined;
+    this.selectedInvoicePoId = undefined;
+    this.selectedPoLineId = undefined;
+    this.modalReturnReady = false;
+    this.modalTitle = 'Purchase Return Details';
+    this.modalRef = this.modalService.open(this.detailModal, { size: 'xl', centered: true, scrollable: true });
+  }
+
+  onReturnStateChange(event: { ready: boolean }) {
+    this.modalReturnReady = event.ready;
+    this.cdr.detectChanges();
   }
 
   closeModal() {
@@ -274,6 +324,7 @@ export class PurchaseOrderDetailsComponent implements OnInit {
     this.selectedShipmentId = undefined;
     this.selectedGrnId = undefined;
     this.selectedInvoicePoId = undefined;
+    this.selectedReturnId = undefined;
 
     this.modalShipmentLinesReady = false;
     this.modalTitle = 'Shipment Details';
@@ -315,6 +366,10 @@ export class PurchaseOrderDetailsComponent implements OnInit {
   private extractRows(res: any): any[] {
     if (Array.isArray(res)) {
       return res;
+    }
+
+    if (Array.isArray(res?.value)) {
+      return res.value;
     }
 
     return res?.value?.result || res?.result || res?.items || res?.data?.items || res?.value?.items || [];

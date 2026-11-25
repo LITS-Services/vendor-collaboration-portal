@@ -28,6 +28,7 @@ import { ShipmentDetailsComponent } from './purchase-order-details/shipment-deta
 import { GrnDetailsComponent } from './purchase-order-details/grn-details/grn-details.component';
 import { InvoiceComponent } from './purchase-order-details/invoice/invoice.component';
 import { ShipmentLinesModalComponent } from './purchase-order-details/shipment-lines-modal/shipment-lines-modal.component';
+import { ReturnDetailsComponent } from './purchase-order-details/return-details/return-details.component';
 
 
 @NgModule({
@@ -40,7 +41,8 @@ import { ShipmentLinesModalComponent } from './purchase-order-details/shipment-l
     ShipmentDetailsComponent,
     GrnDetailsComponent,
     InvoiceComponent,
-    ShipmentLinesModalComponent
+    ShipmentLinesModalComponent,
+    ReturnDetailsComponent
   ],
   imports: [
     CommonModule,

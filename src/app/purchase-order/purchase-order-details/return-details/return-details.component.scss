@@ -1,0 +1,261 @@
+textarea[disabled],
+input[disabled] {
+  background-color: #f9fafb !important;
+  cursor: not-allowed;
+}
+
+.table {
+  font-size: 0.85rem;
+}
+
+.cstm-ui-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.header-buttons,
+.cstm-ui-card {
+  display: flex;
+  justify-content: flex-start !important;
+  gap: 0.75rem;
+
+  .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.35rem;
+    font-size: 1.25rem;
+    padding: 0.5rem 1rem;
+    transition: all 0.2s ease;
+
+    i {
+      font-size: 1rem;
+    }
+
+    label {
+      margin: 0;
+      font-weight: 500;
+      cursor: pointer;
+    }
+  }
+
+  .cstm-ui-table-btn {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+
+    &:hover {
+      background-color: #0069d9;
+    }
+
+    i,
+    label {
+      color: #fff;
+    }
+  }
+
+  .vl {
+    width: 1px;
+    height: 28px;
+    background-color: #d1d5db;
+    align-self: center;
+    display: inline-block;
+  }
+}
+
+.section-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.transition-icon {
+  transition: transform 0.25s ease-in-out;
+  font-size: 19px;
+}
+
+.rotate-icon {
+  transform: rotate(180deg);
+}
+
+/* Smooth expand/collapse animation */
+.expand-wrapper {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, opacity 0.25s ease;
+  opacity: 0;
+}
+
+.expand-wrapper.expanded {
+  max-height: 500px;
+  opacity: 1;
+}
+
+// === Modern Table Styles ===
+.table-card {
+  border: 1px solid #eef2f6;
+  background: #ffffff;
+  font-size: 14px;
+  overflow: hidden;
+}
+
+.table__row {
+  display: grid;
+  gap: 8px;
+  padding: 10px 14px;
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+
+  &:not(.table__row--head) {
+    border-top: 1px solid #f1f5f9;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: rgba(36, 157, 87, 0.06);
+    }
+  }
+}
+
+.table__row--head {
+  background-color: #F4F4F4 !important;
+  color: #747474 !important;
+  font-family: 'Onest', sans-serif !important;
+  font-weight: 400 !important;
+  font-size: 14px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+}
+
+.table__row > div {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #606060;
+}
+
+.table__row--head > div {
+  background-color: #F4F4F4 !important;
+  color: #747474 !important;
+  font-family: 'Onest', sans-serif !important;
+  font-weight: 400 !important;
+  font-size: 14px !important;
+  text-transform: uppercase !important;
+  white-space: normal;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  line-height: 1.25;
+}
+
+.table-scroll {
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.table-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.table-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.table-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(148, 163, 184, 0.7);
+  border-radius: 999px;
+}
+
+.table-scroll::-webkit-scrollbar-button {
+  display: none;
+}
+
+.table__row--returns {
+  grid-template-columns:
+    minmax(0, 0.9fr)  /* Item No */
+    minmax(0, 1.4fr)  /* Description */
+    minmax(0, 0.9fr)  /* Received Qty */
+    minmax(0, 0.9fr)  /* Accepted Qty */
+    minmax(0, 0.9fr)  /* Rejected Qty */
+    minmax(0, 0.9fr)  /* Return Qty */
+    minmax(0, 1.1fr)  /* Unit Cost */
+    minmax(0, 1.1fr)  /* Condition */
+    minmax(0, 1.2fr); /* Remarks */
+}
+
+.table-scroll--returns {
+  max-height: 230px;
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+.table-card--returns {
+  overflow: auto;
+  width: 100%;
+}
+
+.table-card--returns::-webkit-scrollbar {
+  height: 8px;
+}
+
+.table-card--returns::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.table-card--returns::-webkit-scrollbar-thumb {
+  background-color: rgba(148, 163, 184, 0.7);
+  border-radius: 999px;
+}
+
+.mono {
+  font-variant-numeric: tabular-nums;
+}
+
+.text-end {
+  text-align: right;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 3rem 2rem;
+  margin: 2rem 0;
+  border: 2px dashed #ced4da;
+  border-radius: 0.5rem;
+  background-color: #f8f9fa;
+  color: #6c757d;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #f1f3f5;
+    border-color: #adb5bd;
+  }
+
+  .empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: #adb5bd;
+  }
+
+  .empty-message {
+    font-weight: 600;
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .empty-submessage {
+    font-size: 0.95rem;
+    color: #868e96;
+    margin: 0;
+  }
+}
