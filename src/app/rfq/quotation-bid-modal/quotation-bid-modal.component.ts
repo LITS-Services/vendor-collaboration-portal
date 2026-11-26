@@ -830,11 +830,11 @@ export class QuotationBidModalComponent implements OnInit {
     const html = `
       <div class="header-bar">
         <div>
-          <h1>Request For Quotation (RFQ)</h1>
+          <h1>Request For Quotation</h1>
           <div class="subtitle">Vendor Collaboration Portal</div>
         </div>
         <div class="meta-box">
-          <div class="doc-number">RFQ #: ${rfqNo}</div>
+          <div class="doc-number">QUOTATION #: ${rfqNo}</div>
           <div class="doc-date">Issue Date: ${subDate}</div>
           <div class="status-badge status-open">${statusText}</div>
         </div>
@@ -849,10 +849,10 @@ export class QuotationBidModalComponent implements OnInit {
 
       <div class="info-cards info-cards-3">
         <div class="info-card">
-          <div class="info-card-header">RFQ Overview</div>
+          <div class="info-card-header">Quotation Overview</div>
           <div class="info-card-body">
-            <div class="info-row"><span class="info-label">RFQ Number</span><span class="info-value">${rfqNo}</span></div>
-            <div class="info-row"><span class="info-label">PR Reference</span><span class="info-value">${rfq?.purchaseRequestNo || '-'}</span></div>
+            <div class="info-row"><span class="info-label">Quotation Number</span><span class="info-value">${rfqNo}</span></div>
+            <div class="info-row"><span class="info-label">Purchase Request</span><span class="info-value">${rfq?.purchaseRequestNo || '-'}</span></div>
             <div class="info-row"><span class="info-label">Issue Date</span><span class="info-value">${subDate}</span></div>
             <div class="info-row"><span class="info-label">Status</span><span class="info-value">${statusText}</span></div>
           </div>
@@ -861,7 +861,7 @@ export class QuotationBidModalComponent implements OnInit {
         <div class="info-card">
           <div class="info-card-header">Timeline & Schedule</div>
           <div class="info-card-body">
-            <div class="info-row"><span class="info-label">Start Date</span><span class="info-value">${deliveryDate}</span></div>
+            <div class="info-row"><span class="info-label">Quote Start</span><span class="info-value">${deliveryDate}</span></div>
             <div class="info-row"><span class="info-label">Deadline</span><span class="info-value">${deadlineDate}</span></div>
             <div class="info-row"><span class="info-label">Vendor Proposed Delivery</span><span class="info-value">${this.deliveryDate || '-'}</span></div>
           </div>
@@ -890,7 +890,7 @@ export class QuotationBidModalComponent implements OnInit {
             <th>Item & Description</th>
             <th style="width: 55px;" class="text-center">UOM</th>
             <th style="width: 60px;" class="text-end">Qty</th>
-            <th style="width: 95px;">Req. Date</th>
+            <th style="width: 95px;">Required Date</th>
             <th style="width: 90px;" class="text-end">Quoted Rate</th>
             <th style="width: 95px;" class="text-end">Total Amount</th>
             <th>Remarks</th>
@@ -915,7 +915,7 @@ export class QuotationBidModalComponent implements OnInit {
           <div class="signature-title">Procurement Authority</div>
           <div class="signature-line"></div>
           <div class="signature-name">${rfq?.owner || 'Procurement Department'}</div>
-          <div class="signature-role">Issued RFQ</div>
+          <div class="signature-role">Issued Quotation</div>
         </div>
         <div class="signature-block">
           <div class="signature-title">Vendor Submission</div>

@@ -579,7 +579,7 @@ export class PurchaseOrderDetailsComponent implements OnInit {
           <div class="subtitle">${po?.entityName || 'Vendor Collaboration Portal'}</div>
         </div>
         <div class="meta-box">
-          <div class="doc-number">PO #: ${poNo}</div>
+          <div class="doc-number">ORDER #: ${poNo}</div>
           <div class="doc-date">Date: ${createdDate}</div>
           <div class="status-badge ${statusClass}">${statusText}</div>
         </div>
@@ -599,19 +599,19 @@ export class PurchaseOrderDetailsComponent implements OnInit {
           <div class="info-card-header">Shipment & Delivery</div>
           <div class="info-card-body">
             <div class="info-row"><span class="info-label">Ship To</span><span class="info-value">${po?.shipToName || po?.receiverName || '-'}</span></div>
-            <div class="info-row"><span class="info-label">Loc. Code</span><span class="info-value">${po?.locationCode || '-'}</span></div>
+            <div class="info-row"><span class="info-label">Location Code</span><span class="info-value">${po?.locationCode || '-'}</span></div>
             <div class="info-row"><span class="info-label">Destination</span><span class="info-value">${destination}</span></div>
             <div class="info-row"><span class="info-label">Post Code</span><span class="info-value">${po?.shipToPostCode || '-'}</span></div>
-            ${po?.shipmentDetailNo ? `<div class="info-row"><span class="info-label">Shipment Ref</span><span class="info-value">${po.shipmentDetailNo}</span></div>` : ''}
+            ${po?.shipmentDetailNo ? `<div class="info-row"><span class="info-label">Shipment Reference</span><span class="info-value">${po.shipmentDetailNo}</span></div>` : ''}
           </div>
         </div>
 
         <div class="info-card">
           <div class="info-card-header">Procurement References</div>
           <div class="info-card-body">
-            <div class="info-row"><span class="info-label">PO Number</span><span class="info-value">${poNo}</span></div>
-            <div class="info-row"><span class="info-label">PR Reference</span><span class="info-value">${po?.requisitionNo || '-'}</span></div>
-            <div class="info-row"><span class="info-label">RFQ Reference</span><span class="info-value">${po?.rfqNo || '-'}</span></div>
+            <div class="info-row"><span class="info-label">Order Number</span><span class="info-value">${poNo}</span></div>
+            <div class="info-row"><span class="info-label">Purchase Request</span><span class="info-value">${po?.requisitionNo || '-'}</span></div>
+            <div class="info-row"><span class="info-label">Quotation</span><span class="info-value">${po?.rfqNo || '-'}</span></div>
           </div>
         </div>
       </div>
@@ -627,8 +627,8 @@ export class PurchaseOrderDetailsComponent implements OnInit {
           <tr>
             <th style="width: 32px;" class="text-center">#</th>
             <th>Item & Description</th>
-            <th style="width: 65px;" class="text-end">Ord. Qty</th>
-            ${hasShipping ? '<th style="width: 65px;" class="text-end">Ship. Qty</th>' : ''}
+            <th style="width: 65px;" class="text-end">Ordered Qty</th>
+            ${hasShipping ? '<th style="width: 65px;" class="text-end">Shipped Qty</th>' : ''}
             <th style="width: 105px;" class="text-end">Unit Rate (AED)</th>
             <th style="width: 115px;" class="text-end">Total (AED)</th>
           </tr>

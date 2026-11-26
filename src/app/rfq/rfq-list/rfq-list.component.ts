@@ -162,11 +162,11 @@ export class RfqListComponent implements OnInit {
     const html = `
       <div class="header-bar">
         <div>
-          <h1>Request For Quotation (RFQ)</h1>
+          <h1>Request For Quotation</h1>
           <div class="subtitle">Vendor Collaboration Portal</div>
         </div>
         <div class="meta-box">
-          <div class="doc-number">RFQ #: ${rfqNo}</div>
+          <div class="doc-number">QUOTATION #: ${rfqNo}</div>
           <div class="doc-date">Issue Date: ${subDate}</div>
           <div class="status-badge status-open">${statusText}</div>
         </div>
@@ -174,12 +174,12 @@ export class RfqListComponent implements OnInit {
 
       <div class="info-cards info-cards-2">
         <div class="info-card">
-          <div class="info-card-header">RFQ Overview</div>
+          <div class="info-card-header">Quotation Overview</div>
           <div class="info-card-body">
-            <div class="info-row"><span class="info-label">RFQ Number</span><span class="info-value">${rfqNo}</span></div>
+            <div class="info-row"><span class="info-label">Quotation Number</span><span class="info-value">${rfqNo}</span></div>
             <div class="info-row"><span class="info-label">Owner</span><span class="info-value">${row.owner || '-'}</span></div>
-            <div class="info-row"><span class="info-label">Start Date</span><span class="info-value">${subDate}</span></div>
-            <div class="info-row"><span class="info-label">End Date</span><span class="info-value">${deadlineDate}</span></div>
+            <div class="info-row"><span class="info-label">Quote Start</span><span class="info-value">${subDate}</span></div>
+            <div class="info-row"><span class="info-label">Quote End</span><span class="info-value">${deadlineDate}</span></div>
           </div>
         </div>
 
