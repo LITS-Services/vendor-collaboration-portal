@@ -4,8 +4,72 @@
   flex-direction: column;
 }
 
-.file-div {
-  padding: 9px 16px !important;
+.attachment-form-container {
+  .form-label {
+    font-size: 13.5px;
+    font-weight: 500;
+    color: #334155;
+    margin-bottom: 6px;
+    display: inline-block;
+  }
+
+  .form-control {
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+    height: 42px;
+    padding: 8px 12px;
+    color: #1e293b;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+    &:focus {
+      border-color: #249d57;
+      box-shadow: 0 0 0 3px rgba(36, 157, 87, 0.15);
+    }
+
+    &::placeholder {
+      color: #94a3b8;
+      font-size: 13.5px;
+    }
+  }
+
+  textarea.form-control {
+    height: auto;
+    min-height: 76px;
+    resize: vertical;
+  }
+
+  .file-div {
+    height: 42px;
+    padding: 0 12px 0 0 !important;
+    line-height: 40px;
+    overflow: hidden;
+    cursor: pointer;
+
+    &::file-selector-button {
+      height: 100%;
+      margin: 0 12px 0 0;
+      padding: 0 14px;
+      border: none;
+      border-right: 1px solid #d1d5db;
+      background-color: #f1f5f9;
+      color: #334155;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+    }
+
+    &:hover:not(:disabled)::file-selector-button {
+      background-color: #e2e8f0;
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+  }
 }
 
 .action-btn {

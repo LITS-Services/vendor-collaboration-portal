@@ -1,23 +1,17 @@
-<div class="modal-body">
-  <div class="row">
+<div class="modal-body attachment-form-container">
+  <div class="row g-3">
     <!-- Document Type -->
-    <div class="col-6 mb-3">
+    <div class="col-md-4 col-12 form-group mb-0">
       <label for="documentType" class="form-label">Document Type</label>
       <select id="documentType" class="form-control" [(ngModel)]="attachment.documentType" [disabled]="readonly">
-        <option value="">Select Document Type</option>
+        <option value="" disabled selected hidden>Select Document Type</option>
         <option *ngFor="let dt of documentTypes" [value]="dt">{{ dt }}</option>
       </select>
     </div>
 
     <!-- Attach File -->
-    <div class="col-6 mb-3">
+    <div class="col-md-4 col-12 form-group mb-0">
       <label for="fileInput" class="form-label">Attach File</label>
-      <!-- <input
-          type="file"
-          id="fileInput"
-          class="form-control"
-          (change)="onFileChange($event)"
-        /> -->
       <input type="file" id="fileInput" class="form-control file-div" (change)="onFileChange($event)" #fileInput
         [disabled]="readonly" />
       <div *ngIf="attachment.fileName && editIndex !== null" class="mt-1">
@@ -25,46 +19,38 @@
       </div>
     </div>
 
-    <!-- Attached By -->
-    <div class="col-6 mb-3" style="display: none;">
-      <label for="attachedBy" class="form-label">Attached By</label>
-      <input type="text" id="attachedBy" class="form-control" [(ngModel)]="attachment.attachedBy"
-        placeholder="Enter your name" />
-    </div>
-
     <!-- Expiry Date -->
-    <div class="col-6 mb-3">
+    <div class="col-md-4 col-12 form-group mb-0">
       <label for="expiryDate" class="form-label">Expiry Date</label>
       <input type="date" id="expiryDate" class="form-control" [(ngModel)]="attachment.expiryDate"
         [disabled]="readonly" />
     </div>
 
+    <!-- Attached By (hidden) -->
+    <div class="d-none">
+      <label for="attachedBy" class="form-label">Attached By</label>
+      <input type="text" id="attachedBy" class="form-control" [(ngModel)]="attachment.attachedBy"
+        placeholder="Enter your name" />
+    </div>
+
     <!-- Remarks -->
-    <div class="col-12 mb-3">
+    <div class="col-12 form-group mb-0">
       <label for="remarks" class="form-label">Remarks</label>
-      <textarea id="remarks" class="form-control" [(ngModel)]="attachment.remarks" rows="3"
+      <textarea id="remarks" class="form-control" [(ngModel)]="attachment.remarks" rows="2"
         placeholder="Add remarks here..." [disabled]="readonly"></textarea>
     </div>
 
     <!-- Attach Button -->
-    <div class="col-12 d-flex justify-content-end mb-2">
-      <button class="btn btn-primary" (click)="attachDocument()" *ngIf="!readonly"><i class="ft-chevrons-down me-1"></i>
-        Add</button>
+    <div class="col-12 d-flex justify-content-end" *ngIf="!readonly">
+      <button type="button" class="btn btn-primary" (click)="attachDocument()"><i class="ft-chevrons-down me-1"></i>
+        {{ editIndex !== null ? 'Update' : 'Add' }}</button>
     </div>
 
     <!-- Table of Attached Files -->
-    <div class="col-12 mt-2">
+    <div class="col-12 mt-3">
       <div class="pr-table-wrapper" appDatatableAutoResize [datatable]="datatable">
-        <ngx-datatable
-          #datatable
-          class="bootstrap core-bootstrap"
-          [rows]="attachedFiles"
-          [columnMode]="'force'"
-          [headerHeight]="42"
-          [footerHeight]="50"
-          rowHeight="42"
-          [limit]="10"
-          [scrollbarH]="isMobile">
+        <ngx-datatable #datatable class="bootstrap core-bootstrap" [rows]="attachedFiles" [columnMode]="'force'"
+          [headerHeight]="42" [footerHeight]="50" rowHeight="42" [limit]="10" [scrollbarH]="isMobile">
 
           <!-- Document Type -->
           <ngx-datatable-column [flexGrow]="2" [minWidth]="160" name="Document Type" prop="documentType">
@@ -121,7 +107,8 @@
                 <button class="btn btn-sm px-1 action-btn" type="button" (click)="editFile(row)" title="Edit">
                   <img src="assets/img/svg-icons/update-icon.svg" alt="Edit" style="width: 18px; height: 18px;" />
                 </button>
-                <button class="btn btn-sm px-1 action-btn" type="button" (click)="openAttachmentDeletionPopup(row)" title="Delete">
+                <button class="btn btn-sm px-1 action-btn" type="button" (click)="openAttachmentDeletionPopup(row)"
+                  title="Delete">
                   <img src="assets/img/svg-icons/delete-icon.svg" alt="Delete" style="width: 18px; height: 18px;" />
                 </button>
               </div>

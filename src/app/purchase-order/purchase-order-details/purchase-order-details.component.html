@@ -441,7 +441,7 @@
           <label class="form-label small fw-bold">Transport Carrier <span class="text-danger">*</span></label>
           <select class="form-select form-select-sm" formControlName="transportCarrier" (change)="onCarrierChange()"
             [class.is-invalid]="acknowledgeForm.get('transportCarrier')?.invalid && acknowledgeForm.get('transportCarrier')?.touched">
-            <option value="" disabled>Select Transport Carrier</option>
+            <option value="" disabled selected hidden>Select Transport Carrier</option>
             <option *ngFor="let c of carrierList" [value]="c">{{ c }}</option>
           </select>
           <input *ngIf="acknowledgeForm.get('transportCarrier')?.value === 'Other'" type="text"

@@ -144,7 +144,11 @@ export class CustomSelectDirective implements AfterViewInit, DoCheck, OnDestroy 
       this.zone.run(() => {
         this.syncTriggerState();
         if (this.panelRef) {
-          this.panelRef.instance.setItems(this.readOptions(), this.getDirection());
+          this.panelRef.instance.setItems(
+            this.readOptions(),
+            this.getDirection(),
+            this.getSearchPlaceholder()
+          );
         }
       });
     });
@@ -240,7 +244,7 @@ export class CustomSelectDirective implements AfterViewInit, DoCheck, OnDestroy 
       .withPush(true);
 
     const triggerWidth = Math.round(triggerRect.width);
-    const minWidth = Math.max(triggerWidth, 140);
+    const minWidth = Math.max(triggerWidth, 200);
     const maxWidth = Math.max(triggerWidth + 250, Math.min(650, window.innerWidth - 24));
 
     this.overlayRef = this.overlay.create({
@@ -255,7 +259,7 @@ export class CustomSelectDirective implements AfterViewInit, DoCheck, OnDestroy 
 
     const portal = new ComponentPortal(CustomSelectPanelComponent);
     this.panelRef = this.overlayRef.attach(portal);
-    this.panelRef.instance.setItems(this.readOptions(), dir);
+    this.panelRef.instance.setItems(this.readOptions(), dir, this.getSearchPlaceholder());
 
     const panelEl = this.panelRef.location.nativeElement as HTMLElement;
     panelEl.style.display = 'block';
@@ -275,6 +279,13 @@ export class CustomSelectDirective implements AfterViewInit, DoCheck, OnDestroy 
     this.overlaySubs.add(
       this.panelRef.instance.optionSelected.subscribe((item) => {
         this.selectOption(item);
+      })
+    );
+
+    this.overlaySubs.add(
+      this.panelRef.instance.closeRequested.subscribe(() => {
+        this.close(true);
+        this.triggerBtn?.focus();
       })
     );
 
@@ -457,7 +468,11 @@ export class CustomSelectDirective implements AfterViewInit, DoCheck, OnDestroy 
     if (sig !== this.lastOptionsSignature) {
       this.lastOptionsSignature = sig;
       if (this.panelRef) {
-        this.panelRef.instance.setItems(this.readOptions(), this.getDirection());
+        this.panelRef.instance.setItems(
+          this.readOptions(),
+          this.getDirection(),
+          this.getSearchPlaceholder()
+        );
       }
     }
   }
@@ -503,6 +518,46 @@ export class CustomSelectDirective implements AfterViewInit, DoCheck, OnDestroy 
       return 'rtl';
     }
     return 'ltr';
+  }
+
+  private getSearchPlaceholder(): string {
+    const select = this.el.nativeElement;
+
+    const placeholderAttr = select.getAttribute('placeholder');
+    if (placeholderAttr) {
+      const clean = placeholderAttr.replace(/^--\s*|\s*--$/g, '').trim();
+      if (clean.toLowerCase().startsWith('select ')) {
+        return `Search ${clean.slice(7).trim().toLowerCase()}...`;
+      }
+      return `Search ${clean.toLowerCase()}...`;
+    }
+
+    const labelEl =
+      select.labels?.[0] ||
+      select.closest('.form-group')?.querySelector('label') ||
+      select.closest('.filter-group')?.querySelector('label') ||
+      select.closest('fieldset')?.querySelector('label');
+
+    if (labelEl) {
+      const clone = labelEl.cloneNode(true) as HTMLElement;
+      clone.querySelectorAll('.text-danger, small, i, svg, span.text-danger').forEach((n) => n.remove());
+      const labelText = (clone.textContent ?? '').trim();
+      if (labelText) {
+        return `Search ${labelText.toLowerCase()}...`;
+      }
+    }
+
+    if (select.options.length > 0) {
+      const firstOpt = select.options[0];
+      if (firstOpt && (firstOpt.disabled || firstOpt.hidden || firstOpt.value === '')) {
+        const optText = (firstOpt.textContent ?? '').trim().replace(/^--\s*|\s*--$/g, '');
+        if (optText.toLowerCase().startsWith('select ') && optText.length > 7) {
+          return `Search ${optText.slice(7).trim().toLowerCase()}...`;
+        }
+      }
+    }
+
+    return 'Search...';
   }
 }
 

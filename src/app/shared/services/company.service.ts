@@ -112,6 +112,10 @@ export class CompanyService {
     return this.http.get<any>(`${this.apiUrl}/get-vendor-company-by-id`, { params: { id: id.toString() } });
   }
 
+  getOnboardingOfficers(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/get-onboarding-officers`);
+  }
+
   getLookupByCode(code: string): Observable<any> {
     return this.http.get<any>(`${this.systemBaseUrl}/dropdowns`, { params: { name: code } });
   }
