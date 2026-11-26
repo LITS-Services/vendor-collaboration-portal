@@ -994,9 +994,65 @@ body.swal2-shown {
   transition: transform 0.2s ease, filter 0.2s ease;
 }
 
+/* Page Header Circular Back Button */
+.back-circle-btn,
+.btn-outline-primary.rounded-circle,
+.btn-outline-secondary.rounded-circle {
+  border: 1px solid #50B179 !important;
+  background-color: #ffffff !important;
+  color: #249D57 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  transition: all 0.25s ease-in-out !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+}
+
+.back-circle-btn .back-icon,
+.btn-outline-primary.rounded-circle .back-icon,
+.btn-outline-secondary.rounded-circle .back-icon {
+  filter: brightness(0) saturate(100%) invert(46%) sepia(71%) saturate(543%) hue-rotate(93deg) brightness(94%) contrast(89%);
+  transition: filter 0.2s ease, transform 0.2s ease;
+}
+
+.back-circle-btn:hover,
+.back-circle-btn:active,
+.btn-outline-primary.rounded-circle:hover,
+.btn-outline-primary.rounded-circle:active,
+.btn-outline-secondary.rounded-circle:hover,
+.btn-outline-secondary.rounded-circle:active {
+  background-color: #249D57 !important;
+  border-color: #249D57 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(36, 157, 87, 0.25) !important;
+  outline: none !important;
+}
+
+.back-circle-btn:hover .back-icon,
+.back-circle-btn:active .back-icon,
+.btn-outline-primary.rounded-circle:hover .back-icon,
+.btn-outline-primary.rounded-circle:active .back-icon,
+.btn-outline-secondary.rounded-circle:hover .back-icon,
+.btn-outline-secondary.rounded-circle:active .back-icon,
+.btn-outline-primary:hover .back-icon,
 .btn-outline-secondary:hover .back-icon,
 .btn:hover .back-icon.invert-on-hover {
-  filter: brightness(0) invert(1);
+  filter: brightness(0) invert(1) !important;
+  transform: translateX(-1px);
+}
+
+.back-circle-btn:focus,
+.btn-outline-primary.rounded-circle:focus,
+.btn-outline-secondary.rounded-circle:focus {
+  border-color: #249D57 !important;
+  box-shadow: 0 0 0 0.2rem rgba(36, 157, 87, 0.25) !important;
+  outline: none !important;
 }
 
 /* ==========================================================================
