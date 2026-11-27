@@ -242,6 +242,19 @@ export class CompanyRegistrationComponent implements OnInit {
     return (name.substring(0, 2) || 'OF').toUpperCase();
   }
 
+  copyToClipboard(val: string, label: string): void {
+    if (!val) return;
+    if (navigator && navigator.clipboard) {
+      navigator.clipboard.writeText(val).then(() => {
+        this.toastr.success(`Copied ${label || 'value'} to clipboard`);
+      }).catch(() => {
+        this.toastr.info(`Value: ${val}`);
+      });
+    } else {
+      this.toastr.info(`Value: ${val}`);
+    }
+  }
+
   private setOfficersFromData(data: any): void {
     if (!data) return;
 
