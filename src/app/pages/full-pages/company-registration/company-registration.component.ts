@@ -97,12 +97,13 @@ export class CompanyRegistrationComponent implements OnInit {
 
   // for edit mode (logo already saved on server)
   existingLogoUrl: string | null = null;
+  isDraggingLogo: boolean = false;
 
 
   private createEmptyContact() {
     return {
       description: '',
-      type: 'Mobile',
+      type: 'phoneNo',
       contactNumber: '',
       extension: '',
       primary: false
@@ -248,19 +249,48 @@ export class CompanyRegistrationComponent implements OnInit {
     if (index !== undefined && index !== null) {
       // Edit existing
       this.editingContactIndex = index;
-      this.editingContact = { ...this.contactList[index] };
+      const existing = this.contactList[index];
+      this.editingContact = {
+        ...existing,
+        type: !existing?.type || existing.type === 'Mobile' ? 'phoneNo' : existing.type
+      };
     } else {
       // Add new
       this.editingContactIndex = null;
       this.editingContact = this.createEmptyContact();
     }
-
   }
 
+  cancelContactEdit(): void {
+    this.editingContactIndex = null;
+    this.editingContact = this.createEmptyContact();
+    this.cdr.markForCheck();
+  }
 
-
+  getContactTypeLabel(type?: string): string {
+    switch ((type || '').trim()) {
+      case 'phoneNo':
+      case 'Mobile':
+        return 'Phone / Mobile';
+      case 'Email':
+        return 'Email';
+      case 'Fax':
+        return 'Fax';
+      default:
+        return type || '-';
+    }
+  }
 
   onContactSubmit(contact: any) {
+    const description = (contact?.description || '').toString().trim();
+    const type = (contact?.type || '').toString().trim();
+    const contactNumber = (contact?.contactNumber || '').toString().trim();
+
+    if (!description || !type || !contactNumber) {
+      this.toastr.warning('Please fill in all required contact fields.', 'Validation Error');
+      this.cdr.detectChanges();
+      return;
+    }
 
     if (contact.primary || contact.isPrimary) {
       const hasPrimary = this.contactList.some((c, i) => (c.primary || c.isPrimary) && i !== this.editingContactIndex);
@@ -272,13 +302,22 @@ export class CompanyRegistrationComponent implements OnInit {
       }
     }
 
+    const normalizedContact = {
+      ...contact,
+      description,
+      type,
+      contactNumber,
+      extension: (contact?.extension || '').toString().trim(),
+      primary: !!(contact.primary || contact.isPrimary)
+    };
+
     if (this.editingContactIndex === null) {
-      this.contactList = [...this.contactList, { ...contact }];
+      this.contactList = [...this.contactList, normalizedContact];
       this.editingContact = this.createEmptyContact();
     } else {
       //EDIT
       this.contactList = this.contactList.map((c, i) =>
-        i === this.editingContactIndex ? { ...contact } : c
+        i === this.editingContactIndex ? normalizedContact : c
       );
 
       // Clear edit state + model and close editor
@@ -396,6 +435,76 @@ export class CompanyRegistrationComponent implements OnInit {
         console.error('Error loading categories dropdown:', err);
       }
     });
+  }
+
+  private openCategorySelect: any = null;
+
+  @HostListener('document:mousedown', ['$event'])
+  onDocumentMousedown(event: MouseEvent): void {
+    if (!this.openCategorySelect) {
+      return;
+    }
+    const target = event.target as HTMLElement | null;
+    if (!target) {
+      return;
+    }
+    if (target.closest('.ng-dropdown-panel')) {
+      return;
+    }
+    const host = this.openCategorySelect.element || this.openCategorySelect._elementRef?.nativeElement;
+    if (host && host.contains(target)) {
+      return;
+    }
+    try {
+      this.openCategorySelect.close();
+      if (typeof this.openCategorySelect.detectChanges === 'function') {
+        this.openCategorySelect.detectChanges();
+      }
+    } catch {}
+    this.openCategorySelect = null;
+  }
+
+  onCategoryDropdownOpen(select?: any): void {
+    this.openCategorySelect = select || null;
+    setTimeout(() => {
+      const host = select?.element || select?._elementRef?.nativeElement;
+      const panel =
+        host?.querySelector('.ng-dropdown-panel') ||
+        document.querySelector('.ng-dropdown-panel');
+      if (panel) {
+        const input = panel.querySelector('.dropdown-search-input') as HTMLInputElement;
+        if (input) {
+          input.value = '';
+          input.focus();
+        }
+      }
+    }, 0);
+  }
+
+  onCategoryDropdownClose(select: any): void {
+    if (this.openCategorySelect === select) {
+      this.openCategorySelect = null;
+    }
+  }
+
+  onCategorySearchKeyDown(event: KeyboardEvent, select: any): void {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      event.stopPropagation();
+      select?.close();
+      if (typeof select?.detectChanges === 'function') {
+        select.detectChanges();
+      }
+      return;
+    }
+    if (event.key === 'Tab') {
+      select?.close();
+      return;
+    }
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp' || event.key === 'Enter') {
+      return;
+    }
+    event.stopPropagation();
   }
 
   loadCompanyById(companyId: number) {
@@ -612,7 +721,12 @@ export class CompanyRegistrationComponent implements OnInit {
   }
 
   removeContact(index: number) {
-    this.editingContact = this.createEmptyContact();
+    if (this.editingContactIndex === index) {
+      this.editingContactIndex = null;
+      this.editingContact = this.createEmptyContact();
+    } else if (this.editingContactIndex !== null && index < this.editingContactIndex) {
+      this.editingContactIndex -= 1;
+    }
     this.contactList.splice(index, 1);
     this.closeContactPopup();
   }
@@ -1027,19 +1141,17 @@ export class CompanyRegistrationComponent implements OnInit {
       });
   }
 
-  onLogoSelect(event: Event) {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0] || null;
-
-    // allow selecting same file again
-    input.value = '';
-
+  onLogoFileSelect(file: File | null) {
     if (!file) return;
 
-    // size check 2MB (since your UI says 2MB)
+    // size check 2MB
     if (file.size > 2 * 1024 * 1024) {
-      // you can show toast if you want
-      // this.toastr.error('Max 2MB allowed');
+      this.toastr.error('Max 2MB allowed', 'File Size Limit');
+      return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      this.toastr.error('Please upload an image file (PNG/JPG)', 'Invalid File Type');
       return;
     }
 
@@ -1048,6 +1160,39 @@ export class CompanyRegistrationComponent implements OnInit {
     // preview
     if (this.logoPreviewUrl) URL.revokeObjectURL(this.logoPreviewUrl);
     this.logoPreviewUrl = URL.createObjectURL(file);
+  }
+
+  onLogoSelect(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] || null;
+
+    // allow selecting same file again
+    input.value = '';
+    this.onLogoFileSelect(file);
+  }
+
+  onLogoDrop(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDraggingLogo = false;
+    if (this.isReadOnly) return;
+
+    const file = event.dataTransfer?.files?.[0] || null;
+    this.onLogoFileSelect(file);
+  }
+
+  onLogoDragOver(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (!this.isReadOnly) {
+      this.isDraggingLogo = true;
+    }
+  }
+
+  onLogoDragLeave(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDraggingLogo = false;
   }
 
   removeLogo() {

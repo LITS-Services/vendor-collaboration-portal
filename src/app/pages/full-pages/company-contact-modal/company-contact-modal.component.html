@@ -1,53 +1,94 @@
-<!-- <div class="modal-header">
-    <h4 class="modal-title">{{ isEditMode ? 'Edit Contact' : 'Add Contact' }}</h4>
-    <button class="ft-x btn white" (click)="activeModal.dismiss()">
-    </button>
-  </div> -->
-  <div class="">
-    <form #contactForm="ngForm" class="row">
-      <div class="form-group col-md-3">
-        <label>Description</label>
-        <input type="text" class="form-control" [(ngModel)]="contact.description" name="description" required>
+  <div>
+    <form #contactForm="ngForm" (ngSubmit)="submitForm()" novalidate>
+      <div class="row cstm-vertical-gap">
+        <div class="col-xl-3 col-md-6 col-12 mt-1 form-group">
+          <label>Description <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" [(ngModel)]="contact.description" name="description"
+            placeholder="Description / Title" required [class.is-invalid]="isFieldInvalid('description')">
+          <div *ngIf="isFieldInvalid('description')" class="contact-field-error">
+            {{ getFieldError('description') }}
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 col-12 mt-1 form-group">
+          <label>Type <span class="text-danger">*</span></label>
+          <select class="form-control" [(ngModel)]="contact.type" name="type" (change)="onTypeChange()" required
+            [class.is-invalid]="isFieldInvalid('type')">
+            <option value="" disabled hidden>Select Type</option>
+            <option value="phoneNo">Phone / Mobile</option>
+            <option value="Email">Email</option>
+            <option value="Fax">Fax</option>
+          </select>
+          <div *ngIf="isFieldInvalid('type')" class="contact-field-error">
+            {{ getFieldError('type') }}
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 col-12 mt-1 form-group">
+          <label>{{ contactLabel }} <span class="text-danger">*</span></label>
+
+          <div class="phone-input-group" *ngIf="isPhoneType; else emailContactInput">
+            <div class="phone-country-select">
+              <app-country-code-select
+                [countries]="phoneCountries"
+                [value]="countryIso"
+                [invalid]="isFieldInvalid('contactNumber')"
+                (valueChange)="onCountryIsoChange($event)">
+              </app-country-code-select>
+            </div>
+            <input
+              type="tel"
+              inputmode="numeric"
+              class="form-control phone-national-input"
+              [value]="phoneNational"
+              [placeholder]="phonePlaceholder"
+              name="contactNumber"
+              autocomplete="tel-national"
+              (input)="onPhoneInput($event)"
+              (blur)="onPhoneBlur()"
+              [class.is-invalid]="isFieldInvalid('contactNumber')"
+            >
+          </div>
+
+          <ng-template #emailContactInput>
+            <input
+              type="email"
+              class="form-control"
+              [(ngModel)]="contact.contactNumber"
+              [placeholder]="contactPlaceholder"
+              name="contactNumber"
+              required
+              [class.is-invalid]="isFieldInvalid('contactNumber')"
+            >
+          </ng-template>
+
+          <div *ngIf="isFieldInvalid('contactNumber')" class="contact-field-error">
+            {{ getFieldError('contactNumber') }}
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 col-12 mt-1 form-group" *ngIf="showExtension">
+          <label>Extension</label>
+          <input type="text" class="form-control" [(ngModel)]="contact.extension" name="extension" placeholder="Ext.">
+        </div>
+
+        <div class="col-12 mt-2">
+          <div class="form-group mb-0">
+            <label class="checkbox-text">
+              <input type="checkbox" [(ngModel)]="contact.primary" name="primary">
+              <span>Primary Contact</span>
+            </label>
+          </div>
+        </div>
       </div>
-      <div class="form-group col-md-3">
-        <label>Type</label>
-        <select class="form-control" [(ngModel)]="contact.type" name="type" (change)="updateContactLabel()" required>
-          <option value="phoneNo">Phone No</option>
-          <option value="Email">Email</option>
-          <option value="Fax">Fax</option>
-        </select>
+
+      <div class="d-flex justify-content-end gap-2 mt-2 mb-3">
+        <button type="button" class="btn btn-outline-secondary" *ngIf="isEditMode" (click)="cancelEditMode()">
+          Cancel
+        </button>
+        <button type="submit" class="btn btn-primary">
+          {{ isEditMode ? 'Update' : 'Add' }} Contact
+        </button>
       </div>
-      <!-- <div class="form-group">
-        <label>Contact Number</label>
-        <input type="text" class="form-control" [(ngModel)]="contact.contactNumber" name="contactNumber" required>
-      </div> -->
-      <div class="form-group col-md-3">
-        <label>{{ contactLabel }}</label>
-        <input
-        [type]="inputType"
-          class="form-control"
-          [(ngModel)]="contact.contactNumber"
-          [placeholder]="contactPlaceholder"
-          name="contactNumber"
-          required
-        >
-      </div>
-      <div class="form-group col-md-3" *ngIf="showExtension">
-        <label>Extension</label>
-        <input type="text" class="form-control" [(ngModel)]="contact.extension" name="extension">
-      </div>
-      <div class="row mt-2">
-         <div class="form-group">
-        <label class="checkbox-text">
-          <input type="checkbox" [(ngModel)]="contact.primary" name="primary">
-          Primary
-        </label>
-      </div>
-      </div>
-     
-      <!-- <button type="submit" class="btn btn-primary">Add Contact</button> -->
     </form>
-      <div class="d-flex justify-content-end">
-    <button type="button" class="btn btn-primary" (click)="submitForm()"><i class="ft-chevrons-down me-1"></i>{{ isEditMode ? 'Update' : 'Add' }} Contact</button>
-  </div>
   </div>

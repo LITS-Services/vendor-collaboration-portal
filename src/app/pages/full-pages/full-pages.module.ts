@@ -33,6 +33,7 @@ import { CompanyRegistrationComponent } from './company-registration/company-reg
 import { NgxSpinnerModule } from "ngx-spinner";
 import { DatatableAutoResizeDirective } from "app/shared/directives/datatable-auto-resize.directive";
 import { CustomSelectDirective } from "app/shared/directives/custom-select.directive";
+import { CountryCodeSelectComponent } from "app/shared/components/country-code-select/country-code-select.component";
 @NgModule({
   schemas: [NO_ERRORS_SCHEMA], // Allow Chartist and Swiper components
   imports: [
@@ -49,7 +50,8 @@ import { CustomSelectDirective } from "app/shared/directives/custom-select.direc
     NgxDatatableModule,
     NgxSpinnerModule,
     DatatableAutoResizeDirective,
-    CustomSelectDirective
+    CustomSelectDirective,
+    CountryCodeSelectComponent
   ],
   declarations: [
     GalleryPageComponent,

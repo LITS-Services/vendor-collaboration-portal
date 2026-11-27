@@ -3,9 +3,17 @@ import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms
 import { Router } from '@angular/router';
 import { AuthService } from 'app/shared/auth/auth.service';
 import { newPasswordValidators, confirmPasswordMatchValidator } from 'app/shared/auth/password.validators';
-import { CountryISO, PhoneNumberFormat, SearchCountryField } from 'ngx-intl-tel-input';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
+import {
+  DEFAULT_PHONE_COUNTRY_ISO,
+  PHONE_COUNTRIES,
+  PhoneCountryOption,
+  getPhoneCountryByIso,
+  getPhoneNationalPlaceholder,
+  isValidPhoneForCountry,
+  splitPhoneNumber
+} from 'app/shared/utils/phone-countries';
 
 @Component({
   selector: 'app-register-vendor',
@@ -20,31 +28,24 @@ export class RegisterVendorComponent implements OnInit {
   registerVendorFormSubmitted = false;
   isLoginFailed = false;
 
-  CountryISO = CountryISO;
-  PhoneNumberFormat = PhoneNumberFormat;
-  SearchCountryField = SearchCountryField;
-
-  // Removed the companies and selectedCompanies fields
-  countryExtensions = [
-    { label: '+1 (USA)', value: '+1' },
-    { label: '+44 (UK)', value: '+44' },
-    { label: '+91 (India)', value: '+91' },
-    { label: '+61 (Australia)', value: '+61' },
-  ];
-
-  preferredCountries = [CountryISO.Pakistan, CountryISO.SaudiArabia, CountryISO.UnitedArabEmirates];
+  phoneCountries: PhoneCountryOption[] = PHONE_COUNTRIES;
+  countryIso: string = DEFAULT_PHONE_COUNTRY_ISO;
+  phoneNational: string = '';
+  phoneTouched: boolean = false;
 
   registerVendorForm = new UntypedFormGroup({
-    username: new UntypedFormControl('', [Validators.required]),
+    username: new UntypedFormControl('', [
+      Validators.required,
+      Validators.minLength(3),
+      Validators.maxLength(30),
+      Validators.pattern(/^[a-zA-Z][a-zA-Z0-9._-]*$/)
+    ]),
     fullname: new UntypedFormControl('', [Validators.required]),
-    phone: new UntypedFormControl(undefined, [Validators.required]),
-    //phoneNo: new UntypedFormControl('', [Validators.required]),
-    //phoneExtension: new UntypedFormControl('', [Validators.required]),
+    phone: new UntypedFormControl('', [Validators.required]),
     email: new UntypedFormControl('', [Validators.required, Validators.email]),
     password: new UntypedFormControl('', newPasswordValidators),
     confirmPassword: new UntypedFormControl('', [Validators.required]),
     termsAndConditions: new UntypedFormControl(true, Validators.requiredTrue),
-    // Removed selectedCompanies control
   }, { validators: confirmPasswordMatchValidator() });
 
   constructor(
@@ -55,16 +56,83 @@ export class RegisterVendorComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // Removed the fetchCompanies() call
   }
 
   get lf() {
     return this.registerVendorForm.controls;
   }
 
-  // togglePasswordVisibility() {
-  //   this.hidePassword = !this.hidePassword;
-  // }
+  get phonePlaceholder(): string {
+    return getPhoneNationalPlaceholder(this.countryIso);
+  }
+
+  get phoneMaxDigits(): number {
+    const exampleDigits = this.phonePlaceholder.replace(/\D/g, '').length;
+    return exampleDigits ? exampleDigits + 1 : 15;
+  }
+
+  get isPhoneInvalid(): boolean {
+    const shouldShow = this.registerVendorFormSubmitted || this.phoneTouched;
+    return shouldShow && !this.isPhoneValid();
+  }
+
+  isPhoneValid(): boolean {
+    const digits = (this.phoneNational || '').replace(/\D/g, '');
+    if (!digits) return false;
+    return isValidPhoneForCountry(digits, this.countryIso);
+  }
+
+  get phoneErrorMessage(): string {
+    const digits = (this.phoneNational || '').replace(/\D/g, '');
+    if (!digits) return 'Phone is required';
+    return 'Please enter a valid phone number for the selected country';
+  }
+
+  onCountryIsoChange(iso: string): void {
+    this.countryIso = iso || DEFAULT_PHONE_COUNTRY_ISO;
+    this.syncPhoneToForm();
+  }
+
+  onPhoneInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const raw = input.value || '';
+    const trimmed = raw.trim();
+
+    if (trimmed.startsWith('+') || trimmed.startsWith('00')) {
+      const parsed = splitPhoneNumber(trimmed, this.countryIso);
+      this.countryIso = parsed.countryIso;
+      this.phoneNational = parsed.national.slice(0, this.phoneMaxDigits);
+      input.value = this.phoneNational;
+    } else {
+      const digits = raw.replace(/\D/g, '').slice(0, this.phoneMaxDigits);
+      input.value = digits;
+      this.phoneNational = digits;
+    }
+
+    this.phoneTouched = true;
+    this.syncPhoneToForm();
+  }
+
+  onPhoneBlur(): void {
+    this.phoneTouched = true;
+    this.syncPhoneToForm();
+  }
+
+  private syncPhoneToForm(): void {
+    const digits = (this.phoneNational || '').replace(/\D/g, '');
+    if (digits && isValidPhoneForCountry(digits, this.countryIso)) {
+      const country = getPhoneCountryByIso(this.countryIso);
+      const e164 = `${country.code}${digits}`;
+      this.registerVendorForm.get('phone')?.setValue(e164);
+      this.registerVendorForm.get('phone')?.setErrors(null);
+    } else if (!digits) {
+      this.registerVendorForm.get('phone')?.setValue('');
+      this.registerVendorForm.get('phone')?.setErrors({ required: true });
+    } else {
+      this.registerVendorForm.get('phone')?.setValue('');
+      this.registerVendorForm.get('phone')?.setErrors({ invalidPhone: true });
+    }
+  }
 
   togglePasswordVisibility(field: string) {
     switch (field) {
@@ -83,25 +151,27 @@ export class RegisterVendorComponent implements OnInit {
 
   onSubmit() {
     this.registerVendorFormSubmitted = true;
+    this.phoneTouched = true;
+    this.syncPhoneToForm();
 
-    if (this.registerVendorForm.invalid) {
+    if (this.registerVendorForm.invalid || !this.isPhoneValid()) {
       this.toastr.warning('Please fill all required fields correctly.');
       return;
     }
 
-    // Removed validation for selectedCompanies as it is no longer required
-
     this.spinner.show();
-    const phoneObj = this.registerVendorForm.value.phone;
+    const digits = (this.phoneNational || '').replace(/\D/g, '');
+    const country = getPhoneCountryByIso(this.countryIso);
+    const phoneE164 = digits ? `${country.code}${digits}` : null;
+
     const payload = {
       Username: this.lf.username.value,
       FullName: this.lf.fullname.value,
-      PhoneNo: phoneObj?.e164Number ?? null,
+      PhoneNo: phoneE164,
       Email: this.lf.email.value,
       Password: this.lf.password.value,
       Role: 'User',
       PortalType: 'Vendor',
-      // Removed CompanyGUIDs from the payload
     };
 
     this.authService.registerUser(payload).subscribe({
@@ -109,10 +179,9 @@ export class RegisterVendorComponent implements OnInit {
         this.spinner.hide();
         console.log('Registration response:', res);
 
-        // Handle string response
         const message = typeof res === 'string' ? res : res?.message || '';
         if (message.toLowerCase().includes('otp sent')) {
-          this.toastr.success('OTP verified successfully.');
+          this.toastr.success('OTP sent successfully.');
 
           localStorage.setItem('pendingRegistration', JSON.stringify({
             Username: payload.Username,
@@ -130,7 +199,6 @@ export class RegisterVendorComponent implements OnInit {
         this.spinner.hide();
         console.error('Registration failed (HTTP error):', err);
 
-        // If backend returns OTP message in error
         const message = err?.error || '';
         if (typeof message === 'string' && message.toLowerCase().includes('otp sent')) {
           this.toastr.success(message);

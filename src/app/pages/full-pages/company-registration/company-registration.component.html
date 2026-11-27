@@ -52,387 +52,385 @@
     </div>
 
 
+    <!-- Reusable Tab Navigation Buttons -->
+    <ng-template #tabNavButtons>
+        <div class="d-flex align-items-center gap-2">
+            <ng-container *ngIf="isEditMode; else newCompanyNav">
+                <button class="btn btn-primary" (click)="submitForm()" [disabled]="isLoading || isReadOnly">
+                    <i class="fa fa-spinner fa-spin mr-1" *ngIf="isLoading"></i>
+                    Update Company
+                </button>
+            </ng-container>
+
+            <ng-template #newCompanyNav>
+                <button *ngIf="!isFirstTab()" type="button" class="btn btn-outline-secondary" (click)="goToPrevTab()"
+                    [disabled]="isFirstTab()">
+                    Back
+                </button>
+
+                <button type="button" class="btn btn-primary d-flex align-items-center gap-1" *ngIf="!isLastTab()"
+                    (click)="goToNextTab()">
+                    Next <i class="fa fa-chevron-right next-icon"></i>
+                </button>
+
+                <button type="button" class="btn btn-primary" *ngIf="isLastTab()" (click)="submitForm()"
+                    [disabled]="isLoading">
+                    <i class="fa fa-spinner fa-spin mr-1" *ngIf="isLoading"></i>
+                    Submit Company
+                </button>
+            </ng-template>
+        </div>
+    </ng-template>
+
     <section id="basic-input">
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-content">
-                        <div class="card-body">
+        <!-- IDENTIFICATION TAB -->
+        <ng-container *ngIf="selectedTab === 'general'">
+            <div class="card company-card mb-4">
+                <div class="card-body">
+                    <div class="section-header">
+                        <h4 class="section-title">Company Information</h4>
+                        <ng-container *ngTemplateOutlet="tabNavButtons"></ng-container>
+                    </div>
+
+                    <div class="row align-items-stretch">
+                        <!-- Left: Form Fields -->
+                        <div class="col-xl-9 col-lg-9 col-12">
+                            <!-- Row 1: Company Name + Website URL -->
                             <div class="row">
-                                <div class="d-flex align-items-center justify-content-end mb-2">
-                                    <ng-container *ngIf="isEditMode; else newCompanyNav">
-                                        <button class="btn btn-primary" (click)="submitForm()"
-                                            [disabled]="isLoading || isReadOnly">
-                                            <i class="fa fa-spinner fa-spin mr-1" *ngIf="isLoading"></i>
-                                            Update Company
-                                        </button>
+                                <div class="col-md-6 col-12 form-group">
+                                    <label>Company Name <span class="text-danger">*</span>
+                                        <i class="fa fa-info-circle text-muted ms-1"
+                                            ngbTooltip="The company name must match your trade license name."
+                                            placement="right"></i>
+                                    </label>
+                                    <input type="text" class="form-control" [(ngModel)]="companyName"
+                                        [disabled]="isReadOnly" placeholder="Enter trade license name">
+                                    <small class="text-danger" *ngIf="!companyName && isLastTab()">
+                                        Company name is required.
+                                    </small>
+                                </div>
+
+                                <div class="col-md-6 col-12 form-group">
+                                    <label>Website URL</label>
+                                    <input type="url" class="form-control" [(ngModel)]="websiteUrl"
+                                        [disabled]="isReadOnly" placeholder="https://www.example.com">
+                                </div>
+                            </div>
+
+                            <!-- Row 2: TRN + Payment Term + VAT Business Posting Group -->
+                            <div class="row">
+                                <div class="col-md-4 col-12 form-group">
+                                    <label>TRN (Tax Registration Number) <span class="text-danger">*</span>
+                                        <i class="fa fa-info-circle text-muted ms-1"
+                                            ngbTooltip="Enter your 15-digit Tax Registration Number"
+                                            placement="right"></i>
+                                    </label>
+                                    <input type="text" class="form-control" [(ngModel)]="trn" [disabled]="isReadOnly"
+                                        placeholder="e.g., 100xxxxxxxxxxxx" maxlength="15">
+                                    <small class="text-danger" *ngIf="trn && trn.length !== 15">
+                                        TRN must be exactly 15 digits.
+                                    </small>
+                                </div>
+
+                                <div class="col-md-4 col-12 form-group">
+                                    <label>Payment Term <span class="text-danger">*</span></label>
+                                    <select class="form-control" [(ngModel)]="paymentTerm" [disabled]="isReadOnly">
+                                        <option value="" disabled selected hidden>Select</option>
+                                        <option *ngFor="let option of paymentTermOptions" [ngValue]="option.desc">
+                                            {{ option.desc }}
+                                        </option>
+                                    </select>
+                                    <small class="text-danger" *ngIf="!paymentTerm && isLastTab()">
+                                        Payment Term is required.
+                                    </small>
+                                </div>
+
+                                <div class="col-md-4 col-12 form-group">
+                                    <label>VAT Business Posting Group <span class="text-danger">*</span></label>
+                                    <select class="form-control" [(ngModel)]="vatBusinessPostingGroup"
+                                        [disabled]="isReadOnly">
+                                        <option value="" disabled selected hidden>Select</option>
+                                        <option *ngFor="let option of vatBusinessPostingGroupOptions"
+                                            [ngValue]="option.desc">
+                                            {{ option.desc }}
+                                        </option>
+                                    </select>
+                                    <small class="text-danger" *ngIf="!vatBusinessPostingGroup && isLastTab()">
+                                        VAT Business Posting Group is required.
+                                    </small>
+                                </div>
+                            </div>
+
+                            <!-- Row 3: Payment Method + Vendor Posting Group + General Bus Posting Group -->
+                            <div class="row">
+                                <div class="col-md-4 col-12 form-group">
+                                    <label>Payment Method <span class="text-danger">*</span></label>
+                                    <select class="form-control" [(ngModel)]="paymentMethod" [disabled]="isReadOnly">
+                                        <option value="" disabled selected hidden>Select</option>
+                                        <option *ngFor="let option of paymentMethodOptions" [ngValue]="option.desc">
+                                            {{ option.desc }}
+                                        </option>
+                                    </select>
+                                    <small class="text-danger" *ngIf="!paymentMethod && isLastTab()">
+                                        Payment Method is required.
+                                    </small>
+                                </div>
+
+                                <div class="col-md-4 col-12 form-group">
+                                    <label>Vendor Posting Group <span class="text-danger">*</span></label>
+                                    <select class="form-control" [(ngModel)]="vendorPostingGroup"
+                                        [disabled]="isReadOnly">
+                                        <option value="" disabled selected hidden>Select</option>
+                                        <option *ngFor="let option of vendorPostingGroupOptions"
+                                            [ngValue]="option.desc">
+                                            {{ option.desc }}
+                                        </option>
+                                    </select>
+                                    <small class="text-danger" *ngIf="!vendorPostingGroup && isLastTab()">
+                                        Vendor Posting Group is required.
+                                    </small>
+                                </div>
+
+                                <div class="col-md-4 col-12 form-group">
+                                    <label>General Bus Posting Group <span class="text-danger">*</span></label>
+                                    <select class="form-control" [(ngModel)]="generalBusinessPostingGroup"
+                                        [disabled]="isReadOnly">
+                                        <option value="" disabled selected hidden>Select</option>
+                                        <option *ngFor="let option of generalBusinessPostingGroupOptions"
+                                            [ngValue]="option.desc">
+                                            {{ option.desc }}
+                                        </option>
+                                    </select>
+                                    <small class="text-danger" *ngIf="!generalBusinessPostingGroup && isLastTab()">
+                                        General Bus Posting Group is required.
+                                    </small>
+                                </div>
+                            </div>
+
+                            <!-- Row 4: Categories -->
+                            <div class="row">
+                                <div class="col-12 form-group mb-0">
+                                    <label>Categories
+                                        <i class="fa fa-info-circle text-muted ms-1"
+                                            ngbTooltip="Select categories associated with your company"
+                                            placement="right"></i>
+                                    </label>
+                                    <ng-select #catSelect class="custom-select-ui" [items]="categoryOptions"
+                                        bindLabel="name" bindValue="id" [multiple]="true" [searchable]="false"
+                                        [closeOnSelect]="false" [(ngModel)]="selectedCategoryIds"
+                                        [disabled]="isReadOnly" placeholder="Select Categories"
+                                        (open)="onCategoryDropdownOpen(catSelect)"
+                                        (close)="onCategoryDropdownClose(catSelect)">
+                                        <ng-template ng-header-tmp>
+                                            <div class="dropdown-search-wrapper">
+                                                <svg class="dropdown-search-icon" width="14" height="14"
+                                                    viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2.2"
+                                                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                    <circle cx="11" cy="11" r="8"></circle>
+                                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                                </svg>
+                                                <input #catSearch type="text" class="dropdown-search-input"
+                                                    placeholder="Search categories..."
+                                                    (input)="catSelect.filter(catSearch.value)"
+                                                    (click)="$event.stopPropagation()"
+                                                    (keydown)="onCategorySearchKeyDown($event, catSelect)"
+                                                    autocomplete="off" spellcheck="false" />
+                                                <button *ngIf="catSearch.value" type="button"
+                                                    class="dropdown-search-clear"
+                                                    (click)="catSearch.value = ''; catSelect.filter(''); $event.stopPropagation(); catSearch.focus()"
+                                                    tabindex="-1" aria-label="Clear search">
+                                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none"
+                                                        stroke="#64748b" stroke-width="2.5" stroke-linecap="round"
+                                                        stroke-linejoin="round">
+                                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </ng-template>
+                                    </ng-select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right: Drag & Drop Upload Box -->
+                        <div class="col-xl-3 col-lg-3 col-12 mt-3 mt-lg-0">
+                            <div class="upload-box-wrapper">
+                                <label class="upload-box-label">Logo</label>
+                                <div class="upload-dropzone" [ngClass]="{
+                                        'has-image': logoPreviewUrl || existingLogoUrl,
+                                        'is-dragging': isDraggingLogo,
+                                        'disabled-upload': isReadOnly
+                                    }"
+                                    (click)="!isReadOnly && !logoPreviewUrl && !existingLogoUrl && logoFileInput.click()"
+                                    (dragover)="onLogoDragOver($event)" (dragleave)="onLogoDragLeave($event)"
+                                    (drop)="onLogoDrop($event)">
+
+                                    <input #logoFileInput type="file" accept="image/*" [disabled]="isReadOnly"
+                                        (change)="onLogoSelect($event)" class="d-none" />
+
+                                    <!-- Empty state (no image) -->
+                                    <ng-container *ngIf="!logoPreviewUrl && !existingLogoUrl">
+                                        <div class="upload-icon-wrap">
+                                            <i class="ft-image"></i>
+                                        </div>
+                                        <div class="upload-title">DRAG & DROP</div>
+                                        <div class="upload-subtitle">
+                                            or <span class="browse-link"
+                                                (click)="$event.stopPropagation(); logoFileInput.click()">Browse</span>
+                                        </div>
+                                        <div class="upload-hint">PNG / JPG up to 2MB</div>
                                     </ng-container>
 
-
-                                    <ng-template #newCompanyNav>
-                                        <div class="d-flex gap-2">
-                                            <button *ngIf="!isFirstTab()" type="button"
-                                                class="btn btn-outline-secondary" (click)="goToPrevTab()"
-                                                [disabled]="isFirstTab()">
-                                                Back
-                                            </button>
-
-
-                                            <button type="button"
-                                                class="btn btn-primary d-flex align-items-center gap-1"
-                                                *ngIf="!isLastTab()" (click)="goToNextTab()">
-                                                Next <i class="fa fa-chevron-right next-icon"></i>
-                                            </button>
-
-
-                                            <button type="button" class="btn btn-primary" *ngIf="isLastTab()"
-                                                (click)="submitForm()" [disabled]="isLoading">
-                                                <i class="fa fa-spinner fa-spin mr-1" *ngIf="isLoading"></i>
-                                                Submit Company
-                                            </button>
+                                    <!-- Image preview state -->
+                                    <ng-container *ngIf="logoPreviewUrl || existingLogoUrl">
+                                        <div class="preview-container">
+                                            <img [src]="logoPreviewUrl || existingLogoUrl" alt="Logo"
+                                                class="preview-img" />
+                                            <div class="preview-overlay" *ngIf="!isReadOnly">
+                                                <button type="button" class="btn btn-sm btn-light change-btn"
+                                                    (click)="$event.stopPropagation(); logoFileInput.click()">
+                                                    <i class="ft-edit-2 mr-1"></i> Change
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-danger remove-btn"
+                                                    (click)="$event.stopPropagation(); removeLogo()">
+                                                    <i class="ft-trash-2 mr-1"></i> Remove
+                                                </button>
+                                            </div>
                                         </div>
-                                    </ng-template>
+                                    </ng-container>
                                 </div>
-                                <!-- <div class="col-12 d-flex align-items-center justify-content-end mb-2">
-                                    <button class="btn btn-outline-primary" (click)="openAttachmentModal()"
-                                        [disabled]="isReadonlyEntityFields">Attachment</button>
-                                </div> -->
-                                <div class="col-12">
-                                    <div class="col-12">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
 
-                                        <div *ngIf="selectedTab === 'general'">
+        <!-- OTHER TABS (Addresses, Contacts, Purchasing, Bank, Attachments) -->
+        <div class="card company-card" *ngIf="selectedTab !== 'general'">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-end mb-3">
+                    <ng-container *ngTemplateOutlet="tabNavButtons"></ng-container>
+                </div>
 
-                                            <!-- Row 1: Procurement companies + Name -->
-                                            <div class="row g-3 align-items-start">
+                <div *ngIf="selectedTab === 'addresses'">
+                    <div class="address-table-container">
+                        <app-company-address-modal [address]="editingAddress"
+                            [isEditAddressMode]="editingAddressIndex !== null" *ngIf="!isReadOnly"
+                            (submit)="onAddressSubmit($event)">
+                        </app-company-address-modal>
 
-                                                <!-- LEFT: Your existing inputs -->
-                                                <div class="col-lg-6">
-                                                    <div class="row g-3">
-
-                                                        <!-- Your existing Select Procurement Companies (not edit mode) -->
-
-
-                                                        <!-- Your existing Name input -->
-                                                        <div class="col-12 form-group">
-                                                            <label>Company Name <span class="text-danger">*</span>
-                                                                <i class="fa fa-info-circle text-muted ms-1"
-                                                                    ngbTooltip="The company name must match your trade license name."
-                                                                    placement="right"></i>
-                                                            </label>
-                                                            <input type="text" class="form-control w-cstm"
-                                                                [(ngModel)]="companyName" [disabled]="isReadOnly"
-                                                                placeholder="Enter trade license name">
-                                                            <small class="text-danger"
-                                                                *ngIf="!companyName && isLastTab()">
-                                                                Company name is required.
-                                                            </small>
-                                                        </div>
-
-                                                        <!-- NEW: Website URL -->
-                                                        <div class="col-12 form-group">
-                                                            <label>Website URL</label>
-                                                            <input type="url" class="form-control w-cstm"
-                                                                [(ngModel)]="websiteUrl" [disabled]="isReadOnly"
-                                                                placeholder="https://www.example.com">
-                                                        </div>
-
-                                                        <!-- TRN (Tax Registration Number) -->
-                                                        <div class="col-12 form-group">
-                                                            <label>TRN (Tax Registration Number) <span
-                                                                    class="text-danger">*</span>
-                                                                <i class="fa fa-info-circle text-muted ms-1"
-                                                                    ngbTooltip="Enter your 15-digit Tax Registration Number"
-                                                                    placement="right"></i>
-                                                            </label>
-                                                            <input type="text" class="form-control w-cstm"
-                                                                [(ngModel)]="trn" [disabled]="isReadOnly"
-                                                                placeholder="e.g., 100xxxxxxxxxxxx" maxlength="15">
-                                                            <small class="text-danger" *ngIf="trn && trn.length !== 15">
-                                                                TRN must be exactly 15 digits.
-                                                            </small>
-                                                        </div>
-
-                                                       
-                                                                <div class="row mt-2">
-                                                                    <div class="col-6 form-group">
-                                                                        <label>Payment Method <span class="text-danger">*</span></label>
-                                                                        <select class="form-control w-cstm"
-                                                                            [(ngModel)]="paymentMethod"
-                                                                            [disabled]="isReadOnly">
-                                                                            <option value=""></option>
-                                                                            <option *ngFor="let option of paymentMethodOptions"
-                                                                                [ngValue]="option.desc">
-                                                                                {{ option.desc }}
-                                                                            </option>
-                                                                        </select>
-                                                                        <small class="text-danger" *ngIf="!paymentMethod && isLastTab()">
-                                                                            Payment Method is required.
-                                                                        </small>
-                                                                    </div>
-    
-                                                                    <div class="col-6 form-group" style="margin-left: -14px !important;">
-                                                                        <label>Payment Term <span class="text-danger">*</span></label>
-                                                                        <select class="form-control w-cstm"
-                                                                            [(ngModel)]="paymentTerm"
-                                                                            [disabled]="isReadOnly">
-                                                                            <option value=""></option>
-                                                                            <option *ngFor="let option of paymentTermOptions"
-                                                                                [ngValue]="option.desc">
-                                                                                {{ option.desc }}
-                                                                            </option>
-                                                                        </select>
-                                                                        <small class="text-danger" *ngIf="!paymentTerm && isLastTab()">
-                                                                            Payment Term is required.
-                                                                        </small>
-                                                                    </div>
-                                                                </div>
-                                                            
-                                                                <div class="row mt-2">
-                                                                    <div class="col-6 form-group">
-                                                                        <label>Vendor Posting Group <span class="text-danger">*</span></label>
-                                                                        <select class="form-control w-cstm"
-                                                                            [(ngModel)]="vendorPostingGroup"
-                                                                            [disabled]="isReadOnly">
-                                                                            <option value=""></option>
-                                                                            <option *ngFor="let option of vendorPostingGroupOptions"
-                                                                                [ngValue]="option.desc">
-                                                                                {{ option.desc }}
-                                                                            </option>
-                                                                        </select>
-                                                                        <small class="text-danger" *ngIf="!vendorPostingGroup && isLastTab()">
-                                                                            Vendor Posting Group is required.
-                                                                        </small>
-                                                                    </div>
-    
-                                                                    <div class="col-6 form-group" style="margin-left: -14px !important;">
-                                                                        <label>VAT Business Posting Group <span class="text-danger">*</span></label>
-                                                                        <select class="form-control w-cstm"
-                                                                            [(ngModel)]="vatBusinessPostingGroup"
-                                                                            [disabled]="isReadOnly">
-                                                                            <option value=""></option>
-                                                                            <option *ngFor="let option of vatBusinessPostingGroupOptions"
-                                                                                [ngValue]="option.desc">
-                                                                                {{ option.desc }}
-                                                                            </option>
-                                                                        </select>
-                                                                        <small class="text-danger" *ngIf="!vatBusinessPostingGroup && isLastTab()">
-                                                                            VAT Business Posting Group is required.
-                                                                        </small>
-                                                                    </div>
-                                                                </div>
-                                                            
-                                                                <div class="row mt-2">
-                                                                    <div class="col-6 form-group">
-                                                                        <label>General Bus Posting Group <span class="text-danger">*</span></label>
-                                                                        <select class="form-control w-cstm"
-                                                                            [(ngModel)]="generalBusinessPostingGroup"
-                                                                            [disabled]="isReadOnly">
-                                                                            <option value=""></option>
-                                                                            <option *ngFor="let option of generalBusinessPostingGroupOptions"
-                                                                                [ngValue]="option.desc">
-                                                                                {{ option.desc }}
-                                                                            </option>
-                                                                        </select>
-                                                                        <small class="text-danger" *ngIf="!generalBusinessPostingGroup && isLastTab()">
-                                                                            General Bus Posting Group is required.
-                                                                        </small>
-                                                                    </div>
-
-                                                                    <div class="col-lg col-md-6 form-group"></div>
-                                                                </div>
-
-                                                                <div class="row mt-2">
-                                                                    <div class="col-12 form-group">
-                                                                        <label>Categories
-                                                                            <i class="fa fa-info-circle text-muted ms-1"
-                                                                                ngbTooltip="Select categories associated with your company"
-                                                                                placement="right"></i>
-                                                                        </label>
-                                                                        <ng-select
-                                                                            class="w-cstm"
-                                                                            [items]="categoryOptions"
-                                                                            bindLabel="name"
-                                                                            bindValue="id"
-                                                                            [multiple]="true"
-                                                                            [closeOnSelect]="false"
-                                                                            placeholder="Select categories"
-                                                                            [(ngModel)]="selectedCategoryIds"
-                                                                            [disabled]="isReadOnly">
-                                                                        </ng-select>
-                                                                    </div>
-                                                                </div>
-                                                           
-                                                           
-                                                       
-
-                                                    </div>
-                                                </div>
-
-                                                <!-- RIGHT: Company Logo Upload -->
-                                                <!-- Right side / Logo uploader -->
-                                                <div class="col-6">
-                                                    <div class="mb-2 d-flex flex-column align-items-center logo-div">
-                                                        <label class="mb-1">Logo</label>
-
-                                                        <!-- Circle upload button -->
-                                                        <label class="logo-upload-circle"
-                                                            [ngClass]="{ 'has-image': logoPreviewUrl || existingLogoUrl, 'disabled-upload': isReadOnly }">
-                                                            <input type="file" accept="image/*" [disabled]="isReadOnly"
-                                                                (change)="onLogoSelect($event)" class="d-none" />
-
-                                                            <!-- When no image selected -->
-                                                            <ng-container *ngIf="!logoPreviewUrl && !existingLogoUrl">
-                                                                <i class="ft-image text-muted"></i>
-                                                                <span class="logo-upload-text">Upload</span>
-                                                            </ng-container>
-
-                                                            <!-- When image selected / existing -->
-                                                            <ng-container *ngIf="logoPreviewUrl || existingLogoUrl">
-                                                                <img [src]="logoPreviewUrl || existingLogoUrl"
-                                                                    alt="Logo" class="logo-upload-img" />
-
-                                                                <!-- Hover overlay -->
-                                                                <div class="logo-upload-overlay">
-                                                                    <span class="logo-upload-overlay-text">
-                                                                        <i class="ft-upload mr-1"></i>change image
-                                                                    </span>
-                                                                </div>
-                                                            </ng-container>
-                                                        </label>
-
-                                                        <small class="text-muted mt-2">
-                                                            PNG / JPG up to 2MB.
-                                                        </small>
-
-                                                        <!-- OPTIONAL remove (if you want) -->
-                                                        <button
-                                                            *ngIf="(logoPreviewUrl || existingLogoUrl) && !isReadOnly"
-                                                            type="button" class="btn btn-sm btn-outline-danger mt-2"
-                                                            (click)="removeLogo()">
-                                                            Remove
-                                                        </button>
-                                                    </div>
-                                                </div>
-
-                                            </div>
-                                        </div>
+                        <div class="table-responsive mt-2">
+                            <table class="my-table">
+                                <thead>
+                                    <tr>
+                                        <th>Street</th>
+                                        <th>City</th>
+                                        <th>State</th>
+                                        <th>Zip Code</th>
+                                        <th>Country</th>
+                                        <th>Primary</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let address of addressList; let i = index">
+                                        <td>{{ address.street }}</td>
+                                        <td>{{ address.city }}</td>
+                                        <td>{{ address.state }}</td>
+                                        <td>{{ address.zip }}</td>
+                                        <td>{{ address.country }}</td>
+                                        <td>{{ address.primary ? 'Yes' : 'No' }}</td>
+                                        <td>
+                                            <ng-container *ngIf="!isReadOnly">
+                                                <button class="btn btn-sm px-1" type="button" title="Edit"
+                                                    (click)="openAddressEditor(i)">
+                                                    <img src="assets/img/svg-icons/update-icon.svg" alt="Edit"
+                                                        style="width: 18px; height: 18px;" />
+                                                </button>
+                                                <button class="btn btn-sm px-1" type="button" title="Delete"
+                                                    (click)="confirmAddressDeletion(i)">
+                                                    <img src="assets/img/svg-icons/delete-icon.svg" alt="Delete"
+                                                        style="width: 18px; height: 18px;" />
+                                                </button>
+                                            </ng-container>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
 
 
-                                        <div *ngIf="selectedTab === 'addresses'">
-                                            <div class="address-table-container">
+                <div *ngIf="selectedTab === 'contacts'">
+                    <app-company-contact-modal [contact]="editingContact" [isEditMode]="editingContactIndex !== null"
+                        *ngIf="!isReadOnly" (contactSubmit)="onContactSubmit($event)"
+                        (cancelEdit)="cancelContactEdit()">
+                    </app-company-contact-modal>
+
+                    <div class="table-responsive mt-2">
+                        <table class="my-table">
+                            <thead>
+                                <tr>
+                                    <th>Description</th>
+                                    <th>Type</th>
+                                    <th>Contact Number</th>
+                                    <th>Extension</th>
+                                    <th>Primary</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let contact of contactList; let i = index">
+                                    <td>{{ contact.description || '-' }}</td>
+                                    <td>{{ getContactTypeLabel(contact.type) }}</td>
+                                    <td>{{ contact.contactNumber || '-' }}</td>
+                                    <td>{{ contact.extension || '-' }}</td>
+                                    <td>{{ (contact.primary || contact.isPrimary) ? 'Yes' : 'No' }}</td>
+                                    <td>
+                                        <ng-container *ngIf="!isReadOnly">
+                                            <button class="btn btn-sm px-1" type="button" title="Edit"
+                                                (click)="openContactEditor(i)">
+                                                <img src="assets/img/svg-icons/update-icon.svg" alt="Edit"
+                                                    style="width: 18px; height: 18px;" />
+                                            </button>
+                                            <button class="btn btn-sm px-1" type="button" title="Delete"
+                                                (click)="confirmContactDeletion(i)">
+                                                <img src="assets/img/svg-icons/delete-icon.svg" alt="Delete"
+                                                    style="width: 18px; height: 18px;" />
+                                            </button>
+                                        </ng-container>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="contactList.length === 0">
+                                    <td colspan="6" class="text-center text-muted py-3">No contacts added yet.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
 
-                                                <app-company-address-modal [address]="editingAddress"
-                                                    [isEditAddressMode]="editingAddressIndex !== null"
-                                                    *ngIf="!isReadOnly" (submit)="onAddressSubmit($event)">
-                                                </app-company-address-modal>
+                <div *ngIf="selectedTab === 'purchasing'">
+                    <div class="row cstm-vertical-gap">
+                        <div class="col-md-3 mt-1 form-group">
+                            <label>
+                                Primary currency
+                                <i class="fa fa-info-circle text-muted ms-1"
+                                    ngbTooltip="Select the main currency used for transactions with this company"
+                                    placement="right"></i>
+                            </label>
+                            <select class="form-control" [(ngModel)]="primaryCurrency" [disabled]="isReadOnly">
+                                <option value="" disabled selected hidden></option>
+                                <option>USD</option>
+                                <option>GBP</option>
+                                <option>AED</option>
+                            </select>
+                        </div>
 
-                                                <div class="table-responsive mt-2">
-                                                    <table class="my-table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Street</th>
-                                                                <th>City</th>
-                                                                <th>State</th>
-                                                                <th>Zip Code</th>
-                                                                <th>Country</th>
-                                                                <th>Primary</th>
-                                                                <th>Actions</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr *ngFor="let address of addressList; let i = index">
-                                                                <td>{{ address.street }}</td>
-                                                                <td>{{ address.city }}</td>
-                                                                <td>{{ address.state }}</td>
-                                                                <td>{{ address.zip }}</td>
-                                                                <td>{{ address.country }}</td>
-                                                                <td>{{ address.primary ? 'Yes' : 'No' }}</td>
-                                                                <td>
-                                                                    <ng-container *ngIf="!isReadOnly">
-                                                                        <button class="btn btn-sm px-1" type="button" title="Edit"
-                                                                            (click)="openAddressEditor(i)">
-                                                                            <img src="assets/img/svg-icons/update-icon.svg" alt="Edit" style="width: 18px; height: 18px;" />
-                                                                        </button>
-                                                                        <button class="btn btn-sm px-1" type="button" title="Delete"
-                                                                            (click)="confirmAddressDeletion(i)">
-                                                                            <img src="assets/img/svg-icons/delete-icon.svg" alt="Delete" style="width: 18px; height: 18px;" />
-                                                                        </button>
-                                                                    </ng-container>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-                                        <div *ngIf="selectedTab === 'contacts'">
-
-
-                                            <app-company-contact-modal [contact]="editingContact"
-                                                [isEditMode]="editingContactIndex !== null" *ngIf="!isReadOnly"
-                                                (submit)="onContactSubmit($event)">
-                                            </app-company-contact-modal>
-
-                                            <div class="table-responsive mt-2">
-                                                <table class="my-table">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Description</th>
-                                                            <th>Type</th>
-                                                            <th>Contact Number</th>
-                                                            <th>Extension</th>
-                                                            <th>Primary</th>
-                                                            <th>Actions</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr *ngFor="let contact of contactList; let i = index">
-                                                            <td>{{ contact.description }}</td>
-                                                            <td>{{ contact.type }}</td>
-                                                            <td>{{ contact.contactNumber }}</td>
-                                                            <td>{{ contact.extension }}</td>
-                                                            <td>{{ contact.primary ? 'Yes' : 'No' }}</td>
-                                                            <td>
-                                                                <ng-container *ngIf="!isReadOnly">
-                                                                    <button class="btn btn-sm px-1" type="button" title="Edit"
-                                                                        (click)="openContactEditor(i)">
-                                                                        <img src="assets/img/svg-icons/update-icon.svg" alt="Edit" style="width: 18px; height: 18px;" />
-                                                                    </button>
-                                                                    <button class="btn btn-sm px-1" type="button" title="Delete"
-                                                                        (click)="confirmContactDeletion(i)">
-                                                                        <img src="assets/img/svg-icons/delete-icon.svg" alt="Delete" style="width: 18px; height: 18px;" />
-                                                                    </button>
-                                                                </ng-container>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-
-
-                                        <div *ngIf="selectedTab === 'purchasing'">
-                                            <div class="row cstm-vertical-gap">
-                                                <div class="col-md-3 mt-1 form-group">
-                                                    <label>
-                                                        Primary currency
-                                                        <i class="fa fa-info-circle text-muted ms-1"
-                                                            ngbTooltip="Select the main currency used for transactions with this company"
-                                                            placement="right"></i>
-                                                    </label>
-                                                    <select class="form-control" [(ngModel)]="primaryCurrency"
-                                                        [disabled]="isReadOnly">
-                                                        <option value=""></option>
-                                                        <option>USD</option>
-                                                        <option>GBP</option>
-                                                        <option>AED</option>
-                                                    </select>
-                                                </div>
-
-                                                <!-- <div class="col-md-3 mt-1 form-group">
+                        <!-- <div class="col-md-3 mt-1 form-group">
                                                     <label>
                                                         Primary contact
                                                         <i class="fa fa-info-circle text-muted ms-1"
@@ -441,50 +439,48 @@
                                                     </label>
                                                     <select class="form-control" [(ngModel)]="employeeResponsible"
                                                         [disabled]="isReadOnly">
-                                                        <option value=""></option>
+                                                        <option value="" disabled selected hidden></option>
                                                         <option *ngFor="let c of contactList">{{ c.description }}
                                                         </option>
                                                     </select>
                                                 </div> -->
 
-                                                <div class="col-md-3 mt-1 form-group">
-                                                    <label>
-                                                        Vendor type
-                                                        <i class="fa fa-info-circle text-muted ms-1"
-                                                            ngbTooltip="Specify whether this vendor is Local or Foreign"
-                                                            placement="right"></i>
-                                                    </label>
-                                                    <select class="form-control" [(ngModel)]="vendorCategory"
-                                                        [disabled]="isReadOnly">
-                                                        <option value=""></option>
-                                                        <option>Local</option>
-                                                        <option>Foreign</option>
-                                                    </select>
-                                                </div>
+                        <div class="col-md-3 mt-1 form-group">
+                            <label>
+                                Vendor type
+                                <i class="fa fa-info-circle text-muted ms-1"
+                                    ngbTooltip="Specify whether this vendor is Local or Foreign" placement="right"></i>
+                            </label>
+                            <select class="form-control" [(ngModel)]="vendorCategory" [disabled]="isReadOnly">
+                                <option value="" disabled selected hidden></option>
+                                <option>Local</option>
+                                <option>Foreign</option>
+                            </select>
+                        </div>
 
-                                                <div class="col-md-3 mt-1 form-group">
-                                                    <label>
-                                                        Line of business
-                                                        <i class="fa fa-info-circle text-muted ms-1"
-                                                            ngbTooltip="Enter the industry or line of business this company operates in"
-                                                            placement="right"></i>
-                                                    </label>
-                                                    <input type="text" class="form-control" [(ngModel)]="lineOfBusiness"
-                                                        [disabled]="isReadOnly" placeholder="Enter line of business">
-                                                </div>
+                        <div class="col-md-3 mt-1 form-group">
+                            <label>
+                                Line of business
+                                <i class="fa fa-info-circle text-muted ms-1"
+                                    ngbTooltip="Enter the industry or line of business this company operates in"
+                                    placement="right"></i>
+                            </label>
+                            <input type="text" class="form-control" [(ngModel)]="lineOfBusiness" [disabled]="isReadOnly"
+                                placeholder="Enter line of business">
+                        </div>
 
-                                                <div class="col-md-3 mt-1 form-group">
-                                                    <label>
-                                                        Birth country
-                                                        <i class="fa fa-info-circle text-muted ms-1"
-                                                            ngbTooltip="Enter the country where the vendor or company was originally established"
-                                                            placement="right"></i>
-                                                    </label>
-                                                    <input type="text" class="form-control" [(ngModel)]="birthCountry"
-                                                        [disabled]="isReadOnly" placeholder="Enter birth country">
-                                                </div>
+                        <div class="col-md-3 mt-1 form-group">
+                            <label>
+                                Birth country
+                                <i class="fa fa-info-circle text-muted ms-1"
+                                    ngbTooltip="Enter the country where the vendor or company was originally established"
+                                    placement="right"></i>
+                            </label>
+                            <input type="text" class="form-control" [(ngModel)]="birthCountry" [disabled]="isReadOnly"
+                                placeholder="Enter birth country">
+                        </div>
 
-                                                <!-- <div class="col-md-3 mt-1 form-group">
+                        <!-- <div class="col-md-3 mt-1 form-group">
                                                     <label>
                                                         Employee responsible
                                                         <i class="fa fa-info-circle text-muted ms-1"
@@ -496,232 +492,215 @@
                                                         placeholder="Enter employee responsible">
                                                 </div> -->
 
-                                                <div class="col-md-3 mt-1 form-group">
-                                                    <label>
-                                                        Segment
-                                                        <i class="fa fa-info-circle text-muted ms-1"
-                                                            ngbTooltip="Enter the business segment this vendor belongs to"
-                                                            placement="right"></i>
-                                                    </label>
-                                                    <input type="text" class="form-control" [(ngModel)]="segment"
-                                                        [disabled]="isReadOnly" placeholder="Enter segment">
-                                                </div>
+                        <div class="col-md-3 mt-1 form-group">
+                            <label>
+                                Segment
+                                <i class="fa fa-info-circle text-muted ms-1"
+                                    ngbTooltip="Enter the business segment this vendor belongs to"
+                                    placement="right"></i>
+                            </label>
+                            <input type="text" class="form-control" [(ngModel)]="segment" [disabled]="isReadOnly"
+                                placeholder="Enter segment">
+                        </div>
 
-                                                <div class="col-md-3 mt-1 form-group">
-                                                    <label>
-                                                        Speciality
-                                                        <i class="fa fa-info-circle text-muted ms-1"
-                                                            ngbTooltip="Enter the specific expertise or speciality of this vendor"
-                                                            placement="right"></i>
-                                                    </label>
-                                                    <input type="text" class="form-control" [(ngModel)]="speciality"
-                                                        [disabled]="isReadOnly" placeholder="Enter speciality">
-                                                </div>
+                        <div class="col-md-3 mt-1 form-group">
+                            <label>
+                                Speciality
+                                <i class="fa fa-info-circle text-muted ms-1"
+                                    ngbTooltip="Enter the specific expertise or speciality of this vendor"
+                                    placement="right"></i>
+                            </label>
+                            <input type="text" class="form-control" [(ngModel)]="speciality" [disabled]="isReadOnly"
+                                placeholder="Enter speciality">
+                        </div>
 
-                                                <div class="col-md-3 mt-1 form-group">
-                                                    <label>
-                                                        Chain
-                                                        <i class="fa fa-info-circle text-muted ms-1"
-                                                            ngbTooltip="Enter the chain or group the company is associated with"
-                                                            placement="right"></i>
-                                                    </label>
-                                                    <input type="text" class="form-control" [(ngModel)]="chain"
-                                                        [disabled]="isReadOnly" placeholder="Enter chain">
-                                                </div>
+                        <div class="col-md-3 mt-1 form-group">
+                            <label>
+                                Chain
+                                <i class="fa fa-info-circle text-muted ms-1"
+                                    ngbTooltip="Enter the chain or group the company is associated with"
+                                    placement="right"></i>
+                            </label>
+                            <input type="text" class="form-control" [(ngModel)]="chain" [disabled]="isReadOnly"
+                                placeholder="Enter chain">
+                        </div>
 
-                                                <div class="col-12 mt-1 form-group">
-                                                    <label>
-                                                        Note
-                                                        <i class="fa fa-info-circle text-muted ms-1"
-                                                            ngbTooltip="Add any additional notes or remarks about this vendor"
-                                                            placement="right"></i>
-                                                    </label>
-                                                    <textarea class="form-control" rows="3" [(ngModel)]="note"
-                                                        [disabled]="isReadOnly" placeholder="Enter note"></textarea>
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-                                        <div *ngIf="selectedTab === 'bank'">
-                                            <form [formGroup]="bankForm">
-                                                <div class="row mb-3 cstm-vertical-gap">
-                                                    <div class="col-md-3 mt-1 form-group">
-                                                        <label>Bank Name <span class="text-danger">*</span></label>
-                                                        <input type="text" class="form-control"
-                                                            formControlName="bankName" placeholder="Enter bank name"
-                                                            [ngClass]="{'is-invalid': bankForm.get('bankName').invalid && bankForm.get('bankName').touched}">
-                                                        <div *ngIf="bankForm.get('bankName').invalid && bankForm.get('bankName').touched"
-                                                            class="text-danger small">
-                                                            Bank name is required.
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-3 mt-1 form-group">
-                                                        <label>Account Holder Name <span
-                                                                class="text-danger">*</span></label>
-                                                        <input type="text" class="form-control"
-                                                            formControlName="accountHolderName"
-                                                            placeholder="Enter account holder name"
-                                                            [ngClass]="{'is-invalid': bankForm.get('accountHolderName').invalid && bankForm.get('accountHolderName').touched}">
-                                                        <div *ngIf="bankForm.get('accountHolderName').invalid && bankForm.get('accountHolderName').touched"
-                                                            class="text-danger small">
-                                                            Account holder name is required.
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-3 mt-1 form-group">
-                                                        <label>Account Number <span class="text-danger">*</span></label>
-                                                        <input type="text" class="form-control"
-                                                            formControlName="accountNumber"
-                                                            placeholder="Enter account number"
-                                                            [ngClass]="{'is-invalid': bankForm.get('accountNumber').invalid && bankForm.get('accountNumber').touched}">
-                                                        <div *ngIf="bankForm.get('accountNumber').invalid && bankForm.get('accountNumber').touched"
-                                                            class="text-danger small">
-                                                            Account number is required.
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-3 mt-1 form-group">
-                                                        <label>IBAN <span class="text-danger">*</span></label>
-                                                        <input type="text" class="form-control" formControlName="iban"
-                                                            placeholder="Enter IBAN"
-                                                            [ngClass]="{'is-invalid': bankForm.get('iban').invalid && bankForm.get('iban').touched}">
-                                                        <div *ngIf="bankForm.get('iban').invalid && bankForm.get('iban').touched"
-                                                            class="text-danger small">
-                                                            IBAN is required.
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-3 mt-1 form-group">
-                                                        <label>SWIFT / BIC Code</label>
-                                                        <input type="text" class="form-control"
-                                                            formControlName="swiftCode"
-                                                            placeholder="Enter SWIFT / BIC code">
-                                                    </div>
-
-                                                    <div class="col-md-3 mt-1 form-group">
-                                                        <label>Branch Name</label>
-                                                        <input type="text" class="form-control"
-                                                            formControlName="branchName"
-                                                            placeholder="Enter branch name">
-                                                    </div>
-
-                                                    <div class="col-md-3 mt-1 form-group">
-                                                        <label>Branch Address</label>
-                                                        <input type="text" class="form-control"
-                                                            formControlName="branchAddress"
-                                                            placeholder="Enter branch address">
-                                                    </div>
-
-                                                    <div class="col-md-3 mt-1 form-group">
-                                                        <label>Country <span class="text-danger">*</span></label>
-                                                        <select class="form-control" formControlName="bankCountry"
-                                                            [ngClass]="{'is-invalid': bankForm.get('bankCountry').invalid && bankForm.get('bankCountry').touched}">
-                                                            <option value=""></option>
-                                                            <option>Pakistan</option>
-                                                            <option>United Arab Emirates</option>
-                                                            <option>United Kingdom</option>
-                                                            <option>United States</option>
-                                                            <option>Saudi Arabia</option>
-                                                        </select>
-                                                        <div *ngIf="bankForm.get('bankCountry').invalid && bankForm.get('bankCountry').touched"
-                                                            class="text-danger small">
-                                                            Country is required.
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-3 mt-1 form-group">
-                                                        <label>Currency <span class="text-danger">*</span></label>
-                                                        <select class="form-control" formControlName="bankCurrency"
-                                                            [ngClass]="{'is-invalid': bankForm.get('bankCurrency').invalid && bankForm.get('bankCurrency').touched}">
-                                                            <option value=""></option>
-                                                            <option>PKR</option>
-                                                            <option>AED</option>
-                                                            <option>USD</option>
-                                                            <option>GBP</option>
-                                                            <option>EUR</option>
-                                                        </select>
-                                                        <div *ngIf="bankForm.get('bankCurrency').invalid && bankForm.get('bankCurrency').touched"
-                                                            class="text-danger small">
-                                                            Currency is required.
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="d-flex justify-content-end mt-3">
-                                                        <button type="button" class="btn btn-primary"
-                                                            *ngIf="!isReadOnly" (click)="addBank()">
-                                                            {{ editingBankIndex === null ? 'Add Bank' : 'Update Bank' }}
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </form>
-
-
-                                            <div class="mt-4">
-                                                <div class="table-responsive mt-2">
-                                                    <table class="my-table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Bank Name</th>
-                                                                <th>Account Holder</th>
-                                                                <th>Account Number</th>
-                                                                <th>IBAN</th>
-                                                                <th>SWIFT Code</th>
-                                                                <th>Branch Name</th>
-                                                                <th>Branch Address</th>
-                                                                <th>Country</th>
-                                                                <th>Currency</th>
-                                                                <th>Actions</th>
-                                                            </tr>
-                                                        </thead>
-
-                                                        <tbody>
-                                                            <tr *ngFor="let bank of bankList; let i = index">
-                                                                <td>{{ bank.bankName }}</td>
-                                                                <td>{{ bank.accountHolderName }}</td>
-                                                                <td>{{ bank.accountNumber }}</td>
-                                                                <td>{{ bank.iban }}</td>
-                                                                <td>{{ bank.swiftCode }}</td>
-                                                                <td>{{ bank.branchName }}</td>
-                                                                <td>{{ bank.branchAddress }}</td>
-                                                                <td>{{ bank.bankCountry }}</td>
-                                                                <td>{{ bank.bankCurrency }}</td>
-
-                                                                <td>
-                                                                    <ng-container *ngIf="!isReadOnly">
-                                                                        <button class="btn btn-sm px-1" type="button" title="Edit"
-                                                                            (click)="editBank(i)">
-                                                                            <img src="assets/img/svg-icons/update-icon.svg" alt="Edit" style="width: 18px; height: 18px;" />
-                                                                        </button>
-                                                                        <button class="btn btn-sm px-1" type="button" title="Delete"
-                                                                            (click)="confirmBankDeletion(i)">
-                                                                            <img src="assets/img/svg-icons/delete-icon.svg" alt="Delete" style="width: 18px; height: 18px;" />
-                                                                        </button>
-                                                                    </ng-container>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div *ngIf="selectedTab === 'attachments'">
-                                            <app-company-profile-attachment [attachedFiles]="attachedFiles"
-                                                [readonly]="isReadOnly" (saveAttachment)="onAttachmentsUpdated($event)">
-                                            </app-company-profile-attachment>
-                                        </div>
-
-                                    </div>
-
-
-
-
-                                </div>
-                            </div>
+                        <div class="col-12 mt-1 form-group">
+                            <label>
+                                Note
+                                <i class="fa fa-info-circle text-muted ms-1"
+                                    ngbTooltip="Add any additional notes or remarks about this vendor"
+                                    placement="right"></i>
+                            </label>
+                            <textarea class="form-control" rows="3" [(ngModel)]="note" [disabled]="isReadOnly"
+                                placeholder="Enter note"></textarea>
                         </div>
                     </div>
+                </div>
+
+
+                <div *ngIf="selectedTab === 'bank'">
+                    <form [formGroup]="bankForm">
+                        <div class="row mb-3 cstm-vertical-gap">
+                            <div class="col-md-3 mt-1 form-group">
+                                <label>Bank Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" formControlName="bankName"
+                                    placeholder="Enter bank name"
+                                    [ngClass]="{'is-invalid': bankForm.get('bankName').invalid && bankForm.get('bankName').touched}">
+                                <div *ngIf="bankForm.get('bankName').invalid && bankForm.get('bankName').touched"
+                                    class="text-danger small">
+                                    Bank name is required.
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 mt-1 form-group">
+                                <label>Account Holder Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" formControlName="accountHolderName"
+                                    placeholder="Enter account holder name"
+                                    [ngClass]="{'is-invalid': bankForm.get('accountHolderName').invalid && bankForm.get('accountHolderName').touched}">
+                                <div *ngIf="bankForm.get('accountHolderName').invalid && bankForm.get('accountHolderName').touched"
+                                    class="text-danger small">
+                                    Account holder name is required.
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 mt-1 form-group">
+                                <label>Account Number <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" formControlName="accountNumber"
+                                    placeholder="Enter account number"
+                                    [ngClass]="{'is-invalid': bankForm.get('accountNumber').invalid && bankForm.get('accountNumber').touched}">
+                                <div *ngIf="bankForm.get('accountNumber').invalid && bankForm.get('accountNumber').touched"
+                                    class="text-danger small">
+                                    Account number is required.
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 mt-1 form-group">
+                                <label>IBAN <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" formControlName="iban" placeholder="Enter IBAN"
+                                    [ngClass]="{'is-invalid': bankForm.get('iban').invalid && bankForm.get('iban').touched}">
+                                <div *ngIf="bankForm.get('iban').invalid && bankForm.get('iban').touched"
+                                    class="text-danger small">
+                                    IBAN is required.
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 mt-1 form-group">
+                                <label>SWIFT / BIC Code</label>
+                                <input type="text" class="form-control" formControlName="swiftCode"
+                                    placeholder="Enter SWIFT / BIC code">
+                            </div>
+
+                            <div class="col-md-3 mt-1 form-group">
+                                <label>Branch Name</label>
+                                <input type="text" class="form-control" formControlName="branchName"
+                                    placeholder="Enter branch name">
+                            </div>
+
+                            <div class="col-md-3 mt-1 form-group">
+                                <label>Branch Address</label>
+                                <input type="text" class="form-control" formControlName="branchAddress"
+                                    placeholder="Enter branch address">
+                            </div>
+
+                            <div class="col-md-3 mt-1 form-group">
+                                <label>Country <span class="text-danger">*</span></label>
+                                <select class="form-control" formControlName="bankCountry"
+                                    [ngClass]="{'is-invalid': bankForm.get('bankCountry').invalid && bankForm.get('bankCountry').touched}">
+                                    <option value="" disabled selected hidden></option>
+                                    <option>Pakistan</option>
+                                    <option>United Arab Emirates</option>
+                                    <option>United Kingdom</option>
+                                    <option>United States</option>
+                                    <option>Saudi Arabia</option>
+                                </select>
+                                <div *ngIf="bankForm.get('bankCountry').invalid && bankForm.get('bankCountry').touched"
+                                    class="text-danger small">
+                                    Country is required.
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 mt-1 form-group">
+                                <label>Currency <span class="text-danger">*</span></label>
+                                <select class="form-control" formControlName="bankCurrency"
+                                    [ngClass]="{'is-invalid': bankForm.get('bankCurrency').invalid && bankForm.get('bankCurrency').touched}">
+                                    <option value="" disabled selected hidden></option>
+                                    <option>PKR</option>
+                                    <option>AED</option>
+                                    <option>USD</option>
+                                    <option>GBP</option>
+                                    <option>EUR</option>
+                                </select>
+                                <div *ngIf="bankForm.get('bankCurrency').invalid && bankForm.get('bankCurrency').touched"
+                                    class="text-danger small">
+                                    Currency is required.
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-end mt-3">
+                                <button type="button" class="btn btn-primary" *ngIf="!isReadOnly" (click)="addBank()">
+                                    {{ editingBankIndex === null ? 'Add Bank' : 'Update Bank' }}
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+
+                    <div class="mt-4">
+                        <div class="table-responsive mt-2">
+                            <table class="my-table">
+                                <thead>
+                                    <tr>
+                                        <th>Bank Name</th>
+                                        <th>Account Holder</th>
+                                        <th>Account Number</th>
+                                        <th>IBAN</th>
+                                        <th>SWIFT Code</th>
+                                        <th>Branch Name</th>
+                                        <th>Branch Address</th>
+                                        <th>Country</th>
+                                        <th>Currency</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr *ngFor="let bank of bankList; let i = index">
+                                        <td>{{ bank.bankName }}</td>
+                                        <td>{{ bank.accountHolderName }}</td>
+                                        <td>{{ bank.accountNumber }}</td>
+                                        <td>{{ bank.iban }}</td>
+                                        <td>{{ bank.swiftCode }}</td>
+                                        <td>{{ bank.branchName }}</td>
+                                        <td>{{ bank.branchAddress }}</td>
+                                        <td>{{ bank.bankCountry }}</td>
+                                        <td>{{ bank.bankCurrency }}</td>
+
+                                        <td>
+                                            <ng-container *ngIf="!isReadOnly">
+                                                <button class="btn btn-sm px-1" type="button" title="Edit"
+                                                    (click)="editBank(i)">
+                                                    <img src="assets/img/svg-icons/update-icon.svg" alt="Edit"
+                                                        style="width: 18px; height: 18px;" />
+                                                </button>
+                                                <button class="btn btn-sm px-1" type="button" title="Delete"
+                                                    (click)="confirmBankDeletion(i)">
+                                                    <img src="assets/img/svg-icons/delete-icon.svg" alt="Delete"
+                                                        style="width: 18px; height: 18px;" />
+                                                </button>
+                                            </ng-container>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="selectedTab === 'attachments'">
+                    <app-company-profile-attachment [attachedFiles]="attachedFiles" [readonly]="isReadOnly"
+                        (saveAttachment)="onAttachmentsUpdated($event)">
+                    </app-company-profile-attachment>
                 </div>
             </div>
         </div>
@@ -734,7 +713,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Delete Address</h5>
-                        <button type="button" class="fa fa-times btn" (click)="closeAddressPopup()"></button>
+                        <button type="button" class="btn-close" aria-label="Close" (click)="closeAddressPopup()"></button>
                     </div>
                     <div class="modal-body">
                         <p>Are you sure you want to delete this Address?</p>
@@ -755,7 +734,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Delete Contact</h5>
-                        <button type="button" class="fa fa-times btn" (click)="closeContactPopup()"></button>
+                        <button type="button" class="btn-close" aria-label="Close" (click)="closeContactPopup()"></button>
                     </div>
                     <div class="modal-body">
                         <p>Are you sure you want to delete this contact?</p>
@@ -777,7 +756,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Delete Bank</h5>
-                        <button type="button" class="fa fa-times btn" (click)="closeBankPopup()"></button>
+                        <button type="button" class="btn-close" aria-label="Close" (click)="closeBankPopup()"></button>
                     </div>
                     <div class="modal-body">
                         <p>Are you sure you want to delete this bank?</p>
@@ -806,7 +785,7 @@
     </div>
 
     <div class="modal-footer">
-        <button class="btn btn-secondary" (click)="modal.dismiss()">Cancel</button>
-        <button class="btn btn-primary" (click)="submitRemarks(modal)">Submit</button>
+        <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">Cancel</button>
+        <button type="button" class="btn btn-primary" (click)="submitRemarks(modal)">Submit</button>
     </div>
 </ng-template>

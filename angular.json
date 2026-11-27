@@ -31,7 +31,8 @@
               "sweetalert2",
               "screenfull",
               "clipboard",
-              "prismjs"
+              "prismjs",
+              "google-libphonenumber"
             ],
             "outputPath": "dist",
             "index": "src/index.html",

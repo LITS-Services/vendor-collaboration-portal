@@ -1,12 +1,84 @@
-.checkbox-text{
-    display: flex;
-    gap: 6px;
-    align-items: center;
-    font-size: 15px;
-
-    input[type='checkbox'] {
-    width:16px;
-    height:16px;
-    }
+.cstm-vertical-gap {
+  gap: 14px 0px !important;
 }
 
+.phone-input-group {
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+  width: 100%;
+}
+
+.phone-country-select {
+  width: 98px;
+  flex-shrink: 0;
+}
+
+.phone-national-input {
+  flex: 1 1 0%;
+  min-width: 0;
+  width: 100%;
+  height: 42px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  padding: 8px 12px;
+  font-size: 14px;
+  color: #1e293b;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &:focus {
+    border-color: #249d57;
+    box-shadow: 0 0 0 3px rgba(36, 157, 87, 0.15);
+  }
+
+  &::placeholder {
+    color: #94a3b8;
+    font-size: 13.5px;
+  }
+}
+
+.form-control.is-invalid {
+  border-color: #dc3545 !important;
+  background-image: none !important;
+
+  &:focus {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.15) !important;
+  }
+}
+
+:host ::ng-deep .app-select-trigger.is-invalid {
+  border-color: #dc3545 !important;
+
+  &:focus,
+  &.app-select-trigger--open {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.15) !important;
+  }
+}
+
+.contact-field-error {
+  color: #dc3545;
+  font-size: 12px;
+  line-height: 1.35;
+  margin-top: 4px;
+}
+
+.checkbox-text {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 14px;
+  cursor: pointer;
+  margin-bottom: 0;
+  user-select: none;
+  color: #444;
+
+  input[type='checkbox'] {
+    width: 17px;
+    height: 17px;
+    accent-color: #249d57;
+    cursor: pointer;
+    margin: 0;
+  }
+}
